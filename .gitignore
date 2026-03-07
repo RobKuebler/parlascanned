@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pth
+*.egg-info/
+dist/
+build/
+
+# uv / venv
+.venv/
+.ruff_cache/
+
+# Project data (too large / regeneratable)
+data/
+outputs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
