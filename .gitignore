@@ -12,7 +12,9 @@ build/
 
 # Project data (too large / regeneratable)
 data/
-outputs/
+
+# outputs: track computed embeddings CSVs, ignore model weights
+outputs/*.pth
 
 # OS
 .DS_Store
