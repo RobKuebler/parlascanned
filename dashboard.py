@@ -84,12 +84,12 @@ fig = px.scatter(
     labels={"party": "Partei", "name": "Name"},
     height=820,
 )
-fig.update_traces(marker={"size": 8, "opacity": 0.9})
+fig.update_traces(marker={"size": 8, "opacity": 0.88, "line": {"width": 0}})
 fig.update_layout(
     xaxis={"showticklabels": False, "title": "", "showgrid": False, "zeroline": False},
     yaxis={"showticklabels": False, "title": "", "showgrid": False, "zeroline": False},
-    plot_bgcolor="#0f1117",
-    paper_bgcolor="#0f1117",
+    plot_bgcolor="#F7F4EF",  # warm off-white — all party colors incl. black pop
+    paper_bgcolor="rgba(0,0,0,0)",  # transparent, blends with page
     showlegend=False,
     margin={"l": 0, "r": 0, "t": 10, "b": 10},
 )
