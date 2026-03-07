@@ -19,7 +19,7 @@ override-dependencies = ["pandas>=3.0.1"]
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D", "ANN", "COM812"]  # COM812 conflicts with ruff formatter
+ignore = ["D", "ANN", "COM812", "PLR0913"]  # COM812 conflicts with formatter
 
 [dependency-groups]
 dev = [

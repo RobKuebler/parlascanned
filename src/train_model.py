@@ -17,9 +17,11 @@ log = logging.getLogger(__name__)
 
 PERIOD_ID = 161  # Target legislative period (Bundestag 2025 - 2029)
 N_FACTORS = 8
-N_EPOCHS = 10
+N_EPOCHS = 50
 BATCH_SIZE = 256
 LR = 0.01
+VAL_SPLIT = 0.1
+PATIENCE = 5
 
 DATA_DIR = Path(__file__).parents[1] / "data"
 OUTPUTS_DIR = Path(__file__).parents[1] / "outputs"
@@ -91,25 +93,74 @@ def prepare_votes(
 def train(
     df: pd.DataFrame, n_politicians: int, n_polls: int
 ) -> PoliticianEmbeddingModel:
-    """Train the matrix factorization model and return it."""
-    log.info("Training on %d votes...", len(df))
+    """Train with early stopping on a held-out validation split."""
+    val_df = df.sample(frac=VAL_SPLIT, random_state=42)
+    train_df = df.drop(val_df.index)
+    log.info("Training on %d votes, validating on %d.", len(train_df), len(val_df))
+
     model = PoliticianEmbeddingModel(n_politicians, n_polls)
     optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=1e-5)
     criterion = nn.BCEWithLogitsLoss()
-    dl = DataLoader(VoteDataset(df), batch_size=BATCH_SIZE, shuffle=True)
+    train_dl = DataLoader(VoteDataset(train_df), batch_size=BATCH_SIZE, shuffle=True)
+    val_dl = DataLoader(VoteDataset(val_df), batch_size=BATCH_SIZE)
+
+    best_val_loss = float("inf")
+    best_state: dict = {}
+    epochs_without_improvement = 0
 
     for epoch in range(N_EPOCHS):
         model.train()
-        total_loss = 0.0
-        for p, poll, y in dl:
-            optimizer.zero_grad()
-            loss = criterion(model(p, poll), y)
-            loss.backward()
-            optimizer.step()
-            total_loss += loss.item()
-        log.info("Epoch %d/%d - Loss: %.4f", epoch + 1, N_EPOCHS, total_loss / len(dl))
+        train_loss = sum(
+            _step(model, optimizer, criterion, p, poll, y) for p, poll, y in train_dl
+        ) / len(train_dl)
 
+        val_loss = _eval(model, criterion, val_dl)
+
+        log.info(
+            "Epoch %d/%d - train: %.4f  val: %.4f",
+            epoch + 1,
+            N_EPOCHS,
+            train_loss,
+            val_loss,
+        )
+
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            best_state = {k: v.clone() for k, v in model.state_dict().items()}
+            epochs_without_improvement = 0
+        else:
+            epochs_without_improvement += 1
+            if epochs_without_improvement >= PATIENCE:
+                log.info("Early stopping at epoch %d.", epoch + 1)
+                break
+
+    model.load_state_dict(best_state)
     return model
+
+
+def _step(
+    model: PoliticianEmbeddingModel,
+    optimizer: torch.optim.Optimizer,
+    criterion: nn.Module,
+    p: torch.Tensor,
+    poll: torch.Tensor,
+    y: torch.Tensor,
+) -> float:
+    """Single training step, returns batch loss."""
+    optimizer.zero_grad()
+    loss = criterion(model(p, poll), y)
+    loss.backward()
+    optimizer.step()
+    return loss.item()
+
+
+@torch.no_grad()
+def _eval(
+    model: PoliticianEmbeddingModel, criterion: nn.Module, dl: DataLoader
+) -> float:
+    """Compute average loss over a DataLoader without updating gradients."""
+    model.eval()
+    return sum(criterion(model(p, poll), y).item() for p, poll, y in dl) / len(dl)
 
 
 def save_embeddings(
