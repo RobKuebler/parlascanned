@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import torch
 import umap
@@ -14,130 +15,149 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-# Configuration
 PERIOD_ID = 161  # Target legislative period (Bundestag 2025 - 2029)
+N_FACTORS = 8
+N_EPOCHS = 10
+BATCH_SIZE = 256
+LR = 0.01
 
 DATA_DIR = Path(__file__).parents[1] / "data"
 OUTPUTS_DIR = Path(__file__).parents[1] / "outputs"
-OUTPUTS_DIR.mkdir(exist_ok=True)
-
-# 1. Load and prepare data
-votes_path = DATA_DIR / f"votes_{PERIOD_ID}.csv"
-politicians_path = DATA_DIR / f"politicians_{PERIOD_ID}.csv"
-polls_path = DATA_DIR / f"polls_{PERIOD_ID}.csv"
-
-if not votes_path.exists():
-    log.error("%s not found! Run fetch_data.py first.", votes_path)
-    raise SystemExit(1)
-
-log.info("Loading data for period %d...", PERIOD_ID)
-df = pd.read_csv(votes_path)
-p_df = pd.read_csv(politicians_path)
-poll_df = pd.read_csv(polls_path)
-
-# Only binary votes — abstain/no_show carry no clear signal
-df = df[df["answer"].isin({"yes", "no"})].copy()
-df["rating"] = (df["answer"] == "yes").astype(float)
-
-# Map original IDs to continuous indices for the embedding layers
-p_ids = p_df["politician_id"].unique()
-poll_ids = poll_df["poll_id"].unique()
-
-p_to_idx = {pid: i for i, pid in enumerate(p_ids)}
-poll_to_idx = {pid: i for i, pid in enumerate(poll_ids)}
-
-# Filter votes to ensure consistent data across files
-df = df[df["politician_id"].isin(p_ids) & df["poll_id"].isin(poll_ids)].copy()
-df["p_idx"] = df["politician_id"].map(p_to_idx)
-df["poll_idx"] = df["poll_id"].map(poll_to_idx)
 
 
 class VoteDataset(Dataset[tuple[torch.Tensor, torch.Tensor, torch.Tensor]]):
-    """
-    Standard PyTorch Dataset to serve politician, poll, and rating triplets.
-    """
+    """PyTorch Dataset serving (politician_idx, poll_idx, rating) triplets."""
 
-    def __init__(self, df):
+    def __init__(self, df: pd.DataFrame) -> None:
         self.p = torch.tensor(df["p_idx"].to_numpy(), dtype=torch.long)
         self.poll = torch.tensor(df["poll_idx"].to_numpy(), dtype=torch.long)
         self.y = torch.tensor(df["rating"].to_numpy(), dtype=torch.float)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.y)
 
     def __getitem__(self, idx) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:  # ty: ignore[invalid-method-override]
         return self.p[idx], self.poll[idx], self.y[idx]
 
 
-# 2. Model Definition
 class PoliticianEmbeddingModel(nn.Module):
-    """
-    Matrix Factorization Model: Dot product of politician and poll embeddings
-    plus biases, followed by a sigmoid to predict the vote probability.
-    """
+    """Matrix factorization: dot product of politician and poll embeddings + biases."""
 
-    def __init__(self, n_politicians, n_polls, n_factors=8):
+    def __init__(
+        self, n_politicians: int, n_polls: int, n_factors: int = N_FACTORS
+    ) -> None:
         super().__init__()
-        # Politician embeddings and bias
         self.p_embed = nn.Embedding(n_politicians, n_factors)
         self.p_bias = nn.Embedding(n_politicians, 1)
-        # Poll embeddings and bias
         self.poll_embed = nn.Embedding(n_polls, n_factors)
         self.poll_bias = nn.Embedding(n_polls, 1)
-
-        # Initialize weights
         nn.init.xavier_uniform_(self.p_embed.weight)
         nn.init.xavier_uniform_(self.poll_embed.weight)
         self.p_bias.weight.data.fill_(0.0)
         self.poll_bias.weight.data.fill_(0.0)
 
-    def forward(self, p, poll):
+    def forward(self, p: torch.Tensor, poll: torch.Tensor) -> torch.Tensor:
         dot = (self.p_embed(p) * self.poll_embed(poll)).sum(dim=1)
-        res = dot + self.p_bias(p).squeeze() + self.poll_bias(poll).squeeze()
-        return torch.sigmoid(res)
+        return torch.sigmoid(
+            dot + self.p_bias(p).squeeze() + self.poll_bias(poll).squeeze()
+        )
 
 
-# 3. Training Loop
-log.info("Training on %d votes...", len(df))
-n_p, n_poll = len(p_ids), len(poll_ids)
-model = PoliticianEmbeddingModel(n_p, n_poll, n_factors=8)
-criterion = nn.MSELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=1e-5)
+def load_data(period_id: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Load votes, politicians and polls CSVs for a given period."""
+    votes_path = DATA_DIR / f"votes_{period_id}.csv"
+    if not votes_path.exists():
+        log.error("%s not found! Run fetch_data.py first.", votes_path)
+        raise SystemExit(1)
+    log.info("Loading data for period %d...", period_id)
+    return (
+        pd.read_csv(votes_path),
+        pd.read_csv(DATA_DIR / f"politicians_{period_id}.csv"),
+        pd.read_csv(DATA_DIR / f"polls_{period_id}.csv"),
+    )
 
-ds = VoteDataset(df)
-dl = DataLoader(ds, batch_size=256, shuffle=True)
 
-for epoch in range(10):
-    model.train()
-    total_loss = 0
-    for p, poll, y in dl:
-        optimizer.zero_grad()
-        preds = model(p, poll)
-        loss = criterion(preds, y)
-        loss.backward()
-        optimizer.step()
-        total_loss += loss.item()
-    log.info("Epoch %d/10 - Average Loss: %.4f", epoch + 1, total_loss / len(dl))
+def prepare_votes(
+    df: pd.DataFrame, p_df: pd.DataFrame, poll_df: pd.DataFrame
+) -> tuple[pd.DataFrame, np.ndarray, np.ndarray]:
+    """Filter to binary yes/no votes and add integer indices for embedding layers."""
+    df = df[df["answer"].isin({"yes", "no"})].copy()
+    df["rating"] = (df["answer"] == "yes").astype(float)
 
-# 4. Export Embeddings
-log.info("Exporting embeddings...")
-embeddings = model.p_embed.weight.detach().numpy()
-emb_columns = [f"dim_{i}" for i in range(embeddings.shape[1])]
-emb_df = pd.DataFrame(embeddings, columns=emb_columns)
-emb_df["politician_id"] = p_ids
+    p_ids = p_df["politician_id"].unique()
+    poll_ids = poll_df["poll_id"].unique()
 
-# Merge embeddings with original metadata (Name, Party)
-final_df = p_df.merge(emb_df, on="politician_id")
-output_path = OUTPUTS_DIR / f"politician_embeddings_{PERIOD_ID}.csv"
-final_df.to_csv(output_path, index=False)
-log.info("Embeddings saved to %s", output_path)
+    df = df[df["politician_id"].isin(p_ids) & df["poll_id"].isin(poll_ids)].copy()
+    df["p_idx"] = df["politician_id"].map({pid: i for i, pid in enumerate(p_ids)})
+    df["poll_idx"] = df["poll_id"].map({pid: i for i, pid in enumerate(poll_ids)})
 
-# 5. UMAP: reduce to 2D for visualization and save separately
-log.info("Running UMAP to produce 2D visualization embeddings...")
-coords = umap.UMAP(n_components=2, random_state=42).fit_transform(embeddings)
-viz_df = p_df.copy()
-viz_df["x"] = coords[:, 0]
-viz_df["y"] = coords[:, 1]
-viz_path = OUTPUTS_DIR / f"politician_embeddings_{PERIOD_ID}_2d.csv"
-viz_df.to_csv(viz_path, index=False)
-log.info("2D embeddings saved to %s", viz_path)
+    return df, p_ids, poll_ids
+
+
+def train(
+    df: pd.DataFrame, n_politicians: int, n_polls: int
+) -> PoliticianEmbeddingModel:
+    """Train the matrix factorization model and return it."""
+    log.info("Training on %d votes...", len(df))
+    model = PoliticianEmbeddingModel(n_politicians, n_polls)
+    optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=1e-5)
+    criterion = nn.MSELoss()
+    dl = DataLoader(VoteDataset(df), batch_size=BATCH_SIZE, shuffle=True)
+
+    for epoch in range(N_EPOCHS):
+        model.train()
+        total_loss = 0.0
+        for p, poll, y in dl:
+            optimizer.zero_grad()
+            loss = criterion(model(p, poll), y)
+            loss.backward()
+            optimizer.step()
+            total_loss += loss.item()
+        log.info("Epoch %d/%d - Loss: %.4f", epoch + 1, N_EPOCHS, total_loss / len(dl))
+
+    return model
+
+
+def save_embeddings(
+    model: PoliticianEmbeddingModel,
+    p_df: pd.DataFrame,
+    p_ids: np.ndarray,
+    period_id: int,
+) -> np.ndarray:
+    """Export full-dimensional embeddings to CSV and return the raw numpy array."""
+    embeddings = model.p_embed.weight.detach().numpy()
+    emb_df = pd.DataFrame(
+        embeddings, columns=[f"dim_{i}" for i in range(embeddings.shape[1])]
+    )
+    emb_df["politician_id"] = p_ids
+    path = OUTPUTS_DIR / f"politician_embeddings_{period_id}.csv"
+    p_df.merge(emb_df, on="politician_id").to_csv(path, index=False)
+    log.info("Embeddings saved to %s", path)
+    return embeddings
+
+
+def save_2d_embeddings(
+    embeddings: np.ndarray, p_df: pd.DataFrame, period_id: int
+) -> None:
+    """Reduce embeddings to 2D via UMAP and export visualization CSV."""
+    log.info("Running UMAP to produce 2D visualization embeddings...")
+    coords = umap.UMAP(n_components=2, random_state=42).fit_transform(embeddings)
+    viz_df = p_df.copy()
+    viz_df["x"] = coords[:, 0]
+    viz_df["y"] = coords[:, 1]
+    path = OUTPUTS_DIR / f"politician_embeddings_{period_id}_2d.csv"
+    viz_df.to_csv(path, index=False)
+    log.info("2D embeddings saved to %s", path)
+
+
+def main() -> None:
+    OUTPUTS_DIR.mkdir(exist_ok=True)
+    df_votes, p_df, poll_df = load_data(PERIOD_ID)
+    df_votes, p_ids, poll_ids = prepare_votes(df_votes, p_df, poll_df)
+    model = train(df_votes, len(p_ids), len(poll_ids))
+    embeddings = save_embeddings(model, p_df, p_ids, PERIOD_ID)
+    save_2d_embeddings(embeddings, p_df, PERIOD_ID)
+
+
+if __name__ == "__main__":
+    main()
