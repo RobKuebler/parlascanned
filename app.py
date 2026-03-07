@@ -1,7 +1,9 @@
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 
 OUTPUTS_DIR = Path(__file__).parent / "outputs"
@@ -80,12 +82,16 @@ st.markdown(pills_html, unsafe_allow_html=True)
 
 color_map = {p: PARTY_COLORS.get(p, FALLBACK_COLOR) for p in present}
 
+# Centroid per party (mean x/y position)
+centroids = df.groupby("party")[["x", "y"]].mean()
+
 is_3d = "z" in df.columns
 common = {
     "color": "party",
     "color_discrete_map": color_map,
     "hover_data": {"name": True, "party": True, "x": False, "y": False},
     "labels": {"party": "Partei", "name": "Name"},
+    "custom_data": ["party", "name"],
     "height": 820,
 }
 
@@ -104,7 +110,32 @@ if is_3d:
     )
 else:
     fig = px.scatter(df, x="x", y="y", **common)
-    fig.update_traces(marker={"size": 8, "opacity": 0.88, "line": {"width": 0}})
+    fig.update_traces(
+        marker={"size": 8, "opacity": 0.88, "line": {"width": 0}},
+        hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[1]}<extra></extra>",
+    )
+    # Centroid overlay: diamond marker + party name label
+    for party, row in centroids.iterrows():
+        color = color_map.get(party, FALLBACK_COLOR)
+        label = str(party).replace("\xad", "")
+        fig.add_trace(
+            go.Scatter(
+                x=[row["x"]],
+                y=[row["y"]],
+                mode="markers+text",
+                marker={
+                    "size": 16,
+                    "color": color,
+                    "symbol": "diamond",
+                    "line": {"width": 2, "color": "#fff"},
+                },
+                text=[label],
+                textposition="top center",
+                textfont={"size": 11, "color": color},
+                hovertemplate=f"<b>{label}</b> (Zentroid)<extra></extra>",
+                showlegend=False,
+            )
+        )
     fig.update_layout(
         xaxis={
             "showticklabels": False,
@@ -124,4 +155,55 @@ else:
         margin={"l": 0, "r": 0, "t": 10, "b": 10},
     )
 
-st.plotly_chart(fig, width="stretch")
+event = st.plotly_chart(
+    fig, width="stretch", on_select="rerun", selection_mode="points"
+)
+
+# Nearest neighbors: shown when the user clicks a point in 2D mode
+if not is_3d and event.selection.points:  # ty: ignore[unresolved-attribute]
+    sel = event.selection.points[0]  # ty: ignore[unresolved-attribute]
+    # Identify clicked politician by proximity (robust across trace ordering)
+    dists = (df["x"] - sel["x"]) ** 2 + (df["y"] - sel["y"]) ** 2
+    idx = dists.idxmin()
+    selected = df.loc[idx]
+    coords = df[["x", "y"]].to_numpy()
+    all_dists = np.linalg.norm(coords - coords[df.index.get_loc(idx)], axis=1)
+    neighbor_idx = df.index[np.argsort(all_dists)[1:6]]
+    neighbors = df.loc[neighbor_idx, ["name", "party"]].rename(
+        columns={"name": "Name", "party": "Partei"}
+    )
+    st.markdown(f"**Nächste Nachbarn von {selected['name']}**")
+    st.dataframe(neighbors, hide_index=True, use_container_width=True)
+
+st.markdown("---")
+
+# --- Party cohesion: mean distance of each politician from their party centroid ---
+st.markdown("#### Partei-Kohäsion")
+cx = df["party"].map(centroids["x"])
+cy = df["party"].map(centroids["y"])
+coh = (
+    np.sqrt((df["x"] - cx) ** 2 + (df["y"] - cy) ** 2)
+    .groupby(df["party"])
+    .mean()
+    .reset_index(name="streuung")
+)
+coh["label"] = coh["party"].str.replace("\xad", "", regex=False)
+coh = coh.sort_values("streuung")
+fig_coh = px.bar(
+    coh,
+    x="streuung",
+    y="label",
+    orientation="h",
+    color="party",
+    color_discrete_map=color_map,
+    labels={"streuung": "Abstand vom Zentroid", "label": ""},
+    height=350,
+    custom_data=["label", "streuung"],
+)
+fig_coh.update_traces(
+    hovertemplate=(
+        "<b>%{customdata[0]}</b><br>Ø Abstand: %{customdata[1]:.3f}<extra></extra>"
+    )
+)
+fig_coh.update_layout(showlegend=False, margin={"l": 0, "r": 0, "t": 0, "b": 0})
+st.plotly_chart(fig_coh, width="stretch")
