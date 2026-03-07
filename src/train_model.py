@@ -17,8 +17,8 @@ log = logging.getLogger(__name__)
 # Configuration
 PERIOD_ID = 161  # Target legislative period (Bundestag 2025 - 2029)
 
-DATA_DIR = Path(__file__).parents[2] / "data"
-OUTPUTS_DIR = Path(__file__).parents[2] / "outputs"
+DATA_DIR = Path(__file__).parents[1] / "data"
+OUTPUTS_DIR = Path(__file__).parents[1] / "outputs"
 OUTPUTS_DIR.mkdir(exist_ok=True)
 
 # 1. Load and prepare data

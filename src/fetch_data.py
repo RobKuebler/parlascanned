@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 BASE_URL = "https://www.abgeordnetenwatch.de/api/v2"
 PARLIAMENT_PERIOD_ID = 161  # Bundestag 2025 - 2029 (21st legislative period)
 
-DATA_DIR = Path(__file__).parents[2] / "data"
+DATA_DIR = Path(__file__).parents[1] / "data"
 DATA_DIR.mkdir(exist_ok=True)
 
 
