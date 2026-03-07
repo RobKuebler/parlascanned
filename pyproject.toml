@@ -9,16 +9,20 @@ packages = ["src/politician_embeddings"]
 name = "politician-embeddings"
 version = "0.1.0"
 description = "Add your description here"
-requires-python = ">=3.13"
+requires-python = "~=3.13.0"
 dependencies = [
     "numpy>=2.4.2",
     "pandas>=3.0.1",
     "plotly>=6.6.0",
     "requests>=2.32.5",
-    "streamlit>=1.19.0",
+    "streamlit>=1.40.0",
     "torch>=2.10.0",
     "umap-learn>=0.5.11",
 ]
+
+[tool.uv]
+# streamlit declares pandas<3 but is compatible with pandas 3 in practice
+override-dependencies = ["pandas>=3.0.1"]
 
 [tool.ruff.lint]
 select = ["ALL"]
