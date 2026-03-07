@@ -35,9 +35,9 @@ df = pd.read_csv(votes_path)
 p_df = pd.read_csv(politicians_path)
 poll_df = pd.read_csv(polls_path)
 
-# Numeric mapping for votes: yes=1.0, no=0.0, neutral=0.5
-mapping = {"yes": 1.0, "no": 0.0, "abstain": 0.5, "no_show": 0.5}
-df["rating"] = df["answer"].map(mapping)
+# Only binary votes — abstain/no_show carry no clear signal
+df = df[df["answer"].isin({"yes", "no"})].copy()
+df["rating"] = (df["answer"] == "yes").astype(float)
 
 # Map original IDs to continuous indices for the embedding layers
 p_ids = p_df["politician_id"].unique()
