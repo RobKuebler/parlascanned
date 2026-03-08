@@ -8,9 +8,13 @@ import streamlit as st
 
 OUTPUTS_DIR = Path(__file__).parent / "outputs"
 
-# Load available periods from CSV written by fetch_data.py
+# Load only periods for which an embeddings CSV actually exists
 _periods_df = pd.read_csv(OUTPUTS_DIR.parent / "data" / "periods.csv")
-PERIODS = dict(zip(_periods_df["period_id"], _periods_df["label"], strict=True))
+PERIODS = {
+    int(row["period_id"]): row["label"]
+    for _, row in _periods_df.iterrows()
+    if (OUTPUTS_DIR / f"politician_embeddings_{row['period_id']}.csv").exists()
+}
 
 # Official German party colors; unknown parties fall back to gray
 PARTY_COLORS = {
