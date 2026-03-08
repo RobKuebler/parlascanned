@@ -2,7 +2,7 @@
 
 Ein interaktives Dashboard, das zeigt, wie ähnlich Bundestagsabgeordnete abstimmen, und wo die echten politischen Trennlinien verlaufen.
 
-[**Demo ansehen**](https://robkuebler.github.io) | [**Daten: abgeordnetenwatch.de**](https://www.abgeordnetenwatch.de)
+[**Demo ansehen**](https://politicianembeddings.streamlit.app/) | [**Daten: abgeordnetenwatch.de**](https://www.abgeordnetenwatch.de)
 
 ---
 
