@@ -8,7 +8,7 @@ Ein interaktives Dashboard, das zeigt, wie ähnlich Bundestagsabgeordnete abstim
 
 ## Idee
 
-Namentliche Abstimmungen im Bundestag sind öffentlich zugänglich, aber schwer zu überblicken. Dieses Projekt lädt alle verfügbaren Abstimmungsdaten seit dem Jahr 2005 (16. Bundestag) herunter und trainiert darauf ein Modell, das jedem Abgeordneten eine Position im zweidimensionalen Raum zuweist. Je näher zwei Punkte beieinander liegen, desto ähnlicher haben die beiden in der Vergangenheit abgestimmt.
+Namentliche Abstimmungen im Bundestag sind öffentlich zugänglich, aber schwer zu überblicken. Dieses Projekt lädt alle verfügbaren Abstimmungsdaten seit dem Jahr 2021 (20. Bundestag) herunter und trainiert darauf ein Modell, das jedem Abgeordneten eine Position im zweidimensionalen Raum zuweist. Je näher zwei Punkte beieinander liegen, desto ähnlicher haben die beiden in der Vergangenheit abgestimmt.
 
 Das Ergebnis ist eine interaktive Landkarte des Abstimmungsverhaltens, die keine Parteizugehörigkeit voraussetzt, sondern sie aus den Daten selbst ableitet.
 
