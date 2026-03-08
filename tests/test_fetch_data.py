@@ -30,10 +30,10 @@ def test_fetch_all_v2_pagination():
 
         result = fetch_all_v2(endpoint)
 
-        assert len(result) == 3  # noqa: S101
-        assert result[0]["id"] == 1  # noqa: S101
-        assert result[2]["id"] == 3  # noqa: S101
-        assert m.call_count == 2  # noqa: S101
+        assert len(result) == 3
+        assert result[0]["id"] == 1
+        assert result[2]["id"] == 3
+        assert m.call_count == 2
 
 
 def test_fetch_all_v2_error():
@@ -73,6 +73,6 @@ def test_fetch_politicians_party_logic():
 
         df, mapping = fetch_politicians(132)
 
-        assert len(df) == 1  # noqa: S101
-        assert df.iloc[0]["party"] == "Current Party"  # noqa: S101
-        assert mapping[100] == 1  # noqa: S101
+        assert len(df) == 1
+        assert df.iloc[0]["party"] == "Current Party"
+        assert mapping[100] == 1
