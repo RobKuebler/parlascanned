@@ -63,7 +63,7 @@ st.markdown(
       <h1 style='margin:0; font-size:2rem; letter-spacing:-0.5px'>
         Wer stimmt mit wem?
       </h1>
-      <p style='margin:10px 0 0; color:#888; font-size:0.95rem; max-width:520px; margin-left:auto; margin-right:auto; line-height:1.5'>
+      <p style='margin:8px 0 0; color:#999; font-size:0.95rem; max-width:520px; margin-left:auto; margin-right:auto; line-height:1.5'>
         Abstimmungsverhalten aller Abgeordneten als Punkte im Raum.
         Je näher zwei Punkte, desto ähnlicher das Wahlverhalten.
       </p>
@@ -76,14 +76,14 @@ st.markdown(
 col_period, col_search = st.columns([3, 2], gap="large")
 with col_period:
     period_id = st.selectbox(
-        "🗓 Wahlperiode",
+        "Wahlperiode",
         options=list(PERIODS.keys()),
         format_func=lambda p: PERIODS[p],
         index=0,
     )
 with col_search:
     query = st.text_input(
-        "🔍 Suche",
+        "Suche",
         placeholder="z. B. Müller",
         key="search_query",
         on_change=lambda: st.session_state.update(last_action="search"),
@@ -230,21 +230,19 @@ else:
 st.markdown("##### Abstimmungslandkarte")
 st.markdown(
     """
-    <div style='color:#999; font-size:12px; margin-bottom:8px'>
-      <details style='display:inline'>
-        <summary style='cursor:pointer; display:inline; list-style:none'>ℹ Wie lese ich das?</summary>
-        <div style='margin-top:8px; line-height:1.6; max-width:520px'>
-          Jeder Punkt steht für einen Abgeordneten. Je näher zwei Punkte beieinander
-          liegen, desto ähnlicher haben die beiden abgestimmt.<br><br>
-          Aus allen namentlichen Abstimmungen der Wahlperiode wird für jeden Abgeordneten
-          ein Profil berechnet, das zeigt, wie er oder sie typischerweise abstimmt.
-          Ein KI-Modell verdichtet diese Profile so auf zwei Dimensionen, dass
-          ähnliche Abstimmungsmuster nah beieinander landen.<br><br>
-          Die Achsen selbst haben keine Bedeutung. Nur die relative <b>Nähe</b> der
-          Punkte zueinander zählt. ◆ markiert jeweils den Mittelpunkt einer Fraktion.
-        </div>
-      </details>
-    </div>
+    <details style='margin:0 0 12px'>
+      <summary style='cursor:pointer; list-style:none; color:#999; font-size:12px'>ℹ Wie lese ich das?</summary>
+      <div style='color:#666; font-size:13px; margin-top:6px; line-height:1.6; max-width:520px'>
+        Jeder Punkt steht für einen Abgeordneten. Je näher zwei Punkte beieinander
+        liegen, desto ähnlicher haben die beiden abgestimmt.<br><br>
+        Aus allen namentlichen Abstimmungen der Wahlperiode wird für jeden Abgeordneten
+        ein Profil berechnet, das zeigt, wie er oder sie typischerweise abstimmt.
+        Ein KI-Modell verdichtet diese Profile so auf zwei Dimensionen, dass
+        ähnliche Abstimmungsmuster nah beieinander landen.<br><br>
+        Die Achsen selbst haben keine Bedeutung. Nur die relative <b>Nähe</b> der
+        Punkte zueinander zählt. ◆ markiert jeweils den Mittelpunkt einer Fraktion.
+      </div>
+    </details>
     """,
     unsafe_allow_html=True,
 )
@@ -277,8 +275,8 @@ with col_neighbors:
     st.markdown("##### Ähnlichste Abgeordnete")
     st.markdown(
         """
-        <details style='margin:-8px 0 12px'>
-          <summary style='cursor:pointer; list-style:none; color:#aaa; font-size:12px'>ℹ Wie lese ich das?</summary>
+        <details style='margin:0 0 12px'>
+          <summary style='cursor:pointer; list-style:none; color:#999; font-size:12px'>ℹ Wie lese ich das?</summary>
           <div style='color:#666; font-size:13px; margin-top:6px; line-height:1.6'>
             Die fünf Abgeordneten mit dem ähnlichsten Abstimmungsverhalten,
             unabhängig von der Parteizugehörigkeit. Manchmal stimmen Abgeordnete
@@ -315,14 +313,14 @@ with col_neighbors:
             )
             rows_html.append(
                 f"<div style='display:flex; align-items:center; justify-content:space-between; "
-                f"gap:12px; padding:9px 0; border-bottom:1px solid #f0f0f0'>"
+                f"gap:12px; padding:8px 0; border-bottom:1px solid #ebebeb'>"
                 f"<span style='font-size:14px'>{n['name']}</span>"
                 f"{badge}</div>"
             )
         st.markdown("".join(rows_html), unsafe_allow_html=True)
     else:
         st.markdown(
-            "<p style='color:#bbb; font-size:14px; margin-top:8px'>"
+            "<p style='color:#999; font-size:14px; margin-top:8px'>"
             "Wähle einen Abgeordneten im Diagramm aus.</p>",
             unsafe_allow_html=True,
         )
@@ -331,8 +329,8 @@ with col_cohesion:
     st.markdown("##### Fraktionsdisziplin")
     st.markdown(
         """
-        <details style='margin:-8px 0 12px'>
-          <summary style='cursor:pointer; list-style:none; color:#aaa; font-size:12px'>ℹ Wie lese ich das?</summary>
+        <details style='margin:0 0 12px'>
+          <summary style='cursor:pointer; list-style:none; color:#999; font-size:12px'>ℹ Wie lese ich das?</summary>
           <div style='color:#666; font-size:13px; margin-top:6px; line-height:1.6'>
             Der Balken zeigt, wie weit die Abgeordneten einer Fraktion im Diagramm
             durchschnittlich vom Fraktionsmittelpunkt entfernt sind.<br><br>
@@ -363,7 +361,7 @@ with col_cohesion:
         orientation="h",
         color="party",
         color_discrete_map=color_map,
-        labels={"streuung": "", "label": ""},
+        labels={"streuung": "Ø Abstand vom Fraktionsmittelpunkt", "label": ""},
         height=300,
         custom_data=["label", "streuung"],
     )
@@ -376,7 +374,7 @@ with col_cohesion:
         showlegend=False,
         margin={"l": 0, "r": 0, "t": 0, "b": 0},
         paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="#F5F2EC",
         xaxis={"showgrid": True, "gridcolor": "#ebebeb", "zeroline": False},
         yaxis={"showgrid": False},
     )
@@ -384,7 +382,7 @@ with col_cohesion:
 
 # Footer
 st.markdown(
-    "<p style='text-align:center; color:#ccc; font-size:12px; margin-top:40px'>"
+    "<p style='text-align:center; color:#ccc; font-size:12px; margin-top:48px'>"
     "Daten: <a href='https://www.abgeordnetenwatch.de' style='color:#ccc'>"
     "abgeordnetenwatch.de</a>"
     "</p>",
