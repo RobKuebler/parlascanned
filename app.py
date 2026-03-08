@@ -253,24 +253,24 @@ def _info_details(body: str) -> str:
     )
 
 
-st.markdown("##### Abstimmungslandkarte")
-st.markdown(
-    _info_details(
-        "Jeder Punkt steht für einen Abgeordneten. Je näher zwei Punkte beieinander "
-        "liegen, desto ähnlicher haben die beiden abgestimmt.<br><br>"
-        "Aus allen namentlichen Abstimmungen der Wahlperiode wird für jeden Abgeordneten "
-        "ein Profil berechnet, das zeigt, wie er oder sie typischerweise abstimmt. "
-        "Ein KI-Modell verdichtet diese Profile so auf zwei Dimensionen, dass "
-        "ähnliche Abstimmungsmuster nah beieinander landen.<br><br>"
-        "Die Achsen selbst haben keine Bedeutung. Nur die relative <b>Nähe</b> der "
-        "Punkte zueinander zählt. ◆ markiert jeweils den Mittelpunkt einer Fraktion."
-    ),
-    unsafe_allow_html=True,
-)
-
-event = st.plotly_chart(
-    fig, width="stretch", on_select="rerun", selection_mode="points"
-)
+with st.container(border=True):
+    st.markdown("##### Abstimmungslandkarte")
+    st.markdown(
+        _info_details(
+            "Jeder Punkt steht für einen Abgeordneten. Je näher zwei Punkte beieinander "
+            "liegen, desto ähnlicher haben die beiden abgestimmt.<br><br>"
+            "Aus allen namentlichen Abstimmungen der Wahlperiode wird für jeden Abgeordneten "
+            "ein Profil berechnet, das zeigt, wie er oder sie typischerweise abstimmt. "
+            "Ein KI-Modell verdichtet diese Profile so auf zwei Dimensionen, dass "
+            "ähnliche Abstimmungsmuster nah beieinander landen.<br><br>"
+            "Die Achsen selbst haben keine Bedeutung. Nur die relative <b>Nähe</b> der "
+            "Punkte zueinander zählt. ◆ markiert jeweils den Mittelpunkt einer Fraktion."
+        ),
+        unsafe_allow_html=True,
+    )
+    event = st.plotly_chart(
+        fig, width="stretch", on_select="rerun", selection_mode="points"
+    )
 
 # Detect if the plotly selection changed this rerun → user clicked
 current_sel = event.selection.points[0] if event.selection.points else None  # ty: ignore[unresolved-attribute]
@@ -292,7 +292,7 @@ if not is_3d:
 st.markdown("<div style='height:32px'></div>", unsafe_allow_html=True)
 col_neighbors, col_cohesion = st.columns(2, gap="large")
 
-with col_neighbors:
+with col_neighbors, st.container(border=True):
     st.markdown("##### Ähnlichste Abgeordnete")
     st.markdown(
         _info_details(
@@ -341,7 +341,7 @@ with col_neighbors:
             unsafe_allow_html=True,
         )
 
-with col_cohesion:
+with col_cohesion, st.container(border=True):
     st.markdown("##### Fraktionsdisziplin")
     st.markdown(
         _info_details(
