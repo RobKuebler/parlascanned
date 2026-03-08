@@ -81,6 +81,11 @@ if "heatmap_pol_ids" not in st.session_state:
 if "prev_scatter_pol_ids" not in st.session_state:
     st.session_state.prev_scatter_pol_ids = []
 
+# Restore poll selection that was saved before a forced st.rerun() (widget state would
+# otherwise be cleared because the poll multiselect hasn't rendered yet in that run).
+if "preserved_poll_ids" in st.session_state:
+    st.session_state.heatmap_poll_ids = st.session_state.pop("preserved_poll_ids")
+
 # Header
 st.markdown(
     f"""
@@ -291,9 +296,30 @@ for pt in event.selection.points:  # ty: ignore[unresolved-attribute]
             _scatter_pol_ids.append(int(cd[2]))
 _scatter_pol_ids = list(dict.fromkeys(_scatter_pol_ids))
 
-# Only sync scatter → multiselect when the scatter selection actually changed and is non-empty
+# Sync scatter selection → multiselect.
+# Box/lasso: replace the selection entirely.
+# Single point click: toggle the politician (add if new, remove if already selected).
+# In both cases rerun immediately so highlight rings appear in the same cycle.
 if _scatter_pol_ids and _scatter_pol_ids != st.session_state.prev_scatter_pol_ids:
-    st.session_state.heatmap_pol_ids = _scatter_pol_ids
+    is_box_or_lasso = bool(
+        event.selection.get("box") or event.selection.get("lasso")  # ty: ignore[unresolved-attribute]
+    )
+    if is_box_or_lasso:
+        new_ids = _scatter_pol_ids
+    else:
+        existing = list(st.session_state.heatmap_pol_ids)
+        new_ids = existing[:]
+        for pid in _scatter_pol_ids:
+            if pid in new_ids:
+                new_ids.remove(pid)
+            else:
+                new_ids.append(pid)
+    st.session_state.heatmap_pol_ids = new_ids
+    st.session_state.prev_scatter_pol_ids = _scatter_pol_ids
+    st.session_state.preserved_poll_ids = list(
+        st.session_state.get("heatmap_poll_ids", [])
+    )
+    st.rerun()
 st.session_state.prev_scatter_pol_ids = _scatter_pol_ids
 
 # ─── Abstimmungsverhalten heatmap ────────────────────────────────────────────
@@ -318,6 +344,7 @@ with st.container(border=True):
         "Abstimmungen",
         options=list(poll_options.keys()),
         format_func=lambda i: poll_options[i],
+        key="heatmap_poll_ids",
         placeholder="Abstimmungen suchen und auswählen …",
     )
 
