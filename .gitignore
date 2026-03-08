@@ -10,9 +10,6 @@ build/
 .venv/
 .ruff_cache/
 
-# Project data (too large / regeneratable)
-data/
-
 # outputs: track computed embeddings CSVs, ignore model weights
 outputs/*.pth
 

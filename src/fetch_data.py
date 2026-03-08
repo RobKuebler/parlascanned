@@ -1,3 +1,4 @@
+import argparse
 import csv
 import logging
 from pathlib import Path
@@ -81,13 +82,21 @@ def fetch_politicians(period_id: int) -> tuple[pd.DataFrame, dict]:
     return df, mandate_to_politician
 
 
-def fetch_votes(poll_ids, mandate_to_politician: dict, path: Path) -> None:
-    """Fetch votes for all polls and write to CSV incrementally."""
-    log.info("Fetching votes incrementally...")
+def fetch_votes(
+    poll_ids: list, mandate_to_politician: dict, path: Path, *, append: bool
+) -> None:
+    """Fetch votes for the given polls and write (or append) to CSV.
+
+    append=False: overwrite the file and write header.
+    append=True: open in append mode, no header (file already has one).
+    """
+    mode = "a" if append else "w"
     n = len(poll_ids)
-    with path.open(mode="w", newline="", encoding="utf-8") as f:
+    log.info("Fetching votes for %d poll(s)...", n)
+    with path.open(mode=mode, newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(["politician_id", "poll_id", "answer"])
+        if not append:
+            writer.writerow(["politician_id", "poll_id", "answer"])
         for i, poll_id in enumerate(poll_ids):
             log.info("[%d/%d] Fetching votes for poll %s...", i + 1, n, poll_id)
             try:
@@ -101,24 +110,103 @@ def fetch_votes(poll_ids, mandate_to_politician: dict, path: Path) -> None:
                 log.exception("Error fetching votes for poll %s", poll_id)
 
 
+def upsert_polls(period_id: int) -> tuple[pd.DataFrame, list]:
+    """Fetch all polls from API, upsert into existing CSV.
+
+    Returns (full polls df, list of new poll_ids that weren't in the CSV yet).
+    New poll_ids are the ones we still need to fetch votes for.
+    """
+    df_api = fetch_polls(period_id)
+    path = DATA_DIR / f"polls_{period_id}.csv"
+
+    if not path.exists():
+        df_api.to_csv(path, index=False)
+        log.info("No existing polls CSV — wrote %d polls.", len(df_api))
+        return df_api, df_api["poll_id"].tolist()
+
+    df_existing = pd.read_csv(path)
+    known_ids = set(df_existing["poll_id"])
+    new_poll_ids = [pid for pid in df_api["poll_id"] if pid not in known_ids]
+
+    # Update existing rows (e.g. topic label changed) and append new ones
+    df_merged = df_existing.set_index("poll_id")
+    df_merged.update(df_api.set_index("poll_id"))
+    if new_poll_ids:
+        new_rows = df_api[df_api["poll_id"].isin(new_poll_ids)].set_index("poll_id")
+        df_merged = pd.concat([df_merged, new_rows])
+    df_merged.reset_index().to_csv(path, index=False)
+    log.info("%d new poll(s), %d updated.", len(new_poll_ids), len(df_existing))
+    return df_merged.reset_index(), new_poll_ids
+
+
+def upsert_politicians(period_id: int) -> tuple[pd.DataFrame, dict]:
+    """Fetch all politicians from API, upsert into existing CSV.
+
+    Updates changed name/party fields and adds newly elected politicians.
+    Returns (full politicians df, mandate_id -> politician_id mapping).
+    """
+    df_api, mandate_to_politician = fetch_politicians(period_id)
+    path = DATA_DIR / f"politicians_{period_id}.csv"
+
+    if not path.exists():
+        df_api.to_csv(path, index=False)
+        log.info("No existing politicians CSV — wrote %d politicians.", len(df_api))
+        return df_api, mandate_to_politician
+
+    df_existing = pd.read_csv(path)
+    df_merged = df_existing.set_index("politician_id")
+    df_merged.update(df_api.set_index("politician_id"))  # update changed name/party
+
+    new_politicians = df_api[
+        ~df_api["politician_id"].isin(df_existing["politician_id"])
+    ]
+    if not new_politicians.empty:
+        df_merged = pd.concat([df_merged, new_politicians.set_index("politician_id")])
+        log.info("%d new politician(s) added.", len(new_politicians))
+    else:
+        log.info("No new politicians.")
+
+    df_merged.reset_index().to_csv(path, index=False)
+    return df_merged.reset_index(), mandate_to_politician
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Fetch/update Bundestag voting data from abgeordnetenwatch.de.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "--period",
+        type=int,
+        default=PARLIAMENT_PERIOD_ID,
+        metavar="INT",
+        help="Legislative period ID",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
+    args = parse_args()
+
     DATA_DIR.mkdir(exist_ok=True)
 
-    df_polls = fetch_polls(PARLIAMENT_PERIOD_ID)
-    df_polls.to_csv(DATA_DIR / f"polls_{PARLIAMENT_PERIOD_ID}.csv", index=False)
+    # Polls and politicians are always fetched (fast metadata endpoints).
+    # Votes are only fetched for polls not yet in the CSV (the slow part).
+    _, new_poll_ids = upsert_polls(args.period)
+    _, mandate_to_politician = upsert_politicians(args.period)
 
-    df_politicians, mandate_to_politician = fetch_politicians(PARLIAMENT_PERIOD_ID)
-    df_politicians.to_csv(
-        DATA_DIR / f"politicians_{PARLIAMENT_PERIOD_ID}.csv", index=False
-    )
+    votes_path = DATA_DIR / f"votes_{args.period}.csv"
+    if not new_poll_ids:
+        log.info("No new polls — skipping vote fetching. All data is up to date.")
+    else:
+        fetch_votes(
+            new_poll_ids,
+            mandate_to_politician,
+            votes_path,
+            append=votes_path.exists(),
+        )
 
-    fetch_votes(
-        df_polls["poll_id"],
-        mandate_to_politician,
-        DATA_DIR / f"votes_{PARLIAMENT_PERIOD_ID}.csv",
-    )
-
-    log.info("Done! All data saved to %s", DATA_DIR)
+    log.info("Done! Data saved to %s", DATA_DIR)
 
 
 if __name__ == "__main__":

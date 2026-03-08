@@ -155,19 +155,59 @@ else:
         margin={"l": 0, "r": 0, "t": 10, "b": 10},
     )
 
+# Search box — find a politician by name (case-insensitive substring match)
+query = st.text_input("Politiker suchen", placeholder="z. B. Scholz")
+search_idx = None
+if query:
+    mask = df["name"].str.contains(query, case=False, na=False)
+    hits = df[mask]
+    if len(hits) == 0:
+        st.caption("Kein Treffer.")
+    elif len(hits) > 1:
+        # Let user pick when multiple names match
+        choice = st.selectbox("Treffer", hits["name"].tolist())
+        search_idx = hits.index[hits["name"] == choice][0]
+    else:
+        search_idx = hits.index[0]
+
+# Highlight searched politician in the 2D chart
+if not is_3d and search_idx is not None:
+    row = df.loc[search_idx]
+    color = color_map.get(row["party"], FALLBACK_COLOR)
+    fig.add_trace(
+        go.Scatter(
+            x=[row["x"]],
+            y=[row["y"]],
+            mode="markers",
+            marker={
+                "size": 18,
+                "color": "rgba(0,0,0,0)",
+                "line": {"width": 3, "color": color},
+                "symbol": "circle",
+            },
+            hovertemplate=f"<b>{row['name']}</b><extra></extra>",
+            showlegend=False,
+        )
+    )
+
 event = st.plotly_chart(
     fig, width="stretch", on_select="rerun", selection_mode="points"
 )
 
-# Nearest neighbors: shown when the user clicks a point in 2D mode
-if not is_3d and event.selection.points:  # ty: ignore[unresolved-attribute]
-    sel = event.selection.points[0]  # ty: ignore[unresolved-attribute]
-    # Identify clicked politician by proximity (robust across trace ordering)
-    dists = (df["x"] - sel["x"]) ** 2 + (df["y"] - sel["y"]) ** 2
-    idx = dists.idxmin()
-    selected = df.loc[idx]
+# Nearest neighbors: shown when user clicks a point or searches a name (2D only)
+active_idx = None
+if not is_3d:
+    if search_idx is not None:
+        active_idx = search_idx
+    elif event.selection.points:  # ty: ignore[unresolved-attribute]
+        sel = event.selection.points[0]  # ty: ignore[unresolved-attribute]
+        dists = (df["x"] - sel["x"]) ** 2 + (df["y"] - sel["y"]) ** 2
+        active_idx = dists.idxmin()
+
+if active_idx is not None:
+    selected = df.loc[active_idx]
     coords = df[["x", "y"]].to_numpy()
-    all_dists = np.linalg.norm(coords - coords[df.index.get_loc(idx)], axis=1)
+    all_dists = np.linalg.norm(coords - coords[df.index.get_loc(active_idx)], axis=1)
     neighbor_idx = df.index[np.argsort(all_dists)[1:6]]
     neighbors = df.loc[neighbor_idx, ["name", "party"]].rename(
         columns={"name": "Name", "party": "Partei"}
@@ -187,6 +227,7 @@ coh = (
     .mean()
     .reset_index(name="streuung")
 )
+coh = coh[coh["party"] != "fraktionslos"]
 coh["label"] = coh["party"].str.replace("\xad", "", regex=False)
 coh = coh.sort_values("streuung")
 fig_coh = px.bar(
@@ -207,3 +248,11 @@ fig_coh.update_traces(
 )
 fig_coh.update_layout(showlegend=False, margin={"l": 0, "r": 0, "t": 0, "b": 0})
 st.plotly_chart(fig_coh, width="stretch")
+
+st.markdown(
+    "<p style='text-align:center; color:#aaa; font-size:12px; margin-top:16px'>"
+    "Daten: <a href='https://www.abgeordnetenwatch.de' style='color:#aaa'>"
+    "abgeordnetenwatch.de</a>"
+    "</p>",
+    unsafe_allow_html=True,
+)

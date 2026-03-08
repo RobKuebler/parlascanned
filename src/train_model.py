@@ -13,6 +13,7 @@ N_FACTORS = 2
 N_EPOCHS = 50
 BATCH_SIZE = 256
 LR = 0.01
+MIN_IMPROVEMENT = 0.01
 
 OUTPUTS_DIR = Path(__file__).parents[1] / "outputs"
 
@@ -49,6 +50,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--lr", type=float, default=LR, metavar="FLOAT", help="Learning rate"
     )
+    parser.add_argument(
+        "--min-improvement",
+        type=float,
+        default=MIN_IMPROVEMENT,
+        metavar="FLOAT",
+        help="Min relative loss improvement per epoch (e.g. 0.01 = 1%%)",
+    )
     return parser.parse_args()
 
 
@@ -71,6 +79,7 @@ def main() -> None:
         n_epochs=args.epochs,
         batch_size=args.batch_size,
         lr=args.lr,
+        min_improvement=args.min_improvement,
     )
     save_embeddings(model, p_df, p_ids, args.period)
 

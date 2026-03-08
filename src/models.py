@@ -30,7 +30,10 @@ class VoteDataset(Dataset):
 
 
 class PoliticianEmbeddingModel(L.LightningModule):
-    """Matrix factorization: dot product of politician and poll embeddings + biases."""
+    """L2-distance model with per-entity biases.
+
+    Biases absorb general yes/no tendencies so the embedding geometry stays clean.
+    """
 
     def __init__(
         self, n_politicians: int, n_polls: int, n_factors: int, lr: float
@@ -44,8 +47,8 @@ class PoliticianEmbeddingModel(L.LightningModule):
         self.criterion = nn.BCEWithLogitsLoss()
 
     def forward(self, p: torch.Tensor, poll: torch.Tensor) -> torch.Tensor:
-        dot = (self.p_embed(p) * self.poll_embed(poll)).sum(dim=1)
-        return dot + self.p_bias(p).squeeze() + self.poll_bias(poll).squeeze()
+        dist = torch.norm(self.p_embed(p) - self.poll_embed(poll), dim=1)
+        return -dist + self.p_bias(p).squeeze() + self.poll_bias(poll).squeeze()
 
     def training_step(self, batch: tuple, _batch_idx: int) -> torch.Tensor:
         p, poll, y = batch
@@ -54,7 +57,34 @@ class PoliticianEmbeddingModel(L.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        return torch.optim.AdamW(self.parameters(), lr=self.lr, weight_decay=1e-5)
+        return torch.optim.Adam(self.parameters(), lr=self.lr)
+
+
+class RelativeEarlyStopping(L.Callback):
+    """Stop when loss improves by less than `min_rel` fraction epoch-over-epoch."""
+
+    def __init__(self, min_rel: float = 0.01) -> None:
+        self.min_rel = min_rel
+        self._prev = float("inf")
+
+    def on_train_epoch_end(
+        self,
+        trainer: L.Trainer,
+        pl_module: L.LightningModule,  # noqa: ARG002
+    ) -> None:
+        loss = trainer.callback_metrics.get("train_loss")
+        if loss is None:
+            return
+        curr = loss.item()
+        if (self._prev - curr) / self._prev < self.min_rel:
+            log.info(
+                "Early stopping: loss improved by less than %.0f%% (%.4f → %.4f).",
+                self.min_rel * 100,
+                self._prev,
+                curr,
+            )
+            trainer.should_stop = True
+        self._prev = curr
 
 
 def load_data(period_id: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -100,13 +130,15 @@ def train(
     n_epochs: int,
     batch_size: int,
     lr: float,
+    min_improvement: float = 0.01,
 ) -> PoliticianEmbeddingModel:
-    """Train for a fixed number of epochs."""
+    """Train for up to n_epochs, with early stopping on relative loss improvement."""
     log.info("Training on %d votes.", len(df))
     train_dl = DataLoader(VoteDataset(df), batch_size=batch_size, shuffle=True)
     model = PoliticianEmbeddingModel(n_politicians, n_polls, n_factors, lr)
     trainer = L.Trainer(
         max_epochs=n_epochs,
+        callbacks=[RelativeEarlyStopping(min_rel=min_improvement)],
         enable_checkpointing=False,
         enable_model_summary=False,
         logger=False,
