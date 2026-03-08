@@ -9,7 +9,7 @@ repos:
 
       - id: ruff-format
         name: ruff-format
-        entry: bash -c 'uv run ruff format "$@" && git add "$@"' --
+        entry: uv run ruff format
         language: system
         types: [python]
 
