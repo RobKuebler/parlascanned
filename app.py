@@ -48,6 +48,11 @@ PARTY_ORDER = [
     "fraktionslos",
 ]
 
+# Design tokens
+COLOR_SECONDARY = "#999"  # labels, secondary info, details summaries
+COLOR_BODY = "#666"  # body text in expanded details, descriptive labels
+MARKER_OUTLINE = "rgba(255,255,255,0.4)"  # outline on all chart markers and bars
+
 st.set_page_config(page_title="Wer stimmt mit wem?", layout="wide")
 
 # Track which interaction happened last: "search" or "click"
@@ -58,12 +63,12 @@ if "prev_selection" not in st.session_state:
 
 # Header
 st.markdown(
-    """
+    f"""
     <div style='text-align:center; padding:32px 0 24px'>
       <h1 style='margin:0; font-size:2rem; letter-spacing:-0.5px'>
         Wer stimmt mit wem?
       </h1>
-      <p style='margin:8px 0 0; color:#999; font-size:0.95rem; max-width:520px; margin-left:auto; margin-right:auto; line-height:1.5'>
+      <p style='margin:8px 0 0; color:{COLOR_SECONDARY}; font-size:0.95rem; max-width:520px; margin-left:auto; margin-right:auto; line-height:1.5'>
         Abstimmungsverhalten aller Abgeordneten als Punkte im Raum.
         Je näher zwei Punkte, desto ähnlicher das Wahlverhalten.
       </p>
@@ -144,7 +149,13 @@ common = {
 if is_3d:
     common["hover_data"]["z"] = False
     fig = px.scatter_3d(df, x="x", y="y", z="z", **common)
-    fig.update_traces(marker={"size": 4, "opacity": 0.82, "line": {"width": 0}})
+    fig.update_traces(
+        marker={
+            "size": 4,
+            "opacity": 0.85,
+            "line": {"width": 1, "color": MARKER_OUTLINE},
+        }
+    )
     fig.update_layout(
         scene={
             "xaxis": {"showticklabels": False, "title": "", "showgrid": False},
@@ -157,10 +168,14 @@ if is_3d:
 else:
     fig = px.scatter(df, x="x", y="y", **common)
     fig.update_traces(
-        marker={"size": 7, "opacity": 0.72, "line": {"width": 0}},
+        marker={
+            "size": 7,
+            "opacity": 0.82,
+            "line": {"width": 1, "color": MARKER_OUTLINE},
+        },
         hovertemplate=(
             "<b>%{customdata[0]}</b><br>"
-            "<span style='color:#999'>%{customdata[1]}</span>"
+            f"<span style='color:{COLOR_SECONDARY}'>%{{customdata[1]}}</span>"
             "<extra></extra>"
         ),
     )
@@ -221,29 +236,35 @@ else:
             "showgrid": False,
             "zeroline": False,
         },
-        plot_bgcolor="#F5F2EC",
+        plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         showlegend=False,
         margin={"l": 0, "r": 0, "t": 16, "b": 16},
     )
 
+
+# Reusable HTML snippet for the collapsible "Wie lese ich das?" details element
+def _info_details(body: str) -> str:
+    return (
+        f"<details style='margin:0 0 12px'>"
+        f"<summary style='cursor:pointer; list-style:none; color:{COLOR_SECONDARY}; font-size:12px'>ℹ Wie lese ich das?</summary>"
+        f"<div style='color:{COLOR_BODY}; font-size:13px; margin-top:6px; line-height:1.6'>{body}</div>"
+        f"</details>"
+    )
+
+
 st.markdown("##### Abstimmungslandkarte")
 st.markdown(
-    """
-    <details style='margin:0 0 12px'>
-      <summary style='cursor:pointer; list-style:none; color:#999; font-size:12px'>ℹ Wie lese ich das?</summary>
-      <div style='color:#666; font-size:13px; margin-top:6px; line-height:1.6; max-width:520px'>
-        Jeder Punkt steht für einen Abgeordneten. Je näher zwei Punkte beieinander
-        liegen, desto ähnlicher haben die beiden abgestimmt.<br><br>
-        Aus allen namentlichen Abstimmungen der Wahlperiode wird für jeden Abgeordneten
-        ein Profil berechnet, das zeigt, wie er oder sie typischerweise abstimmt.
-        Ein KI-Modell verdichtet diese Profile so auf zwei Dimensionen, dass
-        ähnliche Abstimmungsmuster nah beieinander landen.<br><br>
-        Die Achsen selbst haben keine Bedeutung. Nur die relative <b>Nähe</b> der
-        Punkte zueinander zählt. ◆ markiert jeweils den Mittelpunkt einer Fraktion.
-      </div>
-    </details>
-    """,
+    _info_details(
+        "Jeder Punkt steht für einen Abgeordneten. Je näher zwei Punkte beieinander "
+        "liegen, desto ähnlicher haben die beiden abgestimmt.<br><br>"
+        "Aus allen namentlichen Abstimmungen der Wahlperiode wird für jeden Abgeordneten "
+        "ein Profil berechnet, das zeigt, wie er oder sie typischerweise abstimmt. "
+        "Ein KI-Modell verdichtet diese Profile so auf zwei Dimensionen, dass "
+        "ähnliche Abstimmungsmuster nah beieinander landen.<br><br>"
+        "Die Achsen selbst haben keine Bedeutung. Nur die relative <b>Nähe</b> der "
+        "Punkte zueinander zählt. ◆ markiert jeweils den Mittelpunkt einer Fraktion."
+    ),
     unsafe_allow_html=True,
 )
 
@@ -274,16 +295,11 @@ col_neighbors, col_cohesion = st.columns(2, gap="large")
 with col_neighbors:
     st.markdown("##### Ähnlichste Abgeordnete")
     st.markdown(
-        """
-        <details style='margin:0 0 12px'>
-          <summary style='cursor:pointer; list-style:none; color:#999; font-size:12px'>ℹ Wie lese ich das?</summary>
-          <div style='color:#666; font-size:13px; margin-top:6px; line-height:1.6'>
-            Die fünf Abgeordneten mit dem ähnlichsten Abstimmungsverhalten,
-            unabhängig von der Parteizugehörigkeit. Manchmal stimmen Abgeordnete
-            verschiedener Fraktionen häufiger überein als Mitglieder derselben Partei.
-          </div>
-        </details>
-        """,
+        _info_details(
+            "Die fünf Abgeordneten mit dem ähnlichsten Abstimmungsverhalten, "
+            "unabhängig von der Parteizugehörigkeit. Manchmal stimmen Abgeordnete "
+            "verschiedener Fraktionen häufiger überein als Mitglieder derselben Partei."
+        ),
         unsafe_allow_html=True,
     )
     if active_idx is not None:
@@ -296,7 +312,7 @@ with col_neighbors:
         neighbors = df.loc[neighbor_idx]
 
         st.markdown(
-            f"<p style='color:#666; font-size:13px; margin:0 0 12px'>Ähnlichstes Abstimmungsverhalten "
+            f"<p style='color:{COLOR_BODY}; font-size:13px; margin:0 0 12px'>Ähnlichstes Abstimmungsverhalten "
             f"wie <b>{selected['name']}</b>:</p>",
             unsafe_allow_html=True,
         )
@@ -320,7 +336,7 @@ with col_neighbors:
         st.markdown("".join(rows_html), unsafe_allow_html=True)
     else:
         st.markdown(
-            "<p style='color:#999; font-size:14px; margin-top:8px'>"
+            f"<p style='color:{COLOR_SECONDARY}; font-size:14px; margin-top:8px'>"
             "Wähle einen Abgeordneten im Diagramm aus.</p>",
             unsafe_allow_html=True,
         )
@@ -328,17 +344,12 @@ with col_neighbors:
 with col_cohesion:
     st.markdown("##### Fraktionsdisziplin")
     st.markdown(
-        """
-        <details style='margin:0 0 12px'>
-          <summary style='cursor:pointer; list-style:none; color:#999; font-size:12px'>ℹ Wie lese ich das?</summary>
-          <div style='color:#666; font-size:13px; margin-top:6px; line-height:1.6'>
-            Der Balken zeigt, wie weit die Abgeordneten einer Fraktion im Diagramm
-            durchschnittlich vom Fraktionsmittelpunkt entfernt sind.<br><br>
-            <b>Kurzer Balken:</b> Die Fraktion stimmt fast immer geschlossen ab.<br>
-            <b>Langer Balken:</b> Es gibt starke Abweichler.
-          </div>
-        </details>
-        """,
+        _info_details(
+            "Der Balken zeigt, wie weit die Abgeordneten einer Fraktion im Diagramm "
+            "durchschnittlich vom Fraktionsmittelpunkt entfernt sind.<br><br>"
+            "<b>Kurzer Balken:</b> Die Fraktion stimmt fast immer geschlossen ab.<br>"
+            "<b>Langer Balken:</b> Es gibt starke Abweichler."
+        ),
         unsafe_allow_html=True,
     )
 
@@ -361,21 +372,23 @@ with col_cohesion:
         orientation="h",
         color="party",
         color_discrete_map=color_map,
-        labels={"streuung": "Ø Abstand vom Fraktionsmittelpunkt", "label": ""},
+        labels={"streuung": "", "label": ""},
         height=300,
         custom_data=["label", "streuung"],
     )
     fig_coh.update_traces(
         hovertemplate=(
             "<b>%{customdata[0]}</b><br>Ø Abstand: %{customdata[1]:.3f}<extra></extra>"
-        )
+        ),
+        marker_line_width=1,
+        marker_line_color=MARKER_OUTLINE,
     )
     fig_coh.update_layout(
         showlegend=False,
         margin={"l": 0, "r": 0, "t": 0, "b": 0},
         paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="#F5F2EC",
-        xaxis={"showgrid": True, "gridcolor": "#ebebeb", "zeroline": False},
+        plot_bgcolor="rgba(0,0,0,0)",
+        xaxis={"showgrid": False, "zeroline": False, "showticklabels": False},
         yaxis={"showgrid": False},
     )
     st.plotly_chart(fig_coh, width="stretch")
