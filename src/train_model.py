@@ -8,7 +8,7 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 
-PERIOD_ID = 161  # Target legislative period (Bundestag 2025 - 2029)
+PERIOD_ID = None  # None = auto-detect current active Bundestag period
 N_FACTORS = 2
 N_EPOCHS = 50
 BATCH_SIZE = 256
@@ -28,7 +28,7 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=PERIOD_ID,
         metavar="INT",
-        help="Legislative period ID",
+        help="Legislative period ID (default: current active period)",
     )
     parser.add_argument(
         "--factors",
@@ -65,11 +65,13 @@ def main() -> None:
 
     import lightning as L
 
+    from fetch_data import fetch_current_period_id
     from models import load_data, prepare_votes, save_embeddings, train
 
+    period_id = args.period or fetch_current_period_id()
     L.seed_everything(42)
     OUTPUTS_DIR.mkdir(exist_ok=True)
-    df_votes, p_df, poll_df = load_data(args.period)
+    df_votes, p_df, poll_df = load_data(period_id)
     df_votes, p_ids, poll_ids = prepare_votes(df_votes, p_df, poll_df)
     model = train(
         df_votes,
@@ -81,7 +83,7 @@ def main() -> None:
         lr=args.lr,
         min_improvement=args.min_improvement,
     )
-    save_embeddings(model, p_df, p_ids, args.period)
+    save_embeddings(model, p_df, p_ids, period_id)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 import argparse
 import csv
 import logging
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pandas as pd
@@ -14,7 +15,7 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 BASE_URL = "https://www.abgeordnetenwatch.de/api/v2"
-PARLIAMENT_PERIOD_ID = 161  # Bundestag 2025 - 2029 (21st legislative period)
+BUNDESTAG_PARLIAMENT_ID = 5
 PAGE_SIZE = 100
 
 DATA_DIR = Path(__file__).parents[1] / "data"
@@ -37,6 +38,24 @@ def fetch_all_v2(endpoint: str, params: dict | None = None) -> list:
             break
         range_start += PAGE_SIZE
     return all_data
+
+
+def fetch_current_period_id() -> int:
+    """Fetch the ID of the currently active Bundestag legislative period."""
+    periods = fetch_all_v2(
+        "parliament-periods",
+        params={"parliament": BUNDESTAG_PARLIAMENT_ID},
+    )
+    today = datetime.now(tz=UTC).date().isoformat()
+    for p in periods:
+        if (
+            p["type"] == "legislature"
+            and p["start_date_period"] <= today <= p["end_date_period"]
+        ):
+            log.info("Current period: %s (id=%d)", p["label"], p["id"])
+            return p["id"]
+    msg = "No active Bundestag legislative period found."
+    raise RuntimeError(msg)
 
 
 def fetch_polls(period_id: int) -> pd.DataFrame:
@@ -178,24 +197,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--period",
         type=int,
-        default=PARLIAMENT_PERIOD_ID,
+        default=None,
         metavar="INT",
-        help="Legislative period ID",
+        help="Legislative period ID (default: current active period)",
     )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
+    period_id = args.period or fetch_current_period_id()
 
     DATA_DIR.mkdir(exist_ok=True)
 
     # Polls and politicians are always fetched (fast metadata endpoints).
     # Votes are only fetched for polls not yet in the CSV (the slow part).
-    _, new_poll_ids = upsert_polls(args.period)
-    _, mandate_to_politician = upsert_politicians(args.period)
+    _, new_poll_ids = upsert_polls(period_id)
+    _, mandate_to_politician = upsert_politicians(period_id)
 
-    votes_path = DATA_DIR / f"votes_{args.period}.csv"
+    votes_path = DATA_DIR / f"votes_{period_id}.csv"
     if not new_poll_ids:
         log.info("No new polls — skipping vote fetching. All data is up to date.")
     else:
