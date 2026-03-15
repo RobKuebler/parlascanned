@@ -1,3 +1,4 @@
+import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -6,6 +7,10 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+
+# Ensure the pages/ directory is on sys.path so occupation_clusters can be found
+# regardless of the working directory (e.g. on Streamlit Cloud).
+sys.path.insert(0, str(Path(__file__).parent))
 from occupation_clusters import normalize_occupation
 
 DATA_DIR = Path(__file__).parents[1] / "data"
