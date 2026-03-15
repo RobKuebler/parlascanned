@@ -356,6 +356,17 @@ def upsert_politicians(period_id: int) -> tuple[pd.DataFrame, dict]:
         df_merged = df_merged.reset_index()
 
     df_merged.to_csv(path, index=False)
+
+    # Save mandate->politician mapping so upsert_sidejobs can build a cross-period
+    # lookup.
+    mandate_df = pd.DataFrame(
+        [
+            {"mandate_id": k, "politician_id": v}
+            for k, v in mandate_to_politician.items()
+        ]
+    )
+    mandate_df.to_csv(DATA_DIR / str(period_id) / "mandates.csv", index=False)
+
     return df_merged, mandate_to_politician
 
 
@@ -364,17 +375,34 @@ def upsert_sidejobs(period_id: int, mandate_to_politician: dict[int, int]) -> No
 
     The sidejobs API has no parliament_period filter, so we fetch everything
     and keep only entries whose mandate ID maps to a politician in this period.
+    We also load mandates.csv from other periods so politicians who appear in
+    multiple Bundestag sessions are matched via their current-period mandate IDs.
     Overwrites sidejobs.csv on every run so newly disclosed income is captured.
     """
+    # Build a comprehensive mandate->politician mapping: start with this period's
+    # mandates, then add mandate IDs from other periods for the same politicians.
+    politician_ids = set(mandate_to_politician.values())
+    full_m2p: dict[int, int] = dict(mandate_to_politician)
+    for period_dir in DATA_DIR.iterdir():
+        if not period_dir.is_dir():
+            continue
+        mandates_path = period_dir / "mandates.csv"
+        if not mandates_path.exists() or period_dir.name == str(period_id):
+            continue
+        other_df = pd.read_csv(mandates_path)
+        for _, row in other_df.iterrows():
+            if int(row["politician_id"]) in politician_ids:
+                full_m2p[int(row["mandate_id"])] = int(row["politician_id"])
+
     log.info("Fetching sidejobs...")
     raw = fetch_all_v2("sidejobs")
 
     rows = []
     for sj in raw:
-        # Find the first mandate that belongs to this period
+        # Find the first mandate that maps to a politician in this period
         politician_id = None
         for mandate in sj.get("mandates") or []:
-            pid = mandate_to_politician.get(mandate["id"])
+            pid = full_m2p.get(mandate["id"])
             if pid is not None:
                 politician_id = pid
                 break

@@ -1,15 +1,554 @@
 politician_id,job_title,job_title_extra,organization,income_level,income,interval,created,category,topics
+142259,Mitglied des Aufsichtsrates,Einkommen im Jahr 2025,Sozialnetzwerk Arche e.V.,4,16387.0,,1773389304,29230,"Gesellschaftspolitik, soziale Gruppen"
+145984,"Vizepräsident, ehrenamtlich (ab 27.02.2026)",,Südosteuropa-Gesellschaft e.V.,,,,1773313457,29230,Außenpolitik und internationale Beziehungen|Europapolitik und Europäische Union
+146867,Mitglied der Evaluierungskommission für die Vorbereitung einer Entscheidung über den deutschen Bewerber um Olympische und Paralympische Spiele (ab 02.02.2026),,Deutscher Olympischer Sportbund e.V.,,,,1773313120,29230,"Sport, Freizeit und Tourismus|Sport"
+175512,Mitglied des Verwaltungsrates,Einkommen im Jahr 2025,Kreditanstalt für Wiederaufbau (KfW),1,2898.0,,1773312278,29229,"Finanzen|Öffentliche Finanzen, Steuern und Abgaben|Wirtschaft"
+79353,Mitglied des Kuratoriums (ab 18.11.2025),,Stiftung Lesen,,,,1773149583,29230,Bildung und Erziehung|Kultur
+133683,Rechtsanwältin,Mandate 21. Wahlperiode,Rechtsanwältin - freiberuflich,,,,1773149191,29647,Recht
+146806,Beratender Regionalleiter West,Einkommen ab 01.02.2026,VDE Verband der Elektrotechnik Elektronik Informationstechnik e.V.,1,3009.4,1,1773149091,29647,"Wirtschaft|Medien, Kommunikation und Informationstechnik"
+175836,Mitglied des Aufsichtsrates (ab 01.01.2026),,Rhein-Maas Klinikum GmbH,1,2400.0,2,1773148743,29228,Gesundheit
+175464,Stellv. Mitglied des Werksausschusses (ab 25.02.2026),,Sportstättenbetrieb der Stadt Cottbus,,,,1773049329,29228,"Sport, Freizeit und Tourismus"
+78916,"Vorsitzende, ehrenamtlich (ab 17.11.2025)",,Förderverein für die psychosoziale Krebsberatung im Caritasverband Rhein-Sieg e.V.,,,,1773047929,29230,"Gesundheit|Gesellschaftspolitik, soziale Gruppen"
+175416,Mitglied der Regionalvertretung,,Planungsgemeinschaft Rheinhessen-Nahe,,,,1772784842,29229,"Raumordnung, Bau- und Wohnungswesen|Staat und Verwaltung"
+145888,Mitglied des Aufsichtsrates (ab 01.03.2026),,Deutsche Bahn AG,,,,1772621720,29228,Verkehr
+175610,"Mitglied des Präsidiums, ehrenamtlich (ab 23.09.2025)",,Förderkreis Deutsches Heer e.V. (FKH),,,,1772620699,29230,Verteidigung
+79108,"Stellv. Mitglied des Verwaltungsrates, ehrenamtlich (ab 11.02.2026)",,Bundesanstalt für Finanzdienstleistungsaufsicht (BaFin),,,,1772617906,29229,"Öffentliche Finanzen, Steuern und Abgaben|Staat und Verwaltung"
+79108,Mitglied des Aufsichtsrates (ab 17.11.2025),,DB InfraGO AG (vormals DB Netz AG),,642.0,1,1772617616,29228,Verkehr|digitale Infrastruktur
+79214,Mitglied des Verwaltungsrates (bis 15.05.2025),Einkommen im Jahr 2026,KfW Bankengruppe,1,1917.0,,1772616736,29229,Finanzen
+79214,Mitglied des Beirates (ab 10.12.2025),,Deutsche Flugsicherung GmbH,,,,1772616577,29228,Verkehr
+79214,Vorsitzender des Beirates (ab 19.02.2026),,Deutsche Flugsicherung GmbH,,,,1772616511,29228,Verkehr
+118790,Mitglied des Stiftungsrates (ab 10.09.2025),,Deutsche Härtefallstiftung,,,,1772446126,29230,Soziale Sicherung
+118790,Mitglied des Stadtrates,Einkommen im Jahr 2025,Stadt Leipzig,,919.5,,1772446055,29229,Staat und Verwaltung
+79090,"Mitglied des Kuratoriums, von Amts wegen (ab 25.07.2025)",,Deutsche Stiftung für internationale rechtliche Zusammenarbeit e.V. (IRZ),,,,1772444264,29230,Außenpolitik und internationale Beziehungen|Außenwirtschaft|Recht
+79327,"Mitglied des Kuratoriums, ehrenamtlich (ab 01.07.2025)",,Helmut und Loki Schmidt-Stiftung,,,,1772183127,29230,Kultur
+79327,Mitglied des Beirates (ab 15.09.2025),,"1014 Inc., New York",,,,1772182889,29228,Kultur
+146043,Professorin,Einkommen im Jahr 2025,Hochschule Kempten,1,1536.89,,1771941445,29647,Bildung und Erziehung
+146043,Professorin,Einkommen ab 01.12.2025,Hochschule Kempten,1,1983.17,1,1771941366,29647,Bildung und Erziehung
+79334,Vortragstätigkeiten - Gespräch mit Axel Hacke,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1771848304,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Marc-Uwe Kling,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1771848269,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch zum Thema „Blick auf die deutsche Wirtschaft und der globale Vergleich“,Einkommen im Jahr 2025,Synsero Expert GmbH,2,7000.0,,1771848020,29647,Wirtschaft
+79334,Vortragstätigkeiten - Buchvorstellung mit Gespräch mit Hans-Dieter Schütt in Dresden,Einkommen im Jahr 2025,kulturbotschafter EVENTS GbR,2,4077.57,,1771847823,29647,Kultur
+79334,Vortragstätigkeiten - Buchvorstellung mit Gespräch mit Hans-Dieter Schütt in Ludwigsfelde,Einkommen im Jahr 2025,kulturbotschafter EVENTS GbR,1,2458.32,,1771847758,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Hans-Dieter Schütt auf Hiddensee,Einkommen im Jahr 2025,Hiddenseer Hafen- und Kurbetrieb,1,1664.0,,1771847608,29647,Kultur
+79334,Vortragstätigkeit - Vortrag mit Diskussion bei der Veranstaltung „Investmentstrategie 2026 - Europa Quo Vadis?“ des Bankhaus Metzler in Frankfurt am Main,Einkommen im Jahr 2025,Celebrity Speakers Limited,3,8000.0,,1771847463,29647,Medien
+79334,Vortragstätigkeiten - Moderation mit Margot Käßmann in Tübingen,Einkommen im Jahr 2025,ART 28 GmbH & Co. KG,1,2000.0,,1771847230,29647,Kultur
+79234,"Mitglied des Rundfunkrates, von Amts wegen",Einkommen ab 01.01.2026,Deutsche Welle,,546.73,1,1771846551,29229,"Medien, Kommunikation und Informationstechnik|Medien"
+138463,Mitglied des Verwaltungsrates,Einkommen im Jahr 2025,Kreissparkasse Saarpfalz,,990.0,,1771846301,29229,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
+138463,Mitglied des Verwaltungsrates,,Kreissparkasse Saarpfalz,,250.0,1,1771846236,29229,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
+145984,"Vorsitzender des Unterausschusses Internationale Ordnung, Vereinte Nationen und internationale Organisationen, von Amts wegen (ab 04.12.2025)",,Deutsche UNESCO-Kommission e.V.,,,,1771845619,29230,Kultur
+145984,"Mitglied des Aufsichtsrates, ehrenamtlich (ab 15.10.2025)",,Zentrum für Internationale Friedenseinsätze gemeinnützige GmbH (ZIF),,,,1771845580,29228,Verteidigung|Außenpolitik und internationale Beziehungen
+146793,"Mitglied des Rates der Agora Agrar, ehrenamtlich (ab 01.03.2026)",,Agora Think Tanks gemeinnützige GmbH,,,,1771845032,29228,"Wissenschaft, Forschung und Technologie"
+175596,Mitglied des Risiko- und Kreditausschusses,Einkommen im Jahr 2026,Kreditanstalt für Wiederaufbau (KfW),2,6341.0,,1771844895,29229,"Öffentliche Finanzen, Steuern und Abgaben|Wirtschaft|Finanzen"
+175596,Mitglied des Prüfungsauschusses,,Kreditanstalt für Wiederaufbau (KfW),,,,1771844779,29229,"Öffentliche Finanzen, Steuern und Abgaben|Wirtschaft|Finanzen"
+78812,Mitglied des Stadtrates,Einkommen im Jahr 2026,Stadt Bayreuth,,270.0,,1771843662,29229,Staat und Verwaltung
+78913,"Mitglied des Stiftungsrates, ehrenamtlich (ab 04.02.2026)",,Sozialwerk St. Georg Unternehmerverband Westfalen-Süd gemeinnützige GmbH,,,,1771843191,29228,"Gesellschaftspolitik, soziale Gruppen|Soziale Sicherung"
+79097,"Mitglied des Kuratoriums, ehrenamtlich (ab 13.02.2026)",,Stiftung Bürger für Bürger,,,,1771842922,29230,"Gesellschaftspolitik, soziale Gruppen"
+78981,Beteiligung,,Vechtetal Milch Verwaltungs GmbH,,,,1771841780,29231,Wirtschaft
+78981,Beteiligung,,Vechtetal Milch GmbH,,,,1771841675,29231,Umwelt|Landwirtschaft und Ernährung
+78981,Beteiligung,,Vechtetal Immobilien GmbH & Co. KG,,,,1771841571,29231,"Raumordnung, Bau- und Wohnungswesen"
+140944,Mitglied des Aufsichtsrates (ab 01.03.2026),,Deutsche Bahn AG,,,,1771317113,29228,Verkehr
+165158,Mitglied des Stadtrates,Einkommen im Jahr 2025,Stadt Lindau,,590.09,,1771316537,29229,Staat und Verwaltung
+78825,"Rechtsanwalt - Mandant 176, Privatkundenbereich",Einkommen im Jahr 2026,Rechtsanwalt - freiberuflich,1,1139.82,,1771316331,29647,Recht
+145860,Stellv. Mitglied des Kuratoriums (ab 26.01.2026),,Bundeskanzler-Helmut-Schmidt-Stiftung,,,,1771239811,29229,"Politisches Leben, Parteien|Kultur|Bildung und Erziehung"
+145860,Mitglied des Präsidiums (ab 16.10.2025),,Filmförderungsanstalt (FFA),,,,1771239547,29229,Kultur
+145862,Mitglied im Kreis der Herausgeber der „Zeitschrift für Gesetzgebung“ (ab 01.07.2025),,C.F. Müller GmbH,,,,1771238795,29228,Recht
+79468,Mitglied des Stiftungsrates (ab 01.02.2026),,Franz-Beckenbauer-Stiftung,,,,1771237303,29230,"Sport|Gesellschaftspolitik, soziale Gruppen"
+146018,Mitglied des Beirates für sparkassenpolitische Grundsatzfragen (ab 18.11.2025),,Sparkassenverband Bayern,1,2500.0,2,1770978376,29229,"Öffentliche Finanzen, Steuern und Abgaben"
+79336,Stellv. Vorsitzender des Kuratoriums (ab 13.10.2025),,KENFO – Fonds zur Finanzierung der kerntechnischen Entsorgung,,,,1770978140,29229,"Wissenschaft, Forschung und Technologie"
+79336,Mitglied des Aufsichtsrates (ab 25.07.2025) ,Einkommen ab 2026,Volksbank Kraichgau eG,3,9000.0,2,1770978084,29228,Finanzen
+79336,Vertrauensmann bei der Wüstenrot Bausparkasse AG,Einkommen im Jahr 2026,Bundesanstalt für Finanzdienstleistungsaufsicht (BaFin),3,8046.59,,1770977915,29228,"Öffentliche Finanzen, Steuern und Abgaben|Staat und Verwaltung"
+125186,Mitglied des Verwaltungsrates,Einkommen ab 01.01.2026,Sparkasse Kulmbach-Kronach,,730.6,1,1770977642,29229,Finanzen|Wirtschaft
+125186,Mitglied des Aufsichtsrates (ab 01.01.2026),,Toll Collect GmbH,2,4000.0,2,1770977423,29228,Verkehr
+30936,"Vorsitzender des Vorstandes, ehrenamtlich (ab 14.08.2025)",,Deutscher Bibliotheksverband e.V. (dbv),,,,1770976503,29230,Bildung und Erziehung|Kultur
+30936,Beisitzer des Vorstandes (bis 02.06.2025),,Deutsch-Koreanisches Forum e.V.,,,,1770976417,29230,Außenpolitik und internationale Beziehungen
+30936,Mitglied des Aufsichtsrates,Einkommen im Jahr 2025,Lausitz Energie Bergbau AG,1,1190.0,,1770976215,29228,Energie
+30936,Mitglied des Aufsichtsrates,,Lausitz Energie Bergbau AG,3,11900.0,2,1770976123,29228,Energie
+175543,"Vizepräsidentin, ehrenamtlich",,Europa-Union Deutschland e.V.,,,,1770909219,29230,Europapolitik und Europäische Union
+175543,"Vorsitzende der Studiengruppe Europapolitik, ehrenamtlich (ab 13.11.2025)",,Deutsche Gesellschaft für Auswärtige Politik e.V.,,,,1770909155,29230,Außenpolitik und internationale Beziehungen
+175543,"Mitglied des Beirates, ehrenamtlich (ab 05.05.2025)",,Albert-Ludwigs-Universität Freiburg,,,,1770908983,29229,Bildung und Erziehung
+79227,Mitglied des Vorstandes (ab 19.12.2025),,Konrad-Adenauer-Stiftung e.V. (KAS),,,,1770908868,29230,"Politisches Leben, Parteien"
+108738,Mitglied der Regionalversammlung,Einkommen im Jahr 2025,Verband Region Stuttgart,1,3200.0,,1770804947,29229,Staat und Verwaltung|Wirtschaft
+108738,Stellv. Mitglied des Kuratoriums (ab 25.09.2025),,Stiftung Fonds zur Finanzierung der kerntechnischen Entsorgung (KENFO),,,,1770804589,29229,"Wissenschaft, Forschung und Technologie|Energie|Öffentliche Finanzen, Steuern und Abgaben"
+108783,Mitglied des Aufsichtsrates (ab 01.01.2026),,Toll Collect GmbH,2,4000.0,2,1770803964,29228,Verkehr
+145903,Mitglied des Kuratoriums,,Stiftung Verbundenheit mit den Deutschen im Ausland,,,,1770803486,29230,"Gesellschaftspolitik, soziale Gruppen"
+145903,Mitglied des Stiftungsrates (ab 18.09.2025),,Deutsche Härtefallstiftung,,,,1770803414,29230,Soziale Sicherung
+66285,Mitglied des Beirates,,Versicherungsombudsmann e.V.,,,,1770802891,29230,"Öffentliche Finanzen, Steuern und Abgaben|Wirtschaft|Recht"
+66285,Mitglied des Verwaltungsrates,,Bundesanstalt für Finanzdienstleistungsaufsicht (BaFin),,,,1770802855,29229,"Öffentliche Finanzen, Steuern und Abgaben|Staat und Verwaltung"
+66285,Mitglied des Haushaltskontroll- und Prüfungsausschusses,,Bundesanstalt für Finanzdienstleistungsaufsicht (BaFin),,,,1770802742,29229,"Öffentliche Finanzen, Steuern und Abgaben|Staat und Verwaltung"
+66285,"Beratendes Mitglied des Aufsichtsrates, ehrenamtlich (ab 07.04.2025)",,Tauroggen Holding GmbH,,,,1770802666,29228,Finanzen
+79476,Einsatz eines Stipendiaten der Stiftung,Einkommen im Jahr 2025,Wilhelm und Else Heraeus-Stiftung,3,13500.0,,1770802301,29232,"Bildung und Erziehung|Wissenschaft, Forschung und Technologie"
+79476,Mitglied des Parlamentarischen Beirates (ab 08.10.2025),,Deutsches Netzwerk gegen vernachlässigte Tropenkrankheiten e.V. (DNTDs),,,,1770801865,29230,Gesundheit
+79476,Vorsitzender des Parlamentskreises gegen Antimikrobielle Resistenzen (PKAMR) (ab 24.09.2025),,Deutsches Netzwerk gegen Antimikrobielle Resistenzen (DNAMR),,,,1770801784,29230,"Wissenschaft, Forschung und Technologie"
+79476,Mitglied des Beirates,,Deutsche Stiftung Weltbevölkerung (DSW),,,,1770801220,29230,Außenpolitik und internationale Beziehungen|Migration und Aufenthaltsrecht|Entwicklungspolitik
+79476,Mitglied des Senats (ab 23.09.2025),,Deutsche Industrieforschungsgemeinschaft Konrad Zuse e.V.,,,,1770801118,29230,"Wissenschaft, Forschung und Technologie|Wirtschaft"
+79476,Mitglied des Beirates (ab 15.12.2025),,AIF Allianz für Industrie und Forschung e.V.,,,,1770800814,29230,"Wissenschaft, Forschung und Technologie"
+79476,Mitglied des Aufsichtsrates,Einkommen im Jahr 2025,Evangelisches Krankenhaus Oldenburg,1,1500.0,,1770800681,29229,Gesundheit
+146806,Mitglied des Stadtrates,Einkommen im Jahr 2025,Stadt Grevenbroich,,207.0,,1770634236,29229,Staat und Verwaltung
+146806,Mitglied des Stadtrates,Einkommen ab 01.01.2026,Stadt Grevenbroich,1,1920.1,1,1770634177,29229,Staat und Verwaltung
+146806,Mitglied des Stadtrates,Einkommen bis 31.12.2025,Stadt Grevenbroich,1,1773.9,1,1770634068,29229,Staat und Verwaltung
+146806,Beratender Regionalleiter West,Einkommen im Jahr 2025,VDE Verband der Elektrotechnik Elektronik Informationstechnik e.V.,2,5127.85,,1770633534,29647,"Wirtschaft|Medien, Kommunikation und Informationstechnik"
+146806,Beratender Regionalleiter West,Einkommen ab 01.05.2025 bis 31.01.2026,VDE Verband der Elektrotechnik Elektronik Informationstechnik e.V.,1,2955.67,1,1770633351,29647,"Wirtschaft|Medien, Kommunikation und Informationstechnik"
+146806,"Regionalleiter, Rückkehrrecht (Tätigkeit vor der Mitgliedschaft im Deutschen Bundestag)",,VDE Verband der Elektrotechnik Elektronik Informationstechnik e.V.,,,,1770633100,29234,"Wirtschaft|Medien, Kommunikation und Informationstechnik"
+140944,Mitglied des Beirates (ab Dezember 2025),,Deutsche Flugsicherung GmbH,,,,1770371533,29228,Verkehr
+78914,Mitglied des ESPI Advisory Council (ab 26.01.2026),,European Space Policy Institute (ESPI),,,,1770366945,29230,"Wissenschaft, Forschung und Technologie"
+78998,Mitglied im Kammernetzwerk (ab 25.03.2025) ,,Evangelische Kirche in Deutschland (EKD),,,,1770366449,29229,"Gesellschaftspolitik, soziale Gruppen"
+121837,Mitglied des Kreistages,,Landkreis Saalfeld-Rudolstadt,,,,1770202943,29229,Staat und Verwaltung
+136080,Mitglied des Beirates (ab 07.01.2026),,Solbach-Freise-Stiftung für Zivilcourage,,,,1770202724,29230,"Gesellschaftspolitik, soziale Gruppen"
+136080,Beisitzer des Vorstandes (ab 15.10.2025),,Deutsche Vereinigung für Parlamentsfragen e.V.,,,,1770202647,29230,"Staat und Verwaltung|Politisches Leben, Parteien"
+130574,"Mitglied des Hauptausschusses, ehrenamtlich (ab 02.12.2025)",,Deutscher Verein für öffentliche und private Fürsorge e.V.,,,,1770202494,29230,"Gesellschaftspolitik, soziale Gruppen"
+145874,"Rechtsanwalt - Mandant 76, Privatperson",Einkommen im Jahr 2026,Rechtsanwaltskanzlei Marc Henrichmann,1,2489.72,,1770202245,29647,Recht
+175438,Vorsitzender des Vorstandes,,Forum Demokratische Linke 21 e.V.,,,,1770201381,29230,"Politisches Leben, Parteien"
+175438,Mitglied des Rates (bis (05.11.2025),Einkommen im Jahr 2025,Stadt Moers,,221.9,,1770200737,29229,Staat und Verwaltung
 175438,Mitglied des Rates (bis (05.11.2025),Einkommen ab 01.01.2025,Stadt Moers,,395.4,1,1770200694,29229,Staat und Verwaltung
+175438,"Stellv. Mitglied des Aufsichtsrates, von Amts wegen (bis 05.11.2025)",,Wohnungsbau Stadt Moers GmbH,,,,1770200325,29228,"Raumordnung, Bau- und Wohnungswesen"
+175438,"Stellv. Mitglied des Aufsichtsrates, von Amts wegen (bis 05.11.2025)",,Stadtbau Moers GmbH,,,,1770200183,29228,"Raumordnung, Bau- und Wohnungswesen"
+175438,"Stellv. Mitglied des Aufsichtsrates, von Amts wegen (bis 05.11.2025)",,Schlosstheater Moers GmbH,,,,1770200089,29228,Kultur
+175438,Mitglied des Aufsichtsrates (ab 12.11.2025),,Moers Kultur GmbH,,,,1770199963,29228,Kultur
+175438,Rechtsanwalt,Einkommen im Jahr 2025,"TowaRA:Arbeitsrecht, Köln,",2,3570.0,,1770199799,29647,Recht
+79465,Mitglied des Verwaltungsrates (ab 01.01.2026) ,,Kreditanstalt für Wiederaufbau (KfW),,,,1769804991,29229,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
+145877,Mitglied des Beirates (ab Januar 2026) ,,Deutsche Flugsicherung GmbH,,,,1769804663,29228,Verkehr
+175907,Mitglied des Stiftungsrates (ab 01.01.2026) ,,Bundesstiftung Baukultur,,,,1769802853,29229,"Kultur|Raumordnung, Bau- und Wohnungswesen"
+78976,"Stellv. Mitglied des Stiftungsrates, ehrenamtlich (ab 25.09.2025)",,Bundesstiftung Bauakademie,,,,1769802680,29230,"Kultur|Raumordnung, Bau- und Wohnungswesen"
+78976,Mitglied des Aufsichtsrates,Einkommen im Jahr 2025,Siebendächer Baugenossenschaft eG,,89.55,,1769802538,29228,"Raumordnung, Bau- und Wohnungswesen"
+121977,Stellv. Mitglied des Verwaltungsrates (ab 15.01.2026),,Bundesanstalt für Finanzdienstleistungsaufsicht (BaFin),,,,1769802231,29229,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Staat und Verwaltung"
+175522,Mitglied des Politischen Beirates (ab 03.09.2025),,Wirtschaftsforum der SPD e.V.,,,,1769802083,29230,"Wirtschaft|Politisches Leben, Parteien"
+175522,Mitglied des Beirates (ab 09.12.2025) ,,Stiftung Datenschutz,,,,1769802010,29230,"Medien, Kommunikation und Informationstechnik|Digitale Agenda|digitale Infrastruktur"
+32337,Stellv. Mitglied des Beirates des Jobcenters Gera,,Agentur für Arbeit Gera,,,,1769801756,29229,Arbeit und Beschäftigung
+32337,Mitglied des Aufsichtsrates (ab 07.04.2025) ,,Tauroggen Holding GmbH,,,,1769801619,29228,Finanzen
+79116,Mitglied des Politischen Beirates (ab 13.11.2025),Einkommen im Jahr 2025,ROCKWOOL Beteiligungs GmbH,3,9520.0,,1769796716,29228,"Raumordnung, Bau- und Wohnungswesen"
+79391,Mitglied des Kreistages,Einkommen im Jahr 2026,Landkreis Havelland,,30.0,,1769795980,29229,Staat und Verwaltung
+175389,Mitglied des Kreditausschusses,Einkommen im Jahr 2026,Sparkasse Hannover,,300.0,,1769795734,29229,Finanzen
+79237,Vorsitzender,,Verein zur Förderung des Feuerwehrwesens im Hochtaunuskreis,,,,1769795404,29230,"Gesellschaftspolitik, soziale Gruppen"
 29490,"Vorsitzender des Aufsichtsrates, ehrenamtlich",,HAUS & GRUNDEIGENTUM Service GmbH,1,3000.0,,1769795207,29228,Wirtschaft
+29490,"Vorsitzender des Aufsichtsrates, ehrenamtlich",Einkommen im Jahr 2025,HAUS & GRUNDEIGENTUM Medien GmbH,1,1500.0,,1769795079,29228,Medien|Wirtschaft
+79147,Mitglied des Verwaltungsrates (ab 01.01.2026),,Kreditanstalt für Wiederaufbau (KfW),2,6955.0,2,1769794833,29229,"Öffentliche Finanzen, Steuern und Abgaben|Wirtschaft|Finanzen"
+120254,Einsatz von Stipendiaten der Stiftung (Zuwendung fließt direkt an die Stipendiaten),Einkommen im Jahr 2025,Wilhelm und Else Heraeus-Stiftung,4,18000.0,,1769794430,29232,"Bildung und Erziehung|Wissenschaft, Forschung und Technologie"
+175904,Geschäftsführender Gesellschafter,Einkommen im Jahr 2025,Küchen- und Granitvertriebsgesellschaft Schattner mbH,4,16807.0,,1769785711,29647,Wirtschaft
+175904,Geschäftsführender Gesellschafter,Einkommen ab April 2025,Küchen- und Granitvertriebsgesellschaft Schattner mbH,1,2975.0,1,1769785653,29647,Wirtschaft
+175904,Geschäftsführender Gesellschafter,Einkommen bis März 2025,Küchen- und Granitvertriebsgesellschaft Schattner mbH,1,3149.2,1,1769785520,29647,Wirtschaft
 175904,Geschäftsführender Gesellschafter,,Küchen- und Granitvertriebsgesellschaft Schattner mbH,,,,1769785494,29647,Wirtschaft
+175826,"Inhaber - WLS Bio Futter Süd GmbH, Mindelheim",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,4,23532.58,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Wertachtal-Werkstätten gemeinnützige GmbH, Kaufbeuren",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,1135.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Weißenhorner Molkerei GmbH, Weißenhorn",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,1304.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Unser Land GmbH, Esting",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,6,63485.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Ulrike Schlierer, Neu-Ulm",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,2654.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Strausser Hofladen, Gessertshausen-Döpishofen",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,1692.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Schapfenmühle GmbH & Co. KG, Ulm-Jungingen",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,4,17216.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Sabine Friedl, Niederrieden",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,2570.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Rainer Rauh, Kempten",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,1527.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Raiffeisen-Ware Schwaben Allgäu GmbH, Babenhausen",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,2,4311.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Milchoase Butzenhof GbR, Bernstadt",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,3,10917.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Mayers Bio Hofladen GbR, Hirblingen",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,1301.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - M&M Kneißle GbR, Illerkirchberg",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,1092.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Landbäckerei Sinz GmbH, Durach",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,9,198026.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - KORNKREIS Erzeugergemeinschaft GmbH, Giengen an der Brenz",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,9,156404.35,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Johann Ellenrieder, Ustersbach",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,2793.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Fritz Mühlenbäckerei GmbH, Aying",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,6,52644.6,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Feneberg Lebensmittel GmbH, Kempten",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,9,210107.05,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Eva Maria Förg, Kutzenhausen",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,1512.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Edeltraud Strobl Traudl's Backservice, Markt Indersdorf",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,1542.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Butzenhof Bernstadt, Bernstadt",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,3,7833.66,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Biohof Weber, Leipheim",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,1015.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Biohof Gastl, Thierhaupten",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,2040.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Axel Redzich, Uttenweiler",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,2,4102.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Allgäu Fresh Foods GmbH & Co. KG, Kempten",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,3241.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Alfred Pferisch GmbH & Co. KG, Neu-Ulm",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,4,16319.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Alexander Ritter, Emershofen",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,2,6222.0,,1769784332,29647,Landwirtschaft und Ernährung
+175826,"Inhaber - Alexander Baur, Mittelneufnach",Einkommen im Jahr 2025,Engelhardmühle Attenhofen,1,3049.0,,1769784332,29647,Landwirtschaft und Ernährung
+175464,"Beisitzerin des Vorstandes, ehrenamtlich",,Forum Ostdeutschland der Sozialdemokratie e.V.,,,,1769781154,29230,"Gesellschaftspolitik, soziale Gruppen|Politisches Leben, Parteien"
+175464,Mitglied der Stadtverordnetenversammlung,Einkommen im Jahr 2025,Stadt Cottbus,1,2935.0,,1769780920,29229,Staat und Verwaltung
+175437,Mitglied des Politischen Beirates (ab 03.09.2025) ,,Wirtschaftsforum der SPD e.V.,,,,1769704789,29230,"Politisches Leben, Parteien"
+175437,Mitglied des Kreistages,Einkommen im Jahr 2025,Landkreis Lüneburg,,950.0,,1769704419,29229,Staat und Verwaltung
+175437,Mitglied des Beirates (ab 07.11.2025),,Zukunft KlimaSozial ZKS gemeinnützige GmbH,,,,1769704297,29228,Klima|Umwelt|Soziale Sicherung
+123532,Rechtsanwalt - Mandant 35558,Einkommen im Jahr 2025,Komning Rechtsanwälte,1,3470.84,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 35548, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1395.39,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 35545, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,2618.0,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 35459, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1352.44,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 35421, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1134.55,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 35419, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1184.05,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 35395,Einkommen im Jahr 2025,Komning Rechtsanwälte,1,3084.96,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 35352,Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1299.09,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 35266, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1470.36,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 35188,Einkommen im Jahr 2025,Komning Rechtsanwälte,2,5865.85,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 35072,Einkommen im Jahr 2025,Komning Rechtsanwälte,2,5462.77,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 35048, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1076.95,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 35010,Einkommen im Jahr 2025,Komning Rechtsanwälte,4,21913.26,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 34987, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1265.35,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 34966, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,3020.34,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 34857,Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1824.66,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 34728, Baugewerbe",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1501.19,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 34445, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1166.2,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 34432,Einkommen im Jahr 2025,Komning Rechtsanwälte,2,4944.19,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 34094, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,2,4092.17,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 33911, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1384.57,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 33708, Baugewerbe",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,2950.5,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 33228,Einkommen im Jahr 2025,Komning Rechtsanwälte,1,2191.59,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 33063,Einkommen im Jahr 2025,Komning Rechtsanwälte,1,2077.54,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 33016,Einkommen im Jahr 2025,Komning Rechtsanwälte,4,16637.28,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 33010,Einkommen im Jahr 2025,Komning Rechtsanwälte,1,2404.79,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 32769,Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1492.2,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 32714,Einkommen im Jahr 2025,Komning Rechtsanwälte,2,3561.95,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 32701,Einkommen im Jahr 2025,Komning Rechtsanwälte,3,13670.14,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 32638,Einkommen im Jahr 2025,Komning Rechtsanwälte,1,2409.75,,1769690221,29647,Recht
+123532,Rechtsanwalt - Mandant 31697,Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1487.5,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 31555, Gesundheitswesen",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1236.49,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 27701, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,3002.37,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 27025, Gewerbe",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1305.0,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2384, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,3,7502.36,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2364, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,2259.81,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2344, Gesundheitswesen",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,3243.58,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2326, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1563.72,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2304, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,2433.55,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2300, Gesundheitsbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,2,6003.55,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2299, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,2,5408.55,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2266, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,2,4041.84,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2251, Gesundheitsbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,2589.92,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2229, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,2,5777.66,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2227, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1691.83,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2227, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,2,4224.2,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2207, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,2,5081.54,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 2138, Dienstleistungsbranche",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,3326.05,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 20552, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1417.96,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 1987, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,2318.54,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 1922, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,2,4482.49,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 1921, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,3,8117.76,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 1861, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,2,5035.13,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 1772, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,2892.71,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 1741, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,2,3666.09,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 1573, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,2,3734.22,,1769690221,29647,Recht
+123532,"Rechtsanwalt - Mandant 1188, Privatbereich",Einkommen im Jahr 2025,Komning Rechtsanwälte,1,1487.5,,1769690221,29647,Recht
+121794,Beteiligung,,"Sahara Vermögensverwaltung GmbH, Karlsruhe,",,,,1769685901,29231,"Raumordnung, Bau- und Wohnungswesen"
 121794,Beteiligung,,JMV SE & Co. KG,,,,1769685700,29231,Wirtschaft
+121794,Beteiligung,,Andreashof JEREDIN GmbH,,,,1769685103,29231,"Umwelt|Gesellschaftspolitik, soziale Gruppen|Wirtschaft"
+79335,Beteiligung,,Prof. Dr. Ludewig + Sozien GmbH & Co. KG Wirtschaftsprüfungsgesellschaft | Steuerberatungsgesellschaft | Rechtsanwälte,,,,1769674078,29231,Recht|Finanzen
 79335,Präsident,,Steuerberaterkammer Niedersachsen,,,,1769614827,29229,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
+79335,Mitglied des Verwaltungsrates,Einkommen im Jahr 2025,Sparkasse Göttingen,1,2520.0,,1769614629,29229,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
+79335,Mitglied des Verwaltungsrates,,Sparkasse Göttingen,,415.0,1,1769614563,29229,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
+79335,Mitglied des Verwaltungsrates (ab 11.02.2026),,Bundesanstalt für Finanzdienstleistungsaufsicht (BaFin),,,,1769613927,29229,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Staat und Verwaltung"
+79335,"Mitglied des Fachbeirates, ehrenamtlich (ab 15.09.2025)",,NWB Verlag GmbH & Co. KG,,,,1769587816,29647,"Medien, Kommunikation und Informationstechnik"
+79335,Mitglied des Beirates,Einkommen im Jahr 2025,DATEV eG,,450.0,,1769587523,29228,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
+79335,Mitglied des Beirates,,DATEV eG,2,4140.0,2,1769587460,29228,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
 79335,Mitglied des Beirates,,DATEV eG,,,,1769587362,29228,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
+79335,Wirtschaftsprüfer/Steuerberater,,Prof. Dr. Ludewig + Sozien GmbH & Co. KG Wirtschaftsprüfungsgesellschaft | Steuerberatungsgesellschaft | Rechtsanwälte,,,,1769586847,29647,Recht|Finanzen
+79335,Wirtschaftsprüfer/Steuerberater,Mandate 21. Wahlperiode,Prof. Dr. Ludewig + Sozien GmbH & Co. KG Wirtschaftsprüfungsgesellschaft | Steuerberatungsgesellschaft | Rechtsanwälte,,,,1769586667,29647,Recht|Finanzen
+79335,Wirtschaftsprüfer/Steuerberater,Mandate 21. Wahlperiode,Quattek & Partner Steuerberatungsgesellschaft mbB,,,,1769586505,29647,Wirtschaft
+79335,Wirtschaftsprüfer/Steuerberater,Einkommen im Jahr 2025,Quattek & Partner Steuerberatungsgesellschaft mbB,7,79000.0,,1769586426,29647,Wirtschaft
+79335,Wirtschaftsprüfer/Steuerberater,,Quattek & Partner Steuerberatungsgesellschaft mbB,3,8000.0,1,1769586303,29647,Wirtschaft
+79335,Wirtschaftsprüfer/Steuerberater,Einkommen im Jahr 2025,Prof. Dr. Ludewig + Sozien GmbH & Co. KG Wirtschaftsprüfungsgesellschaft | Steuerberatungsgesellschaft | Rechtsanwälte,4,25000.0,,1769585881,29647,Recht|Finanzen
+79335,Wirtschaftsprüfer/Steuerberater,,Prof. Dr. Ludewig + Sozien GmbH & Co. KG Wirtschaftsprüfungsgesellschaft | Steuerberatungsgesellschaft | Rechtsanwälte,3,8500.0,1,1769585603,29647,Recht|Finanzen
+79390,Rechtsanwalt,Mandate 21. Wahlperiode,Rechtsanwalt - freiberuflich,,,,1769584975,29647,Recht
+79390,"Mitglied des Beirates, ehrenamtlich (ab 27.11.2025) ",,Albert-Ludwigs-Universität Freiburg,,,,1769584053,29229,Bildung und Erziehung
+79390,"Beisitzer, ehrenamtlich (ab 03.06.2025)",,Trägerverein Netzwerk Berlin e.V.,,,,1769583719,29230,"Bildung und Erziehung|Gesellschaftspolitik, soziale Gruppen|Jugend|Soziale Sicherung|Politisches Leben, Parteien"
+145877,Mitglied des Kuratoriums (ab Juli 2025),,Soldaten und Veteranen Stiftung (SVS),,,,1769507077,29230,Verteidigung
+145877,Mitglied des Präsidiums (ab 23.09.2025),,Förderkreis Deutsches Heer e.V. (FKH),,,,1769507004,29230,Verteidigung
+119861,Vorsitzender des Aufsichtsrates (ab 18.11.2025),,Universität Witten/Herdecke gemeinnützige GmbH,,,,1769506565,29228,Bildung und Erziehung
+141311,Mitglied des Beirates für sparkassenpolitische Grundsatzfragen (ab 18.11.2025),,Sparkassenverband Bayern,,,,1769505633,29229,Finanzen
+131019,"Präsidentin, ehrenamtlich (ab 16.09.2025)",,Help - Hilfe zur Selbsthilfe e.V.,,,,1769505425,29230,"Gesellschaftspolitik, soziale Gruppen|Soziale Sicherung"
+131019,"Mitglied des Vorstandes, ehrenamtlich (ab 12.12.2025) ",,Friends of the Global Fund Europe,,,,1769505156,29230,Europapolitik und Europäische Union|Gesundheit
+130072,"Mitglied des Direktoriums, ehrenamtlich","Vorsitzender des Direktoriums, ehrenamtlich (ab 05.12.2025)",Gesellschaft für die Verleihung des Internationalen Karlspreises zu Aachen e.V.,,,,1769504411,29230,Kultur
+145863,"Mitglied des Kuratoriums der Edmund-Rehwinkel-Stiftung, von Amts wegen (ab 13.11.2025)",,Landwirtschaftliche Rentenbank,,,,1769500993,29229,"Landwirtschaft und Ernährung|Öffentliche Finanzen, Steuern und Abgaben"
+175596,Mitglied des Kuratoriums (ab 24.09.2025),,Stiftung Fonds zur Finanzierung der kerntechnischen Entsorgung (KENFO),,,,1769500360,29229,"Wissenschaft, Forschung und Technologie|Energie|Öffentliche Finanzen, Steuern und Abgaben"
+175410,Mitglied des Kuratoriums (ab 01.01.2026),,Weizenbaum-Institut e. V.,,,,1769499752,29230,"Medien, Kommunikation und Informationstechnik|Digitale Agenda|digitale Infrastruktur"
+175410,Mitglied des Beirates für sparkassenpolitische Grundsatzfragen (ab 18.11.2025),,Sparkassenverband Bayern,,,,1769499639,29229,Finanzen
+168396,Übernahme Reisekosten,Einnahmen im Jahr 2025,ELNET Deutschland e.V.,1,3427.34,,1769441650,29232,"Gesellschaftspolitik, soziale Gruppen"
+78812,Mitglied des Stiftungsrates (ab 16.12.2025),,Stiftung Wissenschaft und Politik (SWP),,,,1769441321,29230,"Politisches Leben, Parteien|Wissenschaft, Forschung und Technologie"
+31707,Radiologin,Einkommen ab 01.01.2026,MedVZ Medizinisches Versorgungszentrum am Universitätsklinikum Leipzig gemeinnützige GmbH,,740.48,1,1769440803,29647,Gesundheit
+79097,Mitglied des Kuratoriums (ab 05.09.2025),,Marie-Schlei-Verein e.V.,,,,1769440272,29230,"Entwicklungspolitik|Gesellschaftspolitik, soziale Gruppen"
+79097,Mitglied des Kuratoriums (ab 04.11.2025),,Freiheit für die Westsahara e.V.,,,,1769440131,29230,Außenpolitik und internationale Beziehungen
+79021,"Mitglied des Beirates, ehrenamtlich",,Frauenberatungsstelle Krefeld e.V.,,,,1769425055,29230,"Gesellschaftspolitik, soziale Gruppen|Frauen"
+79021,"Mitglied des Vorstandes, ehrenamtlich (ab 10.07.2025)",,Deutsche Stiftung Weltbevölkerung (DSW),,,,1769424799,29230,Staat und Verwaltung
+79021,"Kooptiertes Mitglied des Kuratoriums, ehrenamtlich",,"Stiftung ""Erinnerung, Verantwortung und Zukunft""",,,,1769424635,29229,"Politisches Leben, Parteien"
+78904,Mitglied des Stadtrates,Einkommen im Jahr 2025,Stadt Lichtenfels,1,1171.26,,1769424258,29229,Staat und Verwaltung
+78904,Mitglied des Stadtrates,,Stadt Lichtenfels,,196.92,1,1769424136,29229,Staat und Verwaltung
+79194,Stellv. Mitglied des Kuratoriums (ab 06.11.2025),,Stiftung Deutsches Historisches Museum (DHM),,,,1769418171,29229,Kultur
+79307,"Mitglied des Kuratoriums, ehrenamtlich (ab 10.07.2025)",,Stiftung Forum Recht,,,,1769417889,29229,Recht
+79336,Mitglied des Zukunftsrates,,Verband der Sparda-Banken e.V.,1,2380.0,2,1769416801,29230,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
 79336,Mitglied des Vorstandes,,Institut Mittelstand & Compliance e.V.,,,,1769416705,29230,"Wissenschaft, Forschung und Technologie|Wirtschaft"
+79336,Mitglied des Verwaltungsrates,Einkommen im Jahr 2025,Kreditanstalt für Wiederaufbau (KfW),,400.0,,1769416516,29229,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
+79336,Mitglied des Verwaltungsrates,,Kreditanstalt für Wiederaufbau (KfW),2,5948.0,2,1769416441,29229,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
+79336,Mitglied des Aufsichtsrates (ab 25.07.2025) ,Einkommen bis 2025,Volksbank Kraichgau eG,3,8000.0,2,1769416280,29228,Finanzen
+79336,Stellv. Vorsitzender des Aufsichtsrates (bis 25.07.2025),,Volksbank Kraichgau eG,,,,1769416221,29228,Finanzen
+79336,Vertrauensmann bei der Wüstenrot Bausparkasse AG,,Bundesanstalt für Finanzdienstleistungsaufsicht (BaFin),,,,1769415965,29228,"Öffentliche Finanzen, Steuern und Abgaben|Staat und Verwaltung"
+79336,Rechtsanwalt - Mandate 21. WP,,Gutting Steuerberater und Rechtsanwälte GbR,,,,1769415761,29647,Recht
+79334,Beteiligung,,"Venedey, Dr. Gysi, Höfler Rechtsanwälte in Partnerschaft",,,,1769201787,29231,Recht
 79334,Mitglied des Politischen Beirates,,Bundesverband mittelständische Wirtschaft Unternehmerverband Deutschlands e.V. (BVMW),,,,1769201702,29230,Wirtschaft
+79334,Mitglied des Beirates für gemeinnützige Zwecke,Einkommen im Jahr 2025,Spielbank Berlin GmbH & Co. KG,2,6302.52,,1769201632,29228,Wirtschaft
+79334,Mitglied in der Jury zur Vergabe des Powered by Philip Morris Award,Einkommen im Jahr 2025,Boros GmbH,2,7000.0,,1769201450,29228,"Medien, Kommunikation und Informationstechnik"
+79334,Rechtsanwalt - Mandant 2,Einkommen im Jahr 2025,"Venedey, Dr. Gysi, Höfler Rechtsanwälte in Partnerschaft",1,,,1769201365,29647,Recht
+79334,Vortragstätigkeiten - Gespräch mit Ralf Möller,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,1800.0,,1769201257,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Joe Bausch,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1769201216,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Hazel Brugger,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1769201190,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Matthias Riedl,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1769201157,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Dr. Alexander Stevens,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1769201131,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Angelika Milster,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1769201105,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Jürgen Becker,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1769201074,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Dr. Manfred Lutz,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1769201041,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Florian Martens,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1769200999,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Andrea Kiewel,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1769200968,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Ricarda Lang,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1769200939,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Till Brönner,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1769200910,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Inka Bause,Einkommen im Jahr 2025,Tränenpalast Management GmbH,1,2000.0,,1769200282,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch zu politischen Sichten und Privatleben,Einkommen im Jahr 2025,Theater Regensburg,1,1200.0,,1769200148,29647,Kultur
+79334,Vortragstätigkeiten - Vortrag bei einer Veranstaltung der Stadtbetriebe Siegburg,Einkommen im Jahr 2025,The London Speaker Bureau,1,3000.0,,1769200048,29647,Wirtschaft
+79334,Vortragstätigkeiten - Streitgespräch mit Thomas Gottschalk bei einer Tagung des Maklerverbandes in Berlin,Einkommen im Jahr 2025,"Ring Deutscher Makler, Verband der Immobilienberufe und Hausverwalter (RDM) – Landesverband Berlin & Brandenburg e.V.",2,5000.0,,1769199366,29647,"Raumordnung, Bau- und Wohnungswesen|Wirtschaft"
+79334,Vortragstätigkeiten - Veranstaltung (Gysi gegen Guttenberg),Einkommen im Jahr 2025,Openminds Media GmbH,2,3650.0,,1769199296,29647,Medien
+79334,Vortragstätigkeiten - Veranstaltung (Gysi gegen Guttenberg),Einkommen im Jahr 2025,Openminds Media GmbH,1,3500.0,,1769199276,29647,Medien
+79334,Vortragstätigkeiten - Veranstaltung (Gysi gegen Guttenberg),Einkommen im Jahr 2025,Openminds Media GmbH,1,2000.0,,1769199190,29647,Medien
+79334,Vortragstätigkeiten - Veranstaltung (Gysi gegen Guttenberg),Einkommen im Jahr 2025,Openminds Media GmbH,1,2000.0,,1769199087,29647,Medien
+79334,Vortragstätigkeiten - Gespräch mit Freiherr von und zu Guttenberg in Bremen,Einkommen im Jahr 2025,Openminds Media GmbH,1,1700.0,,1769182931,29647,Medien
+79334,Vortragstätigkeiten - Buchveranstaltung mit Hans-Dieter Schütt in Bitterfeld-Wolfen,Einkommen im Jahr 2025,Mitteldeutsche Verlags- und Druckhaus GmbH,1,1200.0,,1769182853,29647,Medien
+79334,Vortragstätigkeiten - Buchveranstaltung mit Hans-Dieter Schütt in Ballenstedt,Einkommen im Jahr 2025,Mitteldeutsche Verlags- und Druckhaus GmbH,1,1200.0,,1769182729,29647,Medien
+79334,Vortragstätigkeiten - Vortrag bei einer Veranstaltung der Volksbank Pirna in Lohmen,Einkommen im Jahr 2025,MEET Live GmbH,2,6000.0,,1769182660,29647,Finanzen|Wirtschaft
+79334,Vortragstätigkeiten - Vortrag beim Unternehmertag der ICA OPTIC eG in Göhren-Lebbin,Einkommen im Jahr 2025,MEET Live GmbH,2,6000.0,,1769182607,29647,Wirtschaft
+79334,Vortragstätigkeiten - Vortrag bei einer Veranstaltung des Diakonischen Werks Baden-Württemberg,Einkommen im Jahr 2025,MEET Live GmbH,2,6000.0,,1769182519,29647,"Gesellschaftspolitik, soziale Gruppen"
+79334,"Vortragstätigkeiten - Gespräch über Politik, seine Bücher und sein Leben in Bielefeld",Einkommen im Jahr 2025,Lausitz.Live GmbH,1,1500.0,,1769182458,29647,Kultur
+79334,"Vortragstätigkeiten - Gespräch über Politik, seine Bücher und sein Leben in Uelzen",Einkommen im Jahr 2025,Lausitz.Live GmbH,1,1300.0,,1769182420,29647,Kultur
+79334,"Vortragstätigkeiten - Gespräch über Politik, seine Bücher und sein Leben in Bautzen",Einkommen im Jahr 2025,Lausitz.Live GmbH,1,1300.0,,1769182392,29647,Kultur
+79334,"Vortragstätigkeiten - Gespräch über Politik, seine Bücher und sein Leben in Dessau",Einkommen im Jahr 2025,Lausitz.Live GmbH,1,1300.0,,1769182333,29647,Kultur
+79334,Vortragstätigkeiten - Buchvorstellung mit Gespräch mit Hans-Dieter Schütt in Lübeck,Einkommen im Jahr 2025,kulturbotschafter EVENTS GbR,1,3042.24,,1769180817,29647,Kultur
+79334,Vortragstätigkeiten - Buchvorstellung mit Gespräch mit Hans-Dieter Schütt in Erfurt,Einkommen im Jahr 2025,kulturbotschafter EVENTS GbR,2,5500.93,,1769180742,29647,Kultur
+79334,Vortragstätigkeiten - Buchvorstellung mit Gespräch mit Hans-Dieter Schütt in Rostock,Einkommen im Jahr 2025,kulturbotschafter EVENTS GbR,2,4565.42,,1769180675,29647,Kultur
+79334,Vortragstätigkeiten - Buchvorstellung mit Gespräch mit Hans-Dieter Schütt in Bad Zwischenahn,Einkommen im Jahr 2025,kulturbotschafter EVENTS GbR,2,4456.26,,1769180545,29647,Kultur
+79334,"Vortragstätigkeiten - Buchveranstaltung, Buchbesprechung, Pößneck",Einkommen im Jahr 2025,Jahn Event,1,1100.0,,1769180302,29647,Kultur
+79334,"Vortragstätigkeiten - Buchveranstaltung, Buchbesprechung, Bernburg",Einkommen im Jahr 2025,Jahn Event,1,2200.0,,1769180254,29647,Kultur
+79334,"Vortragstätigkeiten - Buchveranstaltung, Buchbesprechung, Greiz",Einkommen im Jahr 2025,Jahn Event,1,1100.0,,1769180209,29647,Kultur
+79334,"Vortragstätigkeiten - Buchveranstaltung, Buchbesprechung, Saalfeld",Einkommen im Jahr 2025,Jahn Event,1,1100.0,,1769180154,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Hans-Dieter Schütt auf Hiddensee,Einkommen im Jahr 2025,Hiddenseer Hafen- und Kurbetrieb,1,1664.0,,1769179886,29647,Kultur
+79334,Vortragstätigkeiten - Moderation mit der Autorin Julie Zeh,Einkommen im Jahr 2025,Erfurter Herbstlese e.V.,1,1200.0,,1769179808,29647,Kultur
+79334,Vortragstätigkeiten - Vortrag mit Diskussion bei einer Veranstaltung der TEAG Thüringen Energie AG im Kraftwerk Jena,Einkommen im Jahr 2025,Econ Referenten-Agentur - Dölle & Gissing GbR,2,6500.0,,1769179736,29647,Energie|Wirtschaft
+79334,Vortragstätigkeiten - Vortrag mit Diskussion bei der Jahrestagung des Verbandes Deutscher Kühlhäuser und Kühllogistikunternehmen e.V. (VDKL) Bonn,Einkommen im Jahr 2025,Econ Referenten-Agentur - Dölle & Gissing GbR,3,7200.0,,1769179636,29647,Verkehr|Wirtschaft
+79334,Vortragstätigkeiten - Vortrag mit Diskussion beim Frühjahrskongress der nfs Netfonds Financial Service GmbH,Einkommen im Jahr 2025,Econ Referenten-Agentur - Dölle & Gissing GbR,2,6500.0,,1769179525,29647,Finanzen|Wirtschaft
+79334,Vortragstätigkeiten - Keynote bei der ARENIT Industrie GmbH aus Hamburg,Einkommen im Jahr 2025,CSA Celebrity Speakers GmbH,3,8000.0,,1769178819,29647,Wirtschaft
+79334,Vortragstätigkeiten - Veranstaltung mit Martin Sonneborn,Einkommen im Jahr 2025,Bürgerhäuser Dreieich,2,4110.95,,1769178617,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Personen der Zeitgeschichte im Bergson Kunstkraftwerk,Einkommen im Jahr 2025,Bergson GmbH,1,3109.9,,1769178490,29647,Kultur
+79334,Vortragstätigkeiten - Moderation mit Bernd Stelter in Köln,Einkommen im Jahr 2025,ART 28 GmbH & Co. KG,1,2000.0,,1769178378,29647,Kultur
+79334,Vortragstätigkeiten - Moderation mit Harald Schmitt in Tübingen,Einkommen im Jahr 2025,ART 28 GmbH & Co. KG,1,2000.0,,1769178342,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Olli Dittrich in Berlin,Einkommen im Jahr 2025,ART 28 GmbH & Co. KG,1,2000.0,,1769178284,29647,Kultur
+79334,Vortragstätigkeiten - Gespräch mit Maren Kroymann in Tübingen,Einkommen im Jahr 2025,ART 28 GmbH & Co. KG,1,2000.0,,1769178197,29647,Kultur
+79334,Vortragstätigkeiten - Vortrag beim Verbandstag der Augenoptiker und Optometristen in Dortmund,Einkommen im Jahr 2025,AOS Augenoptiker Service GmbH,2,5000.0,,1769178005,29647,Gesundheit
+79334,Publizistische Tätigkeit,Einkommen im Jahr 2025,Aufbau Verlag GmbH & Co. KG,3,8000.0,,1769177752,29647,Medien
+175425,Mitglied des Kuratoriums (ab 17.09.2025),,Otto Benecke Stiftung e.V. (OBS),,,,1768994344,29230,"Migration und Aufenthaltsrecht|Gesellschaftspolitik, soziale Gruppen"
+175425,Mitglied des Vorstandes (ab 16.10.2025),,Denkfabrik in der SPD-Bundestagsfraktion,,,,1768994250,29230,"Politisches Leben, Parteien"
+175425,Mitglied des Stiftungsrates (ab 01.11.2025),,Deutsche Stiftung für Engagement und Ehrenamt (DSEE),,,,1768994159,29229,"Gesellschaftspolitik, soziale Gruppen"
+175425,Stellv. Mitglied des Stiftungsrates (ab 30.09.2025),,Bundesstiftung Gleichstellung,,,,1768994115,29229,"Gesellschaftspolitik, soziale Gruppen"
+146801,Mitglied des Beirates (ab 19.11.2025),,EVS EUREGIO Verkehrsschienennetz GmbH,,500.0,1,1768991072,29228,Verkehr
 108738,Mitglied der Regionalversammlung (ab 18.09.2024),Einkommen im Jahr 2025,Verband Region Stuttgart,,1000.0,,1768990329,29229,Staat und Verwaltung|Wirtschaft
 108738,Mitglied der Regionalversammlung (ab 18.09.2024),Einkommen im Jahr 2024,Verband Region Stuttgart,1,1351.8,,1768990161,29229,Staat und Verwaltung|Wirtschaft
+79444,Mitglied des Kuratoriums,Einkommen ab 01.01.2026,Deutsche Bundesstiftung Umwelt (DBU),1,1130.0,1,1768835637,29230,"Umwelt|Gesellschaftspolitik, soziale Gruppen"
+79405,Mitglied des Kuratoriums,Einkommen ab 01.01.2026,Deutsche Bundesstiftung Umwelt (DBU),1,1130.0,1,1768835568,29230,Umwelt
+175394,Vorsitzende des Kreistages,Einkommen im Jahr 2025,Landkreis Leer,,388.0,,1768563755,29229,Staat und Verwaltung
+78825,"Rechtsanwalt - Mandant 161, Privatkundenbereich",Einkommen im Jahr 2025,Rechtsanwalt - freiberuflich,2,3724.66,,1768562528,29647,Recht
+79349,Mitglied des Kuratoriums (ab 01.01.2026),,Aktion Sühnezeichen Friedensdienste e.V.,,,,1768562237,29230,"Gesellschaftspolitik, soziale Gruppen|Außenpolitik und internationale Beziehungen|Verteidigung"
 79389,Mitglied des Aufsichtsrates,Einkommen ab 01.01.2023,Buchstelle LBV GmbH,2,7000.0,2,1768561620,29228,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
+79389,Geschäftsführender Gesellschafter,,Hermann Färber GbR,,750.0,1,1768560994,29647,Landwirtschaft und Ernährung
+168396,Mitglied des Vorstandes,,Netzwerk Berlin e.V.,,,,1768401929,29230,"Gesellschaftspolitik, soziale Gruppen"
+164996,Mitglied des Vorstandes (ab September 2025),,Deutsche Parlamentarische Gesellschaft e.V.,,,,1768401634,29230,"Politisches Leben, Parteien"
+164996,Stellv. Mitglied des Stiftungsrates,,Bundesstiftung Bauakademie,,,,1768401563,29230,"Raumordnung, Bau- und Wohnungswesen"
+78914,"Beisitzer des Vorstandes, ehrenamtlich",,Bürgeraktion PRO Flughafen,,,,1768400924,29230,"Gesellschaftspolitik, soziale Gruppen"
+78914,Mitglied des Stiftungsrates (ab 18.09.2025),,"Stiftung Flucht, Vertreibung, Versöhnung",,,,1768400835,29229,"Gesellschaftspolitik, soziale Gruppen"
+78914,Stellv. Mitglied des Verbandsvorstandes,,Sparkassenzweckverband Nassau,,,,1768400746,29229,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
+78914,Mitglied des Kreisausschusses,,Rheingau-Taunus-Kreis,,,,1768400712,29229,Staat und Verwaltung
+78914,"Mitglied des externen Beirates des Forschungszentrums AZARE (Anwendungszentrum für alle regenerativen Energieformen zur Dekarbonisierung von Verkehr, Gebäuden und Industrie), ehrenamtlich",,Hochschule RheinMain,,,,1768400551,29229,Bildung und Erziehung
+78914,Mitglied des Verwaltungsrates (ab 08.01.2026),,Bundesanstalt für Immobilienaufgaben (BImA),,,,1768400383,29229,"Raumordnung, Bau- und Wohnungswesen"
+79215,"Mitglied des Kuratoriums des Deutschen Studienpreises, ehrenamtlich (ab 10.11.2025)",,Körber-Stiftung,,,,1768399905,29230,Bildung und Erziehung
+146867,Beteiligung,,Restaurant Tomate GmbH,,,,1768399759,29231,Landwirtschaft und Ernährung
+146867,Vorsitzende des Landesverbandes,,"Pro Familia e.V., Landesverband Saarland",,,,1768399178,29230,"Gesellschaftspolitik, soziale Gruppen"
+146867,Mitglied des Vorstandes (bis 24.09.2025),,"Der Paritätische Wohlfahrtsverband, Landesverband Rheinland-Pfalz/Saarland e.V.",,,,1768398875,29230,Soziale Sicherung
+146867,Präsidentin,,Altsaarbrücker Turn- und Sportverein e.V.,,,,1768398787,29230,"Sport, Freizeit und Tourismus"
+146867,Zweite Vorsitzende,,Aldona e.V.,,,,1768398700,29230,"Gesellschaftspolitik, soziale Gruppen|Migration und Aufenthaltsrecht"
+146830,"Mitglied des Mittelstandsbeirates, von Amts wegen (ab 06.05.2025)",,Kreditanstalt für Wiederaufbau (KfW),,,,1768398432,29229,"Öffentliche Finanzen, Steuern und Abgaben|Wirtschaft"
+146830,Mitglied des Stiftungsrates (ab 01.10.2025),,Bundesstiftung zur Aufarbeitung der SED-Diktatur,,,,1768398354,29229,"Staat und Verwaltung|Politisches Leben, Parteien"
+146830,Vorsitzende des Aufsichtsrates (ab 15.07.2025),,Zukunftszentrum für Deutsche Einheit und Europäische Transformation gemeinnützige GmbH,,,,1768398163,29228,"Wissenschaft, Forschung und Technologie|Kultur|Gesellschaftspolitik, soziale Gruppen"
+146793,"Stellv. Mitglied des Stiftungsrates, ehrenamtlich (ab 25.09.2025)",,Bundesstiftung Bauakademie,,,,1768397955,29230,"Kultur|Raumordnung, Bau- und Wohnungswesen"
+146793,"Mitglied des Stiftungsrates, ehrenamtlich (ab 04.11.2025)",,Stiftung Preußischer Kulturbesitz,,,,1768397866,29229,Kultur
+146793,"Stellv. Mitglied des Stiftungsrates, ehrenamtlich (ab 18.09.2025)",,"Stiftung Flucht, Vertreibung, Versöhnung",,,,1768397756,29229,"Gesellschaftspolitik, soziale Gruppen"
+146793,"Stellv. Mitglied des Kuratoriums, ehrenamtlich (ab 06.11.2025)",,Stiftung Deutsches Historisches Museum (DHM),,,,1768397703,29229,Kultur
+146793,"Mitglied des Präsidiums, ehrenamtlich (ab 10.07.2025)",,Deutsches Nationalkomitee für Denkmalschutz (DNK),,,,1768397618,29229,"Kultur|Raumordnung, Bau- und Wohnungswesen"
+146793,"Mitglied des Beirates Green Culture Anlaufstelle, ehrenamtlich (ab 08.10.2025)",,Delta1 gemeinnützige GmbH,,,,1768397550,29228,Umwelt|Wirtschaft
+145921,Mitglied des Aufsichtsrates (bis 31.12.2025),Einkommen im Jahr 2025,Toll Collect GmbH,2,4000.0,,1768392048,29228,Verkehr
+136824,Übernahme Reisekosten,Einkommen im Jahr 2025,ELNET Deutschland e.V.,1,3427.34,,1768391208,29232,"Gesellschaftspolitik, soziale Gruppen"
+140944,Mitglied des Kuratoriums (ab 11.12.2025),,Stiftung Schifffahrtsstandort Deutschland,,,,1768390972,29230,Verkehr|Kultur
+175419,Präsidentin (ab 08.11.2025),,Bundesmusikverband Chor und Orchester e.V.,,,,1768225840,29230,Kultur
+175443,Mitglied des Aufsichtsrates (ab 11.12.2025),,Dortmunder Stadtwerke Holding GmbH,,,,1768225705,29228,Energie|Verkehr
+175443,Mitglied des Aufsichtsrates (ab 11.12.2025),,Dortmunder Stadtwerke AG,,,,1768225317,29228,Verkehr
+175502,Beisitzer im Vorstand (ab 05.11.2025),,Deutsche Atlantische Gesellschaft e.V.,,,,1768225156,29230,"Außenpolitik und internationale Beziehungen|Politisches Leben, Parteien"
+175880,Stellv. Präsident (ab 11.10.2025),,Verband der Reservisten der Deutschen Bundeswehr e.V. (VdRBw),,,,1768224980,29230,"Verteidigung|Gesellschaftspolitik, soziale Gruppen"
+175880,Mitglied des Kuratoriums (ab 25.09.2025),,Bundesstiftung Magnus Hirschfeld,,,,1768224915,29230,"Gesellschaftspolitik, soziale Gruppen|Kultur"
+175880,Mitglied des Stiftungsrates (ab 30.09.2025),,Bundesstiftung Gleichstellung,,,,1768224846,29229,"Gesellschaftspolitik, soziale Gruppen"
+175629,"Mitglied des Beirates für marktoffensive erneuerbare Energien, ehrenamtlich (ab 25.11.2025)",,Deutsche Energie-Agentur GmbH (dena),,,,1768224685,29228,Energie
+78810,Mitglied des Beirates für sparkassenpolitische Grundatzfragen (ab 18.11.2025),Einkommen ab 01.01.2026,Sparkassenverband Bayern,1,2500.0,2,1768216192,29229,"Öffentliche Finanzen, Steuern und Abgaben"
+78810,Mitglied des Beirates für sparkassenpolitische Grundatzfragen (ab 18.11.2025),,Sparkassenverband Bayern,,,,1768216093,29229,"Öffentliche Finanzen, Steuern und Abgaben"
+78810,Mitglied des Stiftungsrates (ab 01.11.2025),,Deutsche Stiftung für Engagement und Ehrenamt (DSEE),,,,1768215948,29229,"Gesellschaftspolitik, soziale Gruppen"
+79468,"Stellv. Vorsitzende des Stiftungsrates, von Amts wegen (ab 06.05.2025)",,Wissenschaftsstiftung Ernst Reuter,,,,1768212605,29230,"Wissenschaft, Forschung und Technologie"
+79468,"Mitglied des Kuratoriums, von Amts wegen (ab 06.05.2025)",,Villa Vigoni e.V.,,,,1768212479,29230,"Wissenschaft, Forschung und Technologie"
+79468,"Mitglied des Senats, von Amts wegen (ab 04.11.2025)",,Max-Planck-Gesellschaft zur Förderung der Wissenschaften e.V.,,,,1768212262,29230,"Wissenschaft, Forschung und Technologie"
+79468,"Mitglied des Senats, von Amts wegen (ab 06.05.2025)",,Leibniz-Gemeinschaft,,,,1768212142,29230,"Wissenschaft, Forschung und Technologie"
+79468,"Vorsitzende des Ausschusses der Zuwendungsgeber, von Amts wegen (ab 06.05.2025)",,Hermann von Helmholtz-Gemeinschaft Deutscher Forschungszentren e.V.,,,,1768211879,29230,"Wissenschaft, Forschung und Technologie"
+79468,"Mitglied des Senats, von Amts wegen (ab 06.05.2025)",,Hermann von Helmholtz-Gemeinschaft Deutscher Forschungszentren e.V.,,,,1768211819,29230,"Wissenschaft, Forschung und Technologie"
+79468,Mitglied des Kuratoriums (ab 27.07.2025),,Gesellschaft der Freunde von Bayreuth e.V.,,,,1768211744,29230,Kultur
+79468,"Mitglied des Kuratoriums, von Amts wegen (ab 06.05.2025)",,Deutsches Studierendenwerk e.V.,,,,1768211360,29230,Bildung und Erziehung
+79468,"Mitglied des Stiftungsrates, von Amts wegen (ab 06.05.2025)",,Alexander-von-Humboldt-Stiftung (AvH),,,,1768211263,29230,Kultur
+79468,"Stell. Vorsitzende, von Amts wegen (ab 16.05.2025)",,Gemeinsame Wissenschaftskonferenz (GWK),,,,1768210973,29229,Wirtschaft
+79468,"Mitglied des Kuratoriums, von Amts wegen (ab 06.05.2025)",,Deutsches Museum von Meisterwerken der Naturwissenschaft und Technik,,,,1768210633,29229,"Kultur|Wissenschaft, Forschung und Technologie"
+79468,Mitglied der Jury „TOP 100-Besten“ (bis 01.07.2025),,Compamedia GmbH,,,,1768210537,29228,Wirtschaft
+78944,Mitglied des Stadtrates,Einkommen im Jahr 2025,Hansestadt Lüneburg,,560.0,,1767955367,29229,Staat und Verwaltung
+79069,Of Counsel,Einkommen ab 01.10.2025,Waigel Rechtsanwälte,2,5500.0,1,1767955122,29647,Recht
+79116,Mitglied des Kundenbeirates,Einkommen im Jahr 2025,Minol Messtechnik W. Lehmann GmbH & Co. KG,1,2380.0,,1767954571,29228,Energie|Wirtschaft
+78958,Mitglied des Stiftungsrates (ab 18.09.2025),,Bundesstiftung Gleichstellung,,,,1767954251,29229,"Gesellschaftspolitik, soziale Gruppen"
+79134,"Mitglied des Vorstandes, ehrenamtlich (ab 10.10.2025)",,Verein zur Förderung der Ziele des Bundes der Vertriebenen e.V.,,,,1767953845,29230,"Gesellschaftspolitik, soziale Gruppen"
+79134,"Mitglied des Präsidiums, ehrenamtlich (ab 12.10.2025)",,Sudetendeutscher Rat e.V.,,,,1767953740,29230,"Gesellschaftspolitik, soziale Gruppen"
+79134,"Mitglied des Beirates, ehrenamtlich (ab 13.11.2025)",,Stiftung Datenschutz,,,,1767953657,29230,"Medien, Kommunikation und Informationstechnik"
+79134,"Mitglied des Kuratoriums, ehrenamtlich (ab 11.11.2025)",,Kulturstiftung der deutschen Vertriebenen für Wissenschaft und Forschung,,,,1767953466,29230,"Wissenschaft, Forschung und Technologie"
+79134,"Kooptiertes Mitglied des Vorstandes, ehrenamtlich (ab 25.09.2025)",,Gesellschaft zum Studium strukturpolitischer Fragen e.V.,,,,1767953374,29230,"Gesellschaftspolitik, soziale Gruppen"
+79134,"Präsident, ehrenamtlich (ab 10.10.2025)",,Bund der Vertriebenen (BdV),,,,1767953234,29230,"Gesellschaftspolitik, soziale Gruppen"
+79134,Mitglied des Kuratoriums (ab 06.11.2025),,Stiftung Deutsches Historisches Museum (DHM),,,,1767953091,29229,Kultur
+79226,"Mitglied des Beirates, ehrenamtlich (ab 26.11.2025)",,"Jacques Delors Centre (Hertie School) - Berlin, gemeinnützige GmbH",,,,1767951323,29228,Bildung und Erziehung
+79277,"Vorsitzender des Beirates, ehrenamtlich (ab 29.11.2025)",,cnetz - Verein für Netzpolitik e.V.,,,,1767951134,29230,"Gesellschaftspolitik, soziale Gruppen|Medien, Kommunikation und Informationstechnik|Digitale Agenda|Politisches Leben, Parteien"
+79480,"Mitglied des Senats, ehrenamtlich (ab 01.01.2026)",,Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V.,,,,1767948354,29230,"Wissenschaft, Forschung und Technologie"
+28896,Mitglied des Aufsichtsrates (ab 14.11.2025) ,Einkommen ab 01.01.2026,Die Autobahn GmbH des Bundes,2,5000.0,2,1767102097,29228,Verkehr|Staat und Verwaltung
+28896,"Mitglied des Aufsichtsrates, ehrenamtlich (ab 02.09.2025)",,Deutsche Gesellschaft für Internationale Zusammenarbeit (GIZ) GmbH,,,,1767101999,29228,Außenpolitik und internationale Beziehungen|Außenwirtschaft|Entwicklungspolitik
+79397,"Mitglied des gemeinsamen Kuratoriums des Max-Planck-Instituts für Biologie, des Max-Planck-Instituts für biologische Kybernetik und des Friedrich-Miescher-Laboratoriums für biologische Arbeitsgruppen Tübingen, ehrenamtlich (ab 03.11.2025)",,Max-Planck-Gesellschaft zur Förderung der Wissenschaften e.V.,,,,1767101803,29230,"Wissenschaft, Forschung und Technologie"
+79397,Mitglied des Aufsichtsrates (ab 14.11.2025),Einkommen ab 01.01.2026,DB InfraGO AG (vormals DB Netz AG),2,7000.0,2,1767101302,29228,"Verkehr|digitale Infrastruktur|Medien, Kommunikation und Informationstechnik"
+79332,Mitglied des Deutschen Forstzertifizierungsrates (DFZR) (ab 02.07.2025),,PEFC Deutschland e.V.,,,,1766491305,29230,Landwirtschaft und Ernährung
+79332,Sprecher der Plattform Forst und Holz (ab 09.07.2025),,Der Deutsche Forstwirtschaftsrat (DFWR) e.V.,,,,1766491133,29230,Landwirtschaft und Ernährung
+79332,Präsident (ab 17.06.2025),Einkommen ab Januar 2026,Der Deutsche Forstwirtschaftsrat (DFWR) e.V.,3,14000.0,2,1766490906,29230,Landwirtschaft und Ernährung
+79332,Präsident (ab 17.06.2025),Einkommen im Jahr 2025,Der Deutsche Forstwirtschaftsrat (DFWR) e.V.,2,7000.0,,1766490653,29230,Landwirtschaft und Ernährung
+79332,"Mitglied der Gesellschafterversammlung, ehrenamtlich",,Energieverbund Marienmünster Verwaltungs GmbH,,,,1766487988,29228,Energie|Wirtschaft
+79332,"Mitglied der Gesellschafterversammlung, ehrenamtlich",,Energieverbund Marienmünster GmbH & Co.KG,,,,1766487853,29228,Energie|Wirtschaft
+175876,Mitglied des Beirates (ab 07.10.2025),,DEval - Deutsches Evaluierungsinstitut der Entwicklungszusammenarbeit gemeinnützige GmbH,,,,1766421701,29228,"Außenpolitik und internationale Beziehungen|Außenwirtschaft|Entwicklungspolitik|Wissenschaft, Forschung und Technologie"
+175876,Mitglied des Kuratoriums (ab 01.10.2025),,Deutsche Gesellschaft für Internationale Zusammenarbeit (GIZ) GmbH,,,,1766421586,29228,Außenpolitik und internationale Beziehungen|Außenwirtschaft|Entwicklungspolitik
+175876,Selbstständiger Dozent,,freiberuflich,,,,1766421473,29647,Bildung und Erziehung
+175867,Mitglied des Stiftungsrates (ab 22.07.2025),,Stiftung Unabhängige Patientenberatung Deutschland (UPD),,,,1766420958,29230,Gesundheit
+175867,Rechtsanwältin,,Rechtsanwältin,,,,1766420815,29647,Recht
+78821,"Mitglied des Kuratoriums, ehrenamtlich, von Amts wegen",,Deutsche Bundesstiftung Umwelt (DBU),,,,1766419572,29230,"Gesellschaftspolitik, soziale Gruppen|Umwelt"
+78821,Mitglied des Kuratoriums,Einkommen bis 05.05.2025,Deutsche Bundesstiftung Umwelt (DBU),1,1100.0,1,1766419498,29230,"Gesellschaftspolitik, soziale Gruppen|Umwelt"
+78821,"Vorsitzender des Meeresnaturschutzausschusses, ehrenamtlich",,DBU Naturerbe GmbH,,,,1766419288,29228,Umwelt
 78821,"Mitglied des Beirates und des Wirtschaftsausschusses, ehrenamtlich",,DBU Naturerbe GmbH,,,,1766419255,29228,Umwelt
+145755,Mitglied des Kreistages,,Landkreis Görlitz,,,,1765975001,29229,Staat und Verwaltung
+175436,Übernahme Reisekosten,Einkommen im Jahr 2025,Körber-Stiftung,2,6743.0,,1765974744,29232,Bildung und Erziehung
+136025,Vorsitzende des Kreistages,Einkommen im Jahr 2025,Landkreis Northeim,,150.0,,1765974247,29229,Staat und Verwaltung
+130480,Mitglied des Städteregionstages (bis 06.11.2025),Einkommen im Jahr 2025,StädteRegion Aachen,,100.92,,1765974017,29229,Staat und Verwaltung
+79404,"Mitglied des Rates, ehrenamtlich (ab 31.10.2025)",,Agora Digitale Transformation gemeinnützige GmbH,,,,1765973468,29228,Digitale Agenda
+79405,Einsatz eines Stipendiaten der Stiftung im Zeitraum 01.09.2025 bis 31.01.2026 (Zuwendung fließt direkt an den Stipendiaten),Einkommen im Jahr 2025,Wilhelm und Else Heraeus-Stiftung,4,18000.0,,1765973197,29232,"Bildung und Erziehung|Wissenschaft, Forschung und Technologie"
+175596,Mitglied des politischen Beirates,,Wirtschaftsvereinigung der Grünen e.V.,,,,1765530720,29230,Wirtschaft
+175596,Mitglied des Beirates,,Forum Ökologisch-Soziale Marktwirtschaft e.V. (FÖS),,,,1765530553,29230,Wirtschaft
+175596,Mitglied des Politischen Beirates,,Berliner Steuergespräche e.V.,,,,1765530326,29230,"Öffentliche Finanzen, Steuern und Abgaben"
+175596,Mitglied des Verwaltungsrates,,Kreditanstalt für Wiederaufbau (KfW),,,,1765530264,29229,"Öffentliche Finanzen, Steuern und Abgaben|Wirtschaft|Finanzen"
+175596,Mitglied des Beirates „Making Sustainable Finance Work in Germany“ (ab 25.05.2025),,Climate & Company – The Berlin Institute for Climate Training and Research gemeinnützige GmbH,,,,1765530125,29228,Klima
+78825,"Rechtsanwalt - Mandant 175, Privatkundenbereich",Einkommen im Jahr 2025,Rechtsanwalt - freiberuflich,1,3333.24,,1765529760,29647,Recht
+78825,"Rechtsanwalt - Mandant 174, Privatkundenbereich",Einkommen im Jahr 2025,Rechtsanwalt - freiberuflich,1,2731.21,,1765529719,29647,Recht
+78825,"Rechtsanwalt - Mandant 127, Privatkundenbereich",Einkommen im Jahr 2025,Rechtsanwalt - freiberuflich,1,1936.85,,1765529581,29647,Recht
+79364,Mitglied des Aufsichtsrates (bis 11.07.2025),Einkommen im Jahr 2025,DB InfraGO AG (vormals DB Netz AG),3,8014.0,,1765529130,29228,Verkehr
+130691,Mitglied des Kuratoriums (bis 23.01.2026),,Otto Benecke Stiftung e.V. (OBS),,,,1765377211,29230,"Migration und Aufenthaltsrecht|Gesellschaftspolitik, soziale Gruppen"
+130691,"Mitglied des Kuratoriums, von Amts wegen (ab 22.07.2025)",,Internationale Journalisten-Programme e.V. (IJP),,,,1765377058,29230,"Bildung und Erziehung|Medien, Kommunikation und Informationstechnik"
+130691,Mitglied des Präsidiums (ab 16.09.2025),,Help - Hilfe zur Selbsthilfe e.V.,,,,1765376307,29230,"Gesellschaftspolitik, soziale Gruppen|Soziale Sicherung"
+130691,Mitglied des Präsidiums,,Förderverein Universität Duisburg-Essen e.V.,,,,1765376186,29230,"Bildung und Erziehung|Wissenschaft, Forschung und Technologie"
+130691,Mitglied des Senats,,Deutsche Nationalstiftung,,,,1765376095,29230,Kultur
+130691,"Mitglied des Kuratoriums, von Amts wegen (ab 30.07.2025)",,Deutsch-Israelisches Zukunftsforum (DIZF),,,,1765376000,29230,Außenpolitik und internationale Beziehungen
+130691,"Mitglied des Stiftungsrates, von Amts wegen (ab 15.09.2025)",,"Stiftung Flucht, Vertreibung, Versöhnung",,,,1765375704,29229,"Gesellschaftspolitik, soziale Gruppen"
+130691,"Mitglied des Komitees, von Amts wegen (ab 16.10.2025)",,Deutsches Nationalkomitee für Denkmalschutz (DNK),,,,1765375517,29229,Kultur
+130691,Mitglied des Rundfunkrates (ab 04.06.2025),,Deutsche Welle,,,,1765375443,29229,"Medien, Kommunikation und Informationstechnik"
+138463,Mitglied des Beirates (ab 25.06.2025),,Siebenpfeiffer Stiftung,,,,1765375063,29230,"Politisches Leben, Parteien"
+138463,Mitglied des Kreistages und Kreisbeigeordneter,Einkommen im Jahr 2025,Saarpfalz Kreis,1,2640.0,,1765374744,29229,Staat und Verwaltung
+138463,Mitglied des Kreistages und Kreisbeigeordneter,,Saarpfalz Kreis,,550.0,1,1765374624,29229,Staat und Verwaltung
 31221,Beteiligung,,Trade Point Mobil GmbH (haftungsbeschränkt),,,,1765364574,29231,Wirtschaft
+79097,"Mitglied des Vorstandes, ehrenamtlich (ab 28.11.2025)",,Lebenshilfe Landesverband Hamburg e.V.,,,,1765364421,29230,"Gesellschaftspolitik, soziale Gruppen|Soziale Sicherung"
+138463,Mitglied des Aufsichtsrates (ab 01.09.2025),,Baugenossenschaft Saarland eG,,,,1765363985,29228,"Raumordnung, Bau- und Wohnungswesen"
+175476,"Stellv. Vorsitzende des Verwaltungsrates, ehrenamtlich",,Zentrum für Europäischen Verbraucherschutz e.V.,,,,1765298097,29230,Recht|Europapolitik und Europäische Union|Verbraucherschutz
+175476,"Mitglied des Verwaltungsrates, ehrenamtlich",,Zentrum für Europäischen Verbraucherschutz e.V.,,,,1765298045,29230,Recht|Europapolitik und Europäische Union|Verbraucherschutz
+175476,"Mitglied des Vorstandes, ehrenamtlich (ab 03.06.2025)",,Trägerverein Netzwerk Berlin e.V.,,,,1765297974,29230,"Bildung und Erziehung|Gesellschaftspolitik, soziale Gruppen|Jugend"
+78812,Mitglied des Stadtrates,Einkommen ab September 2025,Stadt Bayreuth,,899.0,1,1765296758,29229,Staat und Verwaltung
+175394,Mitglied des Politischen Beirates (ab 01.09.2025),,Wirtschaftsforum der SPD e.V.,,,,1764939499,29230,"Politisches Leben, Parteien|Wirtschaft"
+175394,Mitglied der Gesellschafterversammlung,,Klinikum Leer gemeinnützige GmbH,,,,1764939273,29228,Gesundheit
+175394,Mitglied des Aufsichtsrates (ab 06.11.2025),Einkommen im Jahr 2025,DB InfraGO (vormals DB Station&Service AG),1,1935.52,,1764939099,29228,Verkehr
+175394,Mitglied des Aufsichtsrates (bis 11.07.2025),,DB InfraGO (vormals DB Station&Service AG),,,,1764938968,29228,Verkehr
+139271,Mitglied des Kuratoriums des Amateurmusikfonds (bis 15.06.2025),,Amateurmusikfonds beim Bundesmusikverband Chor und Orchester e.V.,,,,1764938211,29230,Kultur
+145863,"Mitglied des Fachausschusses, von Amts wegen (ab 24.06.2025)",,Landwirtschaftliche Rentenbank,,,,1764937829,29229,"Landwirtschaft und Ernährung|Öffentliche Finanzen, Steuern und Abgaben"
+145863,"Mitglied des Risikoausschusses, von Amts wegen (ab 24.06.2025)",,Landwirtschaftliche Rentenbank,,,,1764937804,29229,"Landwirtschaft und Ernährung|Öffentliche Finanzen, Steuern und Abgaben"
+145863,"Mitglied des Prüfungsauschusses, von Amts wegen (ab 24.06.2025)",,Landwirtschaftliche Rentenbank,,,,1764937779,29229,"Landwirtschaft und Ernährung|Öffentliche Finanzen, Steuern und Abgaben"
+145863,"Mitglied des Verwaltungsrates, von Amts wegen (ab 24.06.2025)",,Landwirtschaftliche Rentenbank,,,,1764937698,29229,"Landwirtschaft und Ernährung|Öffentliche Finanzen, Steuern und Abgaben"
+175512,Mitglied des Vorstandes (bis 03.06.2025),,Trägerverein Netzwerk Berlin e.V.,,,,1764936746,29230,"Bildung und Erziehung|Gesellschaftspolitik, soziale Gruppen|Soziale Sicherung|Politisches Leben, Parteien"
 175512,Mitglied des Verwaltungsrates (bis Mai 2025),,Kreditanstalt für Wiederaufbau (KfW),,,,1764936627,29229,"Finanzen|Öffentliche Finanzen, Steuern und Abgaben|Wirtschaft"
+175512,Geschäftsführende Gesellschafterin (bis 01.07.2025),,Hubertz Beteiligungen GmbH,,,,1764936165,29647,Wirtschaft
+175869,Beteiligung,,DREBERIS GmbH,,,,1764933173,29231,Wirtschaft|Außenwirtschaft
+175869,Vorsitzender des Vorstandes,,DREBERIS Sp. z o.o.,,,,1764933082,29228,Wirtschaft|Außenwirtschaft
+175869,Prokurist/Senior Expert,,DREBERIS GmbH,,592.75,1,1764932914,29647,Wirtschaft|Außenwirtschaft
+31274,Mitglied des Verwaltungsrates,Einkommen im Jahr 2025,Erzgebirgssparkasse,,714.0,,1764932540,29229,Finanzen|Wirtschaft
+175486,"Mitglied des Verwaltungsrates, von Amts wegen (ab 06.05.2025)",,Kreditanstalt für Wiederaufbau (KfW),,,,1764864179,29229,"Öffentliche Finanzen, Steuern und Abgaben|Wirtschaft|Finanzen"
+145898,Mitglied des Allgemeinen Rates (ab 20.11.2025),,Katholische Akademie in Bayern,,,,1764844344,29230,Bildung und Erziehung
+145876,"Sachkundiger Bürger, ehrenamtlich (ab 17.11.2025)",,Kreis Minden-Lübbecke,,,,1764844279,29229,"Staat und Verwaltung|Politisches Leben, Parteien"
+133683,"Mitglied des Verwaltungsrates, ehrenamtlich (ab 01.09.2025)",,Bundesanstalt für Immobilienaufgaben (BImA),,,,1764844063,29229,"Raumordnung, Bau- und Wohnungswesen"
+133683,"Mitglied des Verwaltungsrates, ehrenamtlich (ab 15.09.2025)",,Bundesanstalt für Finanzdienstleistungsaufsicht (BaFin),,,,1764843851,29229,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Staat und Verwaltung"
+133683,"Vizepräsidentin, ehrenamtlich (ab 15.11.2025)",,Bayerisches Rotes Kreuz,,,,1764843783,29229,Gesundheit
+121017,"Mitglied des Beirats, ehrenamtlich",,Stiftung Schifffahrtsstandort Deutschland,,,,1764772904,29230,Verkehr|Kultur
+145948,"Stellv. Mitglied des Kuratoriums, von Amts wegen (ab Juli 2025)",,Stiftung Haus der Geschichte der Bundesrepublik Deutschland,,,,1764771748,29230,Kultur
+145948,"Mitglied des Fachausschusses Kultur, von Amts wegen (ab Juli 2025)",,Deutsche UNESCO-Kommission e.V.,,,,1764771682,29230,Kultur
+146856,Stellv. Präsidentin (ab 21.11.2025),,Deutsches Rotes Kreuz Kreisverband Böblingen e.V.,,,,1764771405,29230,"Gesundheit|Gesellschaftspolitik, soziale Gruppen|Soziale Sicherung"
+146856,Mitglied des Aufsichtsrates (ab 19.11.2025),,Deutscher Paritätischer Wohlfahrtsverband Baden-Württemberg e.V.,,,,1764771301,29230,"Gesellschaftspolitik, soziale Gruppen"
+175389,Mitglied des Stiftungsrates (ab 29.09.2025),,Stiftung Wissenschaft und Politik (SWP),,,,1764771077,29230,"Wissenschaft, Forschung und Technologie|Politisches Leben, Parteien"
+175389,"Mitglied des Kuratoriums, ehrenamtlich (ab 16.09.2025)",,Internationale Journalisten-Programme e.V. (IJP),,,,1764770992,29230,"Medien, Kommunikation und Informationstechnik|Bildung und Erziehung"
+175389,Vorsitzender des Ortsvereins Nord-Ost Hannover (ab 17.05.2025),,Deutsches Rotes Kreuz Region Hannover e.V.,,,,1764770906,29230,"Gesellschaftspolitik, soziale Gruppen"
+175389,Mitglied des Präsidiums (ab 18.09.2025),,Deutsche Gesellschaft für Auswärtige Politik e.V.,,,,1764770799,29230,Außenpolitik und internationale Beziehungen
+175389,Mitglied des Kreditausschusses,Einkommen im Jahr 2025,Sparkasse Hannover,1,1200.0,,1764770740,29229,Finanzen
+175389,Mitglied des Kreditausschusses,,Sparkasse Hannover,,250.0,1,1764770668,29229,Finanzen
+175826,Stellv. Mitglied des Kuratoriums (ab 25.09.2025),,Stiftung Fonds zur Finanzierung der kerntechnischen Entsorgung (KENFO),,,,1764769359,29229,"Wissenschaft, Forschung und Technologie|Energie|Öffentliche Finanzen, Steuern und Abgaben"
+175826,Gewerbetreibender in der Forstwirtschaft,,Gewerbetreibender - selbstständig,,,,1764769159,29647,Landwirtschaft und Ernährung
+175916,Mitglied des Kreistages,,Landkreis Leipzig Land,,,,1764767185,29229,Staat und Verwaltung
+79326,Vorsitzender (ab 21.11.2025),,Die Bundeswehr Hilft Kindern Weltweit e.V.,,,,1764761648,29230,"Gesellschaftspolitik, soziale Gruppen"
+146839,"Mitglied des Politischen Beirates, ehrenamtlich (ab 03.09.2025)",,Wirtschaftsforum der SPD e.V.,,,,1764583419,29230,"Wirtschaft|Politisches Leben, Parteien"
+146839,"Stellv. Vorsitzender, ehrenamtlich (ab 20.11.2025)",,Wirtschaftsclub der BayernSPD e.V.,,,,1764583297,29230,"Wirtschaft|Politisches Leben, Parteien"
+146839,"Beisitzer im Präsidium, ehrenamtlich (ab 16.07.2025)",,DMB Mieterverein München e.V.,,,,1764583106,29230,"Raumordnung, Bau- und Wohnungswesen"
+145817,Beteiligung,,SUSA-Vertriebs-GmbH + Co,,,,1764321405,29231,Wirtschaft
+145817,"Mitglied des Kuratoriums, ehrenamtlich",,Stiftung Fonds zur Finanzierung der kerntechnischen Entsorgung (KENFO),,,,1764321266,29229,"Wissenschaft, Forschung und Technologie|Energie|Öffentliche Finanzen, Steuern und Abgaben"
+78838,"Mitglied des Kuratoriums, ehrenamtlich",,Historische Stadt- und Wallraf-Bibliothek,,,,1764320224,29229,Kultur
+79146,"Mitglied des Aufsichtsrates, ehrenamtlich, von Amts wegen (ab 11.11.2025)",,Zentrum für Internationale Friedenseinsätze gemeinnützige GmbH (ZIF),,,,1764319884,29228,Verteidigung|Außenpolitik und internationale Beziehungen
+79237,"Erster Vorsitzender, ehrenamtlich",,Landakademie Weilrod e.V.,,,,1764319735,29230,Bildung und Erziehung
+79237,"Beisitzer des Vorstandes, ehrenamtlich (ab 12.11.2025)",,Deutsche Afrika Stiftung e.V.,,,,1764319600,29230,Außenpolitik und internationale Beziehungen|Entwicklungspolitik|Migration und Aufenthaltsrecht|Außenwirtschaft
+79237,"Stellv. Vorsitzender des Aufsichtsrates, ehrenamtlich (ab 11.11.2025)",,Zentrum für Internationale Friedenseinsätze gemeinnützige GmbH (ZIF),,,,1764319515,29228,Verteidigung|Außenpolitik und internationale Beziehungen
+145867,Mitglied des Beirates (ab 25.08.2025),Einkommen im Jahr 2025,DUK Versorgungswerk e.V.,1,3500.0,,1764244543,29230,"Gesundheit|Öffentliche Finanzen, Steuern und Abgaben|Soziale Sicherung"
+175877,"Mitglied des Beirates Deutsches Musikinformationszentrum (miz), ehrenamtlich (ab 15.07.2025)",,Deutscher Musikrat gemeinnützige GmbH,,,,1764240869,29228,Kultur
+175836,Vorsitzende des Vorstandes (ab 09.11.2025),,Katholischer Arbeitskreis für Familienerholung e.V. (KAFE e.V.),,,,1764240700,29230,"Gesellschaftspolitik, soziale Gruppen|Familie|Soziale Sicherung"
+175836,Vorsitzende des Vorstandes (ab 10.11.2025),,Bundesarbeitsgemeinschaft Familienerholung (BAG FE),,,,1764240607,29230,"Gesellschaftspolitik, soziale Gruppen|Familie"
+79238,Immobilienmakler - Kunde CH,Einkommen im Jahr 2025,Immobilienmakler - selbständig,1,3363.2,,1764239879,29647,"Raumordnung, Bau- und Wohnungswesen"
+79238,Immobilienmakler - Kunde DS,Einkommen im Jahr 2025,Immobilienmakler - selbständig,2,6680.0,,1764239855,29647,"Raumordnung, Bau- und Wohnungswesen"
+79370,Mitglied des Beirates,Einkommen im Jahr 2025,TeamBank AG,1,1785.0,,1764235090,29228,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Wirtschaft"
+79014,"Mitglied des Verwaltungsrates, von Amts wegen (ab 06.05.2025)",,Kreditanstalt für Wiederaufbau (KfW),,,,1764234934,29229,"Öffentliche Finanzen, Steuern und Abgaben|Wirtschaft"
+79014,Mitglied des Verwaltungsrates,,Deutschlandradio,,,,1764234865,29229,"Medien|Medien, Kommunikation und Informationstechnik"
+79014,"Mitglied des Aufsichtsrates, von Amts wegen (bis 25.06.2025)",,Germany Trade and Invest (GTAI) - Gesellschaft für Außenwirtschaft und Standortmarketing mbH,,,,1764234702,29228,Wirtschaft|Außenwirtschaft
+79465,"Vorsitzender des Beirates Finanzen, Steuern und Geld (ab 06.11.2025)",,Gesellschaft zum Studium strukturpolitischer Fragen e.V.,,,,1764234601,29230,"Politisches Leben, Parteien|Verkehr"
+175923,Mitglied des Polizeibeirates,,Polizeidirektion Ost,,,,1764153013,29229,Innere Sicherheit
+175923,Mitglied des Aufsichtsrates,,Uckermärkische Dienstleistungsgesellschaft mBH,,,,1764152774,29228,Umwelt
+175877,"Mitglied des Stiftungsrates, ehrenamtlich (ab 15.09.2025)",,Bundesstiftung zur Aufarbeitung der SED-Diktatur,,,,1764152619,29229,"Staat und Verwaltung|Politisches Leben, Parteien"
+175877,"Mitglied des Kuratoriums Amateurmusikfonds, ehrenamtlich (ab 15.07.2025)",,Amateurmusikfonds beim Bundesmusikverband Chor und Orchester e.V.,,,,1764152553,29230,Kultur
+175877,"Mitglied des Stiftungsrates, ehrenamtlich (ab 24.11.2025)",,Stiftung Preußischer Kulturbesitz,,,,1764152433,29229,Kultur
+175877,"Mitglied des Kuratoriums, ehrenamtlich (ab 24.06.2025)",,Stiftung Denkmal für die ermordeten Juden Europas,,,,1764152375,29229,"Kultur|Gesellschaftspolitik, soziale Gruppen"
+146117,"Mitglied des Beirates Deutsches Musikinformationszentrum (miz), ehrenamtlich (ab 15.07.2025)",,Deutscher Musikrat gemeinnützige GmbH,,,,1764152170,29228,Kultur
+175871,"Stellv. Vorsitzender, ehrenamtlich (ab 15.10.2025)",,Deutsche Vereinigung für Parlamentsfragen e.V.,,,,1764152001,29230,"Staat und Verwaltung|Politisches Leben, Parteien"
+175871,"Stellv. Mitglied des Kuratoriums, ehrenamtlich (ab 15.10.2025)",,Stiftung Forum Recht,,,,1764151925,29229,Recht
+146804,"Stellv. Mitglied des Kuratoriums, ehrenamtlich (ab 24.06.2025)",,Bundesstiftung Magnus Hirschfeld,,,,1764151299,29230,"Kultur|Gesellschaftspolitik, soziale Gruppen"
+146804,Mitglied des Kuratoriums (ab 09.09.2025),,Amateurmusikfonds beim Bundesmusikverband Chor und Orchester e.V.,,,,1764151164,29230,Kultur
+29490,Stellv. Vorsitzender (ab 03.06.2025),,Verein zur Förderung der Arbeit des Parlamentskreises Mittelstand e.V.,,,,1764151067,29230,"Wirtschaft|Politisches Leben, Parteien"
+146804,"Mitglied des Stiftungsrates, ehrenamtlich (ab 24.06.2025)",,"Stiftung Flucht, Vertreibung, Versöhnung",,,,1764150973,29229,"Gesellschaftspolitik, soziale Gruppen"
+146804,"Stellv. Mitglied des Stiftungsrates, ehrenamtlich",,Stiftung Orte der deutschen Demokratiegeschichte,,,,1764150871,29229,"Kultur|Deutsche Einheit / Innerdeutsche Beziehungen (bis 1990)|Gesellschaftspolitik, soziale Gruppen"
+146804,"Mitglied des Stiftungsrates, ehrenamtlich",,Kulturstiftung des Bundes,,,,1764150822,29229,Kultur
+29490,Stellv. Vorsitzender des Aufsichtsrates (ab 11.07.2025),,neoshare AG,,,,1764150578,29228,"Wissenschaft, Forschung und Technologie|Wirtschaft"
+146804,Mitglied des Rundfunkrates,,Deutsche Welle,,534.96,1,1764150470,29229,"Medien, Kommunikation und Informationstechnik|Medien"
+146804,"Mitglied des Verwaltungsrates, ehrenamtlich",,Deutsche Nationalbibliothek,,,,1764150386,29229,Kultur
+78881,"Mitglied des Kuratoriums, ehrenamtlich",,Stiftung „daHeim im Leben“,,,,1764150047,29230,"Gesellschaftspolitik, soziale Gruppen"
+146804,"Mitglied des Beirates Deutsches Musikinformationszentrum (miz), ehrenamtlich",,Deutscher Musikrat gemeinnützige GmbH,,,,1764149685,29228,Kultur
+146780,"Mitglied des Aufsichtsrates, ehrenamtlich (ab 02.09.2025)",,Deutsche Gesellschaft für Internationale Zusammenarbeit (GIZ) GmbH,,,,1764149563,29228,Außenpolitik und internationale Beziehungen|Außenwirtschaft
+146780,"Vizepräsidentin, ehrenamtlich (ab 05.11.2025)",,Deutsche Atlantische Gesellschaft e.V.,,,,1764149467,29230,Außenpolitik und internationale Beziehungen
+145890,Mitglied des Regionalen Kuratoriums der Universität Koblenz und der Hochschule Koblenz,,Universität Koblenz,,,,1764149247,29229,"Bildung und Erziehung|Wissenschaft, Forschung und Technologie"
+79194,Mitglied des Kuratoriums,,Stiftung St. Zeno Kirchseeon,,,,1764149190,29230,"Gesellschaftspolitik, soziale Gruppen"
+145890,Mitglied des Stadtrates,Einkommen im Jahr 2025,Stadt Koblenz,,60.0,,1764149199,29229,Staat und Verwaltung
+79194,Stellv. Mitglied des Kuratoriums (ab 07.07.2025),,Stiftung Haus der Geschichte der Bundesrepublik Deutschland,,,,1764149076,29230,"Kultur|Politisches Leben, Parteien"
+146117,Mitglied des Beirates für Menschen mit Behinderung,,Bundesarbeitsgemeinschaft Inklusionsfirmen e.V.,,,,1764149046,29230,"Wirtschaft|Gesellschaftspolitik, soziale Gruppen"
+79194,Mitglied des Beirates,,Energy and Climate Policy and Innovation Council (EPICO) e.V.,,,,1764148995,29230,Energie|Umwelt
+146117,Mitglied des Kleingartenbeirates,,Stadt Leipzig,,,,1764148994,29229,Staat und Verwaltung
+146117,Mitglied des Beirates für Menschen mit Behinderung,,Stadt Leipzig,,,,1764148979,29229,Staat und Verwaltung
+79194,Mitglied des Parlamentarischen Beirates,,Deutsche Unternehmensinitiative Energieeffizienz e.V. (DENEFF),,,,1764148927,29230,Energie|Wirtschaft
+146117,Vorsitzender des Finanzausschusses,,Stadt Leipzig,,,,1764148956,29229,Staat und Verwaltung
+146117,"Mitglied des Stadtrates, ehrenamtlich",,Stadt Leipzig,,612.5,1,1764148883,29229,Staat und Verwaltung
+79194,Mitglied des Expertengremiums ESG,,Versicherungskammer Bayern,2,4000.0,2,1764148690,29228,Recht
+145860,Mitglied des Stiftungsrates (ab 01.11.2025),,Deutsche Stiftung für Engagement und Ehrenamt (DSEE),,,,1764148420,29230,"Gesellschaftspolitik, soziale Gruppen"
+79214,Mitglied des Kreistages,Einkommen im Jahr 2025,Landkreis Donau-Ries,,565.0,,1764148273,29229,Staat und Verwaltung
