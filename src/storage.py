@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -26,7 +27,7 @@ def load_data(period_id: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]
 
 
 def save_embeddings(
-    model,
+    model: Any,
     p_df: pd.DataFrame,
     p_ids: np.ndarray,
     period_id: int,

@@ -14,6 +14,10 @@ class VoteDataset(Dataset):
     """PyTorch Dataset serving (politician_idx, poll_idx, rating) triplets."""
 
     def __init__(self, df: pd.DataFrame) -> None:
+        """Initialize dataset tensors from a votes DataFrame.
+
+        Expects columns: p_idx (int), poll_idx (int), rating (float).
+        """
         self.p = torch.tensor(df["p_idx"].to_numpy(), dtype=torch.long)
         self.poll = torch.tensor(df["poll_idx"].to_numpy(), dtype=torch.long)
         self.y = torch.tensor(df["rating"].to_numpy(), dtype=torch.float)
@@ -21,7 +25,7 @@ class VoteDataset(Dataset):
     def __len__(self) -> int:
         return len(self.y)
 
-    def __getitem__(self, idx):  # ty: ignore[invalid-method-override]
+    def __getitem__(self, idx) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:  # ty: ignore[invalid-method-override]
         return self.p[idx], self.poll[idx], self.y[idx]
 
 
@@ -34,6 +38,7 @@ class PoliticianEmbeddingModel(L.LightningModule):
     def __init__(
         self, n_politicians: int, n_polls: int, n_factors: int, lr: float
     ) -> None:
+        """Initialize embedding layers and loss criterion."""
         super().__init__()
         self.lr = lr
         self.p_embed = nn.Embedding(n_politicians, n_factors)
@@ -43,16 +48,19 @@ class PoliticianEmbeddingModel(L.LightningModule):
         self.criterion = nn.BCEWithLogitsLoss()
 
     def forward(self, p: torch.Tensor, poll: torch.Tensor) -> torch.Tensor:
+        """Compute logits as negative L2 distance plus per-entity biases."""
         dist = torch.norm(self.p_embed(p) - self.poll_embed(poll), dim=1)
         return -dist + self.p_bias(p).squeeze() + self.poll_bias(poll).squeeze()
 
     def training_step(self, batch: tuple, _batch_idx: int) -> torch.Tensor:
+        """Compute and log BCEWithLogitsLoss for a single batch."""
         p, poll, y = batch
         loss = self.criterion(self(p, poll), y)
         self.log("train_loss", loss, on_epoch=True, on_step=False, prog_bar=True)
         return loss
 
-    def configure_optimizers(self):
+    def configure_optimizers(self) -> torch.optim.Optimizer:
+        """Return Adam optimizer for all model parameters."""
         return torch.optim.Adam(self.parameters(), lr=self.lr)
 
 
@@ -60,6 +68,7 @@ class RelativeEarlyStopping(L.Callback):
     """Stop when loss improves by less than `min_rel` fraction epoch-over-epoch."""
 
     def __init__(self, min_rel: float = 0.01) -> None:
+        """Initialize with minimum relative improvement threshold."""
         self.min_rel = min_rel
         self._prev = float("inf")
 
@@ -68,6 +77,7 @@ class RelativeEarlyStopping(L.Callback):
         trainer: L.Trainer,
         pl_module: L.LightningModule,  # noqa: ARG002
     ) -> None:
+        """Stop training if relative loss improvement falls below min_rel."""
         loss = trainer.callback_metrics.get("train_loss")
         if loss is None:
             return

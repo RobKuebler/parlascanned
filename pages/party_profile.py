@@ -25,7 +25,7 @@ CURRENT_YEAR = datetime.now(tz=UTC).year
 
 @st.cache_data
 def _load_csv(path: Path) -> pd.DataFrame:
-    # Cached CSV loader; result is reused across reruns until the file changes
+    """Load a CSV from disk; result is cached and reused across reruns until the file changes."""
     return pd.read_csv(path)
 
 

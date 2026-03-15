@@ -167,7 +167,11 @@ def fetch_politicians(period_id: int) -> tuple[pd.DataFrame, dict]:
 
 
 def fetch_votes(
-    poll_ids: list, mandate_to_politician: dict, path: Path, *, append: bool
+    poll_ids: list[int],
+    mandate_to_politician: dict[int, int],
+    path: Path,
+    *,
+    append: bool,
 ) -> None:
     """Fetch votes for the given polls and write (or append) to CSV.
 
@@ -194,7 +198,7 @@ def fetch_votes(
                 log.exception("Error fetching votes for poll %s", poll_id)
 
 
-def find_polls_missing_votes(all_poll_ids: list, votes_path: Path) -> list:
+def find_polls_missing_votes(all_poll_ids: list[int], votes_path: Path) -> list[int]:
     """Return poll_ids that have no votes in votes.csv yet.
 
     Uses votes.csv (not polls.csv) as source of truth so that polls whose
@@ -238,7 +242,7 @@ def upsert_polls(period_id: int) -> tuple[pd.DataFrame, list]:
 DETAIL_BATCH_SIZE = 200  # ids per id[in] request; keeps URLs well under limits
 
 
-def fetch_politician_details(politician_ids: list) -> pd.DataFrame:
+def fetch_politician_details(politician_ids: list[int]) -> pd.DataFrame:
     """Fetch detail fields for politicians using batched id[in] queries.
 
     The API supports ?id[in]=[id1,id2,...] so we send one request per batch

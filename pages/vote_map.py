@@ -30,7 +30,7 @@ SCATTER_KEY = "scatter_chart"
 
 @st.cache_data
 def _load_csv(path: Path) -> pd.DataFrame:
-    # Cached CSV loader; result is reused across reruns until the file changes
+    """Load a CSV from disk; result is cached and reused across reruns until the file changes."""
     return pd.read_csv(path)
 
 
@@ -303,8 +303,8 @@ if not is_3d:
             )
 
 
-# Reusable HTML snippet for the collapsible "Wie lese ich das?" details element
 def _info_details(body: str) -> str:
+    """Return a collapsible HTML <details> element with a 'Wie lese ich das?' summary."""
     return (
         f"<details style='margin:0 0 12px'>"
         f"<summary style='cursor:pointer; list-style:none; color:{COLOR_SECONDARY}; font-size:12px'>ⓘ Wie lese ich das?</summary>"
@@ -393,12 +393,13 @@ with st.container(border=True):
         pivot = pivot.reindex(index=selected_poll_ids, columns=selected_pol_ids)
 
         def _to_num(v: object) -> float:
-            # no_show and missing → NaN so the cell renders transparent
+            """Map a vote answer to its numeric value; no_show and missing become NaN so the cell renders transparent."""
             if not isinstance(v, str) or v == "no_show":
                 return np.nan
             return float(VOTE_META.get(v, VOTE_META["no_show"])["value"])
 
         def _to_label(v: object) -> str:
+            """Map a vote answer to its German display label."""
             if not isinstance(v, str):
                 return "–"
             return str(VOTE_META.get(v, VOTE_META["no_show"])["label"])
