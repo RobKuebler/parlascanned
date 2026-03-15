@@ -27,6 +27,12 @@ pages = [
         icon=":material/groups:",
         url_path="party_profile",
     ),
+    st.Page(
+        "pages/sidejobs.py",
+        title="Nebeneinkünfte",
+        icon=":material/payments:",
+        url_path="sidejobs",
+    ),
 ]
 
 pg = st.navigation(pages)

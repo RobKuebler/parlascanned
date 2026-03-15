@@ -10,11 +10,17 @@ import streamlit as st
 
 # Ensure pages/ is on sys.path so constants can be imported on Streamlit Cloud.
 sys.path.insert(0, str(Path(__file__).parent))
-from constants import COLOR_SECONDARY, FALLBACK_COLOR, PARTY_COLORS, PARTY_ORDER
+from constants import (
+    BAR_LINE_COLOR,
+    BAR_LINE_WIDTH,
+    COLOR_SECONDARY,
+    FALLBACK_COLOR,
+    PARTY_COLORS,
+    PARTY_ORDER,
+)
 
 from src.storage import DATA_DIR
 from src.transforms import (
-    compute_age_df,
     compute_occupation_pivot,
     compute_sex_counts,
     compute_title_counts,
@@ -99,73 +105,93 @@ with st.container(border=True):
         xaxis={"side": "top", "showgrid": False},
         yaxis={"showgrid": False, "autorange": "reversed"},
     )
-    st.plotly_chart(fig_occ_heat, width="stretch")
+    st.plotly_chart(fig_occ_heat, width="stretch", config={"displayModeBar": True})
 
 # ── Chart 2: Age distribution ────────────────────────────────────────────────
 with st.container(border=True):
     st.markdown("##### Altersverteilung")
-    age_df = compute_age_df(pols_df, CURRENT_YEAR)
+    # Raincloud: half violin (distribution) above + jittered points below.
+    # Computed inline to include name for tooltip (compute_age_df omits it).
+    # Uses a numeric y-axis so violin and points can be offset from the baseline.
+    age_df = (
+        pols_df[["party_label", "year_of_birth", "name"]]
+        .dropna(subset=["year_of_birth"])
+        .copy()
+    )
+    age_df["alter"] = CURRENT_YEAR - age_df["year_of_birth"].astype(int)
 
-    # Draw box plot per party. go.Box hover can't be fully customized (plotly
-    # renders box stats in its own format), so we disable box hover and overlay
-    # invisible scatter points that carry our German tooltip.
     fig_age = go.Figure()
-    for party in reversed(party_labels_ordered):
-        data = age_df[age_df["party_label"] == party]["alter"].to_numpy()
-        if len(data) == 0:
-            continue
-        q1 = int(np.percentile(data, 25))
-        median_val = int(np.median(data))
-        q3 = int(np.percentile(data, 75))
-        iqr = q3 - q1
-        lower = int(max(data.min(), q1 - 1.5 * iqr))
-        upper = int(min(data.max(), q3 + 1.5 * iqr))
+    rng = np.random.RandomState(42)
+
+    parties_with_data = [
+        p
+        for p in reversed(party_labels_ordered)
+        if len(age_df[age_df["party_label"] == p]) > 0
+    ]
+    # Space parties far enough apart so violin + rain don't overlap the row below.
+    STEP = 2.5
+    for idx, party in enumerate(parties_with_data):
+        y_base = idx * STEP
+        subset = age_df[age_df["party_label"] == party]
+        ages = subset["alter"].to_numpy()
+        names = subset["name"].to_numpy()
         color = color_map.get(party, FALLBACK_COLOR)
-        tooltip = (
-            f"<b>{party}</b><br>"
-            f"Median: <b>{median_val} Jahre</b><br>"
-            f"<span style='color:#999'>"
-            f"Unteres Quartil: {q1} Jahre<br>"
-            f"Oberes Quartil: {q3} Jahre<br>"
-            f"Min – Max: {lower} – {upper} Jahre"
-            f"</span>"
-            "<extra></extra>"
-        )
-        # Visual box — hover disabled
+
+        # Half violin on the positive side (extends upward from baseline)
         fig_age.add_trace(
-            go.Box(
-                x=data,
-                name=party,
+            go.Violin(
+                x=ages,
+                y=np.full(len(ages), y_base),
                 orientation="h",
+                side="positive",
                 fillcolor=color,
-                line_color="white",
-                line_width=1,
-                marker_color=color,
+                line_color=color,
+                opacity=0.55,
+                width=1.8,
+                points=False,
                 showlegend=False,
                 hoverinfo="skip",
             )
         )
-        # Invisible scatter covering the box area — carries German tooltip
+
+        # Jittered points below the baseline; carry politician name in tooltip
+        jitter = rng.uniform(-0.15, 0.15, len(ages))
         fig_age.add_trace(
             go.Scatter(
-                x=list(range(lower, upper + 1)),
-                y=[party] * (upper - lower + 1),
+                x=ages,
+                y=np.full(len(ages), y_base) - 0.55 + jitter,
                 mode="markers",
-                marker={"opacity": 0, "size": 14},
+                marker={"color": color, "size": 3, "opacity": 0.45},
+                customdata=names,
                 showlegend=False,
-                hovertemplate=tooltip,
+                hovertemplate=(
+                    "<b>%{customdata}</b><br>"
+                    f"<span style='color:#999'>{party}</span><br>"
+                    "Alter: %{x} Jahre"
+                    "<extra></extra>"
+                ),
             )
         )
+
+    tick_positions = [idx * STEP for idx in range(len(parties_with_data))]
     fig_age.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         margin={"l": 0, "r": 0, "t": 8, "b": 0},
-        height=360,
+        height=max(300, len(parties_with_data) * 90 + 60),
         showlegend=False,
+        violingap=0,
+        violinmode="overlay",
         xaxis={"showgrid": False, "title": "Alter"},
-        yaxis={"showgrid": False, "title": ""},
+        yaxis={
+            "showgrid": False,
+            "title": "",
+            "tickmode": "array",
+            "tickvals": tick_positions,
+            "ticktext": parties_with_data,
+        },
     )
-    st.plotly_chart(fig_age, width="stretch")
+    st.plotly_chart(fig_age, width="stretch", config={"displayModeBar": True})
 
 # ── Chart 3: Gender breakdown ─────────────────────────────────────────────────
 with st.container(border=True):
@@ -190,6 +216,8 @@ with st.container(border=True):
             "<span style='color:#999'> (%{customdata[0]} Abgeordnete)</span>"
             "<extra></extra>"
         ),
+        marker_line_width=BAR_LINE_WIDTH,
+        marker_line_color=BAR_LINE_COLOR,
     )
     fig_sex.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
@@ -198,7 +226,7 @@ with st.container(border=True):
         xaxis={"showgrid": False},
         yaxis={"showgrid": False},
     )
-    st.plotly_chart(fig_sex, width="stretch")
+    st.plotly_chart(fig_sex, width="stretch", config={"displayModeBar": True})
 
 # ── Chart 4: Academic titles ──────────────────────────────────────────────────
 with st.container(border=True):
@@ -224,6 +252,8 @@ with st.container(border=True):
             "<span style='color:#999'> (%{customdata[0]} Abgeordnete)</span>"
             "<extra></extra>"
         ),
+        marker_line_width=BAR_LINE_WIDTH,
+        marker_line_color=BAR_LINE_COLOR,
     )
     fig_title.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
@@ -232,7 +262,7 @@ with st.container(border=True):
         xaxis={"showgrid": False},
         yaxis={"showgrid": False},
     )
-    st.plotly_chart(fig_title, width="stretch")
+    st.plotly_chart(fig_title, width="stretch", config={"displayModeBar": True})
 
 # Footer
 st.html(

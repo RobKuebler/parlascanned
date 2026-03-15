@@ -13,6 +13,8 @@ import streamlit.components.v1 as components
 sys.path.insert(0, str(Path(__file__).parent))
 
 from constants import (
+    BAR_LINE_COLOR,
+    BAR_LINE_WIDTH,
     COLOR_BODY,
     COLOR_SECONDARY,
     FALLBACK_COLOR,
@@ -471,7 +473,7 @@ with st.container(border=True):
             + "</div>"
         )
 
-        st.plotly_chart(fig_heat, width="stretch")
+        st.plotly_chart(fig_heat, width="stretch", config={"displayModeBar": True})
 
 st.html("<div style='height:32px'></div>")
 with st.container(border=True):
@@ -502,8 +504,8 @@ with st.container(border=True):
         hovertemplate=(
             "<b>%{customdata[0]}</b><br>Ø Abstand: %{customdata[1]:.3f}<extra></extra>"
         ),
-        marker_line_width=1,
-        marker_line_color=MARKER_OUTLINE,
+        marker_line_width=BAR_LINE_WIDTH,
+        marker_line_color=BAR_LINE_COLOR,
     )
     fig_coh.update_layout(
         showlegend=False,
@@ -513,7 +515,7 @@ with st.container(border=True):
         xaxis={"showgrid": False, "zeroline": False, "showticklabels": False},
         yaxis={"showgrid": False},
     )
-    st.plotly_chart(fig_coh, width="stretch")
+    st.plotly_chart(fig_coh, width="stretch", config={"displayModeBar": True})
 
 # Footer
 st.html(

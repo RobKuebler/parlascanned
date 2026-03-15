@@ -23,7 +23,7 @@ st.html(
     """
 )
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 with col1, st.container(border=True):
     st.markdown("#### :material/scatter_plot: Abstimmungslandkarte")
@@ -47,6 +47,18 @@ with col2, st.container(border=True):
     st.page_link(
         "pages/party_profile.py",
         label="Zum Parteiprofil",
+        icon=":material/arrow_forward:",
+    )
+
+with col3, st.container(border=True):
+    st.markdown("#### :material/payments: Nebeneinkünfte")
+    st.markdown(
+        "Offengelegte Nebentätigkeiten und Einkünfte der Abgeordneten nach Partei: "
+        "Anzahl der Tätigkeiten, Einkommensniveaus, Top-Verdiener."
+    )
+    st.page_link(
+        "pages/sidejobs.py",
+        label="Zu den Nebeneinkünften",
         icon=":material/arrow_forward:",
     )
 

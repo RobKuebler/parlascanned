@@ -2,7 +2,7 @@
 # Party colors and order are official/conventional values not stored in the CSVs.
 
 PARTY_COLORS: dict[str, str] = {
-    "CDU/CSU": "#000000",
+    "CDU/CSU": "#2a2a2a",
     "SPD": "#E3000F",
     "AfD": "#009EE0",
     "BÜNDNIS 90/\xadDIE GRÜNEN": "#46962B",
@@ -35,4 +35,6 @@ NO_FACTION_LABEL = "fraktionslos"
 # Design tokens
 COLOR_SECONDARY = "#999"  # secondary labels, detail summaries
 COLOR_BODY = "#666"  # body text in expanded detail sections
-MARKER_OUTLINE = "rgba(255,255,255,0.4)"
+MARKER_OUTLINE = "rgba(255,255,255,0.4)"  # scatter marker outline (semi-transparent)
+BAR_LINE_COLOR = "rgba(0,0,0,0)"  # transparent; CDU visibility handled by #2a2a2a fill
+BAR_LINE_WIDTH = 0

@@ -85,6 +85,8 @@ def upsert_periods() -> int:
                 "period_id": p["id"],
                 "label": p["label"],
                 "bundestag_number": i + FIRST_BUNDESTAG_NUMBER,
+                "start_date": p["start_date_period"],
+                "end_date": p["end_date_period"],
             }
             for i, p in enumerate(legislatures)
         ]
@@ -357,6 +359,53 @@ def upsert_politicians(period_id: int) -> tuple[pd.DataFrame, dict]:
     return df_merged, mandate_to_politician
 
 
+def upsert_sidejobs(period_id: int, mandate_to_politician: dict[int, int]) -> None:
+    """Fetch all sidejobs, filter to this period's politicians, and save to CSV.
+
+    The sidejobs API has no parliament_period filter, so we fetch everything
+    and keep only entries whose mandate ID maps to a politician in this period.
+    Overwrites sidejobs.csv on every run so newly disclosed income is captured.
+    """
+    log.info("Fetching sidejobs...")
+    raw = fetch_all_v2("sidejobs")
+
+    rows = []
+    for sj in raw:
+        # Find the first mandate that belongs to this period
+        politician_id = None
+        for mandate in sj.get("mandates") or []:
+            pid = mandate_to_politician.get(mandate["id"])
+            if pid is not None:
+                politician_id = pid
+                break
+        if politician_id is None:
+            continue
+
+        org = sj.get("sidejob_organization") or {}
+        topics = [t["label"] for t in (sj.get("field_topics") or [])]
+        rows.append(
+            {
+                "politician_id": politician_id,
+                "job_title": sj.get("label"),
+                "job_title_extra": sj.get("job_title_extra"),
+                "organization": org.get("label"),
+                "income_level": sj.get("income_level"),
+                "income": sj.get("income"),
+                # 0 = one-time, 1 = monthly, 2 = yearly, null = unspecified
+                "interval": sj.get("interval"),
+                # Unix timestamp of when this entry was first recorded
+                "created": sj.get("created"),
+                "category": sj.get("category"),
+                "topics": "|".join(topics),
+            }
+        )
+
+    df = pd.DataFrame(rows)
+    path = DATA_DIR / str(period_id) / "sidejobs.csv"
+    df.to_csv(path, index=False)
+    log.info("Saved %d sidejobs for period %d.", len(df), period_id)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Fetch/update Bundestag voting data from abgeordnetenwatch.de.",
@@ -383,6 +432,7 @@ def main() -> None:
     # so that previously failed fetches are automatically retried.
     df_polls, _ = upsert_polls(period_id)
     _, mandate_to_politician = upsert_politicians(period_id)
+    upsert_sidejobs(period_id, mandate_to_politician)
 
     votes_path = DATA_DIR / str(period_id) / "votes.csv"
     missing = find_polls_missing_votes(df_polls["poll_id"].tolist(), votes_path)
