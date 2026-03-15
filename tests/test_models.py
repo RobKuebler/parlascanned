@@ -3,13 +3,13 @@ import pandas as pd
 import pytest
 import torch
 
-from src.models import (
+from src.model import (
     PoliticianEmbeddingModel,
     RelativeEarlyStopping,
     VoteDataset,
     prepare_votes,
-    save_embeddings,
 )
+from src.storage import save_embeddings
 
 # ─── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -180,9 +180,9 @@ def test_early_stopping_missing_metric():
 
 def test_save_embeddings_2d(tmp_path, monkeypatch):
     """2D model produces CSV with x and y columns, no z."""
-    import src.models as m
+    from src import storage
 
-    monkeypatch.setattr(m, "OUTPUTS_DIR", tmp_path)
+    monkeypatch.setattr(storage, "OUTPUTS_DIR", tmp_path)
 
     model = PoliticianEmbeddingModel(n_politicians=3, n_polls=2, n_factors=2, lr=0.01)
     p_df = pd.DataFrame(
@@ -203,9 +203,9 @@ def test_save_embeddings_2d(tmp_path, monkeypatch):
 
 def test_save_embeddings_3d(tmp_path, monkeypatch):
     """3D model produces CSV with z column."""
-    import src.models as m
+    from src import storage
 
-    monkeypatch.setattr(m, "OUTPUTS_DIR", tmp_path)
+    monkeypatch.setattr(storage, "OUTPUTS_DIR", tmp_path)
 
     model = PoliticianEmbeddingModel(n_politicians=2, n_polls=2, n_factors=3, lr=0.01)
     p_df = pd.DataFrame(

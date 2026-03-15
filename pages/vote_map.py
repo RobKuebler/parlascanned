@@ -22,9 +22,8 @@ from constants import (
     PARTY_ORDER,
 )
 
-OUTPUTS_DIR = Path(__file__).parents[1] / "outputs"
-DATA_DIR = Path(__file__).parents[1] / "data"
-
+from src.storage import DATA_DIR, OUTPUTS_DIR
+from src.transforms import compute_cohesion
 
 SCATTER_KEY = "scatter_chart"
 
@@ -296,8 +295,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# centroids are still needed for the party discipline chart below
-centroids = df.groupby("party")[["x", "y"]].mean()
 is_3d = "z" in df.columns
 
 # Reconstruct base scatter from cache (px.scatter + centroids), then add rings.
@@ -515,17 +512,7 @@ with st.container(border=True):
         unsafe_allow_html=True,
     )
 
-    cx = df["party"].map(centroids["x"])
-    cy = df["party"].map(centroids["y"])
-    coh = (
-        np.sqrt((df["x"] - cx) ** 2 + (df["y"] - cy) ** 2)
-        .groupby(df["party"])
-        .mean()
-        .reset_index(name="streuung")
-    )
-    coh = coh[coh["party"] != NO_FACTION_LABEL]
-    coh["label"] = coh["party"].str.replace("\xad", "", regex=False)
-    coh = coh.sort_values("streuung")
+    coh = compute_cohesion(df, exclude_party=NO_FACTION_LABEL)
 
     fig_coh = px.bar(
         coh,

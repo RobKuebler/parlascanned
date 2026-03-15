@@ -8,13 +8,17 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-# Ensure the pages/ directory is on sys.path so occupation_clusters can be found
-# regardless of the working directory (e.g. on Streamlit Cloud).
+# Ensure pages/ is on sys.path so constants can be imported on Streamlit Cloud.
 sys.path.insert(0, str(Path(__file__).parent))
 from constants import COLOR_SECONDARY, FALLBACK_COLOR, PARTY_COLORS, PARTY_ORDER
-from occupation_clusters import normalize_occupation
 
-DATA_DIR = Path(__file__).parents[1] / "data"
+from src.storage import DATA_DIR
+from src.transforms import (
+    compute_age_df,
+    compute_occupation_pivot,
+    compute_sex_counts,
+    compute_title_counts,
+)
 
 CURRENT_YEAR = datetime.now(tz=UTC).year
 
@@ -87,33 +91,7 @@ color_map = {
 # ── Chart 1: Occupations heatmap ─────────────────────────────────────────────
 with st.container(border=True):
     st.markdown("##### Berufe")
-    occ_df = pols_df[["party_label", "occupation"]].copy()
-    occ_df["occ_cat"] = (
-        occ_df["occupation"]
-        .where(occ_df["occupation"].notna(), other=None)
-        .apply(normalize_occupation)
-    )
-
-    occ_df = occ_df.copy()
-
-    counts = occ_df.groupby(["party_label", "occ_cat"]).size().reset_index(name="count")
-
-    # Pivot to matrix form for heatmap
-    pivot = counts.pivot_table(
-        index="occ_cat", columns="party_label", values="count", fill_value=0
-    )
-    # Sort occupations by overall frequency (descending)
-    occ_totals = counts.groupby("occ_cat")["count"].sum().sort_values(ascending=False)
-    pivot = pivot.reindex(occ_totals.index)
-    # Keep party column order consistent
-    pivot = pivot.reindex(
-        columns=[p for p in party_labels_ordered if p in pivot.columns]
-    )
-
-    z = pivot.to_numpy().astype(float)
-    z[z == 0] = np.nan  # zeros become NaN so plotly renders them transparent
-
-    zmax = float(np.nanpercentile(z, 80))
+    pivot, z, zmax = compute_occupation_pivot(pols_df, party_labels_ordered)
 
     fig_occ_heat = go.Figure(
         go.Heatmap(
@@ -148,12 +126,7 @@ with st.container(border=True):
 # ── Chart 2: Age distribution ────────────────────────────────────────────────
 with st.container(border=True):
     st.markdown("##### Altersverteilung")
-    age_df = (
-        pols_df[["party_label", "year_of_birth"]]
-        .dropna(subset=["year_of_birth"])
-        .copy()
-    )
-    age_df["alter"] = CURRENT_YEAR - age_df["year_of_birth"].astype(int)
+    age_df = compute_age_df(pols_df, CURRENT_YEAR)
 
     # Draw box plot per party. go.Box hover can't be fully customized (plotly
     # renders box stats in its own format), so we disable box hover and overlay
@@ -219,15 +192,7 @@ with st.container(border=True):
 # ── Chart 3: Gender breakdown ─────────────────────────────────────────────────
 with st.container(border=True):
     st.markdown("##### Geschlecht")
-    sex_df = pols_df[["party_label", "sex"]].dropna(subset=["sex"]).copy()
-    sex_map = {"m": "Männlich", "f": "Weiblich", "d": "Divers"}
-    sex_df["geschlecht"] = sex_df["sex"].map(sex_map).fillna(sex_df["sex"])
-
-    sex_counts = (
-        sex_df.groupby(["party_label", "geschlecht"]).size().reset_index(name="count")
-    )
-    totals = sex_counts.groupby("party_label")["count"].transform("sum")
-    sex_counts["pct"] = (sex_counts["count"] / totals * 100).round(1)
+    sex_counts = compute_sex_counts(pols_df)
 
     fig_sex = px.bar(
         sex_counts,
@@ -260,17 +225,7 @@ with st.container(border=True):
 # ── Chart 4: Academic titles ──────────────────────────────────────────────────
 with st.container(border=True):
     st.markdown("##### Akademische Titel")
-    title_df = pols_df[["party_label", "field_title"]].copy()
-    # field_title not null and non-empty = "Mit Titel"
-    title_df["titel"] = title_df["field_title"].apply(
-        lambda t: "Mit Titel" if isinstance(t, str) and t.strip() else "Ohne Titel"
-    )
-
-    title_counts = (
-        title_df.groupby(["party_label", "titel"]).size().reset_index(name="count")
-    )
-    totals = title_counts.groupby("party_label")["count"].transform("sum")
-    title_counts["pct"] = (title_counts["count"] / totals * 100).round(1)
+    title_counts = compute_title_counts(pols_df)
 
     fig_title = px.bar(
         title_counts,

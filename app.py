@@ -8,7 +8,7 @@ st.set_page_config(
 
 pages = [
     st.Page(
-        "pages/overview.py",
+        "pages/vote_map.py",
         title="Abstimmungslandkarte",
         icon=":material/scatter_plot:",
     ),

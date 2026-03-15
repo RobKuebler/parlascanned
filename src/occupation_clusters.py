@@ -1,5 +1,5 @@
 # Keyword rules for normalizing raw occupation strings into canonical categories.
-# Order matters: first matching rule wins. Matching is case-insensitive substring search.
+# Order matters: first match wins. Matching is case-insensitive substring search.
 _OCCUPATION_RULES: list[tuple[list[str], str]] = [
     (
         [

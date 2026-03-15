@@ -1,6 +1,5 @@
 import argparse
 import logging
-from pathlib import Path
 
 logging.basicConfig(
     level=logging.INFO,
@@ -15,8 +14,6 @@ N_EPOCHS = 50
 BATCH_SIZE = 256
 LR = 0.01
 MIN_IMPROVEMENT = 0.01
-
-OUTPUTS_DIR = Path(__file__).parents[1] / "outputs"
 
 
 def parse_args() -> argparse.Namespace:
@@ -67,7 +64,8 @@ def main() -> None:
     import lightning as L
 
     from fetch_data import upsert_periods
-    from models import load_data, prepare_votes, save_embeddings, train
+    from model import prepare_votes, train
+    from storage import OUTPUTS_DIR, load_data, save_embeddings
 
     period_id = args.period or upsert_periods()
     L.seed_everything(42)
