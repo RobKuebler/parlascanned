@@ -2,7 +2,7 @@
 
 Ein interaktives Dashboard, das Bundestagsabgeordnete durchleuchtet: Abstimmungsverhalten, politische Trennlinien, und wer wirklich mit wem stimmt.
 
-[**Demo ansehen**](https://politicianembeddings.streamlit.app/) | [**Daten: abgeordnetenwatch.de**](https://www.abgeordnetenwatch.de)
+[**Demo ansehen**](https://parlascanned.streamlit.app/) | [**Daten: abgeordnetenwatch.de**](https://www.abgeordnetenwatch.de)
 
 ---
 
@@ -31,6 +31,7 @@ Nach dem Training werden nur die Abgeordneten-Embeddings exportiert. Ihre relati
 - **Abstimmungslandkarte:** Scatter-Plot aller Abgeordneten als Punkte. Per Box- oder Lasso-Auswahl lassen sich mehrere gleichzeitig markieren.
 - **Abstimmungsverhalten (Heatmap):** Für ausgewählte Abgeordnete und Abstimmungen zeigt eine Heatmap Ja, Nein, Enthalten und Abwesenheit auf einen Blick.
 - **Fraktionsdisziplin:** Ein Balkendiagramm zeigt, wie weit Abgeordnete einer Fraktion im Durchschnitt vom Fraktionsmittelpunkt entfernt sind, ein Maß dafür, wie geschlossen eine Fraktion abstimmt.
+- **Parteiprofil:** Demografische und berufliche Profile der Fraktionen im Vergleich (Berufe, Alter, Geschlecht, Titel).
 - **Wahlperioden-Auswahl:** Alle Wahlperioden ab dem 20. Bundestag (2021) sind verfügbar, sofern Daten und trainierte Embeddings vorhanden sind.
 
 ## Setup
@@ -38,14 +39,14 @@ Nach dem Training werden nur die Abgeordneten-Embeddings exportiert. Ihre relati
 Voraussetzungen: Python 3.13, [uv](https://github.com/astral-sh/uv)
 
 ```bash
-# Abhängigkeiten installieren
-uv sync
+# Abhängigkeiten installieren (inkl. Dev-Tools)
+uv sync --group dev
 
 # Voting-Daten von abgeordnetenwatch.de laden (aktuelle Wahlperiode)
 uv run src/fetch_data.py
 
 # Modell trainieren und Embeddings berechnen
-uv run src/train_model.py
+uv run src/train_model.py --group train
 
 # Dashboard starten
 uv run streamlit run app.py
@@ -62,19 +63,23 @@ uv run src/train_model.py --factors 2 --epochs 50 --lr 0.01
 
 ```
 src/
-  fetch_data.py     Datenabruf von der abgeordnetenwatch.de API
-  models.py         Modellarchitektur, Training, Embedding-Export
-  train_model.py    Einstiegspunkt für das Training
-app.py              Streamlit-App (Navigation)
+  fetch_data.py         Datenabruf von der abgeordnetenwatch.de API
+  model.py              Modellarchitektur (PoliticianEmbeddingModel)
+  storage.py            CSV-Lesen/Schreiben, Pfade
+  transforms.py         Reine Datentransformationen (Cohesion, Pivot, ...)
+  occupation_clusters.py  Normalisierung von Berufsbezeichnungen
+  train_model.py        Einstiegspunkt für das Training
+app.py                  Streamlit-App (Navigation)
 pages/
-  overview.py       Hauptseite: Scatter, Heatmap, Fraktionsdisziplin
-data/               Rohdaten (gitignored)
-outputs/            Embedding-CSVs (gitignored)
+  vote_map.py           Hauptseite: Scatter, Heatmap, Fraktionsdisziplin
+  party_profile.py      Parteiprofil: Berufe, Alter, Geschlecht, Titel
+data/                   Rohdaten (gitignored)
+outputs/                Embedding-CSVs (gitignored)
 ```
 
 ## Danksagung
 
-Die Abstimmungsdaten stammen von [**abgeordnetenwatch.de**](https://www.abgeordnetenwatch.de), einer gemeinnützigen Plattform, die Bürger mit ihren gewählten Abgeordneten verbindet und seit Jahren Transparenz über das parlamentarische Handeln schafft. Ohne ihre offene API ware dieses Projekt nicht möglich. Herzlichen Dank.
+Die Abstimmungsdaten stammen von [**abgeordnetenwatch.de**](https://www.abgeordnetenwatch.de), einer gemeinnützigen Plattform, die Bürger mit ihren gewählten Abgeordneten verbindet und seit Jahren Transparenz über das parlamentarische Handeln schafft. Ohne ihre offene API wäre dieses Projekt nicht möglich. Herzlichen Dank.
 
 ## Lizenz
 
