@@ -14,6 +14,8 @@ dependencies = [
 [tool.uv]
 # streamlit declares pandas<3 but is compatible with pandas 3 in practice
 override-dependencies = ["pandas>=3.0.1"]
+# don't install dev/train groups by default (e.g. on Streamlit Cloud)
+default-groups = []
 
 # Always install the CPU-only PyTorch build (no CUDA needed)
 [tool.uv.sources]
