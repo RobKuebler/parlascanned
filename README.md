@@ -1,6 +1,6 @@
 # Parlascanned
 
-Ein interaktives Dashboard, das Bundestagsabgeordnete durchleuchtet: Abstimmungsverhalten, politische Trennlinien, und wer wirklich mit wem stimmt.
+Ein interaktives Dashboard, das Bundestagsabgeordnete durchleuchtet: Abstimmungsverhalten, politische Trennlinien, demografische Profile, und mehr.
 
 [**Demo ansehen**](https://parlascanned.streamlit.app/) | [**Daten: abgeordnetenwatch.de**](https://www.abgeordnetenwatch.de)
 
@@ -8,9 +8,17 @@ Ein interaktives Dashboard, das Bundestagsabgeordnete durchleuchtet: Abstimmungs
 
 ## Idee
 
-Namentliche Abstimmungen im Bundestag sind öffentlich zugänglich, aber schwer zu überblicken. Dieses Projekt lädt alle verfügbaren Abstimmungsdaten seit dem Jahr 2021 (20. Bundestag) herunter und trainiert darauf ein Modell, das jedem Abgeordneten eine Position im zweidimensionalen Raum zuweist. Je näher zwei Punkte beieinander liegen, desto ähnlicher haben die beiden in der Vergangenheit abgestimmt.
+Namentliche Abstimmungen, Berufe, Alter, Geschlecht, akademische Titel -- all das ist öffentlich zugänglich, aber schwer zu überblicken. Parlascanned bündelt diese Daten für alle Wahlperioden ab 2021 und macht sie interaktiv erkundbar.
 
-Das Ergebnis ist eine interaktive Landkarte des Abstimmungsverhaltens, die keine Parteizugehörigkeit voraussetzt, sondern sie aus den Daten selbst ableitet.
+## Features
+
+- **Abstimmungslandkarte:** Ein KI-Modell (kollaboratives Filtermodell, ähnlich Matrix-Faktorisierungen aus Empfehlungssystemen) weist jedem Abgeordneten eine Position im zweidimensionalen Raum zu. Je näher zwei Punkte, desto ähnlicher das Abstimmungsverhalten. Per Box- oder Lasso-Auswahl lassen sich mehrere Abgeordnete gleichzeitig markieren.
+- **Abstimmungsverhalten (Heatmap):** Für ausgewählte Abgeordnete und Abstimmungen zeigt eine Heatmap Ja, Nein, Enthalten und Abwesenheit auf einen Blick.
+- **Fraktionsdisziplin:** Wie geschlossen stimmt eine Fraktion ab? Ein Balkendiagramm zeigt die durchschnittliche Streuung der Abgeordneten um den Fraktionsmittelpunkt.
+- **Parteiprofil:** Demografische und berufliche Profile der Fraktionen im Vergleich: Berufe, Altersverteilung, Geschlecht, akademische Titel.
+- **Wahlperioden-Auswahl:** Alle Wahlperioden ab dem 20. Bundestag (2021) sind verfügbar, sofern Daten und trainierte Embeddings vorhanden sind.
+
+Geplant: Nebeneinkommen der Abgeordneten.
 
 ## Das Modell
 
@@ -25,14 +33,6 @@ Das Modell ist ein kollaboratives Filtermodell nach dem Vorbild von Matrix-Fakto
 - Training mit `PyTorch Lightning`, frühem Abbruch wenn der relative Fortschritt unter 1 % pro Epoche fällt.
 
 Nach dem Training werden nur die Abgeordneten-Embeddings exportiert. Ihre relative Position im Raum bildet das Abstimmungsverhalten ab.
-
-## Features
-
-- **Abstimmungslandkarte:** Scatter-Plot aller Abgeordneten als Punkte. Per Box- oder Lasso-Auswahl lassen sich mehrere gleichzeitig markieren.
-- **Abstimmungsverhalten (Heatmap):** Für ausgewählte Abgeordnete und Abstimmungen zeigt eine Heatmap Ja, Nein, Enthalten und Abwesenheit auf einen Blick.
-- **Fraktionsdisziplin:** Ein Balkendiagramm zeigt, wie weit Abgeordnete einer Fraktion im Durchschnitt vom Fraktionsmittelpunkt entfernt sind, ein Maß dafür, wie geschlossen eine Fraktion abstimmt.
-- **Parteiprofil:** Demografische und berufliche Profile der Fraktionen im Vergleich (Berufe, Alter, Geschlecht, Titel).
-- **Wahlperioden-Auswahl:** Alle Wahlperioden ab dem 20. Bundestag (2021) sind verfügbar, sofern Daten und trainierte Embeddings vorhanden sind.
 
 ## Setup
 
@@ -63,18 +63,19 @@ uv run src/train_model.py --factors 2 --epochs 50 --lr 0.01
 
 ```
 src/
-  fetch_data.py         Datenabruf von der abgeordnetenwatch.de API
-  model.py              Modellarchitektur (PoliticianEmbeddingModel)
-  storage.py            CSV-Lesen/Schreiben, Pfade
-  transforms.py         Reine Datentransformationen (Cohesion, Pivot, ...)
+  fetch_data.py           Datenabruf von der abgeordnetenwatch.de API
+  model.py                Modellarchitektur (PoliticianEmbeddingModel)
+  storage.py              CSV-Lesen/Schreiben, Pfade
+  transforms.py           Reine Datentransformationen (Cohesion, Pivot, ...)
   occupation_clusters.py  Normalisierung von Berufsbezeichnungen
-  train_model.py        Einstiegspunkt für das Training
-app.py                  Streamlit-App (Navigation)
+  train_model.py          Einstiegspunkt für das Training
+app.py                    Streamlit-App (Navigation, globaler Wahlperioden-Selector)
 pages/
-  vote_map.py           Hauptseite: Scatter, Heatmap, Fraktionsdisziplin
-  party_profile.py      Parteiprofil: Berufe, Alter, Geschlecht, Titel
-data/                   Rohdaten (gitignored)
-outputs/                Embedding-CSVs (gitignored)
+  home.py                 Startseite mit Projektbeschreibung
+  vote_map.py             Abstimmungslandkarte, Heatmap, Fraktionsdisziplin
+  party_profile.py        Parteiprofil: Berufe, Alter, Geschlecht, Titel
+data/                     Rohdaten (gitignored)
+outputs/                  Embedding-CSVs (gitignored)
 ```
 
 ## Danksagung

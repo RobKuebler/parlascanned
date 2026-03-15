@@ -29,24 +29,8 @@ def _load_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
-_periods_df = _load_csv(DATA_DIR / "periods.csv")
-
-
-def _period_label(row: pd.Series) -> str:
-    # "21. Legislaturperiode (2025-2029)", years extracted from "Bundestag YYYY - YYYY"
-    parts = row["label"].split()
-    return f"{int(row['bundestag_number'])}. Legislaturperiode ({parts[1]}-{parts[3]})"
-
-
-# Only show periods where politicians.csv exists
-PERIODS = {
-    int(row["period_id"]): _period_label(row)
-    for _, row in _periods_df.sort_values("period_id", ascending=False).iterrows()
-    if (DATA_DIR / str(int(row["period_id"])) / "politicians.csv").exists()
-}
-
 # Header
-st.markdown(
+st.html(
     f"""
     <div style='text-align:center; padding:32px 0 24px'>
       <h1 style='margin:0; font-size:2rem; letter-spacing:-0.5px'>
@@ -56,16 +40,10 @@ st.markdown(
         Demografische und berufliche Profile der Bundestagsfraktionen im Vergleich.
       </p>
     </div>
-    """,
-    unsafe_allow_html=True,
+    """
 )
 
-period_id = st.selectbox(
-    "Wahlperiode",
-    options=list(PERIODS.keys()),
-    format_func=lambda p: PERIODS[p],
-    index=0,
-)
+period_id: int = st.session_state["period_id"]
 
 pols_df = _load_csv(DATA_DIR / str(period_id) / "politicians.csv").copy()
 
@@ -257,12 +235,11 @@ with st.container(border=True):
     st.plotly_chart(fig_title, width="stretch")
 
 # Footer
-st.markdown(
+st.html(
     "<p style='text-align:center; color:#ccc; font-size:12px; margin-top:48px'>"
     "von <a href='https://robkuebler.github.io' style='color:#ccc'>Robert Kübler</a>"
     " | Code auf <a href='https://github.com/RobKuebler/politician_embeddings' style='color:#ccc'>GitHub</a>"
     " | Daten von <a href='https://www.abgeordnetenwatch.de' style='color:#ccc'>"
     "abgeordnetenwatch.de</a>"
-    "</p>",
-    unsafe_allow_html=True,
+    "</p>"
 )

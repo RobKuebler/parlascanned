@@ -136,22 +136,6 @@ def _build_base_scatter_dict(period_id: int) -> dict:
     return _fig.to_dict()
 
 
-# Load only periods for which an embeddings CSV actually exists
-_periods_df = _load_csv(OUTPUTS_DIR.parent / "data" / "periods.csv")
-
-
-def _period_label(row: pd.Series) -> str:
-    # "21. Legislaturperiode (2025-2029)", years extracted from "Bundestag YYYY - YYYY"
-    parts = row["label"].split()  # ["Bundestag", "2025", "-", "2029"]
-    return f"{int(row['bundestag_number'])}. Legislaturperiode ({parts[1]}-{parts[3]})"
-
-
-PERIODS = {
-    int(row["period_id"]): _period_label(row)
-    for _, row in _periods_df.sort_values("period_id", ascending=False).iterrows()
-    if (OUTPUTS_DIR / f"politician_embeddings_{row['period_id']}.csv").exists()
-}
-
 # Vote answer → display label, numeric value for colorscale, hex color
 VOTE_META = {
     "yes": {"label": "Ja", "value": 3, "color": "#46962B"},
@@ -240,7 +224,7 @@ if _raw_scatter is not None:
         st.session_state.prev_scatter_pol_ids = _pre_ids
 
 # Header
-st.markdown(
+st.html(
     f"""
     <div style='text-align:center; padding:32px 0 24px'>
       <h1 style='margin:0; font-size:2rem; letter-spacing:-0.5px'>
@@ -252,16 +236,10 @@ st.markdown(
         Je näher zwei Punkte, desto ähnlicher das Abstimmungsverhalten.
       </p>
     </div>
-    """,
-    unsafe_allow_html=True,
+    """
 )
 
-period_id = st.selectbox(
-    "Wahlperiode",
-    options=list(PERIODS.keys()),
-    format_func=lambda p: PERIODS[p],
-    index=0,
-)
+period_id: int = st.session_state["period_id"]
 
 df = _load_csv(OUTPUTS_DIR / f"politician_embeddings_{period_id}.csv")
 pols_df = _load_csv(DATA_DIR / str(period_id) / "politicians.csv")
@@ -288,11 +266,10 @@ for party in party_order:
         f"padding:4px 12px; border-radius:20px; font-size:13px; "
         f"font-weight:500; white-space:nowrap'>{label}</span>"
     )
-st.markdown(
+st.html(
     "<div style='display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 16px'>"
     + "".join(pills)
-    + "</div>",
-    unsafe_allow_html=True,
+    + "</div>"
 )
 
 is_3d = "z" in df.columns
@@ -338,7 +315,7 @@ def _info_details(body: str) -> str:
 
 with st.container(border=True):
     st.markdown("##### Abstimmungslandkarte")
-    st.markdown(
+    st.html(
         _info_details(
             "Jeder Punkt steht für einen Abgeordneten. Je näher zwei Punkte beieinander "
             "liegen, desto ähnlicher haben die beiden abgestimmt.<br><br>"
@@ -350,8 +327,7 @@ with st.container(border=True):
             "Punkte zueinander zählt. ◆ markiert jeweils den Mittelpunkt einer Fraktion.<br><br>"
             "Mit Box- oder Lasso-Auswahl (Toolbar rechts oben) können mehrere Abgeordnete "
             "gleichzeitig ausgewählt werden, sie erscheinen dann in der Heatmap unten."
-        ),
-        unsafe_allow_html=True,
+        )
     )
     st.plotly_chart(
         fig,
@@ -362,7 +338,7 @@ with st.container(border=True):
     )
 
 # ─── Abstimmungsverhalten heatmap ────────────────────────────────────────────
-st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
+st.html("<div style='height:24px'></div>")
 with st.container(border=True):
     st.markdown("##### Abstimmungsverhalten")
 
@@ -388,16 +364,14 @@ with st.container(border=True):
     )
 
     if not selected_pol_ids:
-        st.markdown(
+        st.html(
             f"<p style='color:{COLOR_SECONDARY}; font-size:14px; margin-top:4px; text-align:center'>"
-            "Wähle Abgeordnete im Dropdown oben oder per Box-/Lasso-Auswahl im Diagramm aus.</p>",
-            unsafe_allow_html=True,
+            "Wähle Abgeordnete im Dropdown oben oder per Box-/Lasso-Auswahl im Diagramm aus.</p>"
         )
     elif not selected_poll_ids:
-        st.markdown(
+        st.html(
             f"<p style='color:{COLOR_SECONDARY}; font-size:14px; margin-top:4px; text-align:center'>"
-            "Wähle mindestens eine Abstimmung aus.</p>",
-            unsafe_allow_html=True,
+            "Wähle mindestens eine Abstimmung aus.</p>"
         )
     else:
         votes_df = _load_csv(DATA_DIR / str(period_id) / "votes.csv")
@@ -490,26 +464,24 @@ with st.container(border=True):
                 f"<span style='width:14px; height:14px; border-radius:3px; background:{meta['color']}; display:inline-block'></span>"
                 f"<span style='font-size:13px; color:{COLOR_BODY}'>{meta['label']}</span></span>"
             )
-        st.markdown(
+        st.html(
             "<div style='display:flex; flex-wrap:wrap; gap:16px; margin-bottom:12px'>"
             + "".join(legend_items)
-            + "</div>",
-            unsafe_allow_html=True,
+            + "</div>"
         )
 
         st.plotly_chart(fig_heat, width="stretch")
 
-st.markdown("<div style='height:32px'></div>", unsafe_allow_html=True)
+st.html("<div style='height:32px'></div>")
 with st.container(border=True):
     st.markdown("##### Fraktionsdisziplin")
-    st.markdown(
+    st.html(
         _info_details(
             "Der Balken zeigt, wie weit die Abgeordneten einer Fraktion im Diagramm "
             "durchschnittlich vom Fraktionsmittelpunkt entfernt sind.<br><br>"
             "<b>Kurzer Balken:</b> Die Fraktion stimmt fast immer geschlossen ab.<br>"
             "<b>Langer Balken:</b> Es gibt starke Abweichler."
-        ),
-        unsafe_allow_html=True,
+        )
     )
 
     coh = compute_cohesion(df, exclude_party=NO_FACTION_LABEL)
@@ -543,12 +515,11 @@ with st.container(border=True):
     st.plotly_chart(fig_coh, width="stretch")
 
 # Footer
-st.markdown(
+st.html(
     "<p style='text-align:center; color:#ccc; font-size:12px; margin-top:48px'>"
     "von <a href='https://robkuebler.github.io' style='color:#ccc'>Robert Kübler</a>"
     " | Code auf <a href='https://github.com/RobKuebler/politician_embeddings' style='color:#ccc'>GitHub</a>"
     " | Daten von <a href='https://www.abgeordnetenwatch.de' style='color:#ccc'>"
     "abgeordnetenwatch.de</a>"
-    "</p>",
-    unsafe_allow_html=True,
+    "</p>"
 )
