@@ -343,6 +343,9 @@ with st.container(border=True):
 st.html("<div style='height:24px'></div>")
 with st.container(border=True):
     st.markdown("##### Abstimmungsverhalten")
+    st.caption(
+        "Vergleiche das Abstimmungsverhalten einzelner Abgeordneter bei ausgewählten namentlichen Abstimmungen."
+    )
 
     pol_options = {
         int(r["politician_id"]): f"{r['name']} ({r['party'].replace(chr(173), '')})"

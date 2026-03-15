@@ -22,27 +22,26 @@ from constants import (
 from src.storage import DATA_DIR
 
 
-def _annualized_income(
-    monthly: float,
+def _active_months(
     created_ts: float | None,
     period_start: date,
     period_end: date,
-) -> float:
-    """Estimate total income for monthly payments within a period.
+) -> int:
+    """Compute the number of active months within a period.
 
     Uses max(created_date, period_start) as the start and
-    min(today, period_end) as the end, then multiplies by months elapsed.
-    The created timestamp is a reasonable lower-bound for when payments began.
+    min(today, period_end) as the end.
+    Falls back to period_start when the created timestamp lies after the
+    period end (disclosures filed retroactively for past legislatures).
     """
     today = datetime.now(tz=UTC).date()
+    end = min(today, period_end)
     if created_ts is not None:
         created_date = datetime.fromtimestamp(created_ts, tz=UTC).date()
-        start = max(created_date, period_start)
+        start = period_start if created_date > end else max(created_date, period_start)
     else:
         start = period_start
-    end = min(today, period_end)
-    months = max(0, (end.year - start.year) * 12 + (end.month - start.month) + 1)
-    return monthly * months
+    return max(0, (end.year - start.year) * 12 + (end.month - start.month) + 1)
 
 
 @st.cache_data
@@ -101,7 +100,7 @@ color_map = {
 color_map.update({p: FALLBACK_COLOR for p in present if p not in color_map})
 
 # ── Central income computation ────────────────────────────────────────────────
-# Annualize monthly entries; keep annual/one-time as-is. Used by Chart 2 and 3.
+# Prorate monthly and yearly entries to the period duration. Used by Charts 2-4.
 periods_df = _load_csv(DATA_DIR / "periods.csv")
 period_row = periods_df[periods_df["period_id"] == period_id]
 has_period_dates = (
@@ -118,10 +117,18 @@ if has_period_dates:
     p_end = date.fromisoformat(str(period_row["end_date"].iloc[0]))
 
     def _effective_income(row: pd.Series) -> float:
-        """Return annualized income; annualizes monthly entries using created date."""
-        if str(row.get("interval", "")) == "1":
-            ts = row.get("created") if "created" in row.index else None
-            return _annualized_income(row["income"], ts, p_start, p_end)
+        """Return total income for the period, prorated by interval type.
+
+        Monthly (1): income * active months.
+        Yearly (2): income * (active months / 12).
+        One-time (0) or unspecified (NaN): income as-is.
+        """
+        interval = str(row.get("interval", ""))
+        ts = row.get("created") if "created" in row.index else None
+        if interval == "1":
+            return row["income"] * _active_months(ts, p_start, p_end)
+        if interval == "2":
+            return row["income"] * (_active_months(ts, p_start, p_end) / 12)
         return row["income"]
 
     sj_income["income"] = sj_income.apply(_effective_income, axis=1)
@@ -138,17 +145,28 @@ pol_income = (
 # ── Chart 1: Average sidejobs per politician by party ────────────────────────
 with st.container(border=True):
     st.markdown("##### Nebentätigkeiten pro Abgeordnetem")
+    st.caption(
+        "Durchschnittliche Anzahl gemeldeter Nebentätigkeiten pro Abgeordnetem, "
+        "bezogen auf alle Abgeordneten der Fraktion (auch solche ohne Nebentätigkeit)."
+    )
 
+    # Count sidejobs per politician (only those who have any).
     counts_per_pol = (
         df.groupby(["politician_id", "party_label"], as_index=False)
         .size()
         .rename({"size": "n_sidejobs"}, axis=1)
     )
-    avg_by_party = (
-        counts_per_pol.groupby("party_label", as_index=False)["n_sidejobs"]
-        .mean()
-        .rename(columns={"n_sidejobs": "avg_sidejobs"})
-    )
+    # Compute the average over ALL politicians in the party, not just those
+    # with sidejobs, so parties with many zero-sidejob members aren't inflated.
+    all_pols = pols_df[["politician_id", "party"]].copy()
+    all_pols["party_label"] = all_pols["party"].str.replace("\xad", "", regex=False)
+    total_per_party = all_pols.groupby("party_label").size().reset_index(name="n_pols")
+    sj_per_party = counts_per_pol.groupby("party_label", as_index=False)[
+        "n_sidejobs"
+    ].sum()
+    avg_by_party = sj_per_party.merge(total_per_party, on="party_label", how="right")
+    avg_by_party["n_sidejobs"] = avg_by_party["n_sidejobs"].fillna(0)
+    avg_by_party["avg_sidejobs"] = avg_by_party["n_sidejobs"] / avg_by_party["n_pols"]
     avg_by_party = avg_by_party[avg_by_party["party_label"].isin(party_order_present)]
 
     fig_avg = px.bar(
@@ -185,7 +203,7 @@ with st.container(border=True):
     st.markdown("##### Einkommen nach Partei")
     st.caption(
         "Nur Abgeordnete mit mindestens einem exakt offengelegten Betrag (Brutto). "
-        "Monatliche Zahlungen werden hochgerechnet (Monatsbetrag × Monate seit Erfassungsdatum)."
+        "Monatliche und jährliche Zahlungen werden auf die Periodendauer hochgerechnet."
     )
 
     if pol_income.empty:
@@ -319,12 +337,12 @@ with st.container(border=True):
         )
         st.plotly_chart(fig_rain, width="stretch", config={"displayModeBar": True})
 
-# ── Chart 3: Top earners ─────────────────────────────────────────────────────
+# ── Chart 4: Top earners ─────────────────────────────────────────────────────
 with st.container(border=True):
     st.markdown("##### Top-Verdiener")
     st.caption(
-        "Jahres- und Einmalzahlungen (Brutto). Monatliche Zahlungen werden "
-        "hochgerechnet: Monatsbetrag × Monate seit Erfassungsdatum (max. bis Periodenende)."
+        "Einmalzahlungen (Brutto). Monatliche und jährliche Zahlungen werden "
+        "auf die Periodendauer hochgerechnet (max. bis Periodenende bzw. heute)."
     )
 
     if pol_income.empty:

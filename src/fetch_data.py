@@ -93,11 +93,11 @@ def upsert_periods() -> int:
     )
     if path.exists():
         df_existing = pd.read_csv(path).set_index("period_id")
-        df_existing.update(df_api.set_index("period_id"))
-        new = df_api[~df_api["period_id"].isin(df_existing.index)]
-        if not new.empty:
-            df_existing = pd.concat([df_existing, new.set_index("period_id")])
-        df_existing.reset_index().to_csv(path, index=False)
+        # Merge instead of update so that new columns (e.g. start_date, end_date)
+        # are added to existing rows, not silently dropped.
+        df_merged = df_api.set_index("period_id").combine_first(df_existing)
+        df_merged.update(df_api.set_index("period_id"))
+        df_merged.reset_index().to_csv(path, index=False)
     else:
         df_api.to_csv(path, index=False)
 

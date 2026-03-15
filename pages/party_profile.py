@@ -75,6 +75,10 @@ color_map = {
 # ── Chart 1: Occupations heatmap ─────────────────────────────────────────────
 with st.container(border=True):
     st.markdown("##### Berufe")
+    st.caption(
+        "Anzahl Abgeordneter pro Berufskategorie und Fraktion. "
+        "Berufsangaben aus den Profilen auf abgeordnetenwatch.de, normalisiert in Oberkategorien."
+    )
     pivot, z, zmax = compute_occupation_pivot(pols_df, party_labels_ordered)
 
     fig_occ_heat = go.Figure(
@@ -110,6 +114,7 @@ with st.container(border=True):
 # ── Chart 2: Age distribution ────────────────────────────────────────────────
 with st.container(border=True):
     st.markdown("##### Altersverteilung")
+    st.caption("Ein Punkt = ein Abgeordneter. Alter berechnet aus dem Geburtsjahr.")
     # Raincloud: half violin (distribution) above + jittered points below.
     # Computed inline to include name for tooltip (compute_age_df omits it).
     # Uses a numeric y-axis so violin and points can be offset from the baseline.
@@ -196,6 +201,7 @@ with st.container(border=True):
 # ── Chart 3: Gender breakdown ─────────────────────────────────────────────────
 with st.container(border=True):
     st.markdown("##### Geschlecht")
+    st.caption("Anteil Männlich / Weiblich / Divers pro Fraktion.")
     sex_counts = compute_sex_counts(pols_df)
 
     fig_sex = px.bar(
@@ -231,6 +237,7 @@ with st.container(border=True):
 # ── Chart 4: Academic titles ──────────────────────────────────────────────────
 with st.container(border=True):
     st.markdown("##### Akademische Titel")
+    st.caption("Anteil der Abgeordneten mit akademischem Titel (z.B. Dr., Prof.).")
     title_counts = compute_title_counts(pols_df)
 
     fig_title = px.bar(
