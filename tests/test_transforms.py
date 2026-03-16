@@ -100,14 +100,16 @@ def test_occupation_pivot_party_order():
 
 
 def test_occupation_pivot_null_occupation():
-    """Null occupations map to 'Keine Angabe', not crash."""
+    """Null occupations are dropped (Keine Angabe), not crash."""
     df = make_pols([("SPD", None), ("SPD", "Lehrer")])
     pivot, _z, _ = compute_occupation_pivot(df, ["SPD"])
-    assert "Keine Angabe" in pivot.index
+    # "Keine Angabe" is dropped from the pivot by _build_category_pivot
+    assert "Keine Angabe" not in pivot.index
+    assert "Lehrer" in pivot.index
 
 
-def test_occupation_pivot_zmax_is_80th_percentile():
-    """zmax equals the 80th percentile of non-NaN values in z."""
+def test_occupation_pivot_dev_z_shape():
+    """dev_z has the same shape as the pivot (categories x parties)."""
     df = make_pols(
         [
             ("SPD", "Lehrer"),
@@ -118,9 +120,9 @@ def test_occupation_pivot_zmax_is_80th_percentile():
             ("CDU", "Arzt"),
         ]
     )
-    _, z, zmax = compute_occupation_pivot(df, ["SPD", "CDU"])
-    expected = float(np.nanpercentile(z, 80))
-    assert zmax == pytest.approx(expected)
+    pivot, pct_z, dev_z = compute_occupation_pivot(df, ["SPD", "CDU"])
+    assert pct_z.shape == pivot.shape
+    assert dev_z.shape == pivot.shape
 
 
 # ─── compute_age_df ───────────────────────────────────────────────────────────
