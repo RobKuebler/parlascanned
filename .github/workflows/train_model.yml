@@ -1,0 +1,35 @@
+name: Modell trainieren
+
+on:
+  workflow_call: # triggered by fetch_data.yml
+  workflow_dispatch: # allow manual trigger
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main # ensure latest data commit is included
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.13"
+          version: "latest"
+
+      - name: Install dependencies
+        run: uv sync --group train
+
+      - name: Train model
+        run: uv run python src/train_model.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add outputs/
+          git diff --staged --quiet || git commit -m "model: aktualisiere Embeddings $(date -u +%Y-%m-%d)"
+          git pull --rebase && git push
