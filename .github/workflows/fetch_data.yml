@@ -1,4 +1,4 @@
-name: Daten aktualisieren
+name: Fetch data
 
 on:
   schedule:

@@ -1,4 +1,4 @@
-name: Modell trainieren
+name: Train model
 
 on:
   workflow_call: # triggered by fetch_data.yml
