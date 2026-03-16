@@ -305,47 +305,6 @@ with st.container(border=True):
     )
     st.plotly_chart(fig_cat, width="stretch", config={"displayModeBar": True})
 
-# ── Chart 4: Top earners ─────────────────────────────────────────────────────
-with st.container(border=True):
-    st.markdown("##### Top-Verdiener")
-    st.caption(
-        "Einmalzahlungen (Brutto). Monatliche und jährliche Zahlungen werden "
-        "auf die Periodendauer hochgerechnet (max. bis Periodenende bzw. heute)."
-    )
-
-    if pol_income.empty:
-        st.info("Keine genauen Einkommensdaten verfügbar.")
-    else:
-        top = pol_income.nlargest(15, "income")
-
-        fig_top = go.Figure(
-            go.Bar(
-                x=top["income"],
-                y=top["name"],
-                orientation="h",
-                marker={
-                    "color": [
-                        color_map.get(p, FALLBACK_COLOR) for p in top["party_label"]
-                    ],
-                    "line": {"color": BAR_LINE_COLOR, "width": BAR_LINE_WIDTH},
-                },
-                customdata=list(zip(top["party_label"], top["income"], strict=False)),
-                hovertemplate=(
-                    "<b>%{y}</b> (%{customdata[0]})<br>"
-                    "<b>%{customdata[1]:,.0f} €</b><extra></extra>"
-                ),
-            )
-        )
-        fig_top.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            margin={"l": 0, "r": 0, "t": 8, "b": 0},
-            height=max(300, len(top) * 28 + 60),
-            xaxis={"showgrid": False, "title": "Einkommen (€)", "tickformat": ",.0f"},
-            yaxis={"showgrid": False, "title": "", "autorange": "reversed"},
-        )
-        st.plotly_chart(fig_top, width="stretch", config={"displayModeBar": True})
-
 # ── Chart 5: Top topics by income, stacked by party ─────────────────────────
 with st.container(border=True):
     st.markdown("##### Themenfelder der Nebentätigkeiten")
@@ -440,6 +399,51 @@ with st.container(border=True):
             barmode="stack",
         )
         st.plotly_chart(fig_topics, width="stretch", config={"displayModeBar": True})
+
+# ── Chart: Top earners ───────────────────────────────────────────────────────
+with st.container(border=True):
+    st.markdown("##### Top-Verdiener")
+    st.caption(
+        "Einmalzahlungen (Brutto). Monatliche und jährliche Zahlungen werden "
+        "auf die Periodendauer hochgerechnet (max. bis Periodenende bzw. heute)."
+    )
+
+    if pol_income.empty:
+        st.info("Keine genauen Einkommensdaten verfügbar.")
+    else:
+        top = pol_income.nlargest(15, "income")
+
+        fig_top = go.Figure(
+            go.Bar(
+                x=top["income"],
+                y=top["name"],
+                orientation="h",
+                marker={
+                    "color": [
+                        color_map.get(p, FALLBACK_COLOR) for p in top["party_label"]
+                    ],
+                    "line": {"color": BAR_LINE_COLOR, "width": BAR_LINE_WIDTH},
+                },
+                customdata=list(zip(top["party_label"], top["income"], strict=False)),
+                hovertemplate=(
+                    "<b>%{y}</b> (%{customdata[0]})<br>"
+                    "<b>%{customdata[1]:,.0f} €</b><extra></extra>"
+                ),
+            )
+        )
+        fig_top.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            margin={"l": 0, "r": 0, "t": 8, "b": 0},
+            height=max(300, len(top) * 28 + 60),
+            xaxis={
+                "showgrid": False,
+                "title": "Einkommen (€)",
+                "tickformat": ",.0f",
+            },
+            yaxis={"showgrid": False, "title": "", "autorange": "reversed"},
+        )
+        st.plotly_chart(fig_top, width="stretch", config={"displayModeBar": True})
 
 # Footer
 st.html(
