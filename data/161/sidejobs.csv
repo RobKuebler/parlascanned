@@ -1,4 +1,11 @@
 politician_id,job_title,job_title_extra,organization,income_level,income,interval,created,date_start,date_end,category,topics
+145870,Stellv. Mitglied des Verwaltungsrates (ab 11.02.2026),,Bundesanstalt für Finanzdienstleistungsaufsicht (BaFin),,,,1773843988,,,29229,"Öffentliche Finanzen, Steuern und Abgaben|Staat und Verwaltung"
+145870,Vertrauensmann bei der LBS Landesbausparkasse NordWest (ehm. LBS Westdeutsche Landesbausparkasse),Einkommen im Jahr 2026,Bundesanstalt für Finanzdienstleistungsaufsicht (BaFin),1,1690.46,,1773843850,2026-01-01,2026-12-31,29647,"Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Staat und Verwaltung"
+150288,Mitglied des Stiftungsrates,,Stiftung Berliner Schloss - Humboldtforum,,,,1773843690,,,29230,Kultur
+150288,Stellv. Mitglied des Stiftungsrates (ab 25.09.2025),,Bundesstiftung Bauakademie,,,,1773843625,,,29230,"Raumordnung, Bau- und Wohnungswesen|Kultur"
+150288,Beratendes Mitglied des Stiftungsrates (ab 06.11.2025),,Stiftung Preußischer Kulturbesitz,,,,1773843560,,,29229,Kultur
+150288,Mitglied des Kuratoriums (ab 17.06.2025),,Stiftung Haus der Geschichte der Bundesrepublik Deutschland,,,,1773843516,,,29229,"Kultur|Politisches Leben, Parteien"
+175892,Mitglied des Kuratoriums (ab 26.01.2026),,Stiftung Bundespräsident-Theodor-Heuss-Haus,,,,1773843357,,,29229,"Kultur|Politisches Leben, Parteien"
 182845,"Mitglied des Kuratoriums, ehrenamtlich (ab 13.02.2026)",,Stiftung Bürger für Bürger,,,,1773754608,,,29230,"Gesellschaftspolitik, soziale Gruppen"
 175138,Mitglied der Versammlung,,Medienanstalt Sachsen-Anhalt,,,,1773653921,,,29229,"Medien, Kommunikation und Informationstechnik"
 142259,Mitglied des Aufsichtsrates,Einkommen im Jahr 2025,Sozialnetzwerk Arche e.V.,4,16387.0,,1773389304,2025-01-01,2025-12-31,29230,"Gesellschaftspolitik, soziale Gruppen"
@@ -2958,7 +2965,7 @@ politician_id,job_title,job_title_extra,organization,income_level,income,interva
 29084,Mitglied des Vorstandes ,,Deutsch-Ukrainisches Forum e.V.,,,,1674547809,,,29230,"Gesellschaftspolitik, soziale Gruppen"
 145870,Stellv. Vorsitzender des Vorstandes,,RING BERUFLICHER BILDUNG e.V.,,,,1673897489,,,29230,Arbeit und Beschäftigung|Bildung und Erziehung
 145870,Mitglied des Beirates,,Deutsche Renten Information e.V.,,,,1673897390,,,29230,"Arbeit und Beschäftigung|Öffentliche Finanzen, Steuern und Abgaben|Finanzen"
-145870,Stellv. Mitglied des Kuratoriums,,KENFO – Fonds zur Finanzierung der kerntechnischen Entsorgung,,,,1673897333,,,29229,"Energie|Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Umwelt"
+145870,Stellv. Mitglied des Kuratoriums (bis 13.10.2025),,KENFO – Fonds zur Finanzierung der kerntechnischen Entsorgung,,,,1673897333,,,29229,"Energie|Öffentliche Finanzen, Steuern und Abgaben|Finanzen|Umwelt"
 145878,"Mitglied des Rates, ehrenamtlich",,Stiftung für deutsch-polnische Zusammenarbeit (SdpZ),,,,1673897124,,,29230,Außenpolitik und internationale Beziehungen|Außenwirtschaft
 145878,Generalsekretär (ab 07.11.2022),,Christlich Demokratische Union Nordrhein-Westfalen,3,8950.0,1,1673896884,,,29647,"Politisches Leben, Parteien"
 78944,Mitglied des Aufsichtsrates,,Lüneburger Wohnungsbau GmbH (LüWoBau),,,,1673895951,,,29228,"Raumordnung, Bau- und Wohnungswesen"
