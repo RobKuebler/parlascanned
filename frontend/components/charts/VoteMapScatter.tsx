@@ -82,20 +82,24 @@ export function VoteMapScatter({
     const chart = chartRef.current?.getEchartsInstance()
     if (!chart) return
     const handler = (params: any) => {
-      const allIndices: number[] = []
+      // dataIndex is per-series, not a global index — look up via chart option
+      const seriesData = (chart.getOption() as any).series as any[]
+      const ids: number[] = []
       for (const batch of params.batch ?? []) {
         for (const sel of batch.selected ?? []) {
-          allIndices.push(...(sel.dataIndex ?? []))
+          const series = seriesData[sel.seriesIndex]
+          if (!series) continue
+          for (const idx of sel.dataIndex ?? []) {
+            const point = series.data[idx]
+            if (point) ids.push(point[2])  // data format: [x, y, politician_id]
+          }
         }
       }
-      // Map data indices back to politician_ids
-      const allPoints = embeddings
-      const ids = [...new Set(allIndices.map((i) => allPoints[i]?.politician_id).filter(Boolean))]
-      onSelectionChange(ids as number[])
+      onSelectionChange([...new Set(ids)])
     }
     chart.on('brushselected', handler)
     return () => { chart.off('brushselected', handler) }
-  }, [embeddings, onSelectionChange])
+  }, [onSelectionChange])
 
   return (
     <ReactECharts
