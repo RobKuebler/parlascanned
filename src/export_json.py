@@ -60,7 +60,8 @@ def _active_months(
 ) -> int:
     """Compute active months within period boundaries.
 
-    Mirrors the same function in pages/sidejobs.py.
+    Adapted from pages/sidejobs.py — adds a created_ts fallback for jobs with no
+    date_start.
     """
     today = datetime.now(tz=UTC).date()
     if date_start_str:
@@ -149,7 +150,7 @@ def _export_sidejobs(
             )
         if interval == "2":
             return row["income"] * (
-                _active_months(ds, de, period_start, period_end) / 12
+                _active_months(ds, de, period_start, period_end, created) / 12
             )
         return row["income"]
 
