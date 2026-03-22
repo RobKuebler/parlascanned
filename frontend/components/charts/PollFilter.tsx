@@ -16,7 +16,6 @@ function truncate(s: string, maxLen: number): string {
 
 const ACCENT = '#4B6BFB'
 const ACCENT_LIGHT = '#F0F4FF'
-const ACCENT_BORDER = '#D0DCFF'
 const BORDER = '#E2E5EE'
 const BG_INPUT = '#FAFBFF'
 
@@ -93,27 +92,18 @@ export function PollFilter({ polls, selectedIds, onChange }: Props) {
                 key={id}
                 title={poll.topic}
                 style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 5,
-                  padding: '3px 8px 3px 10px',
-                  background: ACCENT_LIGHT,
-                  border: `1px solid ${ACCENT_BORDER}`,
-                  borderLeft: `3px solid ${ACCENT}`,
-                  borderRadius: 6,
-                  fontSize: 12,
-                  color: '#2D3A8C',
-                  maxWidth: 320,
+                  display: 'inline-flex', alignItems: 'center', gap: 4,
+                  padding: '2px 8px', borderRadius: 12,
+                  background: '#f0f0f0', fontSize: 12, color: '#333',
                 }}
               >
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {truncate(poll.topic, 44)}
-                </span>
+                {truncate(poll.topic, 40)}
                 <button
                   aria-label={`Entferne ${poll.topic}`}
                   onClick={() => removePoll(id)}
                   style={{
                     background: 'none', border: 'none', cursor: 'pointer',
-                    padding: '0 0 0 2px', fontSize: 15, color: '#8899DD',
-                    lineHeight: 1, flexShrink: 0,
+                    padding: 0, fontSize: 13, color: '#888', lineHeight: 1,
                   }}
                 >
                   ×
