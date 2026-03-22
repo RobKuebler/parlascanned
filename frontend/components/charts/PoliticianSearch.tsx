@@ -1,7 +1,7 @@
 'use client'
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { Politician, stripSoftHyphen } from '@/lib/data'
-import { PARTY_COLORS, FALLBACK_COLOR } from '@/lib/constants'
+import { PARTY_COLORS, FALLBACK_COLOR, COLOR_SECONDARY } from '@/lib/constants'
 
 interface Props {
   politicians: Politician[]
@@ -22,14 +22,15 @@ export function PoliticianSearch({ politicians, selected, onSelectionChange }: P
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Build a lookup map for fast access by id
-  const polMap = new Map(politicians.map(p => [p.politician_id, p]))
+  const polMap = useMemo(() => new Map(politicians.map(p => [p.politician_id, p])), [politicians])
 
   // Filter politicians: name match (case-insensitive), not already selected
-  const selectedSet = new Set(selected)
+  const selectedSet = useMemo(() => new Set(selected), [selected])
+  const lowerQuery = query.toLowerCase()
   const results = query.length > 0
     ? politicians.filter(p =>
         !selectedSet.has(p.politician_id) &&
-        p.name.toLowerCase().includes(query.toLowerCase())
+        p.name.toLowerCase().includes(lowerQuery)
       )
     : []
 
@@ -96,11 +97,11 @@ export function PoliticianSearch({ politicians, selected, onSelectionChange }: P
                 {truncate(pol.name, 20)}
                 <span style={{ color: '#666', fontSize: 11 }}>{party}</span>
                 <button
-                  aria-label="×"
+                  aria-label={`Entferne ${pol.name}`}
                   onClick={() => removeChip(id)}
                   style={{
                     background: 'none', border: 'none', cursor: 'pointer',
-                    padding: 0, fontSize: 13, color: '#888', lineHeight: 1,
+                    padding: 0, fontSize: 13, color: FALLBACK_COLOR, lineHeight: 1,
                   }}
                 >
                   ×
@@ -151,7 +152,7 @@ export function PoliticianSearch({ politicians, selected, onSelectionChange }: P
           }}
         >
           {results.length === 0 ? (
-            <li style={{ padding: '8px 12px', color: '#999', fontSize: 13 }}>
+            <li style={{ padding: '8px 12px', color: COLOR_SECONDARY, fontSize: 13 }}>
               {query.length === 0 ? 'Tippe um zu suchen…' : 'Keine Ergebnisse'}
             </li>
           ) : (
@@ -175,7 +176,7 @@ export function PoliticianSearch({ politicians, selected, onSelectionChange }: P
                     style={{ width: 10, height: 10, borderRadius: '50%', background: color, flexShrink: 0 }}
                   />
                   <span>{pol.name}</span>
-                  <span style={{ color: '#999', fontSize: 11, marginLeft: 'auto' }}>{party}</span>
+                  <span style={{ color: COLOR_SECONDARY, fontSize: 11, marginLeft: 'auto' }}>{party}</span>
                 </li>
               )
             })

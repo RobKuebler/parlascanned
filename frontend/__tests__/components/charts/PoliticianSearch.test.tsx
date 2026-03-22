@@ -93,7 +93,7 @@ describe('PoliticianSearch', () => {
     it('removes politician from selection when chip × is clicked', async () => {
       const onChange = jest.fn()
       render(<PoliticianSearch politicians={POLITICIANS} selected={[1, 2]} onSelectionChange={onChange} />)
-      await userEvent.click(within(screen.getByTestId('chip-1')).getByRole('button', { name: '×' }))
+      await userEvent.click(within(screen.getByTestId('chip-1')).getByRole('button', { name: /Entferne/ }))
       expect(onChange).toHaveBeenCalledWith([2])
     })
 
