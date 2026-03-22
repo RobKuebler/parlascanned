@@ -36,12 +36,13 @@ export function PollFilter({ polls, selectedIds, onChange }: Props) {
   )
   const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds])
 
+  // When query is empty, show ALL unselected polls so the user can browse by scrolling.
+  // When query has content, filter by topic.
   const results = useMemo(() => {
-    if (query.length === 0) return []
+    const unselected = polls.filter(p => !selectedSet.has(p.poll_id))
+    if (query.length === 0) return unselected
     const lq = query.toLowerCase()
-    return polls.filter(
-      p => !selectedSet.has(p.poll_id) && p.topic.toLowerCase().includes(lq),
-    )
+    return unselected.filter(p => p.topic.toLowerCase().includes(lq))
   }, [polls, query, selectedSet])
 
   // Close dropdown on outside click
@@ -57,10 +58,8 @@ export function PollFilter({ polls, selectedIds, onChange }: Props) {
   }, [])
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const val = e.target.value
-    setQuery(val)
-    if (val.length === 0) setIsOpen(false)
-    else setIsOpen(true)
+    setQuery(e.target.value)
+    setIsOpen(true)
   }
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
@@ -161,6 +160,7 @@ export function PollFilter({ polls, selectedIds, onChange }: Props) {
             onFocus={e => {
               e.target.style.borderColor = ACCENT
               e.target.style.boxShadow = `0 0 0 3px ${ACCENT}22`
+              setIsOpen(true)
             }}
             onBlur={e => {
               e.target.style.borderColor = BORDER
@@ -219,9 +219,27 @@ export function PollFilter({ polls, selectedIds, onChange }: Props) {
             overflowY: 'auto',
           }}
         >
+          {/* Subtle header showing count when browsing all polls */}
+          {query.length === 0 && results.length > 0 && (
+            <li
+              style={{
+                padding: '6px 14px 5px',
+                fontSize: 11,
+                color: COLOR_SECONDARY,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                borderBottom: '1px solid #F3F4F8',
+                userSelect: 'none',
+                pointerEvents: 'none',
+              }}
+            >
+              {results.length} Abstimmungen
+            </li>
+          )}
+
           {results.length === 0 ? (
             <li style={{ padding: '10px 14px', color: COLOR_SECONDARY, fontSize: 13 }}>
-              {query.length === 0 ? 'Tippe um zu suchen…' : 'Keine Ergebnisse'}
+              Keine Ergebnisse
             </li>
           ) : (
             results.map((poll, i) => (
