@@ -1,7 +1,7 @@
 # Parlascanned — Next.js Migration Design
 
 **Date:** 2026-03-22
-**Scope:** 1:1 migration of the Streamlit app to Next.js + ECharts + Vercel
+**Scope:** 1:1 migration of the Streamlit app to Next.js + ECharts + Vercel, with mobile responsiveness
 **Branch:** `feat/nextjs-migration`
 
 ---
@@ -12,6 +12,7 @@
 - Host on Vercel (free tier, never sleeps, static site)
 - Keep all existing Python data pipeline (fetch, train, transforms) unchanged
 - Maintain all existing features 1:1
+- Fully usable on mobile devices (this was a major Streamlit limitation)
 
 ## Tech Stack
 
@@ -301,11 +302,46 @@ Vercel then auto-deploys via its GitHub integration when the push lands on `main
 
 ---
 
+## Mobile Responsiveness
+
+TailwindCSS breakpoints handle layout changes. ECharts charts are responsive by default (they fill their container width). The main challenges are navigation and the scatter plot brush selection.
+
+### Navigation — Sidebar → Bottom tab bar
+
+On desktop: left sidebar with nav links + period selector (as designed).
+On mobile (`< md` breakpoint): sidebar hidden, replaced by a **bottom tab bar** with icons for each page. The period selector moves to a top dropdown or sheet triggered by a button.
+
+### Charts on mobile
+
+All ECharts charts set `width: '100%'` and `height: 'auto'` (or a fixed px height). On mobile, chart heights are reduced to avoid excessive scrolling:
+
+| Chart | Desktop height | Mobile height |
+|---|---|---|
+| Scatter (vote map) | 600px | 350px |
+| Heatmap | auto (row × politicians) | same, horizontal scroll if needed |
+| Bar/category charts | 400px | 300px |
+
+### Scatter brush selection on mobile
+
+ECharts brush works with touch events natively — no extra code needed. However, the brush toolbar (lasso/box/clear buttons) must be large enough for touch targets (min 44×44px). Use ECharts `toolbox` with explicit icon sizes.
+
+### Heatmap on mobile
+
+The voting heatmap (politicians × polls) can be wide. On mobile it scrolls horizontally inside a `overflow-x: auto` container — same pattern as data tables on mobile.
+
+### General rules
+
+- Minimum touch target size: 44×44px for all interactive elements
+- No horizontal overflow on any page (except the heatmap container which scrolls intentionally)
+- Font sizes do not shrink below readable size (Tailwind `text-sm` minimum)
+- Period selector and page title always visible without scrolling on mobile
+
+---
+
 ## Out of Scope
 
 - UI redesign (1:1 migration only)
 - New features
 - Dark mode
-- Mobile responsiveness improvements
 - Authentication
 - 3D scatter plot (deferred — export always uses 2D)
