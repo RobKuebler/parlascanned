@@ -82,16 +82,18 @@ def test_sidejobs_shape(run_export):
     assert "jobs" in data
     assert "coverage" in data
     assert {"total", "with_amount"}.issubset(data["coverage"].keys())
-    if data["jobs"]:
-        job = data["jobs"][0]
-        assert {
-            "politician_id",
-            "party",
-            "prorated_income",
-            "topics",
-            "has_amount",
-        }.issubset(job.keys())
-        assert isinstance(job["topics"], list)
+    assert len(data["jobs"]) > 0, (
+        "Expected period 161 to have sidejobs with income amounts"
+    )
+    job = data["jobs"][0]
+    assert {
+        "politician_id",
+        "party",
+        "prorated_income",
+        "topics",
+        "has_amount",
+    }.issubset(job.keys())
+    assert isinstance(job["topics"], list)
 
 
 def test_party_profile_shape(run_export):
@@ -99,8 +101,12 @@ def test_party_profile_shape(run_export):
     assert "parties" in data
     assert "age" in data
     assert "sex" in data
+    assert "titles" in data
     assert "occupation" in data
-    occ = data["occupation"]
-    assert {"categories", "parties", "pct", "dev"}.issubset(occ.keys())
-    assert len(occ["pct"]) == len(occ["categories"])
-    assert len(occ["pct"][0]) == len(occ["parties"])
+    assert "education_field" in data
+    assert "education_degree" in data
+    for key in ("occupation", "education_field", "education_degree"):
+        pivot = data[key]
+        assert {"categories", "parties", "pct", "dev"}.issubset(pivot.keys())
+        assert len(pivot["pct"]) == len(pivot["categories"])
+        assert len(pivot["pct"][0]) == len(pivot["parties"])
