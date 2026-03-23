@@ -11,6 +11,21 @@ const FEATURES = [
     iconGradient: "linear-gradient(135deg, #4C46D9 0%, #7B77CC 100%)",
     tagColor: "#4C46D9",
     wide: true,
+    icon: (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <path d="m8 12 3 3 5-5" />
+      </svg>
+    ),
   },
   {
     href: "/party-profile",
@@ -21,6 +36,23 @@ const FEATURES = [
     iconGradient: "linear-gradient(135deg, #16A085 0%, #48CAA3 100%)",
     tagColor: "#16A085",
     wide: false,
+    icon: (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="9" cy="7" r="4" />
+        <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        <path d="M21 21v-2a4 4 0 0 0-3-3.85" />
+      </svg>
+    ),
   },
   {
     href: "/sidejobs",
@@ -31,6 +63,22 @@ const FEATURES = [
     iconGradient: "linear-gradient(135deg, #E67E22 0%, #F39C12 100%)",
     tagColor: "#E67E22",
     wide: false,
+    icon: (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect x="2" y="6" width="20" height="12" rx="2" />
+        <circle cx="12" cy="12" r="3" />
+        <path d="M6 12h.01M18 12h.01" />
+      </svg>
+    ),
   },
 ];
 
@@ -63,7 +111,16 @@ export default function Home() {
       {/* Feature grid: 1 col mobile, 2 col md+ */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger">
         {FEATURES.map(
-          ({ href, title, description, tag, iconGradient, tagColor, wide }) => (
+          ({
+            href,
+            title,
+            description,
+            tag,
+            iconGradient,
+            tagColor,
+            wide,
+            icon,
+          }) => (
             <Link
               key={href}
               href={href}
@@ -75,9 +132,11 @@ export default function Home() {
               {/* Icon + tag row */}
               <div className="flex items-center gap-3 mb-3">
                 <div
-                  className="w-7 h-7 rounded-lg shrink-0"
+                  className="w-7 h-7 rounded-lg shrink-0 flex items-center justify-center"
                   style={{ background: iconGradient }}
-                />
+                >
+                  {icon}
+                </div>
                 <span
                   className="text-[11px] font-bold tracking-[0.1em] uppercase"
                   style={{ color: tagColor }}
