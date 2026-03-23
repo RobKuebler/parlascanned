@@ -103,8 +103,9 @@ export default function Home() {
           Parlascanned
         </h1>
         <p className="text-[14px] leading-relaxed" style={{ color: "#AAAAAA" }}>
-          Wer stimmt mit wem? Wo verlaufen die echten Trennlinien im Deutschen
-          Bundestag?
+          Wie stimmt der Bundestag ab, wer sitzt drin, und wer verdient
+          nebenbei? Abstimmungen, Parteiprofil und Nebeneinkünfte auf einen
+          Blick.
         </p>
       </div>
 

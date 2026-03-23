@@ -16,9 +16,8 @@ Namentliche Abstimmungen, Berufe, Alter, Geschlecht, akademische Titel -- all da
 - **Abstimmungsverhalten (Heatmap):** Für ausgewählte Abgeordnete und Abstimmungen zeigt eine Heatmap Ja, Nein, Enthalten und Abwesenheit auf einen Blick.
 - **Fraktionsdisziplin:** Wie geschlossen stimmt eine Fraktion ab? Ein Balkendiagramm zeigt die durchschnittliche Streuung der Abgeordneten um den Fraktionsmittelpunkt.
 - **Parteiprofil:** Demografische und berufliche Profile der Fraktionen im Vergleich: Berufe, Altersverteilung, Geschlecht, akademische Titel.
+- **Nebeneinkünfte:** Offengelegte Nebentätigkeiten und Einkünfte der Abgeordneten nach Partei, Kategorie und Themenfeld.
 - **Wahlperioden-Auswahl:** Alle Wahlperioden ab dem 20. Bundestag (2021) sind verfügbar, sofern Daten und trainierte Embeddings vorhanden sind.
-
-Geplant: Nebeneinkommen der Abgeordneten.
 
 ## Das Modell
 
@@ -36,20 +35,20 @@ Nach dem Training werden nur die Abgeordneten-Embeddings exportiert. Ihre relati
 
 ## Setup
 
-Voraussetzungen: Python 3.13, [uv](https://github.com/astral-sh/uv)
+Voraussetzungen: Python 3.13, [uv](https://github.com/astral-sh/uv), Node.js 20+
 
 ```bash
-# Abhängigkeiten installieren (inkl. Dev-Tools)
+# Python-Abhängigkeiten installieren (inkl. Dev-Tools)
 uv sync --group dev
 
 # Voting-Daten von abgeordnetenwatch.de laden (aktuelle Wahlperiode)
 uv run src/fetch_data.py
 
 # Modell trainieren und Embeddings berechnen
-uv run src/train_model.py --group train
+uv run src/train_model.py
 
-# Dashboard starten
-uv run streamlit run app.py
+# Frontend starten (Next.js)
+cd frontend && npm install && npm run dev
 ```
 
 Optionale Parameter (jeweils `--help` für Details):
@@ -69,11 +68,10 @@ src/
   transforms.py           Reine Datentransformationen (Cohesion, Pivot, ...)
   occupation_clusters.py  Normalisierung von Berufsbezeichnungen
   train_model.py          Einstiegspunkt für das Training
-app.py                    Streamlit-App (Navigation, globaler Wahlperioden-Selector)
-pages/
-  home.py                 Startseite mit Projektbeschreibung
-  vote_map.py             Abstimmungslandkarte, Heatmap, Fraktionsdisziplin
-  party_profile.py        Parteiprofil: Berufe, Alter, Geschlecht, Titel
+frontend/
+  app/                    Next.js App Router (Seiten und Layout)
+  components/             UI-Komponenten und D3-Charts
+  lib/                    Daten-Fetching, Kontexte, Konstanten
 data/                     Rohdaten (gitignored)
 outputs/                  Embedding-CSVs (gitignored)
 ```
