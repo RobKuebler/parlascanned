@@ -13,7 +13,7 @@ const NAV_ITEMS = [
 export function Sidebar() {
   const pathname = usePathname();
   return (
-    <aside className="hidden md:flex flex-col w-56 shrink-0 h-screen sticky top-0 border-r border-[#E3E0DA] bg-white px-3 py-5 gap-1">
+    <aside className="hidden md:flex flex-col w-64 shrink-0 h-screen sticky top-0 border-r border-[#E3E0DA] bg-white px-3 py-5 gap-1">
       {/* Brand */}
       <div className="px-3 pt-3 pb-4">
         <span className="text-[13px] font-extrabold tracking-[0.14em] text-[#171613] uppercase">
