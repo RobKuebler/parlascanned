@@ -12,6 +12,13 @@ export function PeriodSelector({ variant = "light" }: PeriodSelectorProps) {
 
   const isSidebar = variant === "sidebar";
 
+  const rawLabel =
+    periods.find((p) => p.period_id === activePeriodId)?.label ?? "";
+  // In the compact sidebar button strip the "Bundestag " prefix and normalise the dash
+  const displayLabel = isSidebar
+    ? rawLabel.replace(/bundestag\s*/i, "").replace(/\s*-\s*/g, "–")
+    : rawLabel;
+
   return (
     <div className="relative">
       {/* Styled overlay — purely visual, pointer-events none */}
@@ -27,7 +34,7 @@ export function PeriodSelector({ variant = "light" }: PeriodSelectorProps) {
             isSidebar ? "text-white" : "text-[#1E1B5E]"
           }`}
         >
-          {periods.find((p) => p.period_id === activePeriodId)?.label ?? ""}
+          {displayLabel}
         </span>
         {/* Chevron */}
         <svg

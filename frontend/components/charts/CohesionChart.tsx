@@ -55,7 +55,7 @@ export function CohesionChart({ cohesion, height = 300 }: Props) {
           .selectAll("text")
           .style("font-size", "11px")
           .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#9A9790"),
+          .style("fill", "#6B6760"),
       );
 
     const tooltip = d3.select(tooltipRef.current!);

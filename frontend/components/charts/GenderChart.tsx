@@ -55,7 +55,7 @@ export function GenderChart({
           .selectAll("text")
           .style("font-size", "11px")
           .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#9A9790"),
+          .style("fill", "#6B6760"),
       );
 
     g.append("g")
@@ -116,7 +116,7 @@ export function GenderChart({
         .attr("y", 10)
         .style("font-size", "11px")
         .style("font-family", '"Plus Jakarta Sans", sans-serif')
-        .style("fill", "#9A9790")
+        .style("fill", "#6B6760")
         .text(gender);
     });
   }, [data, parties, width]);

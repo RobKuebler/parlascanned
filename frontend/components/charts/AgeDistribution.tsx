@@ -76,7 +76,7 @@ export function AgeDistribution({ data, parties }: Props) {
           .selectAll("text")
           .style("font-size", "11px")
           .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#9A9790")
+          .style("fill", "#6B6760")
           .attr("dx", "-6"),
       );
 
@@ -202,7 +202,7 @@ export function AgeDistribution({ data, parties }: Props) {
         .call((ax) =>
           ax
             .selectAll("text")
-            .style("fill", "#9A9790")
+            .style("fill", "#6B6760")
             .style("font-size", "11px")
             .style("font-family", '"Plus Jakarta Sans", sans-serif'),
         );

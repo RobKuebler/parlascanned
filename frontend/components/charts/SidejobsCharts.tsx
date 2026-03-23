@@ -147,7 +147,7 @@ export function IncomeByPartyChart({
             ax.selectAll("text")
               .style("font-size", "11px")
               .style("font-family", '"Plus Jakarta Sans", sans-serif')
-              .style("fill", "#9A9790")
+              .style("fill", "#6B6760")
               .style("text-anchor", "end")
               .attr("dx", "-0.5em")
               .attr("dy", "0.15em")
@@ -156,7 +156,7 @@ export function IncomeByPartyChart({
             ax.selectAll("text")
               .style("font-size", "11px")
               .style("font-family", '"Plus Jakarta Sans", sans-serif')
-              .style("fill", "#9A9790");
+              .style("fill", "#6B6760");
           }
         });
 
@@ -173,7 +173,7 @@ export function IncomeByPartyChart({
             .selectAll("text")
             .style("font-size", "11px")
             .style("font-family", '"Plus Jakarta Sans", sans-serif')
-            .style("fill", "#9A9790"),
+            .style("fill", "#6B6760"),
         )
         .call((ax) => ax.selectAll(".tick line").attr("stroke", "#eee"));
 
@@ -293,7 +293,7 @@ export function IncomeByCategoryChart({
           .selectAll("text")
           .style("font-size", "11px")
           .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#9A9790"),
+          .style("fill", "#6B6760"),
       )
       .call((ax) =>
         truncateLabels(ax, M.left - 8, tooltip, containerRef.current!),
@@ -313,7 +313,7 @@ export function IncomeByCategoryChart({
           .selectAll("text")
           .style("font-size", "11px")
           .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#9A9790"),
+          .style("fill", "#6B6760"),
       );
 
     series.forEach((s) => {
@@ -458,7 +458,7 @@ export function TopTopicsChart({
           .selectAll("text")
           .style("font-size", "11px")
           .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#9A9790"),
+          .style("fill", "#6B6760"),
       )
       .call((ax) =>
         truncateLabels(ax, M.left - 8, tooltip, containerRef.current!),
@@ -478,7 +478,7 @@ export function TopTopicsChart({
           .selectAll("text")
           .style("font-size", "11px")
           .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#9A9790"),
+          .style("fill", "#6B6760"),
       );
 
     series.forEach((s) => {
@@ -613,7 +613,7 @@ export function TopEarnersChart({
           .selectAll("text")
           .style("font-size", "11px")
           .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#9A9790"),
+          .style("fill", "#6B6760"),
       )
       .call((ax) =>
         truncateLabels(ax, M.left - 8, tooltip, containerRef.current!),
