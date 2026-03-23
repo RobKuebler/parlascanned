@@ -96,7 +96,7 @@ export function BottomNav() {
               key={href}
               href={href}
               className={`flex flex-col items-center justify-center flex-1 h-full gap-1 text-[10px] font-semibold tracking-wide transition-colors duration-150 ${
-                active ? "text-[#2347C8]" : "text-[#9A9790]"
+                active ? "text-[#4C46D9]" : "text-[#9A9790]"
               }`}
             >
               {icon(active)}
