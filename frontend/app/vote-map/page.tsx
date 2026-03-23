@@ -105,13 +105,22 @@ export default function VoteMapPage() {
 
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-[#171613] mb-1">
-          Wer stimmt mit wem?
+      <div className="mb-8 pl-4 border-l-4" style={{ borderColor: "#4C46D9" }}>
+        <p
+          className="text-[11px] font-bold tracking-[0.15em] uppercase mb-1"
+          style={{ color: "#4C46D9" }}
+        >
+          KI-Analyse
+        </p>
+        <h1
+          className="text-[28px] font-black tracking-tight leading-tight mb-1"
+          style={{ color: "#1E1B5E" }}
+        >
+          Abstimmungslandkarte
         </h1>
-        <p className="text-[14px] text-[#6B6760]">
-          Jeder Punkt = ein Abgeordneter. Nähe = ähnliches Abstimmungsverhalten.
-          Box-Auswahl wählt Abgeordnete für die Heatmap.
+        <p className="text-[14px]" style={{ color: "#9A9790" }}>
+          KI-generierte Karte aller Abgeordneten. Nähe = ähnliches
+          Abstimmungsverhalten.
         </p>
       </div>
 
@@ -120,7 +129,10 @@ export default function VoteMapPage() {
         className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6 mb-5"
         style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
       >
-        <h2 className="font-semibold text-[15px] text-[#171613] mb-4">
+        <h2
+          className="font-extrabold text-[15px] mb-4"
+          style={{ color: "#1E1B5E" }}
+        >
           Abstimmungslandkarte
         </h2>
         {loading ? (
@@ -151,7 +163,10 @@ export default function VoteMapPage() {
         className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6 mb-5"
         style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
       >
-        <h2 className="font-semibold text-[15px] text-[#171613] mb-4">
+        <h2
+          className="font-extrabold text-[15px] mb-4"
+          style={{ color: "#1E1B5E" }}
+        >
           Abstimmungsverhalten
         </h2>
 
@@ -217,7 +232,10 @@ export default function VoteMapPage() {
         className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6 mb-5"
         style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
       >
-        <h2 className="font-semibold text-[15px] text-[#171613] mb-1">
+        <h2
+          className="font-extrabold text-[15px] mb-1"
+          style={{ color: "#1E1B5E" }}
+        >
           Fraktionsdisziplin
         </h2>
         <p className="text-[12px] text-[#9A9790] mb-4">
