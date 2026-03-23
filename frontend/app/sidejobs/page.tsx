@@ -51,13 +51,22 @@ export default function SidejobsPage() {
 
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-[#171613] mb-1">
+      <div className="mb-8 pl-4 border-l-4" style={{ borderColor: "#E67E22" }}>
+        <p
+          className="text-[11px] font-bold tracking-[0.15em] uppercase mb-1"
+          style={{ color: "#E67E22" }}
+        >
+          Transparenz
+        </p>
+        <h1
+          className="text-[28px] font-black tracking-tight leading-tight mb-1"
+          style={{ color: "#1E1B5E" }}
+        >
           Nebeneinkünfte
         </h1>
-        <p className="text-[14px] text-[#6B6760]">
-          Offengelegte Nebentätigkeiten und Einkünfte der
-          Bundestagsabgeordneten.
+        <p className="text-[14px]" style={{ color: "#9A9790" }}>
+          Offengelegte Nebentätigkeiten und Einkünfte nach Partei, Kategorie und
+          Themenfeld.
         </p>
       </div>
 
@@ -90,7 +99,10 @@ export default function SidejobsPage() {
             className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
             style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
           >
-            <h2 className="font-semibold text-[15px] text-[#171613] mb-1">
+            <h2
+              className="font-extrabold text-[15px] mb-1"
+              style={{ color: "#1E1B5E" }}
+            >
               Einkommen nach Partei
             </h2>
             <p className="text-[12px] text-[#9A9790] mb-4">
@@ -108,7 +120,10 @@ export default function SidejobsPage() {
             className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
             style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
           >
-            <h2 className="font-semibold text-[15px] text-[#171613] mb-1">
+            <h2
+              className="font-extrabold text-[15px] mb-1"
+              style={{ color: "#1E1B5E" }}
+            >
               Einkommen nach Kategorie
             </h2>
             <p className="text-[12px] text-[#9A9790] mb-4">
@@ -121,7 +136,10 @@ export default function SidejobsPage() {
             className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
             style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
           >
-            <h2 className="font-semibold text-[15px] text-[#171613] mb-1">
+            <h2
+              className="font-extrabold text-[15px] mb-1"
+              style={{ color: "#1E1B5E" }}
+            >
               Themenfelder der Nebentätigkeiten
             </h2>
             <p className="text-[12px] text-[#9A9790] mb-4">
@@ -135,7 +153,10 @@ export default function SidejobsPage() {
             className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
             style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
           >
-            <h2 className="font-semibold text-[15px] text-[#171613] mb-4">
+            <h2
+              className="font-extrabold text-[15px] mb-4"
+              style={{ color: "#1E1B5E" }}
+            >
               Top-Verdiener
             </h2>
             <TopEarnersChart
