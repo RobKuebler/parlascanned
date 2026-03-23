@@ -1,0 +1,12 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="32" height="32" rx="8" fill="#4C46D9"/>
+  <!-- Magnifying glass ring -->
+  <circle cx="13" cy="13" r="8.5" stroke="white" stroke-width="2.2"/>
+  <!-- Handle -->
+  <line x1="19.5" y1="19.5" x2="26" y2="26" stroke="white" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- Parliament hemicycle dots -->
+  <circle cx="9.5" cy="14" r="2" fill="white"/>
+  <circle cx="13" cy="9.5" r="2" fill="white"/>
+  <circle cx="16.5" cy="14" r="2" fill="white"/>
+</svg>
