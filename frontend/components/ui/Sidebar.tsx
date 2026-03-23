@@ -9,8 +9,8 @@ const NAV_ITEMS = [
     label: "Start",
     icon: (active: boolean) => (
       <svg
-        width="24"
-        height="24"
+        width="26"
+        height="26"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -28,8 +28,8 @@ const NAV_ITEMS = [
     label: "Abstimmungen",
     icon: (active: boolean) => (
       <svg
-        width="24"
-        height="24"
+        width="26"
+        height="26"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -47,8 +47,8 @@ const NAV_ITEMS = [
     label: "Parteiprofil",
     icon: (active: boolean) => (
       <svg
-        width="24"
-        height="24"
+        width="26"
+        height="26"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -68,8 +68,8 @@ const NAV_ITEMS = [
     label: "Nebeneinkünfte",
     icon: (active: boolean) => (
       <svg
-        width="24"
-        height="24"
+        width="26"
+        height="26"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -153,7 +153,7 @@ export function Sidebar() {
                 {icon(active)}
               </span>
               <span
-                className={`text-[10px] font-bold tracking-wide ${active ? "text-white" : "text-[#A8A5E0]"}`}
+                className={`text-[12px] font-bold tracking-wide ${active ? "text-white" : "text-[#A8A5E0]"}`}
               >
                 {label}
               </span>
