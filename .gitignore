@@ -16,6 +16,10 @@ outputs/*.pth
 # OS
 .DS_Store
 Thumbs.db
+*.stackdump
+*.tmp
+*.log
+*.bak
 
 # IDE
 .idea/

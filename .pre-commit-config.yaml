@@ -26,3 +26,22 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+
+      - id: prettier
+        name: prettier
+        entry: npx --prefix frontend prettier --write
+        language: system
+        files: ^frontend/.*\.(ts|tsx|js|jsx|json|css)$
+
+      - id: eslint
+        name: eslint
+        entry: npx --prefix frontend eslint --fix
+        language: system
+        files: ^frontend/.*\.(ts|tsx|js|jsx)$
+
+      - id: tsc
+        name: tsc
+        entry: bash -c 'cd frontend && npx tsc --noEmit'
+        language: system
+        files: ^frontend/.*\.(ts|tsx)$
+        pass_filenames: false
