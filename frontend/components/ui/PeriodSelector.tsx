@@ -14,9 +14,11 @@ export function PeriodSelector({ variant = "light" }: PeriodSelectorProps) {
 
   const rawLabel =
     periods.find((p) => p.period_id === activePeriodId)?.label ?? "";
-  // In the compact sidebar button strip the "Bundestag " prefix and normalise the dash
+  // In the compact sidebar button: "Bundestag 2021 - 2025" → "2021–25"
   const displayLabel = isSidebar
-    ? rawLabel.replace(/bundestag\s*/i, "").replace(/\s*-\s*/g, "–")
+    ? rawLabel
+        .replace(/bundestag\s*/i, "")
+        .replace(/\s*-\s*20(\d{2})\s*$/, "–$1")
     : rawLabel;
 
   return (

@@ -89,7 +89,7 @@ const NAV_ITEMS = [
 export function Sidebar() {
   const pathname = usePathname();
   return (
-    <aside className="hidden md:flex flex-col w-[88px] shrink-0 h-screen sticky top-0 bg-[#1E1B5E]">
+    <aside className="hidden md:flex flex-col w-[96px] shrink-0 h-screen sticky top-0 bg-[#1E1B5E]">
       {/* Logo */}
       <div className="flex justify-center pt-[14px] pb-[10px]">
         <div className="w-9 h-9 bg-[#4C46D9] rounded-[9px] flex items-center justify-center">
