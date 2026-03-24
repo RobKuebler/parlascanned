@@ -2,6 +2,13 @@
 import { useRef, useEffect } from "react";
 import * as d3 from "d3";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
+import {
+  ChartTooltip,
+  styleAxisText,
+  TOOLTIP_DX,
+  TOOLTIP_DY,
+} from "@/lib/chart-utils";
+import { CHART_FONT_FAMILY, COLOR_SECONDARY } from "@/lib/constants";
 
 interface SexRecord {
   party_label: string;
@@ -50,13 +57,7 @@ export function GenderChart({
       .attr("transform", `translate(0,${iH})`)
       .call(d3.axisBottom(xScale).tickSize(0))
       .call((ax) => ax.select(".domain").remove())
-      .call((ax) =>
-        ax
-          .selectAll("text")
-          .style("font-size", "11px")
-          .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#6B6760"),
-      );
+      .call(styleAxisText);
 
     g.append("g")
       .call(
@@ -89,8 +90,8 @@ export function GenderChart({
             const [px, py] = d3.pointer(event, containerRef.current!);
             tooltip
               .style("opacity", "1")
-              .style("left", `${px + 12}px`)
-              .style("top", `${py - 28}px`)
+              .style("left", `${px + TOOLTIP_DX}px`)
+              .style("top", `${py + TOOLTIP_DY}px`)
               .html(`<b>${gender}</b><br/>${party}: ${pct}%`);
           })
           .on("mouseleave", () => tooltip.style("opacity", "0"));
@@ -115,8 +116,8 @@ export function GenderChart({
         .attr("x", i * 90 + 16)
         .attr("y", 10)
         .style("font-size", "11px")
-        .style("font-family", '"Plus Jakarta Sans", sans-serif')
-        .style("fill", "#6B6760")
+        .style("font-family", CHART_FONT_FAMILY)
+        .style("fill", COLOR_SECONDARY)
         .text(gender);
     });
   }, [data, parties, width]);
@@ -124,22 +125,7 @@ export function GenderChart({
   return (
     <div ref={containerRef} style={{ position: "relative" }}>
       <svg ref={svgRef} style={{ display: "block", width: "100%" }} />
-      <div
-        ref={tooltipRef}
-        style={{
-          position: "absolute",
-          pointerEvents: "none",
-          background: "rgba(0,0,0,0.78)",
-          color: "#fff",
-          padding: "4px 8px",
-          borderRadius: 4,
-          fontSize: 12,
-          opacity: 0,
-          transition: "opacity 0.1s",
-          whiteSpace: "nowrap",
-          zIndex: 10,
-        }}
-      />
+      <ChartTooltip tooltipRef={tooltipRef} />
     </div>
   );
 }

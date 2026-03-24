@@ -54,6 +54,9 @@ export function sortParties(parties: string[]): string[] {
 // Design tokens
 export const COLOR_SECONDARY = "#6B6760";
 export const COLOR_BODY = "#171613";
+
+// Chart font — used by all D3 charts for axis labels and legends
+export const CHART_FONT_FAMILY = '"Plus Jakarta Sans", sans-serif';
 export const MARKER_OUTLINE = "rgba(255,255,255,0.4)";
 
 // Vote answer → label + color (for heatmap legend)

@@ -3,6 +3,12 @@ import { useRef, useEffect } from "react";
 import * as d3 from "d3";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
 import { PARTY_COLORS, FALLBACK_COLOR } from "@/lib/constants";
+import {
+  ChartTooltip,
+  styleAxisText,
+  TOOLTIP_DX,
+  TOOLTIP_DY,
+} from "@/lib/chart-utils";
 
 interface AgeRecord {
   name: string;
@@ -71,14 +77,10 @@ export function AgeDistribution({ data, parties }: Props) {
     g.append("g")
       .call(d3.axisLeft(yScale).tickSize(0))
       .call((ax) => ax.select(".domain").remove())
-      .call((ax) =>
-        ax
-          .selectAll("text")
-          .style("font-size", "11px")
-          .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#6B6760")
-          .attr("dx", "-6"),
-      );
+      .call((ax) => {
+        styleAxisText(ax);
+        ax.selectAll("text").attr("dx", "-6");
+      });
 
     // Clipped group for everything x-dependent
     const chartG = g.append("g").attr("clip-path", `url(#${clipId})`);
@@ -121,7 +123,7 @@ export function AgeDistribution({ data, parties }: Props) {
     const tooltip = d3.select(tooltipRef.current!);
 
     // Draw static y-position elements once (separator lines)
-    partyData.forEach(({ baseline, color: _c }) => {
+    partyData.forEach(({ baseline }) => {
       dataG
         .append("line")
         .attr("class", "sep-line")
@@ -173,9 +175,8 @@ export function AgeDistribution({ data, parties }: Props) {
       },
     );
 
-    // Function to redraw all x-dependent elements given a (possibly zoomed) xScale
+    // Redraws all x-dependent elements for a given (possibly zoomed) xScale
     function update(xS: d3.ScaleLinear<number, number>) {
-      // Gridlines (vertical, spanning full chart height)
       gridG.selectAll("*").remove();
       gridG.call((g2: d3.Selection<SVGGElement, unknown, null, undefined>) =>
         g2
@@ -195,35 +196,24 @@ export function AgeDistribution({ data, parties }: Props) {
           ),
       );
 
-      // X axis
       xAxisG
         .call(d3.axisBottom(xS).ticks(8).tickSize(0))
         .call((ax) => ax.select(".domain").remove())
-        .call((ax) =>
-          ax
-            .selectAll("text")
-            .style("fill", "#6B6760")
-            .style("font-size", "11px")
-            .style("font-family", '"Plus Jakarta Sans", sans-serif'),
-        );
+        .call(styleAxisText);
 
-      // Violin paths
       partyData.forEach(({ party, density, baseline, densityToPixel }) => {
         const path = dataG.select<SVGPathElement>(
           `.violin-${party.replace(/\W/g, "_")}`,
         );
-
         const area = d3
           .area<[number, number]>()
           .x((d) => xS(d[0]))
           .y0(baseline)
           .y1((d) => baseline - densityToPixel(d[1]))
           .curve(d3.curveBasis);
-
         path.attr("d", area(density));
       });
 
-      // Dot cx positions
       partyData.forEach(({ party }) => {
         dataG
           .selectAll<
@@ -233,12 +223,9 @@ export function AgeDistribution({ data, parties }: Props) {
           .attr("cx", (d) => xS(d.age));
       });
 
-      // Separator lines (full width, not affected by zoom)
       dataG.selectAll<SVGLineElement, unknown>(".sep-line").attr("x2", iW);
     }
 
-    // Initial draw
-    // currentXS tracks the live scale (updated on zoom) for tooltip hit-testing
     let currentXS = xScaleBase;
     update(xScaleBase);
 
@@ -268,11 +255,9 @@ export function AgeDistribution({ data, parties }: Props) {
       .style("cursor", "crosshair")
       .call(zoom)
       .on("mousemove", (event: MouseEvent) => {
-        // Pointer coords are in the g's coordinate space (0..iW, 0..iH)
         const [mx, my] = d3.pointer(event);
         const ageAtMouse = currentXS.invert(mx);
 
-        // Find which party band the cursor is in
         const hoveredParty = parties.find((p) => {
           const bandY = yScale(p) ?? 0;
           return my >= bandY && my <= bandY + bw;
@@ -288,14 +273,12 @@ export function AgeDistribution({ data, parties }: Props) {
           return;
         }
 
-        // Nearest politician by age
         const nearest = pd.records.reduce((best, d) =>
           Math.abs(d.age - ageAtMouse) < Math.abs(best.age - ageAtMouse)
             ? d
             : best,
         );
 
-        // Hide tooltip if mouse is more than 20px away from the nearest dot
         if (Math.abs(currentXS(nearest.age) - mx) > 20) {
           tooltip.style("opacity", "0");
           return;
@@ -304,8 +287,8 @@ export function AgeDistribution({ data, parties }: Props) {
         const [px, py] = d3.pointer(event, containerRef.current!);
         tooltip
           .style("opacity", "1")
-          .style("left", `${px + 12}px`)
-          .style("top", `${py - 28}px`)
+          .style("left", `${px + TOOLTIP_DX}px`)
+          .style("top", `${py + TOOLTIP_DY}px`)
           .html(
             `<b>${nearest.name}</b><br/>${nearest.party} · ${nearest.age} Jahre`,
           );
@@ -316,22 +299,7 @@ export function AgeDistribution({ data, parties }: Props) {
   return (
     <div ref={containerRef} style={{ position: "relative" }}>
       <svg ref={svgRef} style={{ display: "block", width: "100%" }} />
-      <div
-        ref={tooltipRef}
-        style={{
-          position: "absolute",
-          pointerEvents: "none",
-          background: "rgba(0,0,0,0.78)",
-          color: "#fff",
-          padding: "4px 8px",
-          borderRadius: 4,
-          fontSize: 12,
-          opacity: 0,
-          transition: "opacity 0.1s",
-          whiteSpace: "nowrap",
-          zIndex: 10,
-        }}
-      />
+      <ChartTooltip tooltipRef={tooltipRef} />
     </div>
   );
 }

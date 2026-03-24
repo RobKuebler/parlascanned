@@ -4,67 +4,13 @@ import * as d3 from "d3";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
 import { SidejobRecord } from "@/lib/data";
 import { PARTY_COLORS, FALLBACK_COLOR, sortParties } from "@/lib/constants";
-
-// ── Truncates axis tick labels to fit within maxPx; shows full text on hover ──
-
-function truncateLabels(
-  ax: d3.Selection<SVGGElement, unknown, null, undefined>,
-  maxPx: number,
-  tooltip: d3.Selection<HTMLDivElement, unknown, null, undefined>,
-  container: Element,
-) {
-  ax.selectAll<SVGTextElement, unknown>("text").each(function () {
-    const el = d3.select(this);
-    const full = el.text();
-    let truncated = full;
-    while (
-      (this as SVGTextElement).getComputedTextLength() > maxPx &&
-      truncated.length > 1
-    ) {
-      truncated = truncated.slice(0, -1);
-      el.text(truncated + "…");
-    }
-    if (truncated !== full) {
-      el.style("cursor", "default")
-        .on("mousemove", (event: MouseEvent) => {
-          const [px, py] = d3.pointer(event, container);
-          tooltip
-            .style("opacity", "1")
-            .style("left", `${px + 12}px`)
-            .style("top", `${py - 28}px`)
-            .html(full);
-        })
-        .on("mouseleave", () => tooltip.style("opacity", "0"));
-    }
-  });
-}
-
-// ── Shared tooltip div ────────────────────────────────────────────────────────
-
-function Tooltip({
-  ref: tooltipRef,
-}: {
-  ref: React.RefObject<HTMLDivElement | null>;
-}) {
-  return (
-    <div
-      ref={tooltipRef}
-      style={{
-        position: "absolute",
-        pointerEvents: "none",
-        background: "rgba(0,0,0,0.78)",
-        color: "#fff",
-        padding: "4px 8px",
-        borderRadius: 4,
-        fontSize: 12,
-        opacity: 0,
-        transition: "opacity 0.1s",
-        whiteSpace: "nowrap",
-        zIndex: 10,
-      }}
-    />
-  );
-}
+import {
+  ChartTooltip,
+  styleAxisText,
+  truncateAxisLabels,
+  TOOLTIP_DX,
+  TOOLTIP_DY,
+} from "@/lib/chart-utils";
 
 // ── Chart 1: Income by party (sum + mean) ─────────────────────────────────────
 
@@ -144,19 +90,14 @@ export function IncomeByPartyChart({
         .call((ax) => ax.select(".domain").remove())
         .call((ax) => {
           if (needsRotation) {
+            styleAxisText(ax);
             ax.selectAll("text")
-              .style("font-size", "11px")
-              .style("font-family", '"Plus Jakarta Sans", sans-serif')
-              .style("fill", "#6B6760")
               .style("text-anchor", "end")
               .attr("dx", "-0.5em")
               .attr("dy", "0.15em")
               .attr("transform", "rotate(-40)");
           } else {
-            ax.selectAll("text")
-              .style("font-size", "11px")
-              .style("font-family", '"Plus Jakarta Sans", sans-serif')
-              .style("fill", "#6B6760");
+            styleAxisText(ax);
           }
         });
 
@@ -168,13 +109,7 @@ export function IncomeByPartyChart({
             .tickFormat((v) => `${((v as number) / 1000).toFixed(0)}k`),
         )
         .call((ax) => ax.select(".domain").remove())
-        .call((ax) =>
-          ax
-            .selectAll("text")
-            .style("font-size", "11px")
-            .style("font-family", '"Plus Jakarta Sans", sans-serif')
-            .style("fill", "#6B6760"),
-        )
+        .call(styleAxisText)
         .call((ax) => ax.selectAll(".tick line").attr("stroke", "#eee"));
 
       const tooltip = d3.select(tooltipRef.current!);
@@ -191,8 +126,8 @@ export function IncomeByPartyChart({
           const [px, py] = d3.pointer(event, containerRef.current!);
           tooltip
             .style("opacity", "1")
-            .style("left", `${px + 12}px`)
-            .style("top", `${py - 28}px`)
+            .style("left", `${px + TOOLTIP_DX}px`)
+            .style("top", `${py + TOOLTIP_DY}px`)
             .html(
               `<b>${d.party}</b><br/>${Math.round(d.value).toLocaleString("de")} €`,
             );
@@ -218,7 +153,7 @@ export function IncomeByPartyChart({
           <svg ref={svgMeanRef} style={{ display: "block", width: "100%" }} />
         </div>
       </div>
-      <Tooltip ref={tooltipRef} />
+      <ChartTooltip tooltipRef={tooltipRef} />
     </div>
   );
 }
@@ -288,15 +223,9 @@ export function IncomeByCategoryChart({
     g.append("g")
       .call(d3.axisLeft(yScale).tickSize(0))
       .call((ax) => ax.select(".domain").remove())
+      .call(styleAxisText)
       .call((ax) =>
-        ax
-          .selectAll("text")
-          .style("font-size", "11px")
-          .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#6B6760"),
-      )
-      .call((ax) =>
-        truncateLabels(ax, M.left - 8, tooltip, containerRef.current!),
+        truncateAxisLabels(ax, M.left - 8, tooltip, containerRef.current!),
       );
 
     g.append("g")
@@ -308,13 +237,7 @@ export function IncomeByCategoryChart({
           .tickFormat((v) => `${((v as number) / 1000).toFixed(0)}k`),
       )
       .call((ax) => ax.select(".domain").remove())
-      .call((ax) =>
-        ax
-          .selectAll("text")
-          .style("font-size", "11px")
-          .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#6B6760"),
-      );
+      .call(styleAxisText);
 
     series.forEach((s) => {
       const party = s.key;
@@ -336,8 +259,8 @@ export function IncomeByCategoryChart({
           const val = Math.round(d[1] - d[0]);
           tooltip
             .style("opacity", "1")
-            .style("left", `${px + 12}px`)
-            .style("top", `${py - 28}px`)
+            .style("left", `${px + TOOLTIP_DX}px`)
+            .style("top", `${py + TOOLTIP_DY}px`)
             .html(
               `<b>${party}</b><br/>${d.data.cat}<br/>${val.toLocaleString("de")} €`,
             );
@@ -354,7 +277,7 @@ export function IncomeByCategoryChart({
             ref={svgRef}
             style={{ display: "block", width: "100%", overflow: "visible" }}
           />
-          <Tooltip ref={tooltipRef} />
+          <ChartTooltip tooltipRef={tooltipRef} />
         </div>
       </div>
       <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 px-1">
@@ -453,15 +376,9 @@ export function TopTopicsChart({
     g.append("g")
       .call(d3.axisLeft(yScale).tickSize(0))
       .call((ax) => ax.select(".domain").remove())
+      .call(styleAxisText)
       .call((ax) =>
-        ax
-          .selectAll("text")
-          .style("font-size", "11px")
-          .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#6B6760"),
-      )
-      .call((ax) =>
-        truncateLabels(ax, M.left - 8, tooltip, containerRef.current!),
+        truncateAxisLabels(ax, M.left - 8, tooltip, containerRef.current!),
       );
 
     g.append("g")
@@ -473,13 +390,7 @@ export function TopTopicsChart({
           .tickFormat((v) => `${((v as number) / 1000).toFixed(0)}k`),
       )
       .call((ax) => ax.select(".domain").remove())
-      .call((ax) =>
-        ax
-          .selectAll("text")
-          .style("font-size", "11px")
-          .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#6B6760"),
-      );
+      .call(styleAxisText);
 
     series.forEach((s) => {
       const party = s.key;
@@ -501,8 +412,8 @@ export function TopTopicsChart({
           const val = Math.round(d[1] - d[0]);
           tooltip
             .style("opacity", "1")
-            .style("left", `${px + 12}px`)
-            .style("top", `${py - 28}px`)
+            .style("left", `${px + TOOLTIP_DX}px`)
+            .style("top", `${py + TOOLTIP_DY}px`)
             .html(
               `<b>${party}</b><br/>${d.data.topic}<br/>${val.toLocaleString("de")} €`,
             );
@@ -519,7 +430,7 @@ export function TopTopicsChart({
             ref={svgRef}
             style={{ display: "block", width: "100%", overflow: "visible" }}
           />
-          <Tooltip ref={tooltipRef} />
+          <ChartTooltip tooltipRef={tooltipRef} />
         </div>
       </div>
       <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 px-1">
@@ -608,15 +519,9 @@ export function TopEarnersChart({
     g.append("g")
       .call(d3.axisLeft(yScale).tickSize(0))
       .call((ax) => ax.select(".domain").remove())
+      .call(styleAxisText)
       .call((ax) =>
-        ax
-          .selectAll("text")
-          .style("font-size", "11px")
-          .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#6B6760"),
-      )
-      .call((ax) =>
-        truncateLabels(ax, M.left - 8, tooltip, containerRef.current!),
+        truncateAxisLabels(ax, M.left - 8, tooltip, containerRef.current!),
       );
 
     g.append("g")
@@ -646,8 +551,8 @@ export function TopEarnersChart({
         const [px, py] = d3.pointer(event, containerRef.current!);
         tooltip
           .style("opacity", "1")
-          .style("left", `${px + 12}px`)
-          .style("top", `${py - 28}px`)
+          .style("left", `${px + TOOLTIP_DX}px`)
+          .style("top", `${py + TOOLTIP_DY}px`)
           .html(
             `<b>${d.pol.name}</b><br/>${Math.round(d.income).toLocaleString("de")} €`,
           );
@@ -658,7 +563,7 @@ export function TopEarnersChart({
   return (
     <div ref={containerRef} style={{ position: "relative" }}>
       <svg ref={svgRef} style={{ display: "block", width: "100%" }} />
-      <Tooltip ref={tooltipRef} />
+      <ChartTooltip tooltipRef={tooltipRef} />
     </div>
   );
 }

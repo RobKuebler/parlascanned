@@ -4,42 +4,17 @@ import * as d3 from "d3";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
 import { DeviationPivot } from "@/lib/data";
 import { sortParties } from "@/lib/constants";
+import {
+  ChartTooltip,
+  styleAxisText,
+  truncateAxisLabels,
+  TOOLTIP_DX,
+  TOOLTIP_DY,
+} from "@/lib/chart-utils";
 
 interface Props {
   pivot: DeviationPivot;
   height?: number;
-}
-
-function truncateAxisLabels(
-  ax: d3.Selection<SVGGElement, unknown, null, undefined>,
-  maxPx: number,
-  tooltip: d3.Selection<HTMLDivElement, unknown, null, undefined>,
-  container: Element,
-) {
-  ax.selectAll<SVGTextElement, unknown>("text").each(function () {
-    const el = d3.select(this);
-    const full = el.text();
-    let truncated = full;
-    while (
-      (this as SVGTextElement).getComputedTextLength() > maxPx &&
-      truncated.length > 1
-    ) {
-      truncated = truncated.slice(0, -1);
-      el.text(truncated + "…");
-    }
-    if (truncated !== full) {
-      el.style("cursor", "default")
-        .on("mousemove", (event: MouseEvent) => {
-          const [px, py] = d3.pointer(event, container);
-          tooltip
-            .style("opacity", "1")
-            .style("left", `${px + 12}px`)
-            .style("top", `${py - 28}px`)
-            .html(full);
-        })
-        .on("mouseleave", () => tooltip.style("opacity", "0"));
-    }
-  });
 }
 
 const ML = 160; // left margin for y-labels
@@ -87,8 +62,8 @@ function drawCells(
       const [px, py] = d3.pointer(event, container);
       tooltip
         .style("opacity", "1")
-        .style("left", `${px + 12}px`)
-        .style("top", `${py - 28}px`)
+        .style("left", `${px + TOOLTIP_DX}px`)
+        .style("top", `${py + TOOLTIP_DY}px`)
         .html(html);
     })
     .on("mouseleave", () => tooltip.style("opacity", "0"));
@@ -136,14 +111,12 @@ export function DeviationHeatmap({ pivot, height = 400 }: Props) {
       pct: pivot.pct.map((row) => colMap.map((ci) => row[ci] ?? null)),
       dev: pivot.dev.map((row) => colMap.map((ci) => row[ci] ?? null)),
     };
-    // Use sortedPivot everywhere below instead of prop pivot
     const { categories, parties, pct: pctData, dev: devData } = sortedPivot;
 
     const iW = width - ML - MR;
     const allDevs = devData.flat().filter((v): v is number => v !== null);
     // Clamp to 95th percentile of absolute deviations so one outlier doesn't
-    // wash out all other cells. The scale is clamped so outliers still get
-    // the full saturation colour instead of going out-of-range.
+    // wash out all other cells.
     const absDevs = allDevs.map(Math.abs).sort((a, b) => a - b);
     const p95idx = Math.floor(absDevs.length * 0.95);
     const clampMax = Math.max(
@@ -176,6 +149,7 @@ export function DeviationHeatmap({ pivot, height = 400 }: Props) {
 
     const tooltip = d3.select(tooltipRef.current!);
 
+    // Shared x-axis builder — both scroll and non-scroll modes use this
     const xAxis = (
       sel: d3.Selection<SVGGElement, unknown, null, undefined>,
       xScale: d3.ScaleBand<string>,
@@ -183,17 +157,14 @@ export function DeviationHeatmap({ pivot, height = 400 }: Props) {
       sel
         .call(d3.axisTop(xScale).tickSize(0))
         .call((ax) => ax.select(".domain").remove())
-        .call((ax) =>
-          ax
-            .selectAll("text")
-            .style("font-size", "11px")
-            .style("font-family", '"Plus Jakarta Sans", sans-serif')
-            .style("fill", "#6B6760")
+        .call((ax) => {
+          styleAxisText(ax);
+          ax.selectAll("text")
             .attr("transform", "rotate(-30)")
             .attr("text-anchor", "start")
             .attr("dy", "-0.4em")
-            .attr("dx", "0.4em"),
-        );
+            .attr("dx", "0.4em");
+        });
 
     if (!useScroll) {
       // ── Simple mode: single SVG, no scroll ───────────────────────────────
@@ -221,25 +192,17 @@ export function DeviationHeatmap({ pivot, height = 400 }: Props) {
       svg.selectAll("*").remove();
       svg.attr("width", width).attr("height", totalH);
 
-      // X axis at top
       svg
         .append("g")
         .attr("transform", `translate(${ML}, ${HEADER_H})`)
         .call((sel) => xAxis(sel, xScale));
 
-      // Y axis
       svg
         .append("g")
         .attr("transform", `translate(${ML}, ${HEADER_H})`)
         .call(d3.axisLeft(yScale).tickSize(0))
         .call((ax) => ax.select(".domain").remove())
-        .call((ax) =>
-          ax
-            .selectAll("text")
-            .style("font-size", "11px")
-            .style("font-family", '"Plus Jakarta Sans", sans-serif')
-            .style("fill", "#6B6760"),
-        )
+        .call(styleAxisText)
         .call((ax) =>
           truncateAxisLabels(ax, ML - 8, tooltip, containerRef.current!),
         );
@@ -295,13 +258,7 @@ export function DeviationHeatmap({ pivot, height = 400 }: Props) {
         .attr("transform", `translate(${ML}, 0)`)
         .call(d3.axisLeft(yScale).tickSize(0))
         .call((ax) => ax.select(".domain").remove())
-        .call((ax) =>
-          ax
-            .selectAll("text")
-            .style("font-size", "11px")
-            .style("font-family", '"Plus Jakarta Sans", sans-serif')
-            .style("fill", "#6B6760"),
-        )
+        .call(styleAxisText)
         .call((ax) =>
           truncateAxisLabels(ax, ML - 8, tooltip, containerRef.current!),
         );
@@ -324,13 +281,11 @@ export function DeviationHeatmap({ pivot, height = 400 }: Props) {
   return (
     <div ref={containerRef} style={{ position: "relative" }}>
       {!useScroll ? (
-        // Simple: single SVG, no scroll, overflow visible for rotated labels
         <svg
           ref={singleSvgRef}
           style={{ display: "block", overflow: "visible" }}
         />
       ) : (
-        // Scroll: sticky header + scrolling body
         <div style={{ overflowX: "auto" }}>
           <div
             style={{
@@ -357,22 +312,7 @@ export function DeviationHeatmap({ pivot, height = 400 }: Props) {
           </div>
         </div>
       )}
-      <div
-        ref={tooltipRef}
-        style={{
-          position: "absolute",
-          pointerEvents: "none",
-          background: "rgba(0,0,0,0.78)",
-          color: "#fff",
-          padding: "4px 8px",
-          borderRadius: 4,
-          fontSize: 12,
-          opacity: 0,
-          transition: "opacity 0.1s",
-          zIndex: 50,
-          maxWidth: 280,
-        }}
-      />
+      <ChartTooltip tooltipRef={tooltipRef} maxWidth={280} zIndex={50} />
     </div>
   );
 }

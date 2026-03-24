@@ -4,6 +4,12 @@ import * as d3 from "d3";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
 import { CohesionRecord } from "@/lib/data";
 import { PARTY_COLORS, FALLBACK_COLOR } from "@/lib/constants";
+import {
+  ChartTooltip,
+  styleAxisText,
+  TOOLTIP_DX,
+  TOOLTIP_DY,
+} from "@/lib/chart-utils";
 
 interface Props {
   cohesion: CohesionRecord[];
@@ -50,13 +56,7 @@ export function CohesionChart({ cohesion, height = 300 }: Props) {
     g.append("g")
       .call(d3.axisLeft(yScale).tickSize(0))
       .call((ax) => ax.select(".domain").remove())
-      .call((ax) =>
-        ax
-          .selectAll("text")
-          .style("font-size", "11px")
-          .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#6B6760"),
-      );
+      .call(styleAxisText);
 
     const tooltip = d3.select(tooltipRef.current!);
 
@@ -73,8 +73,8 @@ export function CohesionChart({ cohesion, height = 300 }: Props) {
         const [px, py] = d3.pointer(event, containerRef.current!);
         tooltip
           .style("opacity", "1")
-          .style("left", `${px + 12}px`)
-          .style("top", `${py - 28}px`)
+          .style("left", `${px + TOOLTIP_DX}px`)
+          .style("top", `${py + TOOLTIP_DY}px`)
           .html(`<b>${d.label}</b><br/>Ø Abstand: ${d.streuung.toFixed(3)}`);
       })
       .on("mouseleave", () => tooltip.style("opacity", "0"));
@@ -83,22 +83,7 @@ export function CohesionChart({ cohesion, height = 300 }: Props) {
   return (
     <div ref={containerRef} style={{ position: "relative" }}>
       <svg ref={svgRef} style={{ display: "block", width: "100%" }} />
-      <div
-        ref={tooltipRef}
-        style={{
-          position: "absolute",
-          pointerEvents: "none",
-          background: "rgba(0,0,0,0.78)",
-          color: "#fff",
-          padding: "4px 8px",
-          borderRadius: 4,
-          fontSize: 12,
-          opacity: 0,
-          transition: "opacity 0.1s",
-          whiteSpace: "nowrap",
-          zIndex: 10,
-        }}
-      />
+      <ChartTooltip tooltipRef={tooltipRef} />
     </div>
   );
 }

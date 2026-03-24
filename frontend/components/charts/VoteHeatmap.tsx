@@ -4,6 +4,12 @@ import * as d3 from "d3";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
 import { VoteRecord, Poll, Politician } from "@/lib/data";
 import { VOTE_META, VOTE_NUMERIC } from "@/lib/constants";
+import {
+  ChartTooltip,
+  styleAxisText,
+  TOOLTIP_DX,
+  TOOLTIP_DY,
+} from "@/lib/chart-utils";
 
 interface Props {
   votes: VoteRecord[];
@@ -111,17 +117,14 @@ export function VoteHeatmap({
       .attr("transform", `translate(${ML}, ${HEADER_H})`)
       .call(d3.axisTop(xScale).tickSize(0))
       .call((ax) => ax.select(".domain").remove())
-      .call((ax) =>
-        ax
-          .selectAll("text")
-          .style("font-size", "11px")
-          .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#6B6760")
+      .call((ax) => {
+        styleAxisText(ax);
+        ax.selectAll("text")
           .attr("transform", "rotate(-30)")
           .attr("text-anchor", "start")
           .attr("dy", "-0.5em")
-          .attr("dx", "0.5em"),
-      );
+          .attr("dx", "0.5em");
+      });
 
     // ── Body SVG: y-axis + cells ─────────────────────────────────────────────
     const bodySvg = d3.select(bodySvgRef.current);
@@ -139,12 +142,9 @@ export function VoteHeatmap({
           .tickFormat((id) => yTopicShort.get(id) ?? id),
       )
       .call((ax) => ax.select(".domain").remove())
-      .call((ax) =>
-        ax
-          .selectAll<SVGTextElement, string>("text")
-          .style("font-size", "11px")
-          .style("font-family", '"Plus Jakarta Sans", sans-serif')
-          .style("fill", "#6B6760")
+      .call((ax) => {
+        styleAxisText(ax);
+        ax.selectAll<SVGTextElement, string>("text")
           .style("cursor", "default")
           .on("mousemove", function (event, id) {
             const full = yTopicFull.get(id);
@@ -152,12 +152,12 @@ export function VoteHeatmap({
             const [px, py] = d3.pointer(event, containerRef.current!);
             tooltip
               .style("opacity", "1")
-              .style("left", `${px + 12}px`)
-              .style("top", `${py - 28}px`)
+              .style("left", `${px + TOOLTIP_DX}px`)
+              .style("top", `${py + TOOLTIP_DY}px`)
               .html(full);
           })
-          .on("mouseleave", () => tooltip.style("opacity", "0")),
-      );
+          .on("mouseleave", () => tooltip.style("opacity", "0"));
+      });
 
     // Cells
     const g = bodySvg.append("g").attr("transform", `translate(${ML}, 0)`);
@@ -187,14 +187,16 @@ export function VoteHeatmap({
         const [px, py] = d3.pointer(event, containerRef.current!);
         tooltip
           .style("opacity", "1")
-          .style("left", `${px + 12}px`)
-          .style("top", `${py - 28}px`)
+          .style("left", `${px + TOOLTIP_DX}px`)
+          .style("top", `${py + TOOLTIP_DY}px`)
           .html(
             `<b>${xLabels[d.xIdx]}</b><br/>${yTopicFull.get(String(d.pollId)) ?? ""}<br/>${meta.label}`,
           );
       })
       .on("mouseleave", () => tooltip.style("opacity", "0"));
   }, [votes, polls, politicians, selectedPolIds, selectedPollIds, width]);
+
+  void VOTE_NUMERIC; // imported for potential future use
 
   return (
     <div ref={containerRef} style={{ position: "relative" }}>
@@ -216,22 +218,7 @@ export function VoteHeatmap({
           <svg ref={bodySvgRef} style={{ display: "block" }} />
         </div>
       </div>
-      <div
-        ref={tooltipRef}
-        style={{
-          position: "absolute",
-          pointerEvents: "none",
-          background: "rgba(0,0,0,0.78)",
-          color: "#fff",
-          padding: "4px 8px",
-          borderRadius: 4,
-          fontSize: 12,
-          opacity: 0,
-          transition: "opacity 0.1s",
-          zIndex: 50,
-          maxWidth: 280,
-        }}
-      />
+      <ChartTooltip tooltipRef={tooltipRef} maxWidth={280} zIndex={50} />
     </div>
   );
 }
