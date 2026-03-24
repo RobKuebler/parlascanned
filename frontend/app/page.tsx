@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Footer } from "@/components/ui/Footer";
 import { usePeriod } from "@/lib/period-context";
-import { fetchData, dataUrl, Politician, SidejobsFile } from "@/lib/data";
+import { fetchData, dataUrl, Politician, SidejobsFile, Poll } from "@/lib/data";
 
 const FEATURES = [
   {
@@ -15,7 +15,6 @@ const FEATURES = [
     iconGradient: "linear-gradient(135deg, #4C46D9 0%, #7B77CC 100%)",
     tagColor: "#4C46D9",
     wide: true,
-    statKey: "politicians" as const,
     icon: (
       <svg
         width="15"
@@ -41,7 +40,6 @@ const FEATURES = [
     iconGradient: "linear-gradient(135deg, #16A085 0%, #48CAA3 100%)",
     tagColor: "#16A085",
     wide: false,
-    statKey: "parties" as const,
     icon: (
       <svg
         width="15"
@@ -69,7 +67,6 @@ const FEATURES = [
     iconGradient: "linear-gradient(135deg, #E67E22 0%, #F39C12 100%)",
     tagColor: "#E67E22",
     wide: false,
-    statKey: "sidejobs" as const,
     icon: (
       <svg
         width="15"
@@ -90,10 +87,16 @@ const FEATURES = [
 ];
 
 export default function Home() {
-  const { activePeriodId } = usePeriod();
-  const [politicianCount, setPoliticianCount] = useState<number | null>(null);
-  const [partyCount, setPartyCount] = useState<number | null>(null);
-  const [sidejobCount, setSidejobCount] = useState<number | null>(null);
+  const { activePeriodId, periods } = usePeriod();
+  const activePeriod = periods.find((p) => p.period_id === activePeriodId);
+
+  type Stats = {
+    politicians: number;
+    parties: number;
+    polls: number;
+    sidejobs: number;
+  } | null;
+  const [stats, setStats] = useState<Stats>(null);
 
   useEffect(() => {
     if (!activePeriodId) return;
@@ -104,31 +107,19 @@ export default function Home() {
       fetchData<SidejobsFile>(
         dataUrl("sidejobs_{period}.json", activePeriodId),
       ),
+      fetchData<Poll[]>(dataUrl("polls_{period}.json", activePeriodId)),
     ])
-      .then(([pols, sj]) => {
-        setPoliticianCount(pols.length);
-        setPartyCount(
-          new Set(pols.map((p) => p.party.replace(/\u00ad/g, ""))).size,
-        );
-        setSidejobCount(sj.coverage.total);
+      .then(([pols, sj, polls]) => {
+        setStats({
+          politicians: pols.length,
+          parties: new Set(pols.map((p) => p.party.replace(/\u00ad/g, "")))
+            .size,
+          polls: polls.length,
+          sidejobs: sj.coverage.total,
+        });
       })
       .catch(console.error);
   }, [activePeriodId]);
-
-  const stats: Record<(typeof FEATURES)[number]["statKey"], string | null> = {
-    politicians:
-      politicianCount !== null
-        ? `${politicianCount.toLocaleString("de")} Abgeordnete`
-        : null,
-    parties:
-      politicianCount !== null && partyCount !== null
-        ? `${politicianCount.toLocaleString("de")} Abgeordnete · ${partyCount} Fraktionen`
-        : null,
-    sidejobs:
-      sidejobCount !== null
-        ? `${sidejobCount.toLocaleString("de")} Nebentätigkeiten`
-        : null,
-  };
 
   return (
     <>
@@ -159,6 +150,56 @@ export default function Home() {
         </p>
       </div>
 
+      {/* Stat strip header */}
+      {activePeriod && (
+        <p
+          className="text-[11px] font-bold tracking-[0.14em] uppercase mb-2"
+          style={{ color: "#9A9790" }}
+        >
+          {activePeriod.bundestag_number}. Legislaturperiode
+        </p>
+      )}
+
+      {/* Stat strip */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#E3E0DA] rounded-xl overflow-hidden mb-6">
+        {[
+          { value: stats?.politicians, label: "Abgeordnete" },
+          { value: stats?.parties, label: "Fraktionen" },
+          { value: stats?.polls, label: "Abstimmungen" },
+          { value: stats?.sidejobs, label: "Nebentätigkeiten" },
+        ].map(({ value, label }) => (
+          <div
+            key={label}
+            className="bg-white flex flex-col items-center justify-center py-4 px-3 text-center"
+          >
+            <span
+              className="text-[22px] font-black tabular-nums leading-none mb-1"
+              style={{ color: "#1E1B5E" }}
+            >
+              {value !== undefined && value !== null ? (
+                value.toLocaleString("de")
+              ) : (
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: 48,
+                    height: 22,
+                    borderRadius: 4,
+                    background: "#E8E7E2",
+                  }}
+                />
+              )}
+            </span>
+            <span
+              className="text-[11px] font-semibold uppercase tracking-[0.08em]"
+              style={{ color: "#9A9790" }}
+            >
+              {label}
+            </span>
+          </div>
+        ))}
+      </div>
+
       {/* Feature grid: 1 col mobile, 2 col md+ */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger">
         {FEATURES.map(
@@ -170,7 +211,6 @@ export default function Home() {
             iconGradient,
             tagColor,
             wide,
-            statKey,
             icon,
           }) => (
             <Link
@@ -198,30 +238,11 @@ export default function Home() {
               </div>
 
               <h2
-                className="font-extrabold text-[15px] leading-snug mb-1"
+                className="font-extrabold text-[15px] leading-snug mb-1.5"
                 style={{ color: "#1E1B5E" }}
               >
                 {title}
               </h2>
-
-              {/* Dynamic stat */}
-              <p
-                className="text-[12px] font-semibold mb-1.5"
-                style={{ color: tagColor }}
-              >
-                {stats[statKey] ?? (
-                  <span
-                    style={{
-                      display: "inline-block",
-                      width: 120,
-                      height: 12,
-                      borderRadius: 4,
-                      background: "#E8E7E2",
-                      verticalAlign: "middle",
-                    }}
-                  />
-                )}
-              </p>
 
               <p
                 className="text-[13px] leading-relaxed flex-1"

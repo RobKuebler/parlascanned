@@ -345,6 +345,7 @@ def main() -> None:
                 {
                     "period_id": period_id,
                     "label": str(row.get("label", f"Periode {period_id}")),
+                    "bundestag_number": int(row["bundestag_number"]),
                     "has_data": True,
                 }
             )
