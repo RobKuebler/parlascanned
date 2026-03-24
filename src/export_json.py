@@ -13,8 +13,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from src.storage import DATA_DIR, OUTPUTS_DIR
-from src.transforms import (
+from .storage import DATA_DIR, OUTPUTS_DIR
+from .transforms import (
     compute_age_df,
     compute_cohesion,
     compute_education_degree_pivot,

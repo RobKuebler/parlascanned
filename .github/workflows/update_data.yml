@@ -29,7 +29,7 @@ jobs:
         run: uv run python src/train_model.py
 
       - name: Export JSON for frontend
-        run: uv run python src/export_json.py
+        run: uv run python -m src.export_json
 
       - name: Commit and push
         run: |
