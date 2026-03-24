@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/nav-items";
 
 export function BottomNav() {
-  const pathname = usePathname();
+  const pathname = usePathname().replace(/\/$/, "") || "/";
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1E1B5E]">
       <div className="flex justify-around items-center h-16">
