@@ -45,7 +45,9 @@ export default function PartyProfilePage() {
           Parteiprofil
         </h1>
         <p className="text-[14px]" style={{ color: "#9A9790" }}>
-          Demografische Zusammensetzung der Fraktionen im Vergleich.
+          Wer sitzt im Bundestag? Diese Seite vergleicht Altersstruktur,
+          Geschlechterverteilung, Berufsfelder und Bildungshintergrund der
+          Fraktionen und zeigt, wie sie sich vom Gesamtparlament unterscheiden.
         </p>
       </div>
 
@@ -68,7 +70,10 @@ export default function PartyProfilePage() {
               Altersverteilung
             </h2>
             <p className="text-[12px] text-[#9A9790] mb-4">
-              Jeder Punkt entspricht einem Abgeordneten.
+              Jeder Punkt entspricht einem Abgeordneten. Punkte gleichen Alters
+              sind vertikal gestapelt — je mehr Punkte auf einer Position, desto
+              mehr Abgeordnete haben exakt dieses Alter. Die Kurve darüber zeigt
+              die Altersverteilung als Dichteschätzung.
             </p>
             <AgeDistribution data={data.age} parties={parties} />
           </section>
@@ -78,11 +83,15 @@ export default function PartyProfilePage() {
             style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
           >
             <h2
-              className="font-extrabold text-[15px] mb-4"
+              className="font-extrabold text-[15px] mb-1"
               style={{ color: "#1E1B5E" }}
             >
               Geschlecht
             </h2>
+            <p className="text-[12px] text-[#9A9790] mb-4">
+              Geschlechterverteilung je Fraktion als prozentualer Anteil der
+              Gesamtmitglieder.
+            </p>
             <GenderChart data={data.sex} parties={parties} />
           </section>
 
@@ -97,8 +106,11 @@ export default function PartyProfilePage() {
               Berufe
             </h2>
             <p className="text-[12px] text-[#9A9790] mb-4">
-              Blau = überproportional, rot = unterproportional (Abweichung vom
-              Bundestag-Durchschnitt).
+              Die Heatmap zeigt, wie stark ein Beruf in einer Fraktion über-
+              oder unterrepräsentiert ist — gemessen als Abweichung vom
+              Bundestag-Durchschnitt in Prozentpunkten. Blau steht für
+              überproportional viele Abgeordnete mit diesem Beruf, rot für
+              entsprechend wenige.
             </p>
             <DeviationHeatmap pivot={data.occupation} height={500} />
           </section>
@@ -114,7 +126,10 @@ export default function PartyProfilePage() {
               Ausbildung / Studienrichtung
             </h2>
             <p className="text-[12px] text-[#9A9790] mb-4">
-              Blau = überproportional, rot = unterproportional.
+              Studienrichtungen und Ausbildungsbereiche der Abgeordneten im
+              Fraktionsvergleich. Blau bedeutet überproportional häufig
+              vertreten, rot unterproportional — jeweils gemessen am
+              Bundestag-Durchschnitt.
             </p>
             <DeviationHeatmap pivot={data.education_field} height={400} />
           </section>
@@ -129,6 +144,10 @@ export default function PartyProfilePage() {
             >
               Abschlussniveau
             </h2>
+            <p className="text-[12px] text-[#9A9790] mb-4">
+              Höchster Bildungsabschluss der Abgeordneten je Fraktion im
+              Vergleich zum Bundestag-Durchschnitt.
+            </p>
             <DeviationHeatmap pivot={data.education_degree} height={250} />
           </section>
         </div>

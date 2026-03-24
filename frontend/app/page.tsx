@@ -10,7 +10,7 @@ const FEATURES = [
     href: "/vote-map",
     title: "Abstimmungslandkarte",
     description:
-      "KI-generierte Karte aller Abgeordneten. Nähe = ähnliches Abstimmungsverhalten.",
+      "Ein KI-Modell hat das Abstimmungsverhalten aller Abgeordneten in einen zweidimensionalen Raum übersetzt. Je näher zwei Punkte beieinanderliegen, desto ähnlicher haben die Abgeordneten historisch abgestimmt — unabhängig von Fraktionsgrenzen.",
     tag: "KI-Analyse",
     iconGradient: "linear-gradient(135deg, #4C46D9 0%, #7B77CC 100%)",
     tagColor: "#4C46D9",
@@ -35,7 +35,7 @@ const FEATURES = [
     href: "/party-profile",
     title: "Parteiprofil",
     description:
-      "Altersverteilung, Geschlecht, Berufe und Ausbildung der Fraktionen im Vergleich.",
+      "Wie alt ist der Bundestag, wie divers sind die Fraktionen, und welche Berufsbilder prägen das Parlament? Demografische Kennzahlen aller Fraktionen im direkten Vergleich.",
     tag: "Demografie",
     iconGradient: "linear-gradient(135deg, #16A085 0%, #48CAA3 100%)",
     tagColor: "#16A085",
@@ -62,7 +62,7 @@ const FEATURES = [
     href: "/sidejobs",
     title: "Nebeneinkünfte",
     description:
-      "Offengelegte Nebentätigkeiten und Einkünfte nach Partei, Kategorie und Themenfeld.",
+      "Abgeordnete sind gesetzlich verpflichtet, Nebentätigkeiten ab einem bestimmten Einkommen zu melden. Diese Analyse zeigt, welche Parteien, Branchen und Themenfelder dabei dominieren.",
     tag: "Transparenz",
     iconGradient: "linear-gradient(135deg, #E67E22 0%, #F39C12 100%)",
     tagColor: "#E67E22",
@@ -144,9 +144,9 @@ export default function Home() {
           className="text-[14px] leading-relaxed"
           style={{ color: "rgba(255,255,255,0.6)" }}
         >
-          Wie stimmt der Bundestag ab, wer sitzt drin, und wer verdient
-          nebenbei? Abstimmungen, Parteiprofil und Nebeneinkünfte auf einen
-          Blick.
+          Parlascanned macht die Arbeit des Deutschen Bundestags transparent.
+          Wie ähnlich stimmen Abgeordnete ab? Wie unterscheiden sich die
+          Fraktionen demografisch? Und wer verdient neben dem Mandat?
         </p>
       </div>
 

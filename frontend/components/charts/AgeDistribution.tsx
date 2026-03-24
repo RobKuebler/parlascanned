@@ -114,9 +114,28 @@ export function AgeDistribution({ data, parties }: Props) {
         .scaleLinear()
         .domain([0, maxDensity])
         .range([0, violinH * 0.88]);
+
+      // Pre-compute fixed cy per record (grouped by age, evenly spaced)
+      const ageGroups = d3.group(records, (d) => d.age);
+      const yIndex = new Map<AgeRecord, number>();
+      const yTotal = new Map<AgeRecord, number>();
+      ageGroups.forEach((group) => {
+        group.forEach((rec, i) => {
+          yIndex.set(rec, i);
+          yTotal.set(rec, group.length);
+        });
+      });
+      const dotCY = records.map((rec) => {
+        const i = yIndex.get(rec) ?? 0;
+        const n = yTotal.get(rec) ?? 1;
+        const t = n > 1 ? i / (n - 1) : 0.5;
+        return dotCenterY + (t - 0.5) * 2 * jitterAmt;
+      });
+
       return {
         party,
         records,
+        dotCY,
         density,
         bandY,
         baseline,
@@ -144,16 +163,7 @@ export function AgeDistribution({ data, parties }: Props) {
 
     // Draw violin paths and dots (will be updated on zoom)
     partyData.forEach(
-      ({
-        party,
-        records,
-        density,
-        baseline,
-        dotCenterY,
-        jitterAmt,
-        color,
-        densityToPixel,
-      }) => {
+      ({ party, records, dotCY, density, color, densityToPixel }) => {
         dataG
           .append("path")
           .datum(density)
@@ -172,12 +182,7 @@ export function AgeDistribution({ data, parties }: Props) {
           .data(records)
           .join("circle")
           .attr("class", `dot dot-${party.replace(/\W/g, "_")}`)
-          .attr("cy", (_, i) => {
-            const n = records.length;
-            // Evenly space dots across the jitter band; single dot stays centred
-            const t = n > 1 ? i / (n - 1) : 0.5;
-            return dotCenterY + (t - 0.5) * 2 * jitterAmt;
-          })
+          .attr("cy", (_, i) => dotCY[i])
           .attr("r", 2.5)
           .attr("fill", color)
           .attr("opacity", 0.6);
@@ -282,11 +287,18 @@ export function AgeDistribution({ data, parties }: Props) {
           return;
         }
 
-        const nearest = pd.records.reduce((best, d) =>
-          Math.abs(d.age - ageAtMouse) < Math.abs(best.age - ageAtMouse)
-            ? d
-            : best,
-        );
+        // Find nearest dot by 2D distance so same-age dots are distinguishable
+        let nearest = pd.records[0];
+        let nearestDist = Infinity;
+        pd.records.forEach((d, i) => {
+          const dx = currentXS(d.age) - mx;
+          const dy = pd.dotCY[i] - my;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < nearestDist) {
+            nearestDist = dist;
+            nearest = d;
+          }
+        });
 
         if (Math.abs(currentXS(nearest.age) - mx) > 20) {
           tooltip.style("opacity", "0");

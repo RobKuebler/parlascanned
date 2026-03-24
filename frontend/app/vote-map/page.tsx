@@ -119,8 +119,9 @@ export default function VoteMapPage() {
           Abstimmungslandkarte
         </h1>
         <p className="text-[14px]" style={{ color: "#9A9790" }}>
-          KI-generierte Karte aller Abgeordneten. Nähe = ähnliches
-          Abstimmungsverhalten.
+          Ein KI-Modell hat das Abstimmungsverhalten aller Abgeordneten in einen
+          zweidimensionalen Raum eingebettet. Abgeordnete, die häufig gleich
+          abstimmen, landen nah beieinander — unabhängig von Fraktionsgrenzen.
         </p>
       </div>
 
@@ -130,11 +131,16 @@ export default function VoteMapPage() {
         style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
       >
         <h2
-          className="font-extrabold text-[15px] mb-4"
+          className="font-extrabold text-[15px] mb-1"
           style={{ color: "#1E1B5E" }}
         >
           Abstimmungslandkarte
         </h2>
+        <p className="text-[12px] text-[#9A9790] mb-4">
+          Klicken Sie auf einzelne Punkte oder ziehen Sie eine Auswahl, um das
+          Abstimmungsverhalten der betreffenden Abgeordneten im Detail zu
+          analysieren. Fraktionsnamen im Diagramm sind ebenfalls anklickbar.
+        </p>
         {loading ? (
           <ChartSkeleton
             height={
@@ -164,11 +170,16 @@ export default function VoteMapPage() {
         style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
       >
         <h2
-          className="font-extrabold text-[15px] mb-4"
+          className="font-extrabold text-[15px] mb-1"
           style={{ color: "#1E1B5E" }}
         >
           Abstimmungsverhalten
         </h2>
+        <p className="text-[12px] text-[#9A9790] mb-4">
+          Die Heatmap zeigt, wie die ausgewählten Abgeordneten bei einzelnen
+          Abstimmungen votiert haben. Wählen Sie zunächst Abgeordnete aus der
+          Karte oder über die Suche aus.
+        </p>
 
         {!loading && (
           <div className="mb-4">
@@ -239,8 +250,11 @@ export default function VoteMapPage() {
           Fraktionsdisziplin
         </h2>
         <p className="text-[12px] text-[#9A9790] mb-4">
-          Kurzer Balken = hohe Disziplin (Abgeordnete stimmen eng mit ihrer
-          Fraktion).
+          Die Fraktionsdisziplin ist der mittlere euklidische Abstand jedes
+          Abgeordneten zum Schwerpunkt seiner Fraktion in der Abstimmungskarte.
+          Ein kurzer Balken bedeutet, dass die Mitglieder sehr geschlossen
+          abstimmen; ein langer Balken zeigt größere interne
+          Meinungsverschiedenheiten.
         </p>
         {loading ? (
           <ChartSkeleton height={300} />

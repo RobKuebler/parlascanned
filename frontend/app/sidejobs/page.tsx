@@ -111,8 +111,11 @@ export default function SidejobsPage() {
           Nebeneinkünfte
         </h1>
         <p className="text-[14px]" style={{ color: "#9A9790" }}>
-          Offengelegte Nebentätigkeiten und Einkünfte nach Partei, Kategorie und
-          Themenfeld.
+          Bundestagsabgeordnete sind gesetzlich verpflichtet, entgeltliche
+          Nebentätigkeiten ab 1.000 € monatlich zu melden (§ 44a AbgG). Diese
+          Auswertung basiert auf den öffentlich zugänglichen Meldungen und
+          zeigt, in welchen Parteien, Branchen und Themenfeldern Nebeneinkünfte
+          besonders verbreitet sind.
         </p>
       </div>
 
@@ -283,9 +286,11 @@ export default function SidejobsPage() {
               Abgeordnete mit Nebenverdienst
             </h2>
             <p className="text-[12px] text-[#9A9790] mb-4">
-              Anteil je Fraktion. Als Nebenverdienst gilt jedes gemeldete
-              Einkommen ab 1.000 €/Monat (gesetzliche Meldepflicht-Stufe 1, §
-              44a AbgG).
+              Anteil der Abgeordneten je Fraktion, die mindestens eine
+              meldepflichtige Nebentätigkeit ausüben. Als Nebenverdienst gilt
+              ein gemeldetes Einkommen ab 1.000 € monatlich (§ 44a AbgG, Stufe
+              1). Abgeordnete mit gemeldeter Tätigkeit ohne Einkommensangabe
+              werden gesondert ausgewiesen.
             </p>
             <SidejobCoverageByPartyChart
               jobs={sjData.jobs}
@@ -304,8 +309,11 @@ export default function SidejobsPage() {
               Einkommen nach Partei
             </h2>
             <p className="text-[12px] text-[#9A9790] mb-4">
-              Monatliche und jährliche Zahlungen werden auf die Periodendauer
-              hochgerechnet.
+              Hochgerechnetes Gesamteinkommen aller Nebentätigkeiten je
+              Fraktion. Monatliche Zahlungen werden auf die gesamte
+              Legislaturperiode hochgerechnet, jährliche entsprechend anteilig.
+              Der Durchschnittswert pro Abgeordnetem mit Nebenverdienst ist
+              separat ausgewiesen.
             </p>
             <IncomeByPartyChart
               jobs={sjData.jobs}
@@ -325,7 +333,10 @@ export default function SidejobsPage() {
               Einkommen nach Kategorie
             </h2>
             <p className="text-[12px] text-[#9A9790] mb-4">
-              Kategorien der Bundestagsverwaltung, gestapelt nach Partei.
+              Aufteilung der Nebeneinkünfte nach den offiziellen Kategorien der
+              Bundestagsverwaltung. Die Balken sind nach Fraktionszugehörigkeit
+              eingefärbt, sodass erkennbar ist, welche Partei in welchem Bereich
+              besonders aktiv ist.
             </p>
             <IncomeByCategoryChart jobs={sjData.jobs} parties={parties} />
           </section>
@@ -341,8 +352,10 @@ export default function SidejobsPage() {
               Themenfelder der Nebentätigkeiten
             </h2>
             <p className="text-[12px] text-[#9A9790] mb-4">
-              Top-15 Themenfelder nach Gesamteinkommen. Ein Job kann mehreren
-              Themen zugeordnet sein.
+              Die 15 Themenfelder mit dem höchsten ausgewiesenen
+              Gesamteinkommen. Die Kategorisierung basiert auf KI-gestützter
+              Analyse der Tätigkeitsbeschreibungen. Da ein Job mehreren
+              Themenfeldern zugeordnet sein kann, überschneiden sich die Summen.
             </p>
             <TopTopicsChart jobs={sjData.jobs} parties={parties} />
           </section>
@@ -352,11 +365,15 @@ export default function SidejobsPage() {
             style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
           >
             <h2
-              className="font-extrabold text-[15px] mb-4"
+              className="font-extrabold text-[15px] mb-1"
               style={{ color: "#1E1B5E" }}
             >
               Top-Verdiener
             </h2>
+            <p className="text-[12px] text-[#9A9790] mb-4">
+              Die Abgeordneten mit dem höchsten hochgerechneten Nebeneinkommen
+              in der gewählten Legislaturperiode.
+            </p>
             <TopEarnersChart
               jobs={sjData.jobs}
               politicians={politicians}
