@@ -5,6 +5,8 @@ import { Sidebar } from "@/components/ui/Sidebar";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { MobileHeader } from "@/components/ui/MobileHeader";
 import { PeriodProvider } from "@/lib/period-context";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -35,6 +37,8 @@ export default function RootLayout({
           <MobileHeader />
           <BottomNav />
         </PeriodProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
