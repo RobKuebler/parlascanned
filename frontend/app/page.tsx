@@ -1,5 +1,9 @@
+"use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Footer } from "@/components/ui/Footer";
+import { usePeriod } from "@/lib/period-context";
+import { fetchData, dataUrl, Politician, SidejobsFile } from "@/lib/data";
 
 const FEATURES = [
   {
@@ -11,6 +15,7 @@ const FEATURES = [
     iconGradient: "linear-gradient(135deg, #4C46D9 0%, #7B77CC 100%)",
     tagColor: "#4C46D9",
     wide: true,
+    statKey: "politicians" as const,
     icon: (
       <svg
         width="15"
@@ -36,6 +41,7 @@ const FEATURES = [
     iconGradient: "linear-gradient(135deg, #16A085 0%, #48CAA3 100%)",
     tagColor: "#16A085",
     wide: false,
+    statKey: "parties" as const,
     icon: (
       <svg
         width="15"
@@ -63,6 +69,7 @@ const FEATURES = [
     iconGradient: "linear-gradient(135deg, #E67E22 0%, #F39C12 100%)",
     tagColor: "#E67E22",
     wide: false,
+    statKey: "sidejobs" as const,
     icon: (
       <svg
         width="15"
@@ -83,6 +90,46 @@ const FEATURES = [
 ];
 
 export default function Home() {
+  const { activePeriodId } = usePeriod();
+  const [politicianCount, setPoliticianCount] = useState<number | null>(null);
+  const [partyCount, setPartyCount] = useState<number | null>(null);
+  const [sidejobCount, setSidejobCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!activePeriodId) return;
+    Promise.all([
+      fetchData<Politician[]>(
+        dataUrl("politicians_{period}.json", activePeriodId),
+      ),
+      fetchData<SidejobsFile>(
+        dataUrl("sidejobs_{period}.json", activePeriodId),
+      ),
+    ])
+      .then(([pols, sj]) => {
+        setPoliticianCount(pols.length);
+        setPartyCount(
+          new Set(pols.map((p) => p.party.replace(/\u00ad/g, ""))).size,
+        );
+        setSidejobCount(sj.coverage.total);
+      })
+      .catch(console.error);
+  }, [activePeriodId]);
+
+  const stats: Record<(typeof FEATURES)[number]["statKey"], string | null> = {
+    politicians:
+      politicianCount !== null
+        ? `${politicianCount.toLocaleString("de")} Abgeordnete`
+        : null,
+    parties:
+      politicianCount !== null && partyCount !== null
+        ? `${politicianCount.toLocaleString("de")} Abgeordnete · ${partyCount} Fraktionen`
+        : null,
+    sidejobs:
+      sidejobCount !== null
+        ? `${sidejobCount.toLocaleString("de")} Nebentätigkeiten`
+        : null,
+  };
+
   return (
     <>
       {/* Hero banner */}
@@ -102,7 +149,10 @@ export default function Home() {
         >
           Parlascanned
         </h1>
-        <p className="text-[14px] leading-relaxed" style={{ color: "#AAAAAA" }}>
+        <p
+          className="text-[14px] leading-relaxed"
+          style={{ color: "rgba(255,255,255,0.6)" }}
+        >
           Wie stimmt der Bundestag ab, wer sitzt drin, und wer verdient
           nebenbei? Abstimmungen, Parteiprofil und Nebeneinkünfte auf einen
           Blick.
@@ -120,6 +170,7 @@ export default function Home() {
             iconGradient,
             tagColor,
             wide,
+            statKey,
             icon,
           }) => (
             <Link
@@ -147,11 +198,31 @@ export default function Home() {
               </div>
 
               <h2
-                className="font-extrabold text-[15px] leading-snug mb-1.5"
+                className="font-extrabold text-[15px] leading-snug mb-1"
                 style={{ color: "#1E1B5E" }}
               >
                 {title}
               </h2>
+
+              {/* Dynamic stat */}
+              <p
+                className="text-[12px] font-semibold mb-1.5"
+                style={{ color: tagColor }}
+              >
+                {stats[statKey] ?? (
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: 120,
+                      height: 12,
+                      borderRadius: 4,
+                      background: "#E8E7E2",
+                      verticalAlign: "middle",
+                    }}
+                  />
+                )}
+              </p>
+
               <p
                 className="text-[13px] leading-relaxed flex-1"
                 style={{ color: "#6B6760" }}

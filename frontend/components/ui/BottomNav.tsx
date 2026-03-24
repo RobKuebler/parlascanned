@@ -6,7 +6,7 @@ import { NAV_ITEMS } from "@/lib/nav-items";
 export function BottomNav() {
   const pathname = usePathname();
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[#E3E0DA] z-50">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1E1B5E]">
       <div className="flex justify-around items-center h-16">
         {NAV_ITEMS.map(({ href, label, icon }) => {
           const active = pathname === href;
@@ -14,12 +14,22 @@ export function BottomNav() {
             <Link
               key={href}
               href={href}
-              className={`flex flex-col items-center justify-center flex-1 h-full gap-1 text-[10px] font-semibold tracking-wide transition-colors duration-150 ${
-                active ? "text-[#4C46D9]" : "text-[#9A9790]"
-              }`}
+              className="flex flex-col items-center justify-center flex-1 h-full gap-1 transition-opacity duration-150"
+              style={{ opacity: active ? 1 : 0.45 }}
             >
-              {icon(active, 20)}
-              {label}
+              <span
+                className={`flex items-center justify-center w-8 h-8 rounded-lg transition-colors duration-150 ${
+                  active ? "bg-[#4C46D9]" : ""
+                }`}
+              >
+                <span style={{ color: "white" }}>{icon(active, 20)}</span>
+              </span>
+              <span
+                className="text-[10px] font-bold tracking-wide"
+                style={{ color: "white" }}
+              >
+                {label}
+              </span>
             </Link>
           );
         })}

@@ -57,22 +57,26 @@ export function Sidebar() {
       <div className="mx-auto w-10 h-px bg-white/10 mb-[10px]" />
 
       {/* Nav */}
-      <nav className="flex flex-col gap-1 px-2 flex-1">
+      <nav className="flex flex-col gap-0.5 px-2 flex-1">
         {NAV_ITEMS.map(({ href, label, icon }) => {
           const active = pathname === href;
           return (
             <Link
               key={href}
               href={href}
-              className={`flex flex-col items-center gap-1 rounded-lg px-1.5 py-2 outline-none focus:outline-none transition-opacity duration-150 ${
-                active ? "bg-[#4C46D9]" : "opacity-55 hover:opacity-85"
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 outline-none focus:outline-none transition-all duration-150 ${
+                active
+                  ? "bg-[#4C46D9]"
+                  : "opacity-55 hover:opacity-90 hover:bg-white/5"
               }`}
             >
-              <span className={active ? "text-white" : "text-[#A8A5E0]"}>
-                {icon(active, 26)}
+              <span
+                className={`shrink-0 ${active ? "text-white" : "text-[#A8A5E0]"}`}
+              >
+                {icon(active, 20)}
               </span>
               <span
-                className={`text-[12px] font-bold tracking-wide ${active ? "text-white" : "text-[#A8A5E0]"}`}
+                className={`text-[13px] font-bold truncate ${active ? "text-white" : "text-[#A8A5E0]"}`}
               >
                 {label}
               </span>
