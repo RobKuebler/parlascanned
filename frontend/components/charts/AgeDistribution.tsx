@@ -169,10 +169,12 @@ export function AgeDistribution({ data, parties }: Props) {
           .data(records)
           .join("circle")
           .attr("class", `dot dot-${party.replace(/\W/g, "_")}`)
-          .attr(
-            "cy",
-            (_, i) => dotCenterY + Math.sin(i * 47.431 + baseline) * jitterAmt,
-          )
+          .attr("cy", (_, i) => {
+            const n = records.length;
+            // Evenly space dots across the jitter band; single dot stays centred
+            const t = n > 1 ? i / (n - 1) : 0.5;
+            return dotCenterY + (t - 0.5) * 2 * jitterAmt;
+          })
           .attr("r", 2.5)
           .attr("fill", color)
           .attr("opacity", 0.6);
