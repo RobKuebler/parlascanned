@@ -20,7 +20,6 @@ interface Props {
 const ML = 160; // left margin for y-labels
 const MR = 40; // right margin — extra room for last label extending rightward
 const HEADER_H = 100; // header height — enough for -30° rotated party labels
-const SCROLL_THRESHOLD = 25;
 // Minimum column width so rotated party-name headers don't overlap.
 // At -30° rotation a label of L px uses L*cos(30°)≈0.87L horizontal space,
 // so 44px columns give roughly 50px label width before overlap.
@@ -96,12 +95,8 @@ function drawCells(
 
 export function DeviationHeatmap({ pivot, height = 400 }: Props) {
   const { ref: containerRef, width } = useContainerWidth();
-  const singleSvgRef = useRef<SVGSVGElement>(null);
-  const headerSvgRef = useRef<SVGSVGElement>(null);
-  const bodySvgRef = useRef<SVGSVGElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
-
-  const useScroll = pivot.categories.length >= SCROLL_THRESHOLD;
 
   useEffect(() => {
     if (!width) return;
@@ -158,173 +153,77 @@ export function DeviationHeatmap({ pivot, height = 400 }: Props) {
 
     const tooltip = d3.select(tooltipRef.current!);
 
-    // Shared x-axis builder — both scroll and non-scroll modes use this
-    const xAxis = (
-      sel: d3.Selection<SVGGElement, unknown, null, undefined>,
-      xScale: d3.ScaleBand<string>,
-    ) =>
-      sel
-        .call(d3.axisTop(xScale).tickSize(0))
-        .call((ax) => ax.select(".domain").remove())
-        .call((ax) => {
-          styleAxisText(ax);
-          ax.selectAll("text")
-            .attr("transform", "rotate(-30)")
-            .attr("text-anchor", "start")
-            .attr("dy", "-0.4em")
-            .attr("dx", "0.4em");
-        });
+    if (!svgRef.current) return;
 
-    if (!useScroll) {
-      // ── Simple mode: single SVG, no scroll ───────────────────────────────
-      if (!singleSvgRef.current) return;
-      const maxBodyH = height - HEADER_H;
-      const ROW_H = Math.min(
-        48,
-        Math.max(22, Math.floor(maxBodyH / categories.length)),
+    // Row height derived from the hint height, but always at least 22px.
+    // The SVG grows to show all rows — the page scrolls, no inner scroll needed.
+    const maxBodyH = height - HEADER_H;
+    const ROW_H = Math.min(
+      48,
+      Math.max(22, Math.floor(maxBodyH / categories.length)),
+    );
+    const bodyHeight = ROW_H * categories.length;
+    const totalH = HEADER_H + bodyHeight;
+
+    const xScale = d3.scaleBand().domain(parties).range([0, iW]).padding(0.05);
+    const yScale = d3
+      .scaleBand()
+      .domain(categories)
+      .range([0, bodyHeight])
+      .padding(0.05);
+
+    const svgW = ML + iW + MR;
+    const svg = d3.select(svgRef.current);
+    svg.selectAll("*").remove();
+    svg.attr("width", svgW).attr("height", totalH);
+
+    // X-axis (party names) with -30° rotated labels
+    svg
+      .append("g")
+      .attr("transform", `translate(${ML}, ${HEADER_H})`)
+      .call(d3.axisTop(xScale).tickSize(0))
+      .call((ax) => ax.select(".domain").remove())
+      .call((ax) => {
+        styleAxisText(ax);
+        ax.selectAll("text")
+          .attr("transform", "rotate(-30)")
+          .attr("text-anchor", "start")
+          .attr("dy", "-0.4em")
+          .attr("dx", "0.4em");
+      });
+
+    // Y-axis (category names)
+    svg
+      .append("g")
+      .attr("transform", `translate(${ML}, ${HEADER_H})`)
+      .call(d3.axisLeft(yScale).tickSize(0))
+      .call((ax) => ax.select(".domain").remove())
+      .call(styleAxisText)
+      .call((ax) =>
+        truncateAxisLabels(ax, ML - 8, tooltip, containerRef.current!),
       );
-      const bodyHeight = ROW_H * categories.length;
-      const totalH = HEADER_H + bodyHeight;
 
-      const xScale = d3
-        .scaleBand()
-        .domain(parties)
-        .range([0, iW])
-        .padding(0.05);
-      const yScale = d3
-        .scaleBand()
-        .domain(categories)
-        .range([0, bodyHeight])
-        .padding(0.05);
-
-      const svgW = ML + iW + MR;
-      const svg = d3.select(singleSvgRef.current);
-      svg.selectAll("*").remove();
-      svg.attr("width", svgW).attr("height", totalH);
-
-      svg
-        .append("g")
-        .attr("transform", `translate(${ML}, ${HEADER_H})`)
-        .call((sel) => xAxis(sel, xScale));
-
-      svg
-        .append("g")
-        .attr("transform", `translate(${ML}, ${HEADER_H})`)
-        .call(d3.axisLeft(yScale).tickSize(0))
-        .call((ax) => ax.select(".domain").remove())
-        .call(styleAxisText)
-        .call((ax) =>
-          truncateAxisLabels(ax, ML - 8, tooltip, containerRef.current!),
-        );
-
-      const g = svg
-        .append("g")
-        .attr("transform", `translate(${ML}, ${HEADER_H})`);
-      drawCells(
-        g,
-        cells,
-        xScale,
-        yScale,
-        sortedPivot,
-        colorScale,
-        clampMax,
-        tooltip,
-        containerRef.current!,
-      );
-    } else {
-      // ── Scroll mode: sticky header SVG + scrolling body SVG ──────────────
-      if (!headerSvgRef.current || !bodySvgRef.current) return;
-      const maxBodyH = height - HEADER_H;
-      const ROW_H = Math.min(
-        48,
-        Math.max(22, Math.floor(maxBodyH / categories.length)),
-      );
-      const bodyHeight = ROW_H * categories.length;
-
-      const xScale = d3
-        .scaleBand()
-        .domain(parties)
-        .range([0, iW])
-        .padding(0.05);
-      const yScale = d3
-        .scaleBand()
-        .domain(categories)
-        .range([0, bodyHeight])
-        .padding(0.05);
-
-      const svgW = ML + iW + MR;
-      const headerSvg = d3.select(headerSvgRef.current);
-      headerSvg.selectAll("*").remove();
-      headerSvg.attr("width", svgW).attr("height", HEADER_H);
-      headerSvg
-        .append("g")
-        .attr("transform", `translate(${ML}, ${HEADER_H})`)
-        .call((sel) => xAxis(sel, xScale));
-
-      const bodySvg = d3.select(bodySvgRef.current);
-      bodySvg.selectAll("*").remove();
-      bodySvg.attr("width", svgW).attr("height", bodyHeight);
-      bodySvg
-        .append("g")
-        .attr("transform", `translate(${ML}, 0)`)
-        .call(d3.axisLeft(yScale).tickSize(0))
-        .call((ax) => ax.select(".domain").remove())
-        .call(styleAxisText)
-        .call((ax) =>
-          truncateAxisLabels(ax, ML - 8, tooltip, containerRef.current!),
-        );
-
-      const g = bodySvg.append("g").attr("transform", `translate(${ML}, 0)`);
-      drawCells(
-        g,
-        cells,
-        xScale,
-        yScale,
-        sortedPivot,
-        colorScale,
-        clampMax,
-        tooltip,
-        containerRef.current!,
-      );
-    }
-  }, [pivot, height, width, useScroll]);
+    const g = svg
+      .append("g")
+      .attr("transform", `translate(${ML}, ${HEADER_H})`);
+    drawCells(
+      g,
+      cells,
+      xScale,
+      yScale,
+      sortedPivot,
+      colorScale,
+      clampMax,
+      tooltip,
+      containerRef.current!,
+    );
+  }, [pivot, height, width]);
 
   return (
     <div ref={containerRef} style={{ position: "relative" }}>
-      {!useScroll ? (
-        <div style={{ overflowX: "auto" }}>
-          <svg
-            ref={singleSvgRef}
-            style={{ display: "block", overflow: "visible" }}
-          />
-        </div>
-      ) : (
-        <div style={{ overflowX: "auto" }}>
-          <div
-            style={{
-              background: "#fff",
-              position: "sticky",
-              top: 0,
-              zIndex: 1,
-              overflow: "visible",
-            }}
-          >
-            <svg
-              ref={headerSvgRef}
-              style={{ display: "block", overflow: "visible" }}
-            />
-          </div>
-          <div
-            style={{
-              overflowY: "auto",
-              overflowX: "hidden",
-              maxHeight: height - HEADER_H,
-            }}
-          >
-            <svg ref={bodySvgRef} style={{ display: "block" }} />
-          </div>
-        </div>
-      )}
+      <div style={{ overflowX: "auto" }}>
+        <svg ref={svgRef} style={{ display: "block", overflow: "visible" }} />
+      </div>
       <ChartTooltip tooltipRef={tooltipRef} maxWidth={280} zIndex={50} />
     </div>
   );
