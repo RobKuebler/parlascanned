@@ -181,6 +181,7 @@ export function VoteHeatmap({
       .attr("stroke", "#fff")
       .attr("stroke-width", 2)
       .on("mousemove", (event, d) => {
+        if (d.answer === "no_show") return;
         const meta = VOTE_META[d.answer as keyof typeof VOTE_META];
         const [px, py] = d3.pointer(event, containerRef.current!);
         tooltip

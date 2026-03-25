@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { usePeriod } from "@/lib/period-context";
 import {
   fetchData,
@@ -70,6 +70,50 @@ export default function VoteMapPage() {
   const [polls, setPolls] = useState<Poll[]>([]);
   const [selectedPolIds, setSelectedPolIds] = useState<number[]>([]);
   const [selectedPollIds, setSelectedPollIds] = useState<number[]>([]);
+
+  // Polls where the selected politicians voted differently from each other.
+  // Only computed when 2+ politicians are selected and vote data is loaded.
+  const divergentPollIds = useMemo<number[] | undefined>(() => {
+    if (!votes || selectedPolIds.length < 2) return undefined;
+    // Build vote lookup: politician_id → poll_id → answer
+    const voteIndex = new Map<number, Map<number, string>>();
+    for (const v of votes) {
+      if (!voteIndex.has(v.politician_id))
+        voteIndex.set(v.politician_id, new Map());
+      voteIndex.get(v.politician_id)!.set(v.poll_id, v.answer);
+    }
+    return polls
+      .filter((p) => {
+        const answers = new Set<string>();
+        for (const polId of selectedPolIds) {
+          answers.add(voteIndex.get(polId)?.get(p.poll_id) ?? "no_show");
+        }
+        return answers.size > 1;
+      })
+      .map((p) => p.poll_id);
+  }, [votes, polls, selectedPolIds]);
+
+  // Like divergentPollIds, but no_show is ignored — only actual votes (yes/no/abstain) are compared.
+  const divergentPresentPollIds = useMemo<number[] | undefined>(() => {
+    if (!votes || selectedPolIds.length < 2) return undefined;
+    const voteIndex = new Map<number, Map<number, string>>();
+    for (const v of votes) {
+      if (!voteIndex.has(v.politician_id))
+        voteIndex.set(v.politician_id, new Map());
+      voteIndex.get(v.politician_id)!.set(v.poll_id, v.answer);
+    }
+    return polls
+      .filter((p) => {
+        const answers = new Set<string>();
+        for (const polId of selectedPolIds) {
+          const answer = voteIndex.get(polId)?.get(p.poll_id);
+          if (answer && answer !== "no_show") answers.add(answer);
+        }
+        return answers.size > 1;
+      })
+      .map((p) => p.poll_id);
+  }, [votes, polls, selectedPolIds]);
+
   const [loading, setLoading] = useState(true);
   const [loadingVotes, setLoadingVotes] = useState(false);
   // Chart height — start at 350 (mobile-safe default) and update after mount to avoid SSR/client mismatch
@@ -249,6 +293,8 @@ export default function VoteMapPage() {
                 polls={polls}
                 selectedIds={selectedPollIds}
                 onChange={setSelectedPollIds}
+                divergentPollIds={divergentPollIds}
+                divergentPresentPollIds={divergentPresentPollIds}
               />
             </div>
             {/* Vote legend */}
