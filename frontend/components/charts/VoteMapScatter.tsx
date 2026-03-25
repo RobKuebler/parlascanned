@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
-import { EmbeddingPoint, Politician } from "@/lib/data";
+import { EmbeddingPoint, Politician, stripSoftHyphen } from "@/lib/data";
 import {
   PARTY_COLORS,
   FALLBACK_COLOR,
@@ -138,9 +138,9 @@ export function VoteMapScatter({
     const polMap = new Map(politicians.map((p) => [p.politician_id, p]));
     const seriesByParty = new Map<string, EmbeddingPoint[]>();
     for (const pt of embeddings) {
-      const party =
-        polMap.get(pt.politician_id)?.party.replace(/\u00ad/g, "") ??
-        "fraktionslos";
+      const party = stripSoftHyphen(
+        polMap.get(pt.politician_id)?.party ?? "fraktionslos",
+      );
       if (!seriesByParty.has(party)) seriesByParty.set(party, []);
       seriesByParty.get(party)!.push(pt);
     }
@@ -190,7 +190,7 @@ export function VoteMapScatter({
             .style("left", `${px + 12}px`)
             .style("top", `${py - 28}px`)
             .html(
-              `<b>${pol.name}</b><br/><span style="color:#bbb">${pol.party.replace(/\u00ad/g, "")}</span>`,
+              `<b>${pol.name}</b><br/><span style="color:#bbb">${stripSoftHyphen(pol.party)}</span>`,
             );
         })
         .on("mouseleave", () =>

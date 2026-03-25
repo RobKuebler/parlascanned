@@ -2,7 +2,7 @@
 import { useRef, useEffect } from "react";
 import * as d3 from "d3";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
-import { VoteRecord, Poll, Politician } from "@/lib/data";
+import { VoteRecord, Poll, Politician, stripSoftHyphen } from "@/lib/data";
 import { VOTE_META, VOTE_NUMERIC } from "@/lib/constants";
 import {
   ChartTooltip,
@@ -71,9 +71,7 @@ export function VoteHeatmap({
 
     const xLabels = selectedPolIds.map((id) => {
       const pol = polMap.get(id);
-      return pol
-        ? `${pol.name} (${pol.party.replace(/\u00ad/g, "")})`
-        : String(id);
+      return pol ? `${pol.name} (${stripSoftHyphen(pol.party)})` : String(id);
     });
 
     // Use poll_id as scale domain to avoid collisions when truncated topics are identical

@@ -86,9 +86,11 @@ export interface PartyProfileFile {
 
 // ── Data loading utilities ──────────────────────────────────────────────────
 
-/** Strip the soft-hyphen character used in party names from the API. */
+/** Normalize a raw party name from the API: strip soft-hyphens and apply short display names. */
 export function stripSoftHyphen(s: string): string {
-  return s.replace(/\u00ad/g, "");
+  const stripped = s.replace(/\u00ad/g, "");
+  if (stripped === "BÜNDNIS 90/DIE GRÜNEN") return "Grüne";
+  return stripped;
 }
 
 /**

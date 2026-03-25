@@ -1,7 +1,13 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { usePeriod } from "@/lib/period-context";
-import { fetchData, dataUrl, SidejobsFile, Politician } from "@/lib/data";
+import {
+  fetchData,
+  dataUrl,
+  SidejobsFile,
+  Politician,
+  stripSoftHyphen,
+} from "@/lib/data";
 import {
   IncomeByPartyChart,
   IncomeByCategoryChart,
@@ -76,7 +82,10 @@ export default function SidejobsPage() {
       ),
     ])
       .then(([sj, pols]) => {
-        setSjData(sj);
+        setSjData({
+          ...sj,
+          jobs: sj.jobs.map((j) => ({ ...j, party: stripSoftHyphen(j.party) })),
+        });
         setPoliticians(pols);
         setLoading(false);
       })

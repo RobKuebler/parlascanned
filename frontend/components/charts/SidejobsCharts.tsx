@@ -2,7 +2,7 @@
 import { useRef, useEffect } from "react";
 import * as d3 from "d3";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
-import { SidejobRecord } from "@/lib/data";
+import { SidejobRecord, stripSoftHyphen } from "@/lib/data";
 import {
   PARTY_COLORS,
   FALLBACK_COLOR,
@@ -39,7 +39,7 @@ export function IncomeByPartyChart({
     // Total income per party, divided by all politicians in that party (incl. those with no sidejobs).
     const partySize = new Map<string, number>();
     for (const pol of politicians) {
-      const party = pol.party.replace(/\u00ad/g, "");
+      const party = stripSoftHyphen(pol.party);
       partySize.set(party, (partySize.get(party) ?? 0) + 1);
     }
     const totals = parties.map((p) =>
@@ -555,8 +555,7 @@ export function TopEarnersChart({
       .attr("height", yScale.bandwidth())
       .attr(
         "fill",
-        (d) =>
-          PARTY_COLORS[d.pol.party.replace(/\u00ad/g, "")] ?? FALLBACK_COLOR,
+        (d) => PARTY_COLORS[stripSoftHyphen(d.pol.party)] ?? FALLBACK_COLOR,
       )
       .attr("rx", 2)
       .on("mousemove", (event, d) => {
@@ -613,7 +612,7 @@ export function SidejobCoverageByPartyChart({
   };
   const byParty = new Map<string, Counts>();
   for (const pol of politicians) {
-    const party = pol.party.replace(/\u00ad/g, "");
+    const party = stripSoftHyphen(pol.party);
     if (!byParty.has(party))
       byParty.set(party, { income: 0, no_amount: 0, none: 0, total: 0 });
     const c = byParty.get(party)!;

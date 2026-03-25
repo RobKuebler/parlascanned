@@ -3,7 +3,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Footer } from "@/components/ui/Footer";
 import { usePeriod } from "@/lib/period-context";
-import { fetchData, dataUrl, Politician, SidejobsFile, Poll } from "@/lib/data";
+import {
+  fetchData,
+  dataUrl,
+  stripSoftHyphen,
+  Politician,
+  SidejobsFile,
+  Poll,
+} from "@/lib/data";
 
 const FEATURES = [
   {
@@ -112,8 +119,7 @@ export default function Home() {
       .then(([pols, sj, polls]) => {
         setStats({
           politicians: pols.length,
-          parties: new Set(pols.map((p) => p.party.replace(/\u00ad/g, "")))
-            .size,
+          parties: new Set(pols.map((p) => stripSoftHyphen(p.party))).size,
           polls: polls.length,
           sidejobs: sj.coverage.total,
         });

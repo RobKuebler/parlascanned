@@ -4,6 +4,7 @@ import { usePeriod } from "@/lib/period-context";
 import {
   fetchData,
   dataUrl,
+  stripSoftHyphen,
   EmbeddingsFile,
   EmbeddingPoint,
   Politician,
@@ -18,6 +19,11 @@ import { PoliticianSearch } from "@/components/charts/PoliticianSearch";
 import { PollFilter } from "@/components/charts/PollFilter";
 import { ChartSkeleton } from "@/components/ui/ChartSkeleton";
 import { Footer } from "@/components/ui/Footer";
+import {
+  GOVERNING_PARTIES,
+  PARTY_COLORS,
+  FALLBACK_COLOR,
+} from "@/lib/constants";
 
 /** Computes per-party cohesion as mean Euclidean distance from each politician to the party centroid. */
 function computeCohesion(
@@ -27,9 +33,9 @@ function computeCohesion(
   const polMap = new Map(politicians.map((p) => [p.politician_id, p]));
   const partyPoints = new Map<string, { x: number; y: number }[]>();
   for (const pt of points) {
-    const label =
-      polMap.get(pt.politician_id)?.party.replace(/\u00ad/g, "") ??
-      "fraktionslos";
+    const label = stripSoftHyphen(
+      polMap.get(pt.politician_id)?.party ?? "fraktionslos",
+    );
     if (!partyPoints.has(label)) partyPoints.set(label, []);
     partyPoints.get(label)!.push({ x: pt.x, y: pt.y });
   }
@@ -129,6 +135,37 @@ export default function VoteMapPage() {
           abstimmen, landen nah beieinander — unabhängig von Fraktionsgrenzen.
         </p>
       </div>
+
+      {/* Coalition banner */}
+      {activePeriodId && GOVERNING_PARTIES[activePeriodId] && (
+        <div className="flex flex-wrap items-center gap-2 mb-5">
+          <span className="text-[11px] font-bold tracking-[0.12em] uppercase text-[#9A9790]">
+            Regierungskoalition
+          </span>
+          {GOVERNING_PARTIES[activePeriodId].map((party, i) => (
+            <span key={party} className="flex items-center gap-1.5">
+              {i > 0 && <span className="text-[#C8C5BF] text-[13px]">+</span>}
+              <span
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-semibold border"
+                style={{
+                  background: `${PARTY_COLORS[party] ?? FALLBACK_COLOR}18`,
+                  borderColor: `${PARTY_COLORS[party] ?? FALLBACK_COLOR}55`,
+                  color:
+                    party === "CDU/CSU"
+                      ? "#1a1a1a"
+                      : (PARTY_COLORS[party] ?? FALLBACK_COLOR),
+                }}
+              >
+                <span
+                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  style={{ background: PARTY_COLORS[party] ?? FALLBACK_COLOR }}
+                />
+                {party}
+              </span>
+            </span>
+          ))}
+        </div>
+      )}
 
       {/* Scatter */}
       <div

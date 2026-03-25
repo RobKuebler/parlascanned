@@ -5,7 +5,7 @@ export const PARTY_COLORS: Record<string, string> = {
   "CDU/CSU": "#2a2a2a",
   SPD: "#E3000F",
   AfD: "#009EE0",
-  "BÜNDNIS 90/DIE GRÜNEN": "#46962B",
+  Grüne: "#46962B",
   "Die Linke": "#FF69B4",
   "Die Linke.": "#FF69B4",
   BSW: "#722EA5",
@@ -20,7 +20,7 @@ export const PARTY_ORDER = [
   "CDU/CSU",
   "SPD",
   "AfD",
-  "BÜNDNIS 90/DIE GRÜNEN",
+  "Grüne",
   "Die Linke",
   "Die Linke.",
   "BSW",
@@ -32,6 +32,12 @@ export const PARTY_ORDER = [
 export const DARK_FILL_PARTY = "CDU/CSU";
 
 export const NO_FACTION_LABEL = "fraktionslos";
+
+// Governing coalition parties per period (period_id → party names).
+export const GOVERNING_PARTIES: Record<number, string[]> = {
+  132: ["SPD", "Grüne", "FDP"], // 20. BT: Ampel
+  161: ["CDU/CSU", "SPD"], // 21. BT: GroKo
+};
 
 /**
  * Sort a list of party names by PARTY_ORDER (most seats first).

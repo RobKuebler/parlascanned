@@ -8,6 +8,7 @@ import { DeviationHeatmap } from "@/components/charts/DeviationHeatmap";
 import { ChartSkeleton } from "@/components/ui/ChartSkeleton";
 import { Footer } from "@/components/ui/Footer";
 import { sortParties } from "@/lib/constants";
+import { stripSoftHyphen } from "@/lib/data";
 
 export default function PartyProfilePage() {
   const { activePeriodId } = usePeriod();
@@ -21,7 +22,25 @@ export default function PartyProfilePage() {
       dataUrl("party_profile_{period}.json", activePeriodId),
     )
       .then((d) => {
-        setData(d);
+        const norm = stripSoftHyphen;
+        setData({
+          ...d,
+          parties: d.parties.map(norm),
+          age: d.age.map((a) => ({ ...a, party: norm(a.party) })),
+          sex: d.sex.map((s) => ({ ...s, party_label: norm(s.party_label) })),
+          occupation: {
+            ...d.occupation,
+            parties: d.occupation.parties.map(norm),
+          },
+          education_field: {
+            ...d.education_field,
+            parties: d.education_field.parties.map(norm),
+          },
+          education_degree: {
+            ...d.education_degree,
+            parties: d.education_degree.parties.map(norm),
+          },
+        });
         setLoading(false);
       })
       .catch(console.error);
