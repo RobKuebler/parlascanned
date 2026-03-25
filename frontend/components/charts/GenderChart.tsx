@@ -105,6 +105,16 @@ export function GenderChart({
 
     const tooltip = d3.select(tooltipRef.current!);
 
+    // Precompute total members per party for absolute counts in tooltip
+    const partyTotals = Object.fromEntries(
+      parties.map((party) => [
+        party,
+        data
+          .filter((r) => r.party_label === party)
+          .reduce((s, r) => s + r.count, 0),
+      ]),
+    );
+
     // Build stacked segments per party
     parties.forEach((party) => {
       let y0 = 0;
@@ -113,6 +123,8 @@ export function GenderChart({
           (r) => r.party_label === party && r.geschlecht === gender,
         );
         const pct = row ? Math.round(row.pct) : 0;
+        const count = row?.count ?? 0;
+        const total = partyTotals[party] ?? 0;
         const y1 = y0 + pct;
         g.append("rect")
           .attr("x", xScale(party) ?? 0)
@@ -127,7 +139,7 @@ export function GenderChart({
               containerRef.current!,
               px,
               py,
-              `<b>${gender}</b><br/>${party}: ${pct}%`,
+              `<b>${party}</b><br/>${count} von ${total} Abgeordneten sind ${gender.toLowerCase()} (${pct}%)`,
             );
           })
           .on("mouseleave", () => tooltip.style("opacity", "0"));

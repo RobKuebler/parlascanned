@@ -35,6 +35,8 @@ def _build_category_pivot(
     cat_col: str,
     party_labels_ordered: list[str],
     top_n: int = 0,
+    drop_labels: set[str] | None = None,
+    unknown_labels: set[str] | None = None,
 ) -> tuple[pd.DataFrame, np.ndarray, np.ndarray, pd.DataFrame]:
     """Build a category pivot with %-values per party and deviation.
 
@@ -45,6 +47,10 @@ def _build_category_pivot(
     - pct_z: numpy matrix of %-values (0 replaced by NaN)
     - dev_z: numpy matrix of deviation from Bundestag average in percentage points
     - pivot_count: DataFrame with absolute counts (rows=categories, cols=parties)
+
+    If unknown_labels is given, those categories are aggregated into an "Unbekannt"
+    row at the bottom instead of being dropped. This makes party_totals equal to the
+    true party size so tooltip denominators are correct.
     """
     tmp = pols_df[["party_label", col]].copy()
     tmp[cat_col] = tmp[col].where(tmp[col].notna(), other=None).apply(normalize_fn)
@@ -54,10 +60,25 @@ def _build_category_pivot(
     )
     # Drop non-informative categories, sort by frequency
     cat_totals = counts.groupby(cat_col)["count"].sum().sort_values(ascending=False)
-    drop_labels = {"Keine Angabe", "Nicht erkennbar", "Abgeordneter"}
-    cat_totals = cat_totals[~cat_totals.index.isin(drop_labels)]
+    _drop = (
+        drop_labels
+        if drop_labels is not None
+        else {"Keine Angabe", "Nicht erkennbar", "Abgeordneter"}
+    )
+    effective_drop = _drop - (unknown_labels or set())
+    cat_totals = cat_totals[~cat_totals.index.isin(effective_drop)]
     pivot = pivot.reindex(cat_totals.index)
-    pivot = pivot.drop(index=drop_labels & set(pivot.index), errors="ignore")
+    pivot = pivot.drop(index=effective_drop & set(pivot.index), errors="ignore")
+    # Aggregate unknown categories into a single "Unbekannt" row at the bottom
+    if unknown_labels:
+        unknown_in_pivot = [lbl for lbl in unknown_labels if lbl in pivot.index]
+        unbekannt_row = (
+            pivot.loc[unknown_in_pivot].sum(axis=0)
+            if unknown_in_pivot
+            else pd.Series(0, index=pivot.columns)
+        )
+        pivot = pivot.drop(index=unknown_in_pivot, errors="ignore")
+        pivot.loc["Unbekannt"] = unbekannt_row
     # Group small categories into "Sonstiges" if top_n is set
     if top_n:
         # Exclude "Sonstiges" from top_n ranking — it always collects the rest
@@ -92,8 +113,9 @@ def compute_occupation_pivot(
 ) -> tuple[pd.DataFrame, np.ndarray, np.ndarray, pd.DataFrame]:
     """Build occupation pivot with %-values and deviation from Bundestag average.
 
-    Shows all categories (no Sonstiges grouping).
-    Drops 'Abgeordneter', 'Keine Angabe', 'Nicht erkennbar' before ranking.
+    Shows all categories (no Sonstiges grouping). 'Abgeordneter' is kept as an
+    explicit category. 'Keine Angabe' and 'Nicht erkennbar' are aggregated into
+    an 'Unbekannt' row at the bottom, so party_totals equals the true party size.
     """
     return _build_category_pivot(
         pols_df,
@@ -102,6 +124,8 @@ def compute_occupation_pivot(
         "occ_cat",
         party_labels_ordered,
         top_n=0,
+        drop_labels=set(),
+        unknown_labels={"Keine Angabe", "Nicht erkennbar", "Abgeordneter"},
     )
 
 
@@ -137,7 +161,8 @@ def compute_education_field_pivot(
 ) -> tuple[pd.DataFrame, np.ndarray, np.ndarray, pd.DataFrame]:
     """Build education-field pivot with %-values and deviation.
 
-    Shows all categories (no Sonstiges grouping).
+    Shows all categories (no Sonstiges grouping). 'Keine Angabe' and
+    'Nicht erkennbar' are aggregated into an 'Unbekannt' row at the bottom.
     """
     return _build_category_pivot(
         pols_df,
@@ -146,15 +171,26 @@ def compute_education_field_pivot(
         "edu_field",
         party_labels_ordered,
         top_n=0,
+        drop_labels=set(),
+        unknown_labels={"Keine Angabe", "Nicht erkennbar"},
     )
 
 
 def compute_education_degree_pivot(
     pols_df: pd.DataFrame, party_labels_ordered: list[str]
 ) -> tuple[pd.DataFrame, np.ndarray, np.ndarray, pd.DataFrame]:
-    """Build degree-level pivot with %-values and deviation from Bundestag average."""
+    """Build degree-level pivot with %-values and deviation from Bundestag average.
+
+    'Keine Angabe' and 'Nicht erkennbar' are aggregated into an 'Unbekannt' row.
+    """
     return _build_category_pivot(
-        pols_df, "education", normalize_education_degree, "degree", party_labels_ordered
+        pols_df,
+        "education",
+        normalize_education_degree,
+        "degree",
+        party_labels_ordered,
+        drop_labels=set(),
+        unknown_labels={"Keine Angabe", "Nicht erkennbar"},
     )
 
 

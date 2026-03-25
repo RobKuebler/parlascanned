@@ -51,7 +51,15 @@ function drawCells(
     .attr("y", (d) => yScale(pivot.categories[d.catIdx]) ?? 0)
     .attr("width", xScale.bandwidth())
     .attr("height", yScale.bandwidth())
-    .attr("fill", (d) => (d.dev !== null ? colorScale(d.dev) : "none"))
+    .attr("fill", (d) =>
+      pivot.categories[d.catIdx] === "Unbekannt"
+        ? d.count > 0
+          ? "#d4d4d4"
+          : "none"
+        : d.dev !== null
+          ? colorScale(d.dev)
+          : "none",
+    )
     .attr("stroke", "#fff")
     .attr("stroke-width", 1)
     .on("mousemove", (event, d) => {
@@ -85,7 +93,13 @@ function drawCells(
       .attr("dominant-baseline", "central")
       .style("font-size", fontSize)
       .style("pointer-events", "none")
-      .style("fill", (d) => (Math.abs(d.dev!) > maxDev * 0.5 ? "#fff" : "#333"))
+      .style("fill", (d) =>
+        pivot.categories[d.catIdx] === "Unbekannt"
+          ? "#333"
+          : Math.abs(d.dev!) > maxDev * 0.5
+            ? "#fff"
+            : "#333",
+      )
       .text((d) => `${d.dev! > 0 ? "+" : ""}${d.dev!.toFixed(0)}`);
   }
 }
@@ -123,7 +137,15 @@ export function DeviationHeatmap({ pivot, height = 400 }: Props) {
       Math.floor((width - ML - MR) / parties.length),
     );
     const iW = colW * parties.length;
-    const allDevs = devData.flat().filter((v): v is number => v !== null);
+    // Exclude "Unbekannt" and small parties (< 10 members) from the color scale
+    // so they don't distort the range with statistically noisy deviations.
+    const allDevs = devData
+      .flatMap((row, catIdx) =>
+        categories[catIdx] === "Unbekannt"
+          ? []
+          : row.filter((_, pi) => sortedPivot.party_totals[pi] >= 10),
+      )
+      .filter((v): v is number => v !== null);
     // Clamp to 95th percentile of absolute deviations so one outlier doesn't
     // wash out all other cells.
     const absDevs = allDevs.map(Math.abs).sort((a, b) => a - b);
