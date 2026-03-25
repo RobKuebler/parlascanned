@@ -17,6 +17,10 @@ interface Props {
   politicians: Politician[];
   selectedIds: number[];
   onSelectionChange: (ids: number[]) => void;
+  /** Called when a party centroid is clicked — toggles the party selection. */
+  onPartyToggle?: (party: string) => void;
+  /** Called when the background is clicked — should clear all selections. */
+  onClearAll?: () => void;
   height?: number;
 }
 
@@ -27,6 +31,8 @@ export function VoteMapScatter({
   politicians,
   selectedIds,
   onSelectionChange,
+  onPartyToggle,
+  onClearAll,
   height = 600,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -48,6 +54,14 @@ export function VoteMapScatter({
   useEffect(() => {
     onChangeRef.current = onSelectionChange;
   }, [onSelectionChange]);
+  const onPartyToggleRef = useRef(onPartyToggle);
+  useEffect(() => {
+    onPartyToggleRef.current = onPartyToggle;
+  }, [onPartyToggle]);
+  const onClearAllRef = useRef(onClearAll);
+  useEffect(() => {
+    onClearAllRef.current = onClearAll;
+  }, [onClearAll]);
 
   // D3 state shared across effects
   const transformRef = useRef<d3.ZoomTransform>(d3.zoomIdentity);
@@ -278,15 +292,20 @@ export function VoteMapScatter({
       cg.style("cursor", "pointer")
         .on("click", (event) => {
           event.stopPropagation();
-          const partyIds = new Set(points.map((pt) => pt.politician_id));
-          const existing = selectedIdsRef.current;
-          const allSelected = points.every((pt) =>
-            existing.includes(pt.politician_id),
-          );
-          const next = allSelected
-            ? existing.filter((id) => !partyIds.has(id))
-            : [...new Set([...existing, ...partyIds])];
-          onChangeRef.current(next);
+          if (onPartyToggleRef.current) {
+            onPartyToggleRef.current(party);
+          } else {
+            // Fallback: expand to individual IDs (legacy behaviour)
+            const partyIds = new Set(points.map((pt) => pt.politician_id));
+            const existing = selectedIdsRef.current;
+            const allSelected = points.every((pt) =>
+              existing.includes(pt.politician_id),
+            );
+            const next = allSelected
+              ? existing.filter((id) => !partyIds.has(id))
+              : [...new Set([...existing, ...partyIds])];
+            onChangeRef.current(next);
+          }
         })
         .on("mousemove", (event) => {
           const [px, py] = d3.pointer(event, containerRef.current!);
@@ -307,7 +326,8 @@ export function VoteMapScatter({
     svg.on("click.background", (event) => {
       if (modeRef.current !== "pan") return;
       if ((event.target as Element).closest(".dot")) return;
-      onChangeRef.current([]);
+      if (onClearAllRef.current) onClearAllRef.current();
+      else onChangeRef.current([]);
     });
 
     // Zoom behavior for pan mode

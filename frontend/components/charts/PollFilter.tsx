@@ -59,15 +59,16 @@ export function PollFilter({
     return divergentPresentPollIds.every((id) => selectedSet.has(id));
   }, [divergentPresentPollIds, selectedIds, selectedSet]);
 
-  const allActive =
-    selectedIds.length === 0 && !divergentActive && !divergentPresentActive;
+  // "Alle" is never pre-selected — it only highlights when explicitly activated via onClick
+  const allActive = false;
 
-  // The poll IDs currently shown in the heatmap — used to render individual chips below the filter chips.
+  // The poll IDs currently shown as individual chips below the filter chips.
+  // Empty when no filter is active (avoids showing hundreds of chips by default).
   const effectiveIds = useMemo(() => {
     if (divergentActive) return divergentPollIds!;
     if (divergentPresentActive) return divergentPresentPollIds!;
     if (selectedIds.length > 0) return selectedIds;
-    return polls.map((p) => p.poll_id);
+    return [];
   }, [
     divergentActive,
     divergentPresentActive,
@@ -182,24 +183,30 @@ export function PollFilter({
 
       {/* Chips — always shown: "Alle" when nothing selected, otherwise selected poll chips */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
-        {/* Filter chips — always shown */}
+        {/* Filter chips — outlined toggle style, clearly distinct from content chips */}
         <span
           onClick={() => onChange([])}
           style={{
             display: "inline-flex",
             alignItems: "center",
             gap: 4,
-            padding: "2px 10px",
-            borderRadius: 12,
-            background: allActive ? ACCENT : "#f0f0f0",
+            padding: "3px 11px",
+            borderRadius: 6,
+            background: allActive ? ACCENT : "transparent",
+            border: `1.5px solid ${allActive ? ACCENT : "#C8CAD4"}`,
             fontSize: 12,
-            color: allActive ? "#fff" : "#333",
+            fontWeight: 500,
+            color: allActive ? "#fff" : "#555",
             cursor: allActive ? "default" : "pointer",
           }}
         >
           Alle
           <span
-            style={{ color: allActive ? "#ffffffaa" : "#888", fontSize: 11 }}
+            style={{
+              color: allActive ? "#ffffffbb" : "#999",
+              fontSize: 11,
+              fontWeight: 400,
+            }}
           >
             ({polls.length})
           </span>
@@ -214,23 +221,26 @@ export function PollFilter({
               display: "inline-flex",
               alignItems: "center",
               gap: 4,
-              padding: "2px 10px",
-              borderRadius: 12,
-              background: divergentActive ? ACCENT : "#f0f0f0",
+              padding: "3px 11px",
+              borderRadius: 6,
+              background: divergentActive ? ACCENT : "transparent",
+              border: `1.5px solid ${divergentActive ? ACCENT : "#C8CAD4"}`,
               fontSize: 12,
-              color: divergentActive ? "#fff" : "#333",
+              fontWeight: 500,
+              color: divergentActive ? "#fff" : "#555",
               cursor:
                 divergentPollIds.length > 0 && !divergentActive
                   ? "pointer"
                   : "default",
-              opacity: divergentPollIds.length === 0 ? 0.45 : 1,
+              opacity: divergentPollIds.length === 0 ? 0.4 : 1,
             }}
           >
             Unterschiedlich
             <span
               style={{
-                color: divergentActive ? "#ffffffaa" : "#888",
+                color: divergentActive ? "#ffffffbb" : "#999",
                 fontSize: 11,
+                fontWeight: 400,
               }}
             >
               ({divergentPollIds.length})
@@ -248,23 +258,26 @@ export function PollFilter({
               display: "inline-flex",
               alignItems: "center",
               gap: 4,
-              padding: "2px 10px",
-              borderRadius: 12,
-              background: divergentPresentActive ? ACCENT : "#f0f0f0",
+              padding: "3px 11px",
+              borderRadius: 6,
+              background: divergentPresentActive ? ACCENT : "transparent",
+              border: `1.5px solid ${divergentPresentActive ? ACCENT : "#C8CAD4"}`,
               fontSize: 12,
-              color: divergentPresentActive ? "#fff" : "#333",
+              fontWeight: 500,
+              color: divergentPresentActive ? "#fff" : "#555",
               cursor:
                 divergentPresentPollIds.length > 0 && !divergentPresentActive
                   ? "pointer"
                   : "default",
-              opacity: divergentPresentPollIds.length === 0 ? 0.45 : 1,
+              opacity: divergentPresentPollIds.length === 0 ? 0.4 : 1,
             }}
           >
             Unterschiedlich, ohne Fehlen
             <span
               style={{
-                color: divergentPresentActive ? "#ffffffaa" : "#888",
+                color: divergentPresentActive ? "#ffffffbb" : "#999",
                 fontSize: 11,
+                fontWeight: 400,
               }}
             >
               ({divergentPresentPollIds.length})
@@ -289,10 +302,9 @@ export function PollFilter({
                 gap: 4,
                 padding: "2px 8px",
                 borderRadius: 12,
-                background: ACCENT_LIGHT,
+                background: "#f0f0f0",
                 fontSize: 12,
                 color: "#333",
-                border: `1px solid ${ACCENT}44`,
               }}
             >
               {truncate(poll.topic, 40)}

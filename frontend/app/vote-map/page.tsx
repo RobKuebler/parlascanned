@@ -60,6 +60,35 @@ function computeCohesionAndCentroids(
   return { cohesion, centroids };
 }
 
+/**
+ * Collapses individual politician selections into party pills when all members of a party
+ * are selected. Returns the normalized state with redundant individual IDs removed.
+ */
+function normalizeSelection(
+  polIds: number[],
+  parties: string[],
+  politicians: Politician[],
+): { polIds: number[]; parties: string[] } {
+  const partyMembers = new Map<string, number[]>();
+  for (const p of politicians) {
+    const party = stripSoftHyphen(p.party);
+    if (!partyMembers.has(party)) partyMembers.set(party, []);
+    partyMembers.get(party)!.push(p.politician_id);
+  }
+  const polIdSet = new Set(polIds);
+  const resultParties = [...parties];
+  let resultPolIds = [...polIds];
+  for (const [party, members] of partyMembers) {
+    if (resultParties.includes(party)) continue;
+    if (members.length > 1 && members.every((id) => polIdSet.has(id))) {
+      resultParties.push(party);
+      const memberSet = new Set(members);
+      resultPolIds = resultPolIds.filter((id) => !memberSet.has(id));
+    }
+  }
+  return { polIds: resultPolIds, parties: resultParties };
+}
+
 export default function VoteMapPage() {
   const { activePeriodId } = usePeriod();
   const [embeddings, setEmbeddings] = useState<EmbeddingsFile | null>(null);
@@ -69,12 +98,23 @@ export default function VoteMapPage() {
   const [votes, setVotes] = useState<VoteRecord[] | null>(null);
   const [polls, setPolls] = useState<Poll[]>([]);
   const [selectedPolIds, setSelectedPolIds] = useState<number[]>([]);
+  const [selectedParties, setSelectedParties] = useState<string[]>([]);
   const [selectedPollIds, setSelectedPollIds] = useState<number[]>([]);
+
+  // Expand party selections into politician IDs and merge with individual selections.
+  const effectivePolIds = useMemo(() => {
+    if (selectedParties.length === 0) return selectedPolIds;
+    const partySet = new Set(selectedParties);
+    const partyMemberIds = politicians
+      .filter((p) => partySet.has(stripSoftHyphen(p.party)))
+      .map((p) => p.politician_id);
+    return [...new Set([...selectedPolIds, ...partyMemberIds])];
+  }, [selectedPolIds, selectedParties, politicians]);
 
   // Polls where the selected politicians voted differently from each other.
   // Only computed when 2+ politicians are selected and vote data is loaded.
   const divergentPollIds = useMemo<number[] | undefined>(() => {
-    if (!votes || selectedPolIds.length < 2) return undefined;
+    if (!votes || effectivePolIds.length < 2) return undefined;
     // Build vote lookup: politician_id → poll_id → answer
     const voteIndex = new Map<number, Map<number, string>>();
     for (const v of votes) {
@@ -85,17 +125,17 @@ export default function VoteMapPage() {
     return polls
       .filter((p) => {
         const answers = new Set<string>();
-        for (const polId of selectedPolIds) {
+        for (const polId of effectivePolIds) {
           answers.add(voteIndex.get(polId)?.get(p.poll_id) ?? "no_show");
         }
         return answers.size > 1;
       })
       .map((p) => p.poll_id);
-  }, [votes, polls, selectedPolIds]);
+  }, [votes, polls, effectivePolIds]);
 
   // Like divergentPollIds, but no_show is ignored — only actual votes (yes/no/abstain) are compared.
   const divergentPresentPollIds = useMemo<number[] | undefined>(() => {
-    if (!votes || selectedPolIds.length < 2) return undefined;
+    if (!votes || effectivePolIds.length < 2) return undefined;
     const voteIndex = new Map<number, Map<number, string>>();
     for (const v of votes) {
       if (!voteIndex.has(v.politician_id))
@@ -105,14 +145,14 @@ export default function VoteMapPage() {
     return polls
       .filter((p) => {
         const answers = new Set<string>();
-        for (const polId of selectedPolIds) {
+        for (const polId of effectivePolIds) {
           const answer = voteIndex.get(polId)?.get(p.poll_id);
           if (answer && answer !== "no_show") answers.add(answer);
         }
         return answers.size > 1;
       })
       .map((p) => p.poll_id);
-  }, [votes, polls, selectedPolIds]);
+  }, [votes, polls, effectivePolIds]);
 
   const [loading, setLoading] = useState(true);
   const [loadingVotes, setLoadingVotes] = useState(false);
@@ -126,6 +166,7 @@ export default function VoteMapPage() {
     if (!activePeriodId) return;
     setLoading(true);
     setSelectedPolIds([]);
+    setSelectedParties([]);
     setVotes(null);
     Promise.all([
       fetchData<EmbeddingsFile>(
@@ -149,27 +190,93 @@ export default function VoteMapPage() {
       .catch(console.error);
   }, [activePeriodId]);
 
+  // Loads vote data if not yet loaded. No-op if already loaded or no period.
+  const loadVotesIfNeeded = useCallback(() => {
+    if (votes || !activePeriodId) return;
+    setLoadingVotes(true);
+    Promise.all([
+      fetchData<VoteRecord[]>(dataUrl("votes_{period}.json", activePeriodId)),
+      fetchData<Poll[]>(dataUrl("polls_{period}.json", activePeriodId)),
+    ])
+      .then(([v, p]) => {
+        setVotes(v);
+        setPolls(p);
+        setLoadingVotes(false);
+      })
+      .catch(console.error);
+  }, [votes, activePeriodId]);
+
   const handleSelection = useCallback(
-    (ids: number[]) => {
-      setSelectedPolIds(ids);
-      if (ids.length > 0 && !votes && activePeriodId) {
-        setLoadingVotes(true);
-        Promise.all([
-          fetchData<VoteRecord[]>(
-            dataUrl("votes_{period}.json", activePeriodId),
-          ),
-          fetchData<Poll[]>(dataUrl("polls_{period}.json", activePeriodId)),
-        ])
-          .then(([v, p]) => {
-            setVotes(v);
-            setPolls(p);
-            setLoadingVotes(false);
-          })
-          .catch(console.error);
+    (newEffectiveIds: number[]) => {
+      const newIdSet = new Set(newEffectiveIds);
+      let nextParties = [...selectedParties];
+      const expandedMembers: number[] = [];
+
+      // For each active party pill, check if a member was removed from the selection.
+      // If so, expand the pill into individual chips for the remaining members.
+      for (const party of selectedParties) {
+        const members = politicians
+          .filter((p) => stripSoftHyphen(p.party) === party)
+          .map((p) => p.politician_id);
+        if (!members.every((id) => newIdSet.has(id))) {
+          nextParties = nextParties.filter((p) => p !== party);
+          members
+            .filter((id) => newIdSet.has(id))
+            .forEach((id) => expandedMembers.push(id));
+        }
       }
+
+      // Combine expanded members with non-pill-member IDs from the new selection.
+      const pillMemberIds = new Set(
+        politicians
+          .filter((p) => nextParties.includes(stripSoftHyphen(p.party)))
+          .map((p) => p.politician_id),
+      );
+      const merged = [
+        ...new Set([
+          ...newEffectiveIds.filter((id) => !pillMemberIds.has(id)),
+          ...expandedMembers,
+        ]),
+      ];
+
+      // Auto-collapse: if all members of any party are now individually selected, make a pill.
+      const { polIds, parties } = normalizeSelection(
+        merged,
+        nextParties,
+        politicians,
+      );
+      setSelectedPolIds(polIds);
+      setSelectedParties(parties);
+      if (newEffectiveIds.length > 0) loadVotesIfNeeded();
     },
-    [votes, activePeriodId],
+    [loadVotesIfNeeded, selectedParties, politicians],
   );
+
+  const handlePartyToggle = useCallback(
+    (party: string) => {
+      setSelectedParties((prev) =>
+        prev.includes(party)
+          ? prev.filter((p) => p !== party)
+          : [...prev, party],
+      );
+      // When adding a party, remove any individual chips that are members of it.
+      setSelectedPolIds((prev) => {
+        const partyMemberIds = new Set(
+          politicians
+            .filter((p) => stripSoftHyphen(p.party) === party)
+            .map((p) => p.politician_id),
+        );
+        return prev.filter((id) => !partyMemberIds.has(id));
+      });
+      loadVotesIfNeeded();
+    },
+    [loadVotesIfNeeded, politicians],
+  );
+
+  const handleClearAll = useCallback(() => {
+    setSelectedPolIds([]);
+    setSelectedParties([]);
+  }, []);
 
   return (
     <>
@@ -246,8 +353,10 @@ export default function VoteMapPage() {
           <VoteMapScatter
             embeddings={embeddings!.data}
             politicians={politicians}
-            selectedIds={selectedPolIds}
+            selectedIds={effectivePolIds}
             onSelectionChange={handleSelection}
+            onPartyToggle={handlePartyToggle}
+            onClearAll={handleClearAll}
             height={chartHeight}
           />
         )}
@@ -276,11 +385,16 @@ export default function VoteMapPage() {
               politicians={politicians}
               selected={selectedPolIds}
               onSelectionChange={handleSelection}
+              selectedParties={selectedParties}
+              onPartyRemove={(party) =>
+                setSelectedParties((prev) => prev.filter((p) => p !== party))
+              }
+              onClearAll={handleClearAll}
             />
           </div>
         )}
 
-        {!selectedPolIds.length ? (
+        {!effectivePolIds.length ? (
           <p className="text-[13px] text-center py-10 text-[#9A9790]">
             Abgeordnete auswählen, um ihre Abstimmungen zu sehen
           </p>
@@ -322,7 +436,7 @@ export default function VoteMapPage() {
               votes={votes}
               polls={polls}
               politicians={politicians}
-              selectedPolIds={selectedPolIds}
+              selectedPolIds={effectivePolIds}
               selectedPollIds={selectedPollIds}
             />
           </>
