@@ -92,7 +92,8 @@ export default function PartyProfilePage() {
               Jeder Punkt entspricht einem Abgeordneten. Punkte gleichen Alters
               sind vertikal gestapelt — je mehr Punkte auf einer Position, desto
               mehr Abgeordnete haben exakt dieses Alter. Die Kurve darüber zeigt
-              die Altersverteilung als Dichteschätzung.
+              die Altersverteilung als Dichteschätzung. Das Alter bezieht sich
+              auf den Beginn der Legislaturperiode.
             </p>
             <AgeDistribution data={data.age} parties={parties} />
           </section>
@@ -129,7 +130,9 @@ export default function PartyProfilePage() {
               oder unterrepräsentiert ist — gemessen als Abweichung vom
               Bundestag-Durchschnitt in Prozentpunkten. Blau steht für
               überproportional viele Abgeordnete mit diesem Beruf, rot für
-              entsprechend wenige.
+              entsprechend wenige. Die Berufsangaben stammen aus der
+              Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei
+              Ersterfassung.
             </p>
             <DeviationHeatmap pivot={data.occupation} height={500} />
           </section>
@@ -148,7 +151,9 @@ export default function PartyProfilePage() {
               Studienrichtungen und Ausbildungsbereiche der Abgeordneten im
               Fraktionsvergleich. Blau bedeutet überproportional häufig
               vertreten, rot unterproportional — jeweils gemessen am
-              Bundestag-Durchschnitt.
+              Bundestag-Durchschnitt. Die Angaben stammen aus der
+              Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei
+              Ersterfassung.
             </p>
             <DeviationHeatmap pivot={data.education_field} height={400} />
           </section>
@@ -165,7 +170,9 @@ export default function PartyProfilePage() {
             </h2>
             <p className="text-[12px] text-[#9A9790] mb-4">
               Höchster Bildungsabschluss der Abgeordneten je Fraktion im
-              Vergleich zum Bundestag-Durchschnitt.
+              Vergleich zum Bundestag-Durchschnitt. Die Angaben stammen aus der
+              Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei
+              Ersterfassung.
             </p>
             <DeviationHeatmap pivot={data.education_degree} height={250} />
           </section>

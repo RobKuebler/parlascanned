@@ -207,15 +207,19 @@ def _export_sidejobs(
     )
 
 
-def _export_party_profile(period_id: int, pols_df: pd.DataFrame) -> None:
-    """Build and write party_profile JSON for one period."""
+def _export_party_profile(
+    period_id: int, pols_df: pd.DataFrame, period_start: date
+) -> None:
+    """Build and write party_profile JSON for one period.
+
+    Age is calculated as of the start of the period, not the current year.
+    """
     present = set(pols_df["party_label"].dropna().unique())
     party_labels_ordered = [
         p.replace("\xad", "") for p in PARTY_ORDER if p.replace("\xad", "") in present
     ] + sorted(present - {p.replace("\xad", "") for p in PARTY_ORDER})
 
-    current_year = datetime.now(tz=UTC).year
-    age_df = compute_age_df(pols_df, current_year)
+    age_df = compute_age_df(pols_df, period_start.year)
     sex_df = compute_sex_counts(pols_df)
     title_df = compute_title_counts(pols_df)
     occ_pct, _, occ_dev_z = compute_occupation_pivot(pols_df, party_labels_ordered)
@@ -321,7 +325,7 @@ def export_period(period_id: int, period_start: date, period_end: date) -> bool:
     _export_sidejobs(period_id, period_dir, pols_df, period_start, period_end)
 
     # ── party profile ─────────────────────────────────────────────────────────
-    _export_party_profile(period_id, pols_df)
+    _export_party_profile(period_id, pols_df, period_start)
 
     log.info("Exported period %d", period_id)
     return True
