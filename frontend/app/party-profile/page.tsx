@@ -132,7 +132,9 @@ export default function PartyProfilePage() {
               überproportional viele Abgeordnete mit diesem Beruf, rot für
               entsprechend wenige. Die Berufsangaben stammen aus der
               Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei
-              Ersterfassung.
+              Ersterfassung. Unter &bdquo;Sonstige Berufe&ldquo; fallen
+              insbesondere Abgeordnete, die als Berufsbezeichnung schlicht
+              &bdquo;Abgeordneter&ldquo; angegeben haben.
             </p>
             <DeviationHeatmap pivot={data.occupation} height={500} />
           </section>
