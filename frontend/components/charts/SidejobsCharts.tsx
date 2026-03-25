@@ -14,8 +14,7 @@ import {
   ChartTooltip,
   styleAxisText,
   truncateAxisLabels,
-  TOOLTIP_DX,
-  TOOLTIP_DY,
+  positionTooltip,
 } from "@/lib/chart-utils";
 
 // ── Chart 1: Income by party (sum + mean) ─────────────────────────────────────
@@ -130,13 +129,13 @@ export function IncomeByPartyChart({
         .attr("rx", 2)
         .on("mousemove", (event, d) => {
           const [px, py] = d3.pointer(event, containerRef.current!);
-          tooltip
-            .style("opacity", "1")
-            .style("left", `${px + TOOLTIP_DX}px`)
-            .style("top", `${py + TOOLTIP_DY}px`)
-            .html(
-              `<b>${d.party}</b><br/>${Math.round(d.value).toLocaleString("de")} €`,
-            );
+          positionTooltip(
+            tooltip,
+            containerRef.current!,
+            px,
+            py,
+            `<b>${d.party}</b><br/>${Math.round(d.value).toLocaleString("de")} €`,
+          );
         })
         .on("mouseleave", () => tooltip.style("opacity", "0"));
     };
@@ -269,13 +268,13 @@ export function IncomeByCategoryChart({
         .on("mousemove", (event, d) => {
           const [px, py] = d3.pointer(event, containerRef.current!);
           const val = Math.round(d[1] - d[0]);
-          tooltip
-            .style("opacity", "1")
-            .style("left", `${px + TOOLTIP_DX}px`)
-            .style("top", `${py + TOOLTIP_DY}px`)
-            .html(
-              `<b>${party}</b><br/>${d.data.cat}<br/>${val.toLocaleString("de")} €`,
-            );
+          positionTooltip(
+            tooltip,
+            containerRef.current!,
+            px,
+            py,
+            `<b>${party}</b><br/>${d.data.cat}<br/>${val.toLocaleString("de")} €`,
+          );
         })
         .on("mouseleave", () => tooltip.style("opacity", "0"));
     });
@@ -422,13 +421,13 @@ export function TopTopicsChart({
         .on("mousemove", (event, d) => {
           const [px, py] = d3.pointer(event, containerRef.current!);
           const val = Math.round(d[1] - d[0]);
-          tooltip
-            .style("opacity", "1")
-            .style("left", `${px + TOOLTIP_DX}px`)
-            .style("top", `${py + TOOLTIP_DY}px`)
-            .html(
-              `<b>${party}</b><br/>${d.data.topic}<br/>${val.toLocaleString("de")} €`,
-            );
+          positionTooltip(
+            tooltip,
+            containerRef.current!,
+            px,
+            py,
+            `<b>${party}</b><br/>${d.data.topic}<br/>${val.toLocaleString("de")} €`,
+          );
         })
         .on("mouseleave", () => tooltip.style("opacity", "0"));
     });
@@ -560,13 +559,13 @@ export function TopEarnersChart({
       .attr("rx", 2)
       .on("mousemove", (event, d) => {
         const [px, py] = d3.pointer(event, containerRef.current!);
-        tooltip
-          .style("opacity", "1")
-          .style("left", `${px + TOOLTIP_DX}px`)
-          .style("top", `${py + TOOLTIP_DY}px`)
-          .html(
-            `<b>${d.pol.name}</b><br/>${Math.round(d.income).toLocaleString("de")} €`,
-          );
+        positionTooltip(
+          tooltip,
+          containerRef.current!,
+          px,
+          py,
+          `<b>${d.pol.name}</b><br/>${Math.round(d.income).toLocaleString("de")} €`,
+        );
       })
       .on("mouseleave", () => tooltip.style("opacity", "0"));
   }, [jobs, politicians, width]);

@@ -6,8 +6,7 @@ import { PARTY_COLORS, FALLBACK_COLOR } from "@/lib/constants";
 import {
   ChartTooltip,
   styleAxisText,
-  TOOLTIP_DX,
-  TOOLTIP_DY,
+  positionTooltip,
 } from "@/lib/chart-utils";
 
 interface AgeRecord {
@@ -306,13 +305,13 @@ export function AgeDistribution({ data, parties }: Props) {
         }
 
         const [px, py] = d3.pointer(event, containerRef.current!);
-        tooltip
-          .style("opacity", "1")
-          .style("left", `${px + TOOLTIP_DX}px`)
-          .style("top", `${py + TOOLTIP_DY}px`)
-          .html(
-            `<b>${nearest.name}</b><br/>${nearest.party} · ${nearest.age} Jahre`,
-          );
+        positionTooltip(
+          tooltip,
+          containerRef.current!,
+          px,
+          py,
+          `<b>${nearest.name}</b><br/>${nearest.party} · ${nearest.age} Jahre`,
+        );
       })
       .on("mouseleave", () => tooltip.style("opacity", "0"));
   }, [data, parties, width]);

@@ -7,8 +7,7 @@ import { PARTY_COLORS, FALLBACK_COLOR } from "@/lib/constants";
 import {
   ChartTooltip,
   styleAxisText,
-  TOOLTIP_DX,
-  TOOLTIP_DY,
+  positionTooltip,
 } from "@/lib/chart-utils";
 
 interface Props {
@@ -71,11 +70,13 @@ export function CohesionChart({ cohesion, height = 300 }: Props) {
       .attr("rx", 2)
       .on("mousemove", (event, d) => {
         const [px, py] = d3.pointer(event, containerRef.current!);
-        tooltip
-          .style("opacity", "1")
-          .style("left", `${px + TOOLTIP_DX}px`)
-          .style("top", `${py + TOOLTIP_DY}px`)
-          .html(`<b>${d.label}</b><br/>Ø Abstand: ${d.streuung.toFixed(3)}`);
+        positionTooltip(
+          tooltip,
+          containerRef.current!,
+          px,
+          py,
+          `<b>${d.label}</b><br/>Ø Abstand: ${d.streuung.toFixed(3)}`,
+        );
       })
       .on("mouseleave", () => tooltip.style("opacity", "0"));
   }, [cohesion, height, width]);

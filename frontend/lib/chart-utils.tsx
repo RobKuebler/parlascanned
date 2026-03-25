@@ -22,6 +22,25 @@ import {
 export const TOOLTIP_DX = 12;
 export const TOOLTIP_DY = -28;
 
+// ── positionTooltip ────────────────────────────────────────────────────────────
+// Sets tooltip content and positions it near (px, py) relative to container.
+// Clamps horizontally so the tooltip never overflows the container's right edge,
+// preventing browser scrollbars. Clamps vertically so it never goes above 0.
+export function positionTooltip(
+  tooltip: d3.Selection<HTMLDivElement, unknown, null, undefined>,
+  container: Element,
+  px: number,
+  py: number,
+  html: string,
+): void {
+  tooltip.style("opacity", "1").html(html);
+  const tipEl = tooltip.node()!;
+  const containerW = (container as HTMLElement).offsetWidth;
+  const left = Math.min(px + TOOLTIP_DX, containerW - tipEl.offsetWidth - 4);
+  const top = Math.max(py + TOOLTIP_DY, 4);
+  tooltip.style("left", `${left}px`).style("top", `${top}px`);
+}
+
 // ── ChartTooltip ──────────────────────────────────────────────────────────────
 // Renders the shared tooltip div. Pass the same ref to d3.select() in useEffect.
 // Use maxWidth for tooltips with multi-line content (heatmaps).
@@ -99,11 +118,7 @@ export function truncateAxisLabels(
       el.style("cursor", "default")
         .on("mousemove", (event: MouseEvent) => {
           const [px, py] = d3.pointer(event, container);
-          tooltip
-            .style("opacity", "1")
-            .style("left", `${px + TOOLTIP_DX}px`)
-            .style("top", `${py + TOOLTIP_DY}px`)
-            .html(full);
+          positionTooltip(tooltip, container, px, py, full);
         })
         .on("mouseleave", () => tooltip.style("opacity", "0"));
     }

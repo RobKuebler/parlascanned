@@ -8,8 +8,7 @@ import {
   ChartTooltip,
   styleAxisText,
   truncateAxisLabels,
-  TOOLTIP_DX,
-  TOOLTIP_DY,
+  positionTooltip,
 } from "@/lib/chart-utils";
 
 interface Props {
@@ -63,11 +62,7 @@ function drawCells(
           ? "keine Daten"
           : `Anteil: ${d.pct?.toFixed(1) ?? "?"}%<br/>Abweichung: ${d.dev > 0 ? "+" : ""}${d.dev.toFixed(1)} pp`;
       const [px, py] = d3.pointer(event, container);
-      tooltip
-        .style("opacity", "1")
-        .style("left", `${px + TOOLTIP_DX}px`)
-        .style("top", `${py + TOOLTIP_DY}px`)
-        .html(html);
+      positionTooltip(tooltip, container, px, py, html);
     })
     .on("mouseleave", () => tooltip.style("opacity", "0"));
 

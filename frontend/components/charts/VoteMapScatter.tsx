@@ -8,6 +8,7 @@ import {
   DARK_FILL_PARTY,
   MARKER_OUTLINE,
 } from "@/lib/constants";
+import { positionTooltip } from "@/lib/chart-utils";
 
 type Mode = "pan" | "rect" | "lasso";
 
@@ -185,13 +186,13 @@ export function VoteMapScatter({
           const pol = polMap.get(d.politician_id);
           if (!pol) return;
           const [px, py] = d3.pointer(event, containerRef.current!);
-          d3.select(tooltipRef.current!)
-            .style("opacity", "1")
-            .style("left", `${px + 12}px`)
-            .style("top", `${py - 28}px`)
-            .html(
-              `<b>${pol.name}</b><br/><span style="color:#bbb">${stripSoftHyphen(pol.party)}</span>`,
-            );
+          positionTooltip(
+            d3.select(tooltipRef.current!),
+            containerRef.current!,
+            px,
+            py,
+            `<b>${pol.name}</b><br/><span style="color:#bbb">${stripSoftHyphen(pol.party)}</span>`,
+          );
         })
         .on("mouseleave", () =>
           d3.select(tooltipRef.current!).style("opacity", "0"),
@@ -289,11 +290,13 @@ export function VoteMapScatter({
         })
         .on("mousemove", (event) => {
           const [px, py] = d3.pointer(event, containerRef.current!);
-          d3.select(tooltipRef.current!)
-            .style("opacity", "1")
-            .style("left", `${px + 12}px`)
-            .style("top", `${py - 28}px`)
-            .html(`<b>${party}</b> – Klicken zum Auswählen`);
+          positionTooltip(
+            d3.select(tooltipRef.current!),
+            containerRef.current!,
+            px,
+            py,
+            `<b>${party}</b> – Klicken zum Auswählen`,
+          );
         })
         .on("mouseleave", () =>
           d3.select(tooltipRef.current!).style("opacity", "0"),

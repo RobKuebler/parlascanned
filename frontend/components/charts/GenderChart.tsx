@@ -5,8 +5,7 @@ import { useContainerWidth } from "@/hooks/useContainerWidth";
 import {
   ChartTooltip,
   styleAxisText,
-  TOOLTIP_DX,
-  TOOLTIP_DY,
+  positionTooltip,
 } from "@/lib/chart-utils";
 import {
   COLOR_SECONDARY,
@@ -123,11 +122,13 @@ export function GenderChart({
           .attr("fill", GENDER_COLORS[gender])
           .on("mousemove", (event) => {
             const [px, py] = d3.pointer(event, containerRef.current!);
-            tooltip
-              .style("opacity", "1")
-              .style("left", `${px + TOOLTIP_DX}px`)
-              .style("top", `${py + TOOLTIP_DY}px`)
-              .html(`<b>${gender}</b><br/>${party}: ${pct}%`);
+            positionTooltip(
+              tooltip,
+              containerRef.current!,
+              px,
+              py,
+              `<b>${gender}</b><br/>${party}: ${pct}%`,
+            );
           })
           .on("mouseleave", () => tooltip.style("opacity", "0"));
         y0 = y1;
