@@ -6,7 +6,10 @@ import { NAV_ITEMS } from "@/lib/nav-items";
 export function BottomNav() {
   const pathname = usePathname().replace(/\/$/, "") || "/";
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1E1B5E]">
+    <nav
+      className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1E1B5E]"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
       <div className="flex justify-around items-center h-16">
         {NAV_ITEMS.map(({ href, label, icon }) => {
           const active = pathname === href;

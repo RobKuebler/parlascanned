@@ -19,6 +19,12 @@ export const metadata: Metadata = {
   description: "Bundestagsabgeordnete und ihre Abstimmungen",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -30,7 +36,7 @@ export default function RootLayout({
         <PeriodProvider>
           <div className="flex min-h-screen">
             <Sidebar />
-            <main className="flex-1 min-w-0 px-4 pt-[76px] py-6 md:pt-6 md:px-8 pb-24 md:pb-10">
+            <main className="flex-1 min-w-0 px-4 pt-[76px] py-6 md:pt-6 md:px-8 mobile-safe-pb md:pb-10">
               <div className="fade-up">{children}</div>
             </main>
           </div>

@@ -62,6 +62,13 @@ body {
   animation: fadeIn 0.25s ease-out both 220ms;
 }
 
+/* ── Mobile safe-area bottom padding (above gesture handle bar) ───────────── */
+@media (max-width: 767px) {
+  .mobile-safe-pb {
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fade-up,
   .stagger > * {
