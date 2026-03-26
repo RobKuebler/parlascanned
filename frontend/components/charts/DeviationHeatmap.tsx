@@ -16,7 +16,7 @@ interface Props {
   height?: number;
 }
 
-const ML = 160; // left margin for y-labels
+const ML = 130; // left margin for y-labels
 const MR = 40; // right margin — extra room for last label extending rightward
 const HEADER_H = 100; // header height — enough for -30° rotated party labels
 // Minimum column width so rotated party-name headers don't overlap.

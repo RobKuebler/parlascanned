@@ -20,7 +20,7 @@ interface Props {
 }
 
 // Left margin accommodates the longest party name; right/top/bottom are fixed.
-const M = { left: 160, right: 24, top: 16, bottom: 36 };
+const M = { left: 80, right: 24, top: 16, bottom: 36 };
 
 function epanechnikovKernel(bandwidth: number) {
   return (x: number) => {
