@@ -18,12 +18,21 @@ def _grouped_pct(
     Maps raw values via value_map, falling back to the raw value if unmapped.
     Returns DataFrame with columns: party_label, display_col, count, pct.
     """
-    tmp = pols_df[["party_label", raw_col]].dropna(subset=[raw_col]).copy()
-    tmp[display_col] = tmp[raw_col].map(value_map).fillna(tmp[raw_col])
-    counts = tmp.groupby(["party_label", display_col]).size().reset_index(name="count")
-    totals = counts.groupby("party_label")["count"].transform("sum")
-    counts["pct"] = (counts["count"] / totals * 100).round(1)
-    return counts
+    return (
+        pols_df[["party_label", raw_col]]
+        .dropna(subset=[raw_col])
+        .assign(
+            **{display_col: lambda df: df[raw_col].map(value_map).fillna(df[raw_col])}
+        )
+        .groupby(["party_label", display_col])
+        .size()
+        .reset_index(name="count")  # type: ignore[call-overload]
+        .assign(
+            pct=lambda df: (
+                df["count"] / df.groupby("party_label")["count"].transform("sum") * 100
+            ).round(1)
+        )
+    )
 
 
 def compute_cohesion(
@@ -35,18 +44,22 @@ def compute_cohesion(
     Returns DataFrame with columns: party, streuung, label. Sorted ascending.
     """
     centroids = df.groupby("party")[["x", "y"]].mean()
-    cx = df["party"].map(centroids["x"])
-    cy = df["party"].map(centroids["y"])
-    coh = (
-        np.sqrt((df["x"] - cx) ** 2 + (df["y"] - cy) ** 2)
+    return (
+        np.sqrt(
+            (df["x"] - df["party"].map(centroids["x"])) ** 2
+            + (df["y"] - df["party"].map(centroids["y"])) ** 2
+        )
         .groupby(df["party"])
         .mean()
         .reset_index(name="streuung")
+        .pipe(
+            lambda df: (
+                df[df["party"] != exclude_party] if exclude_party is not None else df
+            )
+        )
+        .assign(label=lambda df: df["party"].str.replace("\xad", "", regex=False))
+        .sort_values("streuung")
     )
-    if exclude_party is not None:
-        coh = coh[coh["party"] != exclude_party]
-    coh["label"] = coh["party"].str.replace("\xad", "", regex=False)
-    return coh.sort_values("streuung")
 
 
 def _build_category_pivot(
@@ -152,13 +165,11 @@ def compute_occupation_pivot(
 
 def compute_age_df(pols_df: pd.DataFrame, current_year: int) -> pd.DataFrame:
     """Add 'alter' (age) column; drops rows with missing year_of_birth."""
-    age_df = (
+    return (
         pols_df[["name", "party_label", "year_of_birth"]]
         .dropna(subset=["year_of_birth"])
-        .copy()
+        .assign(alter=lambda df: current_year - df["year_of_birth"].astype(int))
     )
-    age_df["alter"] = current_year - age_df["year_of_birth"].astype(int)
-    return age_df
 
 
 def compute_sex_counts(pols_df: pd.DataFrame) -> pd.DataFrame:
@@ -216,16 +227,22 @@ def compute_title_counts(pols_df: pd.DataFrame) -> pd.DataFrame:
     """Compute Mit Titel / Ohne Titel distribution per party with percentage column.
 
     Returns DataFrame with columns: party_label, titel, count, pct.
+    Includes all rows (not just non-null), so _grouped_pct's dropna can't be used.
     """
-    # Title needs all rows (not just non-null), so we can't use _grouped_pct's
-    # dropna. Instead, classify first, then use _grouped_pct with the result.
-    tmp = pols_df.copy()
-    tmp["_has_title"] = tmp["field_title"].apply(
-        lambda t: "Mit Titel" if isinstance(t, str) and t.strip() else "Ohne Titel"
+    return (
+        pols_df.assign(
+            titel=lambda df: df["field_title"].apply(
+                lambda t: (
+                    "Mit Titel" if isinstance(t, str) and t.strip() else "Ohne Titel"
+                )
+            )
+        )
+        .groupby(["party_label", "titel"])
+        .size()
+        .reset_index(name="count")  # type: ignore[call-overload]
+        .assign(
+            pct=lambda df: (
+                df["count"] / df.groupby("party_label")["count"].transform("sum") * 100
+            ).round(1)
+        )
     )
-    grouped = tmp.groupby(["party_label", "_has_title"]).size()
-    counts = grouped.reset_index(name="count")  # type: ignore[call-overload]
-    counts = counts.rename(columns={"_has_title": "titel"})
-    totals = counts.groupby("party_label")["count"].transform("sum")
-    counts["pct"] = (counts["count"] / totals * 100).round(1)
-    return counts

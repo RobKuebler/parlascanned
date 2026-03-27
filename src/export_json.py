@@ -153,17 +153,25 @@ def _export_sidejobs(
     if not sj_path.exists():
         return
 
-    sj_df = pd.read_csv(sj_path).merge(
-        pols_df[["politician_id", "party_label"]], on="politician_id", how="left"
-    )
-    sj_df["category_label"] = (
-        sj_df["category"].map(SIDEJOB_CATEGORIES).fillna("Sonstiges")
+    sj_df = (
+        pd.read_csv(sj_path)
+        .merge(
+            pols_df[["politician_id", "party_label"]],
+            on="politician_id",
+            how="left",
+        )
+        .assign(
+            category_label=lambda df: (
+                df["category"].map(SIDEJOB_CATEGORIES).fillna("Sonstiges")
+            )
+        )
     )
     n_total = len(sj_df)
     n_with = int(sj_df["income"].notna().sum())
 
-    sj_income = sj_df[sj_df["income"].notna()].copy()
-    sj_income["income"] = pd.to_numeric(sj_income["income"], errors="coerce")
+    sj_income = sj_df[sj_df["income"].notna()].assign(
+        income=lambda df: pd.to_numeric(df["income"], errors="coerce")
+    )
 
     def _effective_income(row: pd.Series) -> float:
         """Prorate income to period duration. Mirrors sidejobs.py.
@@ -189,8 +197,9 @@ def _export_sidejobs(
             )
         return row["income"]
 
-    sj_income = sj_income.copy()
-    sj_income["prorated_income"] = sj_income.apply(_effective_income, axis=1)
+    sj_income = sj_income.assign(
+        prorated_income=lambda df: df.apply(_effective_income, axis=1)
+    )
     topics_col = "topics" if "topics" in sj_income.columns else None
 
     jobs = []
@@ -275,8 +284,9 @@ def export_period(period_id: int, period_start: date, period_end: date) -> bool:
         log.warning("No embeddings for period %d, skipping", period_id)
         return False
 
-    pols_df = pd.read_csv(period_dir / "politicians.csv")
-    pols_df["party_label"] = pols_df["party"].str.replace("\xad", "", regex=False)
+    pols_df = pd.read_csv(period_dir / "politicians.csv").assign(
+        party_label=lambda df: df["party"].str.replace("\xad", "", regex=False)
+    )
 
     # ── politicians ───────────────────────────────────────────────────────────
     _write(
@@ -328,11 +338,12 @@ def export_period(period_id: int, period_start: date, period_end: date) -> bool:
     # ── cohesion ──────────────────────────────────────────────────────────────
     # emb_df may already have a party column from save_embeddings; drop it to
     # avoid collision, then join the canonical party from pols_df.
-    emb_coords = emb_df[["politician_id", "x", "y"]]
-    emb_with_party = emb_coords.merge(
-        pols_df[["politician_id", "party"]], on="politician_id", how="left"
+    coh_df = compute_cohesion(
+        emb_df[["politician_id", "x", "y"]].merge(
+            pols_df[["politician_id", "party"]], on="politician_id", how="left"
+        ),
+        exclude_party="fraktionslos",
     )
-    coh_df = compute_cohesion(emb_with_party, exclude_party="fraktionslos")
     _write(OUTPUT_DIR / f"cohesion_{period_id}.json", coh_df.to_dict("records"))
 
     # ── sidejobs ──────────────────────────────────────────────────────────────
