@@ -63,14 +63,11 @@ function drawCells(
     .attr("stroke", "#fff")
     .attr("stroke-width", 1)
     .on("mousemove", (event, d) => {
+      if (d.dev === null) return;
       const cat = pivot.categories[d.catIdx];
       const party = pivot.parties[d.partyIdx];
       const partyTotal = pivot.party_totals[d.partyIdx];
-      let html = `<b>${party}</b><br/>${cat}<br/>`;
-      html +=
-        d.dev === null
-          ? "keine Daten"
-          : `${d.count} von ${partyTotal} Abgeordneten (${d.pct?.toFixed(1) ?? "?"}%)<br/>Abweichung: ${d.dev > 0 ? "+" : ""}${d.dev.toFixed(1)} pp`;
+      const html = `<b>${party}</b><br/>${cat}<br/>${d.count} von ${partyTotal} Abgeordneten (${d.pct?.toFixed(1) ?? "?"}%)<br/>Abweichung: ${d.dev > 0 ? "+" : ""}${d.dev.toFixed(1)} pp`;
       const [px, py] = d3.pointer(event, container);
       positionTooltip(tooltip, container, px, py, html);
     })
