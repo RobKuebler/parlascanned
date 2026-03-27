@@ -57,6 +57,18 @@ export function sortParties(parties: string[]): string[] {
   });
 }
 
+// ── Filter/dropdown styling tokens ──────────────────────────────────────────
+// Used by PollFilter and PoliticianSearch for consistent styling.
+export const FILTER_ACCENT = "#4B6BFB";
+export const FILTER_ACCENT_LIGHT = "#F0F4FF";
+export const FILTER_BORDER = "#E2E5EE";
+export const FILTER_BG_INPUT = "#FAFBFF";
+
+/** Truncates a string to maxLen characters, appending '...' if truncated. */
+export function truncateText(s: string, maxLen: number): string {
+  return s.length > maxLen ? s.slice(0, maxLen) + "\u2026" : s;
+}
+
 // Design tokens
 export const COLOR_SECONDARY = "#6B6760";
 export const COLOR_BODY = "#171613";

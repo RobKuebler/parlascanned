@@ -1,4 +1,4 @@
-import { stripSoftHyphen, dataUrl } from "@/lib/data";
+import { stripSoftHyphen, dataUrl, fetchData } from "@/lib/data";
 
 describe("stripSoftHyphen", () => {
   it("removes soft-hyphen and normalizes GRÜNEN party name", () => {
@@ -21,5 +21,40 @@ describe("dataUrl", () => {
   });
   it("builds correct URL for periods.json (no substitution needed)", () => {
     expect(dataUrl("periods.json", 161)).toBe("/data/periods.json");
+  });
+});
+
+describe("fetchData", () => {
+  const originalFetch = global.fetch;
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+
+  it("returns parsed JSON on success", async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ id: 1, name: "test" }),
+    });
+    const data = await fetchData<{ id: number; name: string }>(
+      "/data/test.json",
+    );
+    expect(data).toEqual({ id: 1, name: "test" });
+    expect(global.fetch).toHaveBeenCalledWith("/data/test.json");
+  });
+
+  it("throws on non-200 response", async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+    });
+    await expect(fetchData("/data/missing.json")).rejects.toThrow(
+      "Failed to fetch /data/missing.json: 404",
+    );
+  });
+
+  it("throws on network error", async () => {
+    global.fetch = jest.fn().mockRejectedValue(new Error("Network error"));
+    await expect(fetchData("/data/test.json")).rejects.toThrow("Network error");
   });
 });

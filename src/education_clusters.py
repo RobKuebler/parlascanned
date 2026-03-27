@@ -397,24 +397,17 @@ def normalize_education_field(edu: str | None) -> str:
 
     Returns "Keine Angabe" for null values, "Sonstiges" if no rule matches.
     """
-    if not isinstance(edu, str) or not edu.strip():
-        return "Keine Angabe"
-    e = edu.lower()
-    for keywords, label in _FIELD_RULES:
-        if any(k in e for k in keywords):
-            return label
-    return "Sonstiges"
+    from src import match_rules
+
+    return match_rules(edu, _FIELD_RULES)
 
 
 def normalize_education_degree(edu: str | None) -> str:
     """Extract the highest academic degree level from a raw education string.
 
-    Returns "Keine Angabe" for null values, "Sonstiges" if no degree keyword matches.
+    Returns "Keine Angabe" for null values,
+    "Nicht erkennbar" if no degree keyword matches.
     """
-    if not isinstance(edu, str) or not edu.strip():
-        return "Keine Angabe"
-    e = edu.lower()
-    for keywords, label in _DEGREE_RULES:
-        if any(k in e for k in keywords):
-            return label
-    return "Nicht erkennbar"
+    from src import match_rules
+
+    return match_rules(edu, _DEGREE_RULES, default="Nicht erkennbar")

@@ -1,8 +1,29 @@
+from collections.abc import Callable
+
 import numpy as np
 import pandas as pd
 
 from src.education_clusters import normalize_education_degree, normalize_education_field
 from src.occupation_clusters import normalize_occupation
+
+
+def _grouped_pct(
+    pols_df: pd.DataFrame,
+    raw_col: str,
+    display_col: str,
+    value_map: dict[str, str],
+) -> pd.DataFrame:
+    """Compute per-party distribution with percentage column.
+
+    Maps raw values via value_map, falling back to the raw value if unmapped.
+    Returns DataFrame with columns: party_label, display_col, count, pct.
+    """
+    tmp = pols_df[["party_label", raw_col]].dropna(subset=[raw_col]).copy()
+    tmp[display_col] = tmp[raw_col].map(value_map).fillna(tmp[raw_col])
+    counts = tmp.groupby(["party_label", display_col]).size().reset_index(name="count")
+    totals = counts.groupby("party_label")["count"].transform("sum")
+    counts["pct"] = (counts["count"] / totals * 100).round(1)
+    return counts
 
 
 def compute_cohesion(
@@ -31,7 +52,7 @@ def compute_cohesion(
 def _build_category_pivot(
     pols_df: pd.DataFrame,
     col: str,
-    normalize_fn,
+    normalize_fn: Callable[[str | None], str],
     cat_col: str,
     party_labels_ordered: list[str],
     top_n: int = 0,
@@ -145,15 +166,12 @@ def compute_sex_counts(pols_df: pd.DataFrame) -> pd.DataFrame:
 
     Returns DataFrame with columns: party_label, geschlecht, count, pct.
     """
-    sex_df = pols_df[["party_label", "sex"]].dropna(subset=["sex"]).copy()
-    sex_map = {"m": "Männlich", "f": "Weiblich", "d": "Divers"}
-    sex_df["geschlecht"] = sex_df["sex"].map(sex_map).fillna(sex_df["sex"])
-    counts = (
-        sex_df.groupby(["party_label", "geschlecht"]).size().reset_index(name="count")
+    return _grouped_pct(
+        pols_df,
+        "sex",
+        "geschlecht",
+        value_map={"m": "Männlich", "f": "Weiblich", "d": "Divers"},
     )
-    totals = counts.groupby("party_label")["count"].transform("sum")
-    counts["pct"] = (counts["count"] / totals * 100).round(1)
-    return counts
 
 
 def compute_education_field_pivot(
@@ -199,11 +217,15 @@ def compute_title_counts(pols_df: pd.DataFrame) -> pd.DataFrame:
 
     Returns DataFrame with columns: party_label, titel, count, pct.
     """
-    title_df = pols_df[["party_label", "field_title"]].copy()
-    title_df["titel"] = title_df["field_title"].apply(
+    # Title needs all rows (not just non-null), so we can't use _grouped_pct's
+    # dropna. Instead, classify first, then use _grouped_pct with the result.
+    tmp = pols_df.copy()
+    tmp["_has_title"] = tmp["field_title"].apply(
         lambda t: "Mit Titel" if isinstance(t, str) and t.strip() else "Ohne Titel"
     )
-    counts = title_df.groupby(["party_label", "titel"]).size().reset_index(name="count")
+    grouped = tmp.groupby(["party_label", "_has_title"]).size()
+    counts = grouped.reset_index(name="count")  # type: ignore[call-overload]
+    counts = counts.rename(columns={"_has_title": "titel"})
     totals = counts.groupby("party_label")["count"].transform("sum")
     counts["pct"] = (counts["count"] / totals * 100).round(1)
     return counts

@@ -9,6 +9,7 @@ import {
   MARKER_OUTLINE,
 } from "@/lib/constants";
 import { positionTooltip } from "@/lib/chart-utils";
+import { useLatestRef } from "@/hooks/useLatestRef";
 
 type Mode = "pan" | "rect" | "lasso";
 
@@ -41,27 +42,12 @@ export function VoteMapScatter({
   const [width, setWidth] = useState(0);
   const [mode, setMode] = useState<Mode>("pan");
 
-  // Stable refs so event handlers always see latest values
-  const selectedIdsRef = useRef(selectedIds);
-  useEffect(() => {
-    selectedIdsRef.current = selectedIds;
-  }, [selectedIds]);
-  const modeRef = useRef<Mode>("pan");
-  useEffect(() => {
-    modeRef.current = mode;
-  }, [mode]);
-  const onChangeRef = useRef(onSelectionChange);
-  useEffect(() => {
-    onChangeRef.current = onSelectionChange;
-  }, [onSelectionChange]);
-  const onPartyToggleRef = useRef(onPartyToggle);
-  useEffect(() => {
-    onPartyToggleRef.current = onPartyToggle;
-  }, [onPartyToggle]);
-  const onClearAllRef = useRef(onClearAll);
-  useEffect(() => {
-    onClearAllRef.current = onClearAll;
-  }, [onClearAll]);
+  // Stable refs so D3 event handlers always see latest React values
+  const selectedIdsRef = useLatestRef(selectedIds);
+  const modeRef = useLatestRef(mode);
+  const onChangeRef = useLatestRef(onSelectionChange);
+  const onPartyToggleRef = useLatestRef(onPartyToggle);
+  const onClearAllRef = useLatestRef(onClearAll);
 
   // D3 state shared across effects
   const transformRef = useRef<d3.ZoomTransform>(d3.zoomIdentity);

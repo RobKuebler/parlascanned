@@ -162,10 +162,6 @@ def normalize_occupation(occ: str | None) -> str:
 
     Returns "Keine Angabe" for null values, "Sonstiges" if no rule matches.
     """
-    if not isinstance(occ, str) or not occ.strip():
-        return "Keine Angabe"
-    o = occ.lower()
-    for keywords, label in _OCCUPATION_RULES:
-        if any(k in o for k in keywords):
-            return label
-    return "Sonstiges"
+    from src import match_rules
+
+    return match_rules(occ, _OCCUPATION_RULES)

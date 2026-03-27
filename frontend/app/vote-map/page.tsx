@@ -273,6 +273,15 @@ export default function VoteMapPage() {
     [loadVotesIfNeeded, politicians],
   );
 
+  /** Update individual politician selection from the search bar (party pills stay untouched). */
+  const handleSearchSelection = useCallback(
+    (ids: number[]) => {
+      setSelectedPolIds(ids);
+      if (ids.length > 0) loadVotesIfNeeded();
+    },
+    [loadVotesIfNeeded],
+  );
+
   const handleClearAll = useCallback(() => {
     setSelectedPolIds([]);
     setSelectedParties([]);
@@ -384,7 +393,7 @@ export default function VoteMapPage() {
             <PoliticianSearch
               politicians={politicians}
               selected={selectedPolIds}
-              onSelectionChange={handleSelection}
+              onSelectionChange={handleSearchSelection}
               selectedParties={selectedParties}
               onPartyRemove={(party) =>
                 setSelectedParties((prev) => prev.filter((p) => p !== party))

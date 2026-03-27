@@ -10,6 +10,8 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
 
+from .storage import DATA_DIR
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
@@ -23,8 +25,6 @@ PAGE_SIZE = 1000  # API supports up to 1000 results per page
 # The abgeordnetenwatch API only covers Bundestag history from 2005 onward;
 # the first legislature in the API is the 16th Bundestag (2005-2009).
 FIRST_BUNDESTAG_NUMBER = 16
-
-DATA_DIR = Path(__file__).parents[1] / "data"
 
 
 def get_session() -> requests.Session:

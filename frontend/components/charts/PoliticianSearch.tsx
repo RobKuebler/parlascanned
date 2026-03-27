@@ -1,7 +1,18 @@
 "use client";
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { Politician, stripSoftHyphen } from "@/lib/data";
-import { PARTY_COLORS, FALLBACK_COLOR, COLOR_SECONDARY } from "@/lib/constants";
+import {
+  PARTY_COLORS,
+  FALLBACK_COLOR,
+  COLOR_SECONDARY,
+  FILTER_ACCENT as ACCENT,
+  FILTER_ACCENT_LIGHT as ACCENT_LIGHT,
+  FILTER_BORDER as BORDER,
+  truncateText as truncate,
+} from "@/lib/constants";
+import { useDropdown } from "@/hooks/useDropdown";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { RemovableChip } from "@/components/ui/RemovableChip";
 
 interface Props {
   politicians: Politician[];
@@ -10,17 +21,6 @@ interface Props {
   selectedParties?: string[]; // party names selected via centroid click
   onPartyRemove?: (party: string) => void;
   onClearAll?: () => void; // clears both individual + party selections
-}
-
-// Shared visual constants — must match PollFilter exactly
-const ACCENT = "#4B6BFB";
-const ACCENT_LIGHT = "#F0F4FF";
-const BORDER = "#E2E5EE";
-const BG_INPUT = "#FAFBFF";
-
-/** Truncates a string to maxLen characters, appending '…' if truncated. */
-function truncate(s: string, maxLen: number): string {
-  return s.length > maxLen ? s.slice(0, maxLen) + "…" : s;
 }
 
 /** Search input + dropdown + chip list for selecting politicians, bidirectionally synced with the scatter plot. */
@@ -32,10 +32,15 @@ export function PoliticianSearch({
   onPartyRemove,
   onClearAll,
 }: Props) {
-  const [query, setQuery] = useState("");
-  // isOpen is tracked independently from query so the dropdown stays open after a selection
-  const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const {
+    query,
+    isOpen,
+    containerRef,
+    handleChange,
+    handleKeyDown,
+    clearQuery,
+    open,
+  } = useDropdown();
 
   const polMap = useMemo(
     () => new Map(politicians.map((p) => [p.politician_id, p])),
@@ -53,98 +58,23 @@ export function PoliticianSearch({
     return unselected.filter((p) => p.name.toLowerCase().includes(lq));
   }, [politicians, query, selectedSet]);
 
-  // Close dropdown on outside click
-  useEffect(() => {
-    function handleOutsideClick(e: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
-        setQuery("");
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, []);
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setQuery(e.target.value);
-    setIsOpen(true);
-  }
-
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === "Escape") {
-      setQuery("");
-      setIsOpen(false);
-    }
-  }, []);
-
   function selectPolitician(id: number) {
     onSelectionChange([...selected, id]);
-    setQuery("");
+    clearQuery();
     // isOpen intentionally not set to false — dropdown stays open for continued multiselect
-  }
-
-  function removeChip(id: number) {
-    onSelectionChange(selected.filter((x) => x !== id));
   }
 
   return (
     <div ref={containerRef} style={{ position: "relative" }}>
       {/* Search row: input + clear-all button */}
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <div style={{ position: "relative", flex: 1 }}>
-          {/* Search icon */}
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#bbb"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              position: "absolute",
-              left: 10,
-              top: "50%",
-              transform: "translateY(-50%)",
-              pointerEvents: "none",
-            }}
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
-          <input
-            type="text"
-            value={query}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            placeholder="Politiker suchen…"
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              padding: "7px 10px 7px 30px",
-              borderRadius: 8,
-              border: `1px solid ${BORDER}`,
-              fontSize: 13,
-              outline: "none",
-              background: BG_INPUT,
-              color: "#333",
-              transition: "border-color 0.15s, box-shadow 0.15s",
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = ACCENT;
-              e.target.style.boxShadow = `0 0 0 3px ${ACCENT}22`;
-              setIsOpen(true);
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = BORDER;
-              e.target.style.boxShadow = "none";
-            }}
-          />
-        </div>
+        <SearchInput
+          value={query}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onFocus={open}
+          placeholder="Politiker suchen…"
+        />
 
         {(selected.length > 0 || selectedParties.length > 0) && (
           <button
@@ -180,103 +110,40 @@ export function PoliticianSearch({
           style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}
         >
           {/* Party chips (from centroid click) */}
-          {selectedParties.map((party) => {
-            const color = PARTY_COLORS[party] ?? FALLBACK_COLOR;
-            return (
-              <span
-                key={party}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 4,
-                  padding: "2px 8px",
-                  borderRadius: 12,
-                  background: "#f0f0f0",
-                  fontSize: 12,
-                  color: "#333",
-                }}
-              >
-                <span
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    background: color,
-                    flexShrink: 0,
-                  }}
-                />
-                {party}
-                <button
-                  aria-label={`Entferne ${party}`}
-                  onClick={() => onPartyRemove?.(party)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: 0,
-                    fontSize: 13,
-                    color: FALLBACK_COLOR,
-                    lineHeight: 1,
-                  }}
-                >
-                  ×
-                </button>
-              </span>
-            );
-          })}
+          {selectedParties.map((party) => (
+            <RemovableChip
+              key={party}
+              label={party}
+              onRemove={() => onPartyRemove?.(party)}
+              removeLabel={`Entferne ${party}`}
+              dotColor={PARTY_COLORS[party] ?? FALLBACK_COLOR}
+            />
+          ))}
+          {/* Individual politician chips */}
           {selected.map((id) => {
             const pol = polMap.get(id);
             if (!pol) return null;
             const party = stripSoftHyphen(pol.party);
-            const color = PARTY_COLORS[party] ?? FALLBACK_COLOR;
             return (
-              <span
+              <RemovableChip
                 key={id}
-                data-testid={`chip-${id}`}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 4,
-                  padding: "2px 8px",
-                  borderRadius: 12,
-                  background: "#f0f0f0",
-                  fontSize: 12,
-                  color: "#333",
-                }}
-              >
-                <span
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    background: color,
-                    flexShrink: 0,
-                  }}
-                />
-                {truncate(pol.name, 20)}
-                <span style={{ color: "#666", fontSize: 11 }}>{party}</span>
-                <button
-                  aria-label={`Entferne ${pol.name}`}
-                  onClick={() => removeChip(id)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: 0,
-                    fontSize: 13,
-                    color: FALLBACK_COLOR,
-                    lineHeight: 1,
-                  }}
-                >
-                  ×
-                </button>
-              </span>
+                testId={`chip-${id}`}
+                label={truncate(pol.name, 20)}
+                onRemove={() =>
+                  onSelectionChange(selected.filter((x) => x !== id))
+                }
+                removeLabel={`Entferne ${pol.name}`}
+                dotColor={PARTY_COLORS[party] ?? FALLBACK_COLOR}
+                suffix={
+                  <span style={{ color: "#666", fontSize: 11 }}>{party}</span>
+                }
+              />
             );
           })}
         </div>
       )}
 
-      {/* Dropdown — visible when isOpen (stays open after selection for multiselect UX) */}
+      {/* Dropdown */}
       {isOpen && (
         <ul
           role="listbox"
@@ -297,7 +164,6 @@ export function PoliticianSearch({
             overflowY: "auto",
           }}
         >
-          {/* Subtle header when browsing all politicians */}
           {query.length === 0 && results.length > 0 && (
             <li
               style={{

@@ -95,9 +95,9 @@ export function PeriodSelector({
       </button>
 
       {/* Backdrop — mobile only: dims content below header when dropdown is open */}
-      {open && isSidebar && (
+      {open && !isSidebar && (
         <div
-          className="fixed top-[68px] inset-x-0 bottom-0 z-[49] bg-black/20"
+          className="md:hidden fixed top-[68px] inset-x-0 bottom-0 z-[49] bg-black/20"
           onClick={() => setOpen(false)}
           aria-hidden="true"
         />
