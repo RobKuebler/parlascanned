@@ -254,11 +254,14 @@ export function VoteMapScatter({
       const halfLabelW = (party.length * 6.5) / 2;
       const edgeAnchor =
         sx <= halfLabelW ? "start" : sx >= iW - halfLabelW ? "end" : "middle";
-      // Party label in the unclipped layer so it's never cropped at chart edges
+      // Party label — position is updated on zoom so it stays 16px above the diamond
       labelsG
         .append("text")
+        .attr("class", "centroid-label")
+        .attr("data-cx", cx)
+        .attr("data-cy", cy)
         .attr("x", sx)
-        .attr("y", sy - (arm + 8))
+        .attr("y", sy - 16)
         .attr("text-anchor", edgeAnchor)
         .style("font-size", "11px")
         .style("font-weight", "700")
@@ -320,7 +323,6 @@ export function VoteMapScatter({
         const k = event.transform.k;
         const tx = `translate(${M.left + event.transform.x},${M.top + event.transform.y}) scale(${k})`;
         contentG.attr("transform", tx);
-        labelsG.attr("transform", tx);
         // Counter-scale dots and centroids so they stay the same visual size regardless of zoom level
         svg
           .selectAll<SVGCircleElement, unknown>(".dot")
@@ -329,6 +331,23 @@ export function VoteMapScatter({
         svg
           .selectAll<SVGGElement, unknown>(".centroid-inner")
           .attr("transform", `scale(${1 / k})`);
+        // Reposition labels in screen space so they stay exactly 16px above the diamond
+        const newX = event.transform.rescaleX(xScaleRef.current!);
+        const newY = event.transform.rescaleY(yScaleRef.current!);
+        svg
+          .selectAll<SVGTextElement, unknown>(".centroid-label")
+          .each(function () {
+            const el = d3.select(this);
+            const nsx = newX(+el.attr("data-cx"));
+            const nsy = newY(+el.attr("data-cy"));
+            const halfW = (el.text().length * 6.5) / 2;
+            el.attr("x", nsx)
+              .attr("y", nsy - 16)
+              .attr(
+                "text-anchor",
+                nsx <= halfW ? "start" : nsx >= iW - halfW ? "end" : "middle",
+              );
+          });
       });
     zoomRef.current = zoom;
 
