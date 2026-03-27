@@ -230,7 +230,8 @@ export function VoteMapScatter({
       const partyColor = PARTY_COLORS[party] ?? FALLBACK_COLOR;
       const sx = xScale(cx);
       const sy = yScale(cy);
-      const arm = 6;
+      // Diamond is the standard symbol for centroids/means in statistical scatter plots
+      const arm = 8;
 
       const cg = contentG
         .append("g")
@@ -238,36 +239,13 @@ export function VoteMapScatter({
         .attr("transform", `translate(${sx},${sy})`)
         .style("cursor", "default");
 
-      // Filled circle background for legibility
-      cg.append("circle")
-        .attr("r", arm + 2)
-        .attr("fill", "#fff")
-        .attr("opacity", 0.7);
-
-      // Cross arms
-      cg.append("line")
-        .attr("x1", -arm)
-        .attr("y1", 0)
-        .attr("x2", arm)
-        .attr("y2", 0)
-        .attr("stroke", partyColor)
-        .attr("stroke-width", 2.5)
-        .attr("stroke-linecap", "round");
-      cg.append("line")
-        .attr("x1", 0)
-        .attr("y1", -arm)
-        .attr("x2", 0)
-        .attr("y2", arm)
-        .attr("stroke", partyColor)
-        .attr("stroke-width", 2.5)
-        .attr("stroke-linecap", "round");
-
-      // Outer ring
-      cg.append("circle")
-        .attr("r", arm + 2)
-        .attr("fill", "none")
-        .attr("stroke", partyColor)
-        .attr("stroke-width", 1.5);
+      // Filled diamond: points at cardinal directions
+      cg.append("polygon")
+        .attr("points", `0,${-arm} ${arm},0 0,${arm} ${-arm},0`)
+        .attr("fill", partyColor)
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 2)
+        .attr("stroke-linejoin", "round");
 
       // Adaptive text-anchor: labels near edges stay within the SVG boundary
       const halfLabelW = (party.length * 6.5) / 2;
@@ -336,9 +314,15 @@ export function VoteMapScatter({
       .scaleExtent([0.8, 20])
       .on("zoom", (event) => {
         transformRef.current = event.transform;
-        const tx = `translate(${M.left + event.transform.x},${M.top + event.transform.y}) scale(${event.transform.k})`;
+        const k = event.transform.k;
+        const tx = `translate(${M.left + event.transform.x},${M.top + event.transform.y}) scale(${k})`;
         contentG.attr("transform", tx);
         labelsG.attr("transform", tx);
+        // Counter-scale dots so they stay the same visual size regardless of zoom level
+        svg
+          .selectAll<SVGCircleElement, unknown>(".dot")
+          .attr("r", 4 / k)
+          .attr("stroke-width", 1 / k);
       });
     zoomRef.current = zoom;
 
