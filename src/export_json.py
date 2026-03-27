@@ -156,7 +156,7 @@ def _export_sidejobs(
     sj_df = (
         pd.read_csv(sj_path)
         .merge(
-            pols_df[["politician_id", "party_label"]],
+            pols_df.filter(["politician_id", "party_label"]),
             on="politician_id",
             how="left",
         )
@@ -253,7 +253,7 @@ def _export_party_profile(
         OUTPUT_DIR / f"party_profile_{period_id}.json",
         {
             "parties": party_labels_ordered,
-            "age": age_df[["name", "party_label", "alter"]]
+            "age": age_df.filter(["name", "party_label", "alter"])
             .rename(columns={"party_label": "party", "alter": "age"})
             .to_dict("records"),
             "sex": sex_df.to_dict("records"),
@@ -291,7 +291,7 @@ def export_period(period_id: int, period_start: date, period_end: date) -> bool:
     # ── politicians ───────────────────────────────────────────────────────────
     _write(
         OUTPUT_DIR / f"politicians_{period_id}.json",
-        pols_df[
+        pols_df.filter(
             [
                 "politician_id",
                 "name",
@@ -302,7 +302,7 @@ def export_period(period_id: int, period_start: date, period_end: date) -> bool:
                 "education",
                 "field_title",
             ]
-        ].to_dict("records"),
+        ).to_dict("records"),
     )
 
     # ── embeddings ────────────────────────────────────────────────────────────
@@ -312,12 +312,14 @@ def export_period(period_id: int, period_start: date, period_end: date) -> bool:
             "3D embeddings detected for period %d; exporting 2D only", period_id
         )
     if "politician_id" not in emb_df.columns:
-        emb_df = emb_df.merge(pols_df[["name", "politician_id"]], on="name", how="left")
+        emb_df = emb_df.merge(
+            pols_df.filter(["name", "politician_id"]), on="name", how="left"
+        )
     _write(
         OUTPUT_DIR / f"embeddings_{period_id}.json",
         {
             "dimensions": 2,
-            "data": emb_df[["politician_id", "x", "y"]].to_dict("records"),
+            "data": emb_df.filter(["politician_id", "x", "y"]).to_dict("records"),
         },
     )
 
@@ -325,22 +327,22 @@ def export_period(period_id: int, period_start: date, period_end: date) -> bool:
     votes_df = pd.read_csv(period_dir / "votes.csv")
     _write(
         OUTPUT_DIR / f"votes_{period_id}.json",
-        votes_df[["politician_id", "poll_id", "answer"]].to_dict("records"),
+        votes_df.filter(["politician_id", "poll_id", "answer"]).to_dict("records"),
     )
 
     # ── polls ─────────────────────────────────────────────────────────────────
     polls_df = pd.read_csv(period_dir / "polls.csv")
     _write(
         OUTPUT_DIR / f"polls_{period_id}.json",
-        polls_df[["poll_id", "topic"]].to_dict("records"),
+        polls_df.filter(["poll_id", "topic"]).to_dict("records"),
     )
 
     # ── cohesion ──────────────────────────────────────────────────────────────
     # emb_df may already have a party column from save_embeddings; drop it to
     # avoid collision, then join the canonical party from pols_df.
     coh_df = compute_cohesion(
-        emb_df[["politician_id", "x", "y"]].merge(
-            pols_df[["politician_id", "party"]], on="politician_id", how="left"
+        emb_df.filter(["politician_id", "x", "y"]).merge(
+            pols_df.filter(["politician_id", "party"]), on="politician_id", how="left"
         ),
         exclude_party="fraktionslos",
     )

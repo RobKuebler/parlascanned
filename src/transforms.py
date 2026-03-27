@@ -19,7 +19,7 @@ def _grouped_pct(
     Returns DataFrame with columns: party_label, display_col, count, pct.
     """
     return (
-        pols_df[["party_label", raw_col]]
+        pols_df.filter(["party_label", raw_col])
         .dropna(subset=[raw_col])
         .assign(
             **{display_col: lambda df: df[raw_col].map(value_map).fillna(df[raw_col])}
@@ -86,9 +86,9 @@ def _build_category_pivot(
     row at the bottom instead of being dropped. This makes party_totals equal to the
     true party size so tooltip denominators are correct.
     """
-    tmp = pols_df[["party_label", col]].copy()
+    tmp = pols_df.filter(["party_label", col]).copy()
     tmp[cat_col] = tmp[col].where(tmp[col].notna(), other=None).apply(normalize_fn)
-    counts = tmp.groupby(["party_label", cat_col]).size().reset_index(name="count")
+    counts = tmp.groupby(["party_label", cat_col]).size().reset_index(name="count")  # type: ignore[call-overload]
     pivot = counts.pivot_table(
         index=cat_col, columns="party_label", values="count", fill_value=0
     )
@@ -166,7 +166,7 @@ def compute_occupation_pivot(
 def compute_age_df(pols_df: pd.DataFrame, current_year: int) -> pd.DataFrame:
     """Add 'alter' (age) column; drops rows with missing year_of_birth."""
     return (
-        pols_df[["name", "party_label", "year_of_birth"]]
+        pols_df.filter(["name", "party_label", "year_of_birth"])
         .dropna(subset=["year_of_birth"])
         .assign(alter=lambda df: current_year - df["year_of_birth"].astype(int))
     )
