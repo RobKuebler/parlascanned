@@ -31,8 +31,10 @@ _FRAKTION_MAP: dict[str, str] = {
     "DIE LINKE": "Die Linke",
     "Fraktionslos": "fraktionslos",
     # Concatenated party names — known XML data errors in source files
-    "SPDCDU/CSU": "fraktionslos",
-    "SPDSPD": "fraktionslos",
+    # SPDSPD = Svenja Schulze (SPD), name+party duplicated in XML
+    "SPDSPD": "SPD",
+    # SPDCDU/CSU = two MdBs merged in XML (Mende SPD + Führ CDU/CSU)
+    "SPDCDU/CSU": "Unbekannt",
 }
 
 
