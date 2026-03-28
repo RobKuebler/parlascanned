@@ -13,6 +13,7 @@ requires-python = "~=3.13.0"
 dependencies = [
     "numpy>=2.4.2",
     "pandas>=3.0.1",
+    "pytest>=9.0.2",
     "requests>=2.32.5",
 ]
 
@@ -33,12 +34,15 @@ select = ["ALL"]
 ignore = ["D", "ANN", "COM812", "PLR0913", "N812", "PLC0415", "PLR2004"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = ["S101", "INP001"]
+"tests/**/*.py" = ["S101", "INP001", "SLF001", "ERA001", "ARG001", "ARG005", "E501"]
 
 [tool.ty.rules]
 # torch and lightning are in the optional 'train' group and not installed by
 # default, so ty cannot resolve them. Downgrade to a warning to unblock commits.
 unresolved-import = "warn"
+# type: ignore comments in test_models.py become unused when torch is not installed
+unused-ignore-comment = "warn"
+unused-type-ignore-comment = "warn"
 
 [dependency-groups]
 dev = [
