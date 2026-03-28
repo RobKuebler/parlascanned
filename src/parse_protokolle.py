@@ -8,6 +8,7 @@ Usage:
 """
 
 import logging
+import re
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -19,6 +20,39 @@ log = logging.getLogger(__name__)
 
 # p-Klassen die Redetext enthalten (aus realem XML inspiziert)
 _SPEECH_KLASSEN = {"J_1", "J", "O"}
+
+# Soft hyphen used throughout the project for BÜNDNIS 90/DIE GRÜNEN
+_SOFT_HYPHEN = "\xad"
+
+# Maps XML fraktion text (after whitespace normalization) to canonical party names.
+# Covers inconsistent formatting in Bundestag XML exports across WP20 and WP21.
+_FRAKTION_MAP: dict[str, str] = {
+    "BÜNDNIS 90/DIE GRÜNEN": f"BÜNDNIS 90/{_SOFT_HYPHEN}DIE GRÜNEN",
+    "DIE LINKE": "Die Linke",
+    "Fraktionslos": "fraktionslos",
+    # Concatenated party names — known XML data errors in source files
+    "SPDCDU/CSU": "fraktionslos",
+    "SPDSPD": "fraktionslos",
+}
+
+
+def _normalize_fraktion(raw: str | None) -> str:
+    """Normalize XML fraktion text to canonical party name.
+
+    Collapses whitespace (including newlines and non-breaking spaces) that
+    appears in multi-line <fraktion> tags, then maps known variants.
+    """
+    if not raw:
+        return "fraktionslos"
+    normalized = re.sub(r"[\s\u00a0]+", " ", raw).strip()
+    if normalized in _FRAKTION_MAP:
+        return _FRAKTION_MAP[normalized]
+    if normalized not in _FRAKTION_MAP and re.search(r"[\n\u00a0]", raw):
+        log.warning(
+            "Unbekannte Fraktion nach Normalisierung: %r (roh: %r)", normalized, raw
+        )
+    return normalized
+
 
 _COLS = [
     "sitzungsnummer",
@@ -57,10 +91,8 @@ def parse_sitzung(xml_path: Path) -> list[dict]:
         nachname = (
             (name_el.findtext("nachname") or "").strip() if name_el is not None else ""
         )
-        fraktion = (
-            (name_el.findtext("fraktion") or "fraktionslos").strip()
-            if name_el is not None
-            else "fraktionslos"
+        fraktion = _normalize_fraktion(
+            name_el.findtext("fraktion") if name_el is not None else None
         )
         redner_id = redner_el.get("id", "")
 
