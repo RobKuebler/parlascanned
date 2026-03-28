@@ -2,7 +2,7 @@
 
 Ein interaktives Dashboard, das Bundestagsabgeordnete durchleuchtet: Abstimmungsverhalten, politische Trennlinien, demografische Profile, und mehr.
 
-[**Demo ansehen**](https://parlascanned.streamlit.app/) | [**Daten: abgeordnetenwatch.de**](https://www.abgeordnetenwatch.de)
+[**Demo ansehen**](https://parlascanned.vercel.app/) | [**Daten: abgeordnetenwatch.de**](https://www.abgeordnetenwatch.de)
 
 ---
 
