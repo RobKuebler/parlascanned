@@ -4,14 +4,11 @@ import * as d3 from "d3";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
 import {
   sortParties,
+  PARTY_COLORS,
   CHART_FONT_FAMILY,
   CHART_AXIS_FONT_SIZE,
 } from "@/lib/constants";
-import {
-  ChartTooltip,
-  styleAxisText,
-  positionTooltip,
-} from "@/lib/chart-utils";
+import { ChartTooltip, positionTooltip } from "@/lib/chart-utils";
 
 export interface Centroid {
   party: string;
@@ -19,9 +16,8 @@ export interface Centroid {
   cy: number;
 }
 
-const HEADER_H = 72; // room for −30° rotated column labels
-const MIN_CELL_W = 28;
-const CELL_H = 36; // fixed row height — cells are rectangular, width fills the column
+const CELL_H = 36; // cell size — also used as cell width so cells are square
+const PILL_GAP = 6; // gap between pill edge and matrix edge (both axes)
 
 export function PartyDistanceMatrix({ centroids }: { centroids: Centroid[] }) {
   const { ref: containerRef, width } = useContainerWidth();
@@ -51,13 +47,16 @@ export function PartyDistanceMatrix({ centroids }: { centroids: Centroid[] }) {
       .domain([0, maxDist])
       .interpolator(d3.interpolate("#1E1B5E", "#EEF0FF"));
 
-    const ML = Math.max(...parties.map((p) => p.length * 6)) + 10;
+    // Both pills share the same length — derived from the longest party name.
+    // ML = headerH = pillLen + PILL_GAP, which makes cells perfectly square (cellW = CELL_H).
+    const pillLen = Math.max(...parties.map((p) => p.length * 6.5)) + 16;
+    const ML = pillLen + PILL_GAP;
+    const headerH = pillLen + PILL_GAP;
     const MR = 8;
-    const cellW = Math.max(MIN_CELL_W, Math.floor((width - ML - MR) / n));
-    const iW = cellW * n;
+    const iW = CELL_H * n; // cellW = CELL_H → square cells
     const iH = CELL_H * n;
     const totalW = ML + iW + MR;
-    const totalH = HEADER_H + iH;
+    const totalH = headerH + iH;
 
     const xScale = d3.scaleBand().domain(parties).range([0, iW]).padding(0.05);
     const yScale = d3.scaleBand().domain(parties).range([0, iH]).padding(0.05);
@@ -68,37 +67,83 @@ export function PartyDistanceMatrix({ centroids }: { centroids: Centroid[] }) {
 
     const tooltip = d3.select(tooltipRef.current!);
 
-    // Column headers — rotated −30°
-    svg
-      .append("g")
-      .attr("transform", `translate(${ML}, ${HEADER_H})`)
-      .call(d3.axisTop(xScale).tickSize(0))
-      .call((ax) => ax.select(".domain").remove())
-      .call((ax) => {
-        styleAxisText(ax);
-        ax.selectAll("text")
-          .attr("transform", "rotate(-30)")
-          .attr("text-anchor", "start")
-          .attr("dy", "-0.4em")
-          .attr("dx", "0.4em");
-      });
+    const PILL_MARGIN = 4; // how much thinner each pill is than its cell
 
-    // Row labels
-    svg
-      .append("g")
-      .attr("transform", `translate(${ML}, ${HEADER_H})`)
-      .call(d3.axisLeft(yScale).tickSize(0))
-      .call((ax) => ax.select(".domain").remove())
-      .call(styleAxisText);
+    // Column headers — rotated colored badges, same length as row badges
+    const colHeaders = svg.append("g").attr("transform", `translate(${ML}, 0)`);
 
-    // Upper triangle cells only (ci > ri)
-    const g = svg
+    parties.forEach((p) => {
+      const x = xScale(p) ?? 0;
+      const bw = xScale.bandwidth();
+      const pillThickness = bw - PILL_MARGIN;
+      // Center pill vertically so its bottom sits PILL_GAP above the matrix
+      const cy = headerH - PILL_GAP - pillLen / 2;
+
+      const g = colHeaders
+        .append("g")
+        .attr("transform", `translate(${x + bw / 2}, ${cy}) rotate(-90)`);
+
+      g.append("rect")
+        .attr("x", -pillLen / 2)
+        .attr("y", -pillThickness / 2)
+        .attr("width", pillLen)
+        .attr("height", pillThickness)
+        .attr("fill", PARTY_COLORS[p] ?? "#888")
+        .attr("rx", 4);
+
+      g.append("text")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .style("font-size", CHART_AXIS_FONT_SIZE)
+        .style("font-family", CHART_FONT_FAMILY)
+        .style("font-weight", "600")
+        .style("fill", "#fff")
+        .style("pointer-events", "none")
+        .text(p);
+    });
+
+    // Row labels — colored badges with white party name, same length as column badges
+    const rowLabels = svg
       .append("g")
-      .attr("transform", `translate(${ML}, ${HEADER_H})`);
+      .attr("transform", `translate(0, ${headerH})`);
+
+    parties.forEach((p) => {
+      const y = yScale(p) ?? 0;
+      const bh = yScale.bandwidth();
+      const pillThickness = bh - PILL_MARGIN;
+      const pillY = y + PILL_MARGIN / 2;
+
+      rowLabels
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", pillY)
+        .attr("width", pillLen)
+        .attr("height", pillThickness)
+        .attr("fill", PARTY_COLORS[p] ?? "#888")
+        .attr("rx", 4);
+
+      rowLabels
+        .append("text")
+        .attr("x", pillLen / 2)
+        .attr("y", pillY + pillThickness / 2)
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .style("font-size", CHART_AXIS_FONT_SIZE)
+        .style("font-family", CHART_FONT_FAMILY)
+        .style("font-weight", "600")
+        .style("fill", "#fff")
+        .style("pointer-events", "none")
+        .text(p);
+    });
+
+    // Full matrix — all n×n cells
+    const g = svg.append("g").attr("transform", `translate(${ML}, ${headerH})`);
 
     parties.forEach((pa, ri) => {
       parties.forEach((pb, ci) => {
-        if (ci <= ri) return; // skip diagonal and lower triangle
+        if (ci === ri) return; // diagonal stays transparent
 
         const d = dist[ri][ci];
         const x = xScale(pb) ?? 0;
@@ -124,20 +169,6 @@ export function PartyDistanceMatrix({ centroids }: { centroids: Centroid[] }) {
             );
           })
           .on("mouseleave", () => tooltip.style("opacity", "0"));
-
-        // Value label if cell is wide enough
-        if (bw >= 36) {
-          g.append("text")
-            .attr("x", x + bw / 2)
-            .attr("y", y + bh / 2)
-            .attr("text-anchor", "middle")
-            .attr("dominant-baseline", "central")
-            .style("font-size", CHART_AXIS_FONT_SIZE)
-            .style("font-family", CHART_FONT_FAMILY)
-            .style("fill", d < maxDist * 0.45 ? "#fff" : "#333")
-            .style("pointer-events", "none")
-            .text(d.toFixed(2));
-        }
       });
     });
   }, [centroids, width]);
