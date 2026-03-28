@@ -39,7 +39,10 @@ def parse_sitzung(xml_path: Path) -> list[dict]:
     klasse in _SPEECH_KLASSEN are included in the text (kommentar etc. excluded).
     """
     root = ET.parse(xml_path).getroot()  # noqa: S314 — trusted local files
-    sitzungsnr = int(root.get("sitzung-nr", 0))
+    sitzung_nr_raw = root.get("sitzung-nr")
+    if sitzung_nr_raw is None:
+        log.warning("Kein sitzung-nr in %s, verwende 0", xml_path.name)
+    sitzungsnr = int(sitzung_nr_raw or 0)
     rows = []
 
     for rede in root.findall(".//rede"):

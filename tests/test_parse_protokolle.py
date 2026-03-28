@@ -125,3 +125,65 @@ def test_parse_alle_sitzungen_kombiniert(tmp_path):
         "wortanzahl",
         "text",
     }
+
+
+def test_parse_sitzung_rede_ohne_redner_wird_ignoriert(tmp_path):
+    """<rede> ohne <redner>-Element wird übersprungen."""
+    xml = """\
+<?xml version="1.0" encoding="utf-8"?>
+<dbtplenarprotokoll wahlperiode="20" sitzung-nr="1">
+  <sitzungsverlauf>
+    <rede id="ID_NO_SPEAKER">
+      <p klasse="J_1">Text ohne Redner.</p>
+    </rede>
+    <rede id="ID001">
+      <p klasse="redner"><redner id="R001"><name>
+        <vorname>Anna</vorname><nachname>Mueller</nachname>
+        <fraktion>SPD</fraktion></name></redner>Anna Mueller (SPD):</p>
+      <p klasse="J_1">Klimawandel ist wichtig.</p>
+    </rede>
+  </sitzungsverlauf>
+</dbtplenarprotokoll>"""
+    p = tmp_path / "001.xml"
+    p.write_text(xml, encoding="utf-8")
+    rows = pp.parse_sitzung(p)
+    assert len(rows) == 1
+    assert rows[0]["rede_id"] == "ID001"
+
+
+def test_parse_sitzung_rede_ohne_redetext_wird_ignoriert(tmp_path):
+    """<rede> mit nur kommentar-Paragraphen (wortanzahl=0) wird übersprungen."""
+    xml = """\
+<?xml version="1.0" encoding="utf-8"?>
+<dbtplenarprotokoll wahlperiode="20" sitzung-nr="1">
+  <sitzungsverlauf>
+    <rede id="ID001">
+      <p klasse="redner"><redner id="R001"><name>
+        <vorname>Anna</vorname><nachname>Mueller</nachname>
+        <fraktion>SPD</fraktion></name></redner>Anna Mueller (SPD):</p>
+      <p klasse="kommentar">(Beifall bei der SPD)</p>
+    </rede>
+  </sitzungsverlauf>
+</dbtplenarprotokoll>"""
+    p = tmp_path / "001.xml"
+    p.write_text(xml, encoding="utf-8")
+    rows = pp.parse_sitzung(p)
+    assert len(rows) == 0
+
+
+def test_parse_alle_sitzungen_leeres_verzeichnis(tmp_path):
+    """Leeres plenarprotokolle/-Verzeichnis → leerer DataFrame."""
+    xml_dir = tmp_path / "plenarprotokolle"
+    xml_dir.mkdir()
+    df = pp.parse_alle_sitzungen(tmp_path)
+    assert len(df) == 0
+    assert set(df.columns) == {
+        "sitzungsnummer",
+        "rede_id",
+        "redner_id",
+        "vorname",
+        "nachname",
+        "fraktion",
+        "wortanzahl",
+        "text",
+    }
