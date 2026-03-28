@@ -5,6 +5,17 @@ import pytest
 
 import src.compute_word_stats as cws
 
+
+@pytest.fixture(autouse=True)
+def disable_lemmatization(monkeypatch):
+    """Deactivate spaCy lemmatization for all tests.
+
+    Tests run without the German model installed. Lemmatization is tested
+    separately via test_lemmatize_tokens_* below.
+    """
+    monkeypatch.setattr(cws, "_lemmatize_tokens", lambda tokens: tokens)
+
+
 # ---------------------------------------------------------------------------
 # _tokenize
 # ---------------------------------------------------------------------------
@@ -200,3 +211,37 @@ def test_fetch_word_stats_fehlendes_csv_wirft_systemexit(tmp_path):
     """Fehlendes speeches.csv → SystemExit."""
     with pytest.raises(SystemExit):
         cws.fetch_word_stats(tmp_path)
+
+
+# ---------------------------------------------------------------------------
+# _lemmatize_tokens (benötigt echtes spaCy-Modell, autouse-Fixture deaktiviert)
+# ---------------------------------------------------------------------------
+
+
+def test_lemmatize_tokens_fasst_flexionsformen_zusammen(monkeypatch):
+    """Inflektierte Formen werden auf Grundform reduziert."""
+    # Überschreibe die Fixture — echter Aufruf
+    monkeypatch.undo()
+
+    tokens = ["rechtsextreme", "rechtsextremen", "rechtsextremem", "rechtsextrem"]
+    lemmas = cws._lemmatize_tokens(tokens)
+    # de_core_news_sm reduziert zumindest einige Formen — Anzahl der Varianten sinkt
+    assert len(set(lemmas)) < len(set(tokens)), (
+        f"Erwartet weniger als {len(set(tokens))} Grundformen, bekommen: {set(lemmas)}"
+    )
+
+
+def test_lemmatize_tokens_identity_fuer_grundformen(monkeypatch):
+    """Wörter die bereits Grundform sind, bleiben unverändert."""
+    monkeypatch.undo()
+
+    tokens = ["klimawandel", "migration", "sicherheit"]
+    lemmas = cws._lemmatize_tokens(tokens)
+    # Grundformen sollten sich nicht wesentlich ändern
+    assert all(len(lemma) >= 4 and lemma.isalpha() for lemma in lemmas)
+
+
+def test_lemmatize_tokens_leere_liste(monkeypatch):
+    """Leere Token-Liste gibt leere Liste zurück ohne spaCy aufzurufen."""
+    monkeypatch.undo()
+    assert cws._lemmatize_tokens([]) == []

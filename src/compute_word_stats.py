@@ -13,12 +13,52 @@ import logging
 import math
 from collections import Counter
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pandas as pd
 
 from .storage import DATA_DIR
 
+if TYPE_CHECKING:
+    import spacy as spacy_type
+
 log = logging.getLogger(__name__)
+
+# Lazy-loaded spaCy model — avoids import cost when module is imported but not used.
+_nlp: "spacy_type.Language | None" = None
+
+
+def _get_nlp() -> "spacy_type.Language":
+    """Load German spaCy model on first call and cache it.
+
+    Loads de_core_news_sm with parser, NER and sentencizer disabled
+    for speed — only tokenizer + lemmatizer are needed.
+    """
+    global _nlp  # noqa: PLW0603
+    if _nlp is None:
+        import spacy
+
+        _nlp = spacy.load("de_core_news_sm", disable=["parser", "ner", "senter"])
+    return _nlp
+
+
+def _lemmatize_tokens(tokens: list[str]) -> list[str]:
+    """Lemmatize German tokens using spaCy, batching unique tokens for speed.
+
+    Processes only the unique token set, then maps back to the full list.
+    Tokens whose lemma is not alphabetic or < 4 chars are kept as-is.
+    """
+    if not tokens:
+        return tokens
+    nlp = _get_nlp()
+    unique = list(set(tokens))
+    lemma_map: dict[str, str] = {}
+    for word, doc in zip(unique, nlp.pipe(unique), strict=False):
+        lemma = doc[0].lemma_.lower() if doc else word
+        # Discard degenerate lemmas (non-alpha or too short)
+        lemma_map[word] = lemma if lemma.isalpha() and len(lemma) >= 4 else word
+    return [lemma_map.get(t, t) for t in tokens]
+
 
 # German stopwords: parliamentary function words and common filler
 _STOPWORDS: set[str] = {
@@ -222,19 +262,38 @@ def compute_tfidf(
     party_texts: dict[str, str],
     stopwords: set[str],
     top_n: int = 100,
+    *,
+    lemmatize: bool = True,
 ) -> pd.DataFrame:
     """Compute TF-IDF top words per party.
 
     TF = word_count_in_party / total_words_in_party
     IDF = log(n_parties / n_parties_containing_word)
     Words in stopwords are excluded before computation.
+    When lemmatize=True (default), German tokens are lemmatized via spaCy
+    before counting so inflected forms merge (e.g. "rechtsextreme" → "rechtsextrem").
 
     Returns DataFrame with columns: fraktion, wort, tfidf, rang.
     """
-    # Tokenize and filter stopwords per party
+    # Tokenize per party
     party_tokens: dict[str, list[str]] = {
-        party: [t for t in _tokenize(text) if t not in stopwords]
-        for party, text in party_texts.items()
+        party: _tokenize(text) for party, text in party_texts.items()
+    }
+
+    # Lemmatize: batch all unique tokens across parties at once for efficiency
+    if lemmatize:
+        all_tokens = [t for tokens in party_tokens.values() for t in tokens]
+        all_lemmas = _lemmatize_tokens(all_tokens)
+        idx = 0
+        for party, tokens in party_tokens.items():
+            n = len(tokens)
+            party_tokens[party] = all_lemmas[idx : idx + n]
+            idx += n
+
+    # Filter stopwords
+    party_tokens = {
+        party: [t for t in tokens if t not in stopwords]
+        for party, tokens in party_tokens.items()
     }
 
     n_parties = len(party_tokens)
