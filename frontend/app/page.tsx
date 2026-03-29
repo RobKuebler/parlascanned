@@ -93,7 +93,7 @@ const FEATURES = [
   },
   {
     href: "/speeches",
-    title: "Speeches",
+    title: "Plenardebatten",
     description:
       "Welche Themen prägen jede Fraktion im Plenum? TF-IDF-Wordclouds der parteispezifischen Begriffe und die redeaktivsten Abgeordneten im direkten Vergleich.",
     tag: "Plenardebatten",

@@ -91,7 +91,7 @@ export default function SpeechesPage() {
           className="text-[28px] font-black tracking-tight leading-tight mb-1"
           style={{ color: "#1E1B5E" }}
         >
-          Speeches
+          Plenardebatten
         </h1>
         <p className="text-[14px]" style={{ color: "#9A9790" }}>
           Welche Themen prägen jede Fraktion im Plenum? TF-IDF-Wordclouds der

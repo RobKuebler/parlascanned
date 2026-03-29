@@ -91,7 +91,7 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/speeches",
-    label: "Speeches",
+    label: "Plenardebatten",
     icon: (active, size = 24) => (
       <svg
         width={size}
