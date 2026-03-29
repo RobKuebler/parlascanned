@@ -26,18 +26,30 @@ jobs:
         run: uv run python -m src.fetch_protokolle --wahlperiode 21
 
       - name: Download new XMLs (WP21)
-        run: uv run python -m src.fetch_protokoll_xml --wahlperiode 21
+        id: fetch_xml
+        run: |
+          output=$(uv run python -m src.fetch_protokoll_xml --wahlperiode 21 2>&1)
+          echo "$output"
+          if echo "$output" | grep -q "0 neue XMLs"; then
+            echo "new_xmls=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "new_xmls=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Parse speeches from XMLs (WP21)
+        if: steps.fetch_xml.outputs.new_xmls == 'true'
         run: uv run python -m src.parse_protokolle --wahlperiode 21
 
       - name: Compute TF-IDF word stats (WP21)
+        if: steps.fetch_xml.outputs.new_xmls == 'true'
         run: uv run python -m src.compute_word_stats --wahlperiode 21
 
       - name: Export JSON for frontend
+        if: steps.fetch_xml.outputs.new_xmls == 'true'
         run: uv run python -m src.export_json
 
       - name: Commit and push
+        if: steps.fetch_xml.outputs.new_xmls == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
