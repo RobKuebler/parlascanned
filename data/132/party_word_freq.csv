@@ -1,0 +1,901 @@
+fraktion,wort,tfidf,rang
+AfD,bürger,0.000365,1
+AfD,million,0.000364,2
+AfD,prozent,0.000363,3
+AfD,politik,0.000297,4
+AfD,grüne,0.000262,5
+AfD,wert,0.000245,6
+AfD,windindustrieanlage,0.000218,7
+AfD,national,0.000189,8
+AfD,bündnis,0.000178,9
+AfD,völlig,0.000177,10
+AfD,ampel,0.000176,11
+AfD,altpartei,0.000168,12
+AfD,unternehmen,0.000159,13
+AfD,kernenergie,0.000159,14
+AfD,staat,0.000158,15
+AfD,drei,0.000154,16
+AfD,gesetzentwurf,0.000151,17
+AfD,masseneinwanderung,0.000143,18
+AfD,grün,0.000139,19
+AfD,europäisch,0.000138,20
+AfD,hause,0.000136,21
+AfD,merkel,0.000134,22
+AfD,davon,0.000133,23
+AfD,einzig,0.000115,24
+AfD,monat,0.000111,25
+AfD,stell,0.000111,26
+AfD,hören,0.00011,27
+AfD,ökosozialistisch,0.000107,28
+AfD,stellen,0.000106,29
+AfD,lang,0.000106,30
+AfD,seite,0.000105,31
+AfD,klein,0.000104,32
+AfD,setzen,0.000104,33
+AfD,zukünftig,0.000103,34
+AfD,woche,0.000103,35
+AfD,mittlerweile,9.9e-05,36
+AfD,sicherheit,9.9e-05,37
+AfD,förderung,9.7e-05,38
+AfD,russland,9.7e-05,39
+AfD,europa,9.6e-05,40
+AfD,kurz,9.6e-05,41
+AfD,wegen,9.6e-05,42
+AfD,insbesondere,9.5e-05,43
+AfD,bundeswehr,9.4e-05,44
+AfD,artikel,9.4e-05,45
+AfD,daran,9.3e-05,46
+AfD,erhalten,9.2e-05,47
+AfD,neuen,9.2e-05,48
+AfD,öffentlich,9.2e-05,49
+AfD,deren,9.1e-05,50
+AfD,übrigens,8.9e-05,51
+AfD,demokratie,8.8e-05,52
+AfD,fall,8.8e-05,53
+AfD,minister,8.7e-05,54
+AfD,knapp,8.7e-05,55
+AfD,massiv,8.6e-05,56
+AfD,inzwischen,8.6e-05,57
+AfD,alternative,8.5e-05,58
+AfD,beide,8.3e-05,59
+AfD,international,8.3e-05,60
+AfD,zitat,8.2e-05,61
+AfD,dringend,8.1e-05,62
+AfD,illegal,8.1e-05,63
+AfD,frei,8e-05,64
+AfD,stimmen,7.9e-05,65
+AfD,energie,7.9e-05,66
+AfD,zweiter,7.9e-05,67
+AfD,opfer,7.9e-05,68
+AfD,leute,7.9e-05,69
+AfD,freiheit,7.9e-05,70
+AfD,soldat,7.8e-05,71
+AfD,kernkraft,7.8e-05,72
+AfD,fallen,7.6e-05,73
+AfD,schreiben,7.6e-05,74
+AfD,volk,7.6e-05,75
+AfD,genauso,7.5e-05,76
+AfD,staatlich,7.5e-05,77
+AfD,strom,7.5e-05,78
+AfD,steuer,7.4e-05,79
+AfD,entsprechend,7.3e-05,80
+AfD,wenig,7.2e-05,81
+AfD,russisch,7.2e-05,82
+AfD,bevölkerung,7.1e-05,83
+AfD,gegenüber,7e-05,84
+AfD,anders,6.9e-05,85
+AfD,zahl,6.8e-05,86
+AfD,wahl,6.8e-05,87
+AfD,region,6.8e-05,88
+AfD,haus,6.8e-05,89
+AfD,ziel,6.7e-05,90
+AfD,ding,6.6e-05,91
+AfD,schlecht,6.6e-05,92
+AfD,polen,6.5e-05,93
+AfD,weder,6.5e-05,94
+AfD,hellbraun,6.5e-05,95
+AfD,klimahysterie,6.5e-05,96
+AfD,habeck,6.5e-05,97
+AfD,niemand,6.4e-05,98
+AfD,besonders,6.4e-05,99
+AfD,steuerzahler,6.4e-05,100
+BSW,politik,0.000364,1
+BSW,kriegskredite,0.00034,2
+BSW,prozent,0.000328,3
+BSW,bündnis,0.000328,4
+BSW,ampel,0.000313,5
+BSW,russland,0.000298,6
+BSW,aufrüstungsprogramm,0.000279,7
+BSW,nettomigrationsraen,0.000272,8
+BSW,militäroffensiven,0.000272,9
+BSW,mentalitätsreform,0.000272,10
+BSW,weaffenstoppen,0.000272,11
+BSW,vertragswerke,0.000272,12
+BSW,aufnahmerecht,0.000272,13
+BSW,konfrontationspolitik,0.000272,14
+BSW,rousseau,0.000272,15
+BSW,medikalisierung,0.000272,16
+BSW,neuauszählung,0.000272,17
+BSW,sahra,0.000262,18
+BSW,wagenknechen,0.000233,19
+BSW,waffen,0.000218,20
+BSW,million,0.000218,21
+BSW,bürger,0.000218,22
+BSW,drei,0.000204,23
+BSW,netanjahus,0.000204,24
+BSW,kriegseintritt,0.000204,25
+BSW,stahlstandoren,0.000204,26
+BSW,klein,0.000197,27
+BSW,verehren,0.000189,28
+BSW,wenig,0.000189,29
+BSW,hochsicherheitsgefängnis,0.000186,30
+BSW,lobbys,0.000186,31
+BSW,sprechakt,0.000186,32
+BSW,bachelorstudium,0.000186,33
+BSW,masterstudium,0.000186,34
+BSW,germanium,0.000186,35
+BSW,plaza,0.000186,36
+BSW,elektrolyseanlag,0.000186,37
+BSW,standortschließung,0.000186,38
+BSW,kanonenbootpolitik,0.000186,39
+BSW,grütze,0.000186,40
+BSW,bevölkerung,0.000182,41
+BSW,inzwischen,0.000175,42
+BSW,bundeswehr,0.000175,43
+BSW,setzen,0.000167,44
+BSW,sicherheit,0.000167,45
+BSW,davon,0.000167,46
+BSW,europäisch,0.000167,47
+BSW,daran,0.00016,48
+BSW,unternehmen,0.000153,49
+BSW,dringend,0.000153,50
+BSW,öffentlich,0.000153,51
+BSW,militäreinsatz,0.00015,52
+BSW,friedensgebot,0.00015,53
+BSW,lang,0.000146,54
+BSW,frieden,0.000146,55
+BSW,bologna,0.000145,56
+BSW,übrigens,0.000138,57
+BSW,vernünftig,0.000138,58
+BSW,leute,0.000138,59
+BSW,mindestlohn,0.000138,60
+BSW,international,0.000138,61
+BSW,stellen,0.000138,62
+BSW,woche,0.000138,63
+BSW,offenbar,0.000138,64
+BSW,bissch,0.000138,65
+BSW,wahl,0.000138,66
+BSW,industriepreise,0.000136,67
+BSW,schaufensterscheibe,0.000136,68
+BSW,fieberrausch,0.000136,69
+BSW,remarque,0.000136,70
+BSW,eisstand,0.000136,71
+BSW,restbetrag,0.000136,72
+BSW,schweinegrippe,0.000136,73
+BSW,pandemieverträge,0.000136,74
+BSW,impfstoffdeals,0.000136,75
+BSW,deindustrialisierungswell,0.000136,76
+BSW,sattelfest,0.000136,77
+BSW,tuchel,0.000136,78
+BSW,landoperation,0.000136,79
+BSW,militärabenteuer,0.000136,80
+BSW,teillegalisierung,0.000136,81
+BSW,psychosomatik,0.000136,82
+BSW,reifungsprozesse,0.000136,83
+BSW,fürsorgefunktion,0.000136,84
+BSW,kertsch,0.000136,85
+BSW,extrasteuer,0.000136,86
+BSW,fleischpreise,0.000136,87
+BSW,belausch,0.000136,88
+BSW,waffenantrag,0.000136,89
+BSW,watschn,0.000136,90
+BSW,krankheitsformen,0.000136,91
+BSW,kriegsbegeisterung,0.000136,92
+BSW,schreibtüchtig,0.000136,93
+BSW,hightechforschung,0.000136,94
+BSW,ultrarechten,0.000136,95
+BSW,terrorhelfer,0.000136,96
+BSW,mittelmeerstrand,0.000136,97
+BSW,allermiesesen,0.000136,98
+BSW,luxemburgs,0.000136,99
+BSW,herunterred,0.000136,100
+BÜNDNIS 90/­DIE GRÜNEN,europäisch,0.000277,1
+BÜNDNIS 90/­DIE GRÜNEN,prozent,0.000217,2
+BÜNDNIS 90/­DIE GRÜNEN,million,0.000208,3
+BÜNDNIS 90/­DIE GRÜNEN,unternehmen,0.000191,4
+BÜNDNIS 90/­DIE GRÜNEN,sicherheit,0.00017,5
+BÜNDNIS 90/­DIE GRÜNEN,stell,0.000165,6
+BÜNDNIS 90/­DIE GRÜNEN,woche,0.000165,7
+BÜNDNIS 90/­DIE GRÜNEN,besonders,0.000164,8
+BÜNDNIS 90/­DIE GRÜNEN,national,0.000162,9
+BÜNDNIS 90/­DIE GRÜNEN,europa,0.000162,10
+BÜNDNIS 90/­DIE GRÜNEN,klimakrise,0.000159,11
+BÜNDNIS 90/­DIE GRÜNEN,international,0.000155,12
+BÜNDNIS 90/­DIE GRÜNEN,verantwortung,0.000152,13
+BÜNDNIS 90/­DIE GRÜNEN,region,0.000147,14
+BÜNDNIS 90/­DIE GRÜNEN,setzen,0.000144,15
+BÜNDNIS 90/­DIE GRÜNEN,davon,0.000139,16
+BÜNDNIS 90/­DIE GRÜNEN,bündnisgrün,0.000137,17
+BÜNDNIS 90/­DIE GRÜNEN,ampel,0.000136,18
+BÜNDNIS 90/­DIE GRÜNEN,konkret,0.000136,19
+BÜNDNIS 90/­DIE GRÜNEN,insbesondere,0.000133,20
+BÜNDNIS 90/­DIE GRÜNEN,klein,0.000132,21
+BÜNDNIS 90/­DIE GRÜNEN,erneuerbar,0.000131,22
+BÜNDNIS 90/­DIE GRÜNEN,demokratie,0.000125,23
+BÜNDNIS 90/­DIE GRÜNEN,russisch,0.000125,24
+BÜNDNIS 90/­DIE GRÜNEN,daran,0.000124,25
+BÜNDNIS 90/­DIE GRÜNEN,unterstützung,0.000124,26
+BÜNDNIS 90/­DIE GRÜNEN,gesetzentwurf,0.000121,27
+BÜNDNIS 90/­DIE GRÜNEN,seite,0.000121,28
+BÜNDNIS 90/­DIE GRÜNEN,situation,0.000119,29
+BÜNDNIS 90/­DIE GRÜNEN,politik,0.000118,30
+BÜNDNIS 90/­DIE GRÜNEN,energie,0.000118,31
+BÜNDNIS 90/­DIE GRÜNEN,schritt,0.000117,32
+BÜNDNIS 90/­DIE GRÜNEN,darum,0.000115,33
+BÜNDNIS 90/­DIE GRÜNEN,drei,0.000114,34
+BÜNDNIS 90/­DIE GRÜNEN,klimaschutz,0.000112,35
+BÜNDNIS 90/­DIE GRÜNEN,beratung,0.00011,36
+BÜNDNIS 90/­DIE GRÜNEN,monat,0.000109,37
+BÜNDNIS 90/­DIE GRÜNEN,neuen,0.000108,38
+BÜNDNIS 90/­DIE GRÜNEN,global,0.000108,39
+BÜNDNIS 90/­DIE GRÜNEN,öffentlich,0.000107,40
+BÜNDNIS 90/­DIE GRÜNEN,grün,0.000107,41
+BÜNDNIS 90/­DIE GRÜNEN,ausbau,0.000106,42
+BÜNDNIS 90/­DIE GRÜNEN,häufig,0.000105,43
+BÜNDNIS 90/­DIE GRÜNEN,staat,0.000104,44
+BÜNDNIS 90/­DIE GRÜNEN,förderung,0.000103,45
+BÜNDNIS 90/­DIE GRÜNEN,schutz,0.000103,46
+BÜNDNIS 90/­DIE GRÜNEN,zweiter,0.000102,47
+BÜNDNIS 90/­DIE GRÜNEN,verfahren,0.000101,48
+BÜNDNIS 90/­DIE GRÜNEN,dringend,9.8e-05,49
+BÜNDNIS 90/­DIE GRÜNEN,ding,9.8e-05,50
+BÜNDNIS 90/­DIE GRÜNEN,bissch,9.8e-05,51
+BÜNDNIS 90/­DIE GRÜNEN,stellen,9.6e-05,52
+BÜNDNIS 90/­DIE GRÜNEN,ziel,9.6e-05,53
+BÜNDNIS 90/­DIE GRÜNEN,lang,9.5e-05,54
+BÜNDNIS 90/­DIE GRÜNEN,digital,9.2e-05,55
+BÜNDNIS 90/­DIE GRÜNEN,massiv,9.1e-05,56
+BÜNDNIS 90/­DIE GRÜNEN,erhalten,9e-05,57
+BÜNDNIS 90/­DIE GRÜNEN,haus,9e-05,58
+BÜNDNIS 90/­DIE GRÜNEN,russland,8.9e-05,59
+BÜNDNIS 90/­DIE GRÜNEN,reform,8.9e-05,60
+BÜNDNIS 90/­DIE GRÜNEN,beide,8.8e-05,61
+BÜNDNIS 90/­DIE GRÜNEN,partner,8.8e-05,62
+BÜNDNIS 90/­DIE GRÜNEN,gespräch,8.7e-05,63
+BÜNDNIS 90/­DIE GRÜNEN,kurz,8.6e-05,64
+BÜNDNIS 90/­DIE GRÜNEN,ökologisch,8.6e-05,65
+BÜNDNIS 90/­DIE GRÜNEN,jüdin,8.5e-05,66
+BÜNDNIS 90/­DIE GRÜNEN,ehrlich,8.5e-05,67
+BÜNDNIS 90/­DIE GRÜNEN,bringen,8.5e-05,68
+BÜNDNIS 90/­DIE GRÜNEN,zukünftig,8.5e-05,69
+BÜNDNIS 90/­DIE GRÜNEN,fall,8.5e-05,70
+BÜNDNIS 90/­DIE GRÜNEN,nachhaltig,8.5e-05,71
+BÜNDNIS 90/­DIE GRÜNEN,übrigens,8.5e-05,72
+BÜNDNIS 90/­DIE GRÜNEN,außerdem,8.4e-05,73
+BÜNDNIS 90/­DIE GRÜNEN,beitrag,8.2e-05,74
+BÜNDNIS 90/­DIE GRÜNEN,entsprechend,8.2e-05,75
+BÜNDNIS 90/­DIE GRÜNEN,einige,8.2e-05,76
+BÜNDNIS 90/­DIE GRÜNEN,bundeswehr,8.1e-05,77
+BÜNDNIS 90/­DIE GRÜNEN,hause,8.1e-05,78
+BÜNDNIS 90/­DIE GRÜNEN,völlig,8e-05,79
+BÜNDNIS 90/­DIE GRÜNEN,antwort,8e-05,80
+BÜNDNIS 90/­DIE GRÜNEN,nutzen,7.9e-05,81
+BÜNDNIS 90/­DIE GRÜNEN,indem,7.8e-05,82
+BÜNDNIS 90/­DIE GRÜNEN,geflüchtet,7.8e-05,83
+BÜNDNIS 90/­DIE GRÜNEN,wenig,7.8e-05,84
+BÜNDNIS 90/­DIE GRÜNEN,unabhängig,7.7e-05,85
+BÜNDNIS 90/­DIE GRÜNEN,stärk,7.6e-05,86
+BÜNDNIS 90/­DIE GRÜNEN,stärken,7.5e-05,87
+BÜNDNIS 90/­DIE GRÜNEN,gegenüber,7.4e-05,88
+BÜNDNIS 90/­DIE GRÜNEN,rahmen,7.4e-05,89
+BÜNDNIS 90/­DIE GRÜNEN,sommer,7.4e-05,90
+BÜNDNIS 90/­DIE GRÜNEN,grüne,7.4e-05,91
+BÜNDNIS 90/­DIE GRÜNEN,regelung,7.3e-05,92
+BÜNDNIS 90/­DIE GRÜNEN,hören,7.3e-05,93
+BÜNDNIS 90/­DIE GRÜNEN,guten,7.1e-05,94
+BÜNDNIS 90/­DIE GRÜNEN,anders,7e-05,95
+BÜNDNIS 90/­DIE GRÜNEN,bedeuten,7e-05,96
+BÜNDNIS 90/­DIE GRÜNEN,gewalt,7e-05,97
+BÜNDNIS 90/­DIE GRÜNEN,intensiv,7e-05,98
+BÜNDNIS 90/­DIE GRÜNEN,einsatz,7e-05,99
+BÜNDNIS 90/­DIE GRÜNEN,sowie,7e-05,100
+CDU/CSU,europäisch,0.000296,1
+CDU/CSU,prozent,0.000279,2
+CDU/CSU,ampel,0.000267,3
+CDU/CSU,million,0.000242,4
+CDU/CSU,woche,0.000218,5
+CDU/CSU,national,0.000206,6
+CDU/CSU,grüne,0.0002,7
+CDU/CSU,gesetzentwurf,0.000187,8
+CDU/CSU,drei,0.000186,9
+CDU/CSU,unternehmen,0.000186,10
+CDU/CSU,monat,0.000176,11
+CDU/CSU,konkret,0.000167,12
+CDU/CSU,politik,0.000161,13
+CDU/CSU,europa,0.000154,14
+CDU/CSU,entsprechend,0.000152,15
+CDU/CSU,setzen,0.000149,16
+CDU/CSU,davon,0.000148,17
+CDU/CSU,stell,0.000147,18
+CDU/CSU,insbesondere,0.000145,19
+CDU/CSU,bündnis,0.00014,20
+CDU/CSU,ding,0.000136,21
+CDU/CSU,klein,0.000133,22
+CDU/CSU,seite,0.000128,23
+CDU/CSU,zweiter,0.000123,24
+CDU/CSU,übrigens,0.000121,25
+CDU/CSU,minister,0.000121,26
+CDU/CSU,staat,0.000118,27
+CDU/CSU,antwort,0.000118,28
+CDU/CSU,beratung,0.000115,29
+CDU/CSU,region,0.000114,30
+CDU/CSU,völlig,0.000113,31
+CDU/CSU,verantwortung,0.000112,32
+CDU/CSU,international,0.000112,33
+CDU/CSU,situation,0.000112,34
+CDU/CSU,neuen,0.000111,35
+CDU/CSU,förderung,0.000111,36
+CDU/CSU,daran,0.00011,37
+CDU/CSU,hören,0.000109,38
+CDU/CSU,sicherheit,0.000105,39
+CDU/CSU,zukünftig,0.000105,40
+CDU/CSU,stellen,0.000105,41
+CDU/CSU,januar,0.000104,42
+CDU/CSU,legislaturperiode,0.0001,43
+CDU/CSU,gespräch,9.9e-05,44
+CDU/CSU,dringend,9.8e-05,45
+CDU/CSU,gegenüber,9.7e-05,46
+CDU/CSU,lang,9.7e-05,47
+CDU/CSU,verehren,9.5e-05,48
+CDU/CSU,bundeswehr,9.3e-05,49
+CDU/CSU,besonders,9.3e-05,50
+CDU/CSU,fall,9.2e-05,51
+CDU/CSU,beide,9.2e-05,52
+CDU/CSU,partner,9.1e-05,53
+CDU/CSU,öffentlich,9.1e-05,54
+CDU/CSU,bürger,8.9e-05,55
+CDU/CSU,kurz,8.8e-05,56
+CDU/CSU,unterstützung,8.7e-05,57
+CDU/CSU,ziel,8.7e-05,58
+CDU/CSU,einzig,8.7e-05,59
+CDU/CSU,wenig,8.6e-05,60
+CDU/CSU,wert,8.4e-05,61
+CDU/CSU,insofern,8.3e-05,62
+CDU/CSU,regelung,8.2e-05,63
+CDU/CSU,bissch,8.1e-05,64
+CDU/CSU,stimmen,8.1e-05,65
+CDU/CSU,digital,8e-05,66
+CDU/CSU,haus,7.9e-05,67
+CDU/CSU,gestern,7.9e-05,68
+CDU/CSU,darum,7.9e-05,69
+CDU/CSU,vertrauen,7.9e-05,70
+CDU/CSU,hause,7.9e-05,71
+CDU/CSU,angebot,7.9e-05,72
+CDU/CSU,anders,7.8e-05,73
+CDU/CSU,möglichkeit,7.8e-05,74
+CDU/CSU,belastung,7.6e-05,75
+CDU/CSU,einige,7.6e-05,76
+CDU/CSU,massiv,7.5e-05,77
+CDU/CSU,russisch,7.4e-05,78
+CDU/CSU,bringen,7.4e-05,79
+CDU/CSU,nutzen,7.3e-05,80
+CDU/CSU,verfahren,7.2e-05,81
+CDU/CSU,fehlen,7.1e-05,82
+CDU/CSU,rahmen,7.1e-05,83
+CDU/CSU,einzelplan,7.1e-05,84
+CDU/CSU,insgesamt,7e-05,85
+CDU/CSU,tagen,7e-05,86
+CDU/CSU,opfer,7e-05,87
+CDU/CSU,erhalten,7e-05,88
+CDU/CSU,schutz,7e-05,89
+CDU/CSU,russland,7e-05,90
+CDU/CSU,einsatz,6.9e-05,91
+CDU/CSU,sicht,6.9e-05,92
+CDU/CSU,ansprechen,6.8e-05,93
+CDU/CSU,zumindest,6.8e-05,94
+CDU/CSU,entwicklung,6.8e-05,95
+CDU/CSU,übrig,6.8e-05,96
+CDU/CSU,änderung,6.7e-05,97
+CDU/CSU,dezember,6.7e-05,98
+CDU/CSU,wesentlich,6.7e-05,99
+CDU/CSU,häufig,6.7e-05,100
+Die Linke,linker,0.000417,1
+Die Linke,prozent,0.00035,2
+Die Linke,million,0.000334,3
+Die Linke,ampel,0.0002,4
+Die Linke,gesetzentwurf,0.00019,5
+Die Linke,öffentlich,0.000186,6
+Die Linke,unternehmen,0.000176,7
+Die Linke,völlig,0.000173,8
+Die Linke,europäisch,0.000163,9
+Die Linke,dringend,0.000161,10
+Die Linke,mieterin,0.00016,11
+Die Linke,klein,0.000157,12
+Die Linke,grüne,0.000148,13
+Die Linke,davon,0.000142,14
+Die Linke,wenig,0.000138,15
+Die Linke,monat,0.000134,16
+Die Linke,politik,0.000133,17
+Die Linke,woche,0.000126,18
+Die Linke,lang,0.000118,19
+Die Linke,preiskontroll,0.000118,20
+Die Linke,preisaufsicht,0.000118,21
+Die Linke,drei,0.000117,22
+Die Linke,daran,0.000116,23
+Die Linke,wegen,0.000115,24
+Die Linke,förderung,0.000111,25
+Die Linke,insbesondere,0.00011,26
+Die Linke,erhalten,0.000109,27
+Die Linke,staat,0.000108,28
+Die Linke,fehlen,0.000106,29
+Die Linke,national,0.000105,30
+Die Linke,stell,0.000105,31
+Die Linke,bundeswehr,0.000105,32
+Die Linke,bündnis,0.000104,33
+Die Linke,außerdem,0.000101,34
+Die Linke,übrigens,0.0001,35
+Die Linke,konkret,9.8e-05,36
+Die Linke,besonders,9.6e-05,37
+Die Linke,neuen,9.4e-05,38
+Die Linke,sicht,9.4e-05,39
+Die Linke,häufig,9.3e-05,40
+Die Linke,schutz,9e-05,41
+Die Linke,bevölkerung,9e-05,42
+Die Linke,behörde,9e-05,43
+Die Linke,zweiter,8.9e-05,44
+Die Linke,international,8.9e-05,45
+Die Linke,zukünftig,8.9e-05,46
+Die Linke,einige,8.9e-05,47
+Die Linke,europa,8.9e-05,48
+Die Linke,ding,8.7e-05,49
+Die Linke,staatlich,8.7e-05,50
+Die Linke,russland,8.7e-05,51
+Die Linke,russisch,8.6e-05,52
+Die Linke,niemand,8.6e-05,53
+Die Linke,setzen,8.6e-05,54
+Die Linke,energie,8.5e-05,55
+Die Linke,wohnung,8.4e-05,56
+Die Linke,stimmen,8.4e-05,57
+Die Linke,kurz,8.3e-05,58
+Die Linke,situation,8.1e-05,59
+Die Linke,seite,8.1e-05,60
+Die Linke,zumindest,8.1e-05,61
+Die Linke,demokratie,8.1e-05,62
+Die Linke,hören,8e-05,63
+Die Linke,fall,8e-05,64
+Die Linke,darum,8e-05,65
+Die Linke,massiv,8e-05,66
+Die Linke,stellen,8e-05,67
+Die Linke,armut,7.9e-05,68
+Die Linke,einsatz,7.9e-05,69
+Die Linke,insofern,7.8e-05,70
+Die Linke,kindergrundsicherung,7.8e-05,71
+Die Linke,miet,7.8e-05,72
+Die Linke,konzern,7.8e-05,73
+Die Linke,rente,7.7e-05,74
+Die Linke,region,7.7e-05,75
+Die Linke,einzig,7.5e-05,76
+Die Linke,schuldenbremse,7.5e-05,77
+Die Linke,januar,7.5e-05,78
+Die Linke,bürger,7.5e-05,79
+Die Linke,verantwortung,7.5e-05,80
+Die Linke,schlecht,7.4e-05,81
+Die Linke,knapp,7.3e-05,82
+Die Linke,deren,7.3e-05,83
+Die Linke,weder,7.2e-05,84
+Die Linke,genauso,7.2e-05,85
+Die Linke,einkommen,7.2e-05,86
+Die Linke,dramatisch,7.1e-05,87
+Die Linke,opfer,7.1e-05,88
+Die Linke,minister,7.1e-05,89
+Die Linke,stattdessen,7.1e-05,90
+Die Linke,hause,7e-05,91
+Die Linke,nutzen,7e-05,92
+Die Linke,entsprechend,7e-05,93
+Die Linke,arbeitgeber,6.9e-05,94
+Die Linke,technisch,6.9e-05,95
+Die Linke,trotzdem,6.9e-05,96
+Die Linke,sicherheit,6.9e-05,97
+Die Linke,trotz,6.9e-05,98
+Die Linke,gesetzlich,6.8e-05,99
+Die Linke,bissch,6.8e-05,100
+FDP,europäisch,0.000326,1
+FDP,frei,0.000238,2
+FDP,prozent,0.000197,3
+FDP,national,0.000196,4
+FDP,unternehmen,0.000188,5
+FDP,europa,0.000182,6
+FDP,setzen,0.000159,7
+FDP,staat,0.000158,8
+FDP,million,0.000155,9
+FDP,demokraen,0.000152,10
+FDP,woche,0.000151,11
+FDP,international,0.000149,12
+FDP,insbesondere,0.000148,13
+FDP,stell,0.000148,14
+FDP,partner,0.000146,15
+FDP,besonders,0.000141,16
+FDP,seite,0.000137,17
+FDP,gesetzentwurf,0.000136,18
+FDP,ding,0.000133,19
+FDP,davon,0.00013,20
+FDP,verantwortung,0.000128,21
+FDP,schritt,0.000127,22
+FDP,hause,0.000125,23
+FDP,drei,0.000125,24
+FDP,politik,0.000125,25
+FDP,russisch,0.000124,26
+FDP,daran,0.000122,27
+FDP,zukünftig,0.000122,28
+FDP,ziel,0.00012,29
+FDP,entsprechend,0.000117,30
+FDP,freiheit,0.000117,31
+FDP,monat,0.000115,32
+FDP,stellen,0.000114,33
+FDP,digital,0.000112,34
+FDP,klein,0.000109,35
+FDP,beratung,0.000108,36
+FDP,übrigens,0.000107,37
+FDP,gespräch,0.000107,38
+FDP,neuen,0.000107,39
+FDP,zweiter,0.000107,40
+FDP,situation,0.000107,41
+FDP,region,0.000106,42
+FDP,sicherheit,0.000105,43
+FDP,konkret,0.000104,44
+FDP,öffentlich,0.000103,45
+FDP,russland,0.000102,46
+FDP,bürger,0.000101,47
+FDP,demokratie,9.9e-05,48
+FDP,beide,9.9e-05,49
+FDP,beitrag,9.8e-05,50
+FDP,bissch,9.7e-05,51
+FDP,häufig,9.6e-05,52
+FDP,ampel,9.3e-05,53
+FDP,bringen,9.2e-05,54
+FDP,unterstützung,9.1e-05,55
+FDP,möglichkeit,9.1e-05,56
+FDP,lang,8.9e-05,57
+FDP,fall,8.9e-05,58
+FDP,einige,8.7e-05,59
+FDP,haus,8.6e-05,60
+FDP,kurz,8.6e-05,61
+FDP,wert,8.5e-05,62
+FDP,völlig,8.5e-05,63
+FDP,erhalten,8.4e-05,64
+FDP,verfahren,8.3e-05,65
+FDP,rahmen,8.2e-05,66
+FDP,einzelplan,8.2e-05,67
+FDP,dringend,8.1e-05,68
+FDP,wenig,8e-05,69
+FDP,bundeswehr,8e-05,70
+FDP,behörde,8e-05,71
+FDP,nutzen,7.9e-05,72
+FDP,persönlich,7.9e-05,73
+FDP,außerdem,7.9e-05,74
+FDP,schutz,7.8e-05,75
+FDP,schuldenbremse,7.8e-05,76
+FDP,linker,7.8e-05,77
+FDP,soldat,7.8e-05,78
+FDP,belastung,7.7e-05,79
+FDP,sowie,7.6e-05,80
+FDP,digitalisierung,7.6e-05,81
+FDP,nachhaltig,7.6e-05,82
+FDP,gegenüber,7.6e-05,83
+FDP,indem,7.5e-05,84
+FDP,legislaturperiode,7.5e-05,85
+FDP,information,7.5e-05,86
+FDP,förderung,7.3e-05,87
+FDP,antwort,7.3e-05,88
+FDP,darum,7.2e-05,89
+FDP,intensiv,7.2e-05,90
+FDP,entwicklung,7.2e-05,91
+FDP,reform,7.2e-05,92
+FDP,wladimir,7.2e-05,93
+FDP,wesentlich,7e-05,94
+FDP,guten,7e-05,95
+FDP,richtung,7e-05,96
+FDP,unterschiedlich,7e-05,97
+FDP,angebot,6.9e-05,98
+FDP,insgesamt,6.9e-05,99
+FDP,entscheidend,6.8e-05,100
+SPD,europäisch,0.000313,1
+SPD,million,0.000229,2
+SPD,prozent,0.000213,3
+SPD,national,0.000185,4
+SPD,unternehmen,0.000179,5
+SPD,woche,0.000169,6
+SPD,international,0.000168,7
+SPD,besonders,0.000159,8
+SPD,sicherheit,0.000159,9
+SPD,europa,0.000155,10
+SPD,stell,0.000152,11
+SPD,davon,0.000148,12
+SPD,insbesondere,0.000148,13
+SPD,setzen,0.000147,14
+SPD,verantwortung,0.000146,15
+SPD,klein,0.000138,16
+SPD,seite,0.000137,17
+SPD,drei,0.000133,18
+SPD,demokratie,0.000132,19
+SPD,daran,0.000128,20
+SPD,zukünftig,0.000127,21
+SPD,energie,0.000125,22
+SPD,erneuerbar,0.000124,23
+SPD,region,0.000124,24
+SPD,öffentlich,0.000123,25
+SPD,konkret,0.000122,26
+SPD,ding,0.000121,27
+SPD,förderung,0.000121,28
+SPD,situation,0.000121,29
+SPD,unterstützung,0.00012,30
+SPD,gesetzentwurf,0.000118,31
+SPD,wert,0.000117,32
+SPD,gespräch,0.000115,33
+SPD,beratung,0.000113,34
+SPD,darum,0.000113,35
+SPD,übrigens,0.000113,36
+SPD,staat,0.000112,37
+SPD,monat,0.000111,38
+SPD,häufig,0.00011,39
+SPD,entsprechend,0.000109,40
+SPD,politik,0.000109,41
+SPD,partner,0.000108,42
+SPD,digital,0.000107,43
+SPD,verehren,0.000104,44
+SPD,neuen,0.000101,45
+SPD,schritt,9.9e-05,46
+SPD,bissch,9.9e-05,47
+SPD,stellen,9.8e-05,48
+SPD,ziel,9.6e-05,49
+SPD,kurz,9.6e-05,50
+SPD,sowie,9.6e-05,51
+SPD,außerdem,9.6e-05,52
+SPD,lang,9.5e-05,53
+SPD,einige,9.4e-05,54
+SPD,zweiter,9.4e-05,55
+SPD,ampel,9.3e-05,56
+SPD,möglichkeit,9.2e-05,57
+SPD,nachhaltig,9.2e-05,58
+SPD,fall,9.1e-05,59
+SPD,guten,9.1e-05,60
+SPD,beide,9e-05,61
+SPD,hause,9e-05,62
+SPD,schutz,8.9e-05,63
+SPD,verfahren,8.8e-05,64
+SPD,bringen,8.7e-05,65
+SPD,rahmen,8.5e-05,66
+SPD,russisch,8.4e-05,67
+SPD,insofern,8.3e-05,68
+SPD,bürger,8.3e-05,69
+SPD,ausbau,8.3e-05,70
+SPD,erhalten,8e-05,71
+SPD,indem,8e-05,72
+SPD,ampelkoalition,8e-05,73
+SPD,zusammenhalt,8e-05,74
+SPD,haus,7.8e-05,75
+SPD,nutzen,7.7e-05,76
+SPD,global,7.7e-05,77
+SPD,unterstütz,7.7e-05,78
+SPD,intensiv,7.6e-05,79
+SPD,beitrag,7.6e-05,80
+SPD,opfer,7.6e-05,81
+SPD,wenig,7.4e-05,82
+SPD,angebot,7.4e-05,83
+SPD,gesellschaftleichen,7.4e-05,84
+SPD,antwort,7.4e-05,85
+SPD,dringend,7.4e-05,86
+SPD,gegenüber,7.3e-05,87
+SPD,regelung,7.3e-05,88
+SPD,umsetzung,7.2e-05,89
+SPD,entwicklung,7.2e-05,90
+SPD,genauso,7.2e-05,91
+SPD,persönlich,7.1e-05,92
+SPD,knapp,7e-05,93
+SPD,sinn,6.9e-05,94
+SPD,stärk,6.9e-05,95
+SPD,übernehmen,6.9e-05,96
+SPD,insgesamt,6.9e-05,97
+SPD,hören,6.8e-05,98
+SPD,technisch,6.8e-05,99
+SPD,einsatz,6.8e-05,100
+Unbekannt,vergelt,0.001873,1
+Unbekannt,coronazahlung,0.001873,2
+Unbekannt,systemkritiker,0.001873,3
+Unbekannt,qualifizierungsangebot,0.001873,4
+Unbekannt,berufsbildungssystem,0.001873,5
+Unbekannt,qualifikationsrahmens,0.001873,6
+Unbekannt,einreiseregeln,0.001873,7
+Unbekannt,modellstäden,0.001873,8
+Unbekannt,schachten,0.001873,9
+Unbekannt,abgehalfteren,0.001873,10
+Unbekannt,celler,0.001873,11
+Unbekannt,bundesangelegenheit,0.001873,12
+Unbekannt,konzeptlosigkeit,0.001282,13
+Unbekannt,aufopferungsbereitschaft,0.001282,14
+Unbekannt,tanksäul,0.001282,15
+Unbekannt,zeitvertreib,0.001282,16
+Unbekannt,zurückschauen,0.001282,17
+Unbekannt,entscheidungsbefugnis,0.001282,18
+Unbekannt,weiterbildungsbedarf,0.001282,19
+Unbekannt,defizitausgleich,0.001282,20
+Unbekannt,langeweile,0.000937,21
+Unbekannt,talentieren,0.000937,22
+Unbekannt,helmholtz,0.000937,23
+Unbekannt,dozenn,0.000937,24
+Unbekannt,durchsetzungsvermög,0.000691,25
+Unbekannt,pick,0.000691,26
+Unbekannt,energierohstoffen,0.000691,27
+Unbekannt,wahlerfolg,0.000691,28
+Unbekannt,rechtsverfahren,0.000691,29
+Unbekannt,mitgetragen,0.000691,30
+Unbekannt,wissensstand,0.000691,31
+Unbekannt,quereinsteig,0.000691,32
+Unbekannt,elektriker,0.000691,33
+Unbekannt,academic,0.000691,34
+Unbekannt,weltsichen,0.000691,35
+Unbekannt,vorlesungen,0.000691,36
+Unbekannt,denunzi,0.000691,37
+Unbekannt,gesamtkonzeption,0.000691,38
+Unbekannt,lebhafen,0.000501,39
+Unbekannt,aufopferungsvoll,0.000501,40
+Unbekannt,pflegebonusgesetz,0.000501,41
+Unbekannt,weitertragen,0.000501,42
+Unbekannt,surfen,0.000501,43
+Unbekannt,einzelfrag,0.000501,44
+Unbekannt,hinwegsetz,0.000501,45
+Unbekannt,grundgesetzkonform,0.000501,46
+Unbekannt,parkbank,0.000501,47
+Unbekannt,transportgewerb,0.000501,48
+Unbekannt,schulabbrecherquote,0.000501,49
+Unbekannt,kompetenter,0.000501,50
+Unbekannt,roden,0.000501,51
+Unbekannt,giessen,0.000501,52
+Unbekannt,verfassungsrang,0.000501,53
+Unbekannt,umfassendst,0.000501,54
+Unbekannt,artikuli,0.000501,55
+Unbekannt,krankenhausschließung,0.000501,56
+Unbekannt,vorschaltgesetz,0.000501,57
+Unbekannt,debattenbeiträgen,0.000501,58
+Unbekannt,gemeinwesens,0.000428,59
+Unbekannt,bildungspolitische,0.000346,60
+Unbekannt,ungeduld,0.000346,61
+Unbekannt,finanzzusage,0.000346,62
+Unbekannt,destruktiven,0.000346,63
+Unbekannt,herausfordernd,0.000346,64
+Unbekannt,inkaufnahme,0.000346,65
+Unbekannt,aufgehetzen,0.000346,66
+Unbekannt,coronaleugner,0.000346,67
+Unbekannt,wärm,0.000346,68
+Unbekannt,verborgen,0.000346,69
+Unbekannt,buchstabe,0.000346,70
+Unbekannt,fortbesteh,0.000346,71
+Unbekannt,auftragsbüch,0.000346,72
+Unbekannt,arbeitsmigration,0.000346,73
+Unbekannt,heidelberg,0.000346,74
+Unbekannt,solarmodul,0.000346,75
+Unbekannt,instagram,0.000346,76
+Unbekannt,vätern,0.000346,77
+Unbekannt,vermischung,0.000346,78
+Unbekannt,einzelinteress,0.000346,79
+Unbekannt,pluralistische,0.000346,80
+Unbekannt,ideologe,0.000346,81
+Unbekannt,duktus,0.000346,82
+Unbekannt,richtigstelle,0.000346,83
+Unbekannt,drgs,0.000346,84
+Unbekannt,emmi,0.000346,85
+Unbekannt,zeulner,0.000346,86
+Unbekannt,beruflich,0.000301,87
+Unbekannt,begrüßung,0.000214,88
+Unbekannt,bildungspolitisch,0.000214,89
+Unbekannt,plenarwoch,0.000214,90
+Unbekannt,volkspartei,0.000214,91
+Unbekannt,opportunistisch,0.000214,92
+Unbekannt,tariflöhnen,0.000214,93
+Unbekannt,schaufensterantrag,0.000214,94
+Unbekannt,drüben,0.000214,95
+Unbekannt,wechstumsprognosen,0.000214,96
+Unbekannt,geschäftsklimaindex,0.000214,97
+Unbekannt,durchgelesen,0.000214,98
+Unbekannt,zündeln,0.000214,99
+Unbekannt,originären,0.000214,100
+fraktionslos,nachfrage,0.000726,1
+fraktionslos,europäisch,0.000349,2
+fraktionslos,million,0.000237,3
+fraktionslos,sicherheit,0.000229,4
+fraktionslos,europa,0.000228,5
+fraktionslos,prozent,0.000223,6
+fraktionslos,fragestell,0.000221,7
+fraktionslos,stellen,0.000216,8
+fraktionslos,national,0.000215,9
+fraktionslos,gespräch,0.000199,10
+fraktionslos,partner,0.000199,11
+fraktionslos,international,0.000196,12
+fraktionslos,ding,0.000186,13
+fraktionslos,unterstützung,0.000175,14
+fraktionslos,woche,0.000171,15
+fraktionslos,unternehmen,0.00017,16
+fraktionslos,region,0.000161,17
+fraktionslos,setzen,0.000153,18
+fraktionslos,entsprechend,0.000151,19
+fraktionslos,intensiv,0.000146,20
+fraktionslos,davon,0.000145,21
+fraktionslos,insbesondere,0.000144,22
+fraktionslos,bürger,0.000143,23
+fraktionslos,zweiter,0.000141,24
+fraktionslos,russisch,0.000139,25
+fraktionslos,fragestellerin,0.000137,26
+fraktionslos,möglichkeit,0.000135,27
+fraktionslos,konkret,0.000134,28
+fraktionslos,drei,0.000132,29
+fraktionslos,demokratie,0.000131,30
+fraktionslos,beratung,0.00013,31
+fraktionslos,insofern,0.000128,32
+fraktionslos,daran,0.000128,33
+fraktionslos,übrigens,0.000127,34
+fraktionslos,besonders,0.000126,35
+fraktionslos,staat,0.000126,36
+fraktionslos,situation,0.000125,37
+fraktionslos,ziel,0.000124,38
+fraktionslos,indem,0.000122,39
+fraktionslos,neuen,0.000121,40
+fraktionslos,seite,0.00012,41
+fraktionslos,monat,0.00012,42
+fraktionslos,haus,0.000118,43
+fraktionslos,verantwortung,0.000117,44
+fraktionslos,darum,0.000114,45
+fraktionslos,stell,0.000113,46
+fraktionslos,beitrag,0.000112,47
+fraktionslos,bundeswehr,0.000112,48
+fraktionslos,öffentlich,0.000112,49
+fraktionslos,schutz,0.000111,50
+fraktionslos,förderung,0.000108,51
+fraktionslos,russland,0.000108,52
+fraktionslos,fall,0.000106,53
+fraktionslos,beide,0.000106,54
+fraktionslos,schritt,0.000101,55
+fraktionslos,bringen,0.0001,56
+fraktionslos,klein,9.9e-05,57
+fraktionslos,insgesamt,9.8e-05,58
+fraktionslos,kurz,9.8e-05,59
+fraktionslos,nutzen,9.7e-05,60
+fraktionslos,legislaturperiode,9.7e-05,61
+fraktionslos,gesetzentwurf,9.5e-05,62
+fraktionslos,unterstütz,9.4e-05,63
+fraktionslos,soldat,9.3e-05,64
+fraktionslos,rahmen,9.2e-05,65
+fraktionslos,soldatin,9.2e-05,66
+fraktionslos,antwort,9.1e-05,67
+fraktionslos,angebot,9.1e-05,68
+fraktionslos,digital,9.1e-05,69
+fraktionslos,politik,9e-05,70
+fraktionslos,lang,8.9e-05,71
+fraktionslos,energie,8.9e-05,72
+fraktionslos,zunächst,8.8e-05,73
+fraktionslos,bündnis,8.7e-05,74
+fraktionslos,januar,8.6e-05,75
+fraktionslos,wert,8.6e-05,76
+fraktionslos,infrastruktur,8.6e-05,77
+fraktionslos,häufig,8.6e-05,78
+fraktionslos,ausbau,8.4e-05,79
+fraktionslos,opfer,8.4e-05,80
+fraktionslos,entwicklung,8.3e-05,81
+fraktionslos,zusammen,8.2e-05,82
+fraktionslos,verfügung,8.2e-05,83
+fraktionslos,künftig,8.2e-05,84
+fraktionslos,sodass,8.1e-05,85
+fraktionslos,unterschiedlich,8.1e-05,86
+fraktionslos,freiheit,8.1e-05,87
+fraktionslos,guten,8.1e-05,88
+fraktionslos,technisch,8e-05,89
+fraktionslos,nation,7.9e-05,90
+fraktionslos,erneuerbar,7.9e-05,91
+fraktionslos,ausdrücklich,7.8e-05,92
+fraktionslos,austausch,7.8e-05,93
+fraktionslos,reform,7.7e-05,94
+fraktionslos,niemand,7.7e-05,95
+fraktionslos,zusammenhalt,7.7e-05,96
+fraktionslos,einsatz,7.7e-05,97
+fraktionslos,anders,7.6e-05,98
+fraktionslos,verfahren,7.3e-05,99
+fraktionslos,derzeit,7.3e-05,100
