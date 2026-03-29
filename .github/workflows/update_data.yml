@@ -27,7 +27,7 @@ jobs:
         run: uv run python -m src.fetch.abgeordnetenwatch
 
       - name: Train model
-        if: steps.fetch.outputs.changed == 'true'
+        if: steps.fetch.outputs.model_inputs_changed == 'true'
         run: uv run python -m src.model.train
 
       - name: Export JSON for frontend

@@ -60,6 +60,13 @@ def get_session() -> requests.Session:
 SESSION = get_session()
 
 
+def _read_bytes_or_none(path: Path) -> bytes | None:
+    """Return file bytes if path exists, else None."""
+    if not path.exists():
+        return None
+    return path.read_bytes()
+
+
 def fetch_all_v2(endpoint: str, params: dict | None = None) -> list:
     """Fetch all pages from a paginated API endpoint."""
     params = dict(params or {})  # copy to avoid mutating the caller's dict
@@ -658,21 +665,46 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> None:
     configure_logging()
     args = parse_args(argv)
+    periods_path = DATA_DIR / "periods.csv"
+    periods_before = _read_bytes_or_none(periods_path)
     wahlperiode = args.wahlperiode or upsert_periods()
+    periods_changed = _read_bytes_or_none(periods_path) != periods_before
 
-    (DATA_DIR / str(wahlperiode)).mkdir(parents=True, exist_ok=True)
+    period_dir = DATA_DIR / str(wahlperiode)
+    period_dir.mkdir(parents=True, exist_ok=True)
 
+    polls_path = period_dir / "polls.csv"
+    polls_before = _read_bytes_or_none(polls_path)
     df_polls, _ = upsert_polls(wahlperiode)
-    _, mandate_to_politician = upsert_politicians(wahlperiode)
-    upsert_sidejobs(wahlperiode, mandate_to_politician)
-    upsert_committees(wahlperiode, mandate_to_politician)
+    polls_changed = _read_bytes_or_none(polls_path) != polls_before
 
-    votes_path = DATA_DIR / str(wahlperiode) / "votes.csv"
+    politicians_path = period_dir / "politicians.csv"
+    politicians_before = _read_bytes_or_none(politicians_path)
+    mandates_path = period_dir / "mandates.csv"
+    mandates_before = _read_bytes_or_none(mandates_path)
+    _, mandate_to_politician = upsert_politicians(wahlperiode)
+    politicians_changed = _read_bytes_or_none(politicians_path) != politicians_before
+    mandates_changed = _read_bytes_or_none(mandates_path) != mandates_before
+
+    sidejobs_path = period_dir / "sidejobs.csv"
+    sidejobs_before = _read_bytes_or_none(sidejobs_path)
+    upsert_sidejobs(wahlperiode, mandate_to_politician)
+    sidejobs_changed = _read_bytes_or_none(sidejobs_path) != sidejobs_before
+
+    committees_path = period_dir / "committees.csv"
+    committees_before = _read_bytes_or_none(committees_path)
+    memberships_path = period_dir / "committee_memberships.csv"
+    memberships_before = _read_bytes_or_none(memberships_path)
+    upsert_committees(wahlperiode, mandate_to_politician)
+    committees_changed = _read_bytes_or_none(committees_path) != committees_before
+    memberships_changed = (
+        _read_bytes_or_none(memberships_path) != memberships_before
+    )
+
+    votes_path = period_dir / "votes.csv"
+    votes_before = _read_bytes_or_none(votes_path)
     missing = find_polls_missing_votes(df_polls["poll_id"].tolist(), votes_path)
-    if not missing:
-        log.info("All votes up to date, nothing to fetch.")
-        write_github_output(changed=False, wahlperiode=wahlperiode)
-    else:
+    if missing:
         log.info("%d poll(s) need vote fetching.", len(missing))
         fetch_votes(
             missing,
@@ -680,11 +712,31 @@ def main(argv: list[str] | None = None) -> None:
             votes_path,
             append=votes_path.exists(),
         )
-        write_github_output(
-            changed=True,
-            fetched_polls=len(missing),
-            wahlperiode=wahlperiode,
+    else:
+        log.info("All votes up to date, nothing to fetch.")
+    votes_changed = _read_bytes_or_none(votes_path) != votes_before
+
+    model_inputs_changed = polls_changed or politicians_changed or votes_changed
+    data_changed = any(
+        (
+            periods_changed,
+            polls_changed,
+            politicians_changed,
+            mandates_changed,
+            sidejobs_changed,
+            committees_changed,
+            memberships_changed,
+            votes_changed,
         )
+    )
+
+    write_github_output(
+        changed=data_changed,
+        model_inputs_changed=model_inputs_changed,
+        votes_changed=votes_changed,
+        fetched_polls=len(missing),
+        wahlperiode=wahlperiode,
+    )
 
     log.info("Done! Data saved to %s", DATA_DIR / str(wahlperiode))
 

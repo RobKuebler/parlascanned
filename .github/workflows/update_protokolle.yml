@@ -26,6 +26,7 @@ jobs:
         run: uv run python -m spacy download de_core_news_sm
 
       - name: Fetch new Plenarprotokolle
+        id: fetch_protocols
         run: uv run python -m src.fetch.protokolle
 
       # Cache key includes the CSV of known protocol IDs — changes when new
@@ -45,19 +46,19 @@ jobs:
         run: uv run python -m src.fetch.protokoll_xml
 
       - name: Parse speeches from XMLs
-        if: steps.fetch_xml.outputs.changed == 'true'
+        if: steps.fetch_protocols.outputs.changed == 'true' || steps.fetch_xml.outputs.changed == 'true'
         run: uv run python -m src.parse.protokolle
 
       - name: Compute TF-IDF word stats
-        if: steps.fetch_xml.outputs.changed == 'true'
+        if: steps.fetch_protocols.outputs.changed == 'true' || steps.fetch_xml.outputs.changed == 'true'
         run: uv run python -m src.analysis.word_stats
 
       - name: Export JSON for frontend
-        if: steps.fetch_xml.outputs.changed == 'true'
+        if: steps.fetch_protocols.outputs.changed == 'true' || steps.fetch_xml.outputs.changed == 'true'
         run: uv run python -m src.export
 
       - name: Commit and push
-        if: steps.fetch_xml.outputs.changed == 'true'
+        if: steps.fetch_protocols.outputs.changed == 'true' || steps.fetch_xml.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
