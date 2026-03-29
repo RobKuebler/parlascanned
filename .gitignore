@@ -29,6 +29,19 @@ Thumbs.db
 # Claude Code local settings
 .claude/
 
+# Next.js build output
+.next/
+
+# Playwright
+.playwright-cli/
+frontend/.playwright-cli/
+playwright-report/
+test-results/
+
+# Coverage
+.coverage
+htmlcov/
+
 checkpoints/
 
 # data CSVs are committed and updated by the fetch_data CI job
