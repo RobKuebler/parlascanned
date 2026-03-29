@@ -1,0 +1,51 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - paragraph [ref=e6]: KI-Analyse
+        - heading "Abstimmungslandkarte" [level=1] [ref=e7]
+        - paragraph [ref=e8]: Ein KI-Modell hat das Abstimmungsverhalten aller Abgeordneten in einen zweidimensionalen Raum eingebettet. Abgeordnete, die häufig gleich abstimmen, landen nah beieinander — unabhängig von Fraktionsgrenzen.
+      - generic [ref=e9]:
+        - heading "Abstimmungslandkarte" [level=2] [ref=e10]
+        - paragraph [ref=e11]: Klicken Sie auf einzelne Punkte oder ziehen Sie eine Auswahl, um das Abstimmungsverhalten der betreffenden Abgeordneten im Detail zu analysieren. Fraktionsnamen im Diagramm sind ebenfalls anklickbar.
+        - status "Wird geladen…" [ref=e12]
+      - generic [ref=e13]:
+        - heading "Abstimmungsverhalten" [level=2] [ref=e14]
+        - paragraph [ref=e15]: Die Heatmap zeigt, wie die ausgewählten Abgeordneten bei einzelnen Abstimmungen votiert haben. Wählen Sie zunächst Abgeordnete aus der Karte oder über die Suche aus.
+        - paragraph [ref=e16]: Abgeordnete auswählen, um ihre Abstimmungen zu sehen
+      - generic [ref=e17]:
+        - heading "Fraktionsdisziplin" [level=2] [ref=e18]
+        - paragraph [ref=e19]: Die Fraktionsdisziplin ist der mittlere euklidische Abstand jedes Abgeordneten zum Schwerpunkt seiner Fraktion in der Abstimmungskarte. Ein kurzer Balken bedeutet, dass die Mitglieder sehr geschlossen abstimmen; ein langer Balken zeigt größere interne Meinungsverschiedenheiten.
+        - status "Wird geladen…" [ref=e20]
+      - generic [ref=e21]:
+        - text: von
+        - link "Robert Kübler" [ref=e22] [cursor=pointer]:
+          - /url: https://robkuebler.github.io
+        - text: "| Code auf"
+        - link "GitHub" [ref=e23] [cursor=pointer]:
+          - /url: https://github.com/RobKuebler/politician_embeddings
+        - text: "| Daten von"
+        - link "abgeordnetenwatch.de" [ref=e24] [cursor=pointer]:
+          - /url: https://www.abgeordnetenwatch.de
+  - banner [ref=e25]:
+    - img [ref=e27]
+  - navigation [ref=e33]:
+    - generic [ref=e34]:
+      - link "Start" [ref=e35] [cursor=pointer]:
+        - /url: /
+        - img [ref=e38]
+        - generic [ref=e41]: Start
+      - link "Abstimmungen" [ref=e42] [cursor=pointer]:
+        - /url: /vote-map/
+        - img [ref=e45]
+        - generic [ref=e48]: Abstimmungen
+      - link "Parteiprofil" [ref=e49] [cursor=pointer]:
+        - /url: /party-profile/
+        - img [ref=e52]
+        - generic [ref=e57]: Parteiprofil
+      - link "Nebeneinkünfte" [ref=e58] [cursor=pointer]:
+        - /url: /sidejobs/
+        - img [ref=e61]
+        - generic [ref=e64]: Nebeneinkünfte
+  - button "Open Next.js Dev Tools" [ref=e70] [cursor=pointer]:
+    - img [ref=e71]

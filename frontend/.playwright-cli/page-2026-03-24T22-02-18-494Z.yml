@@ -1,0 +1,75 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - img [ref=e6]
+      - navigation [ref=e13]:
+        - link "Start" [ref=e14] [cursor=pointer]:
+          - /url: /
+          - img [ref=e16]
+          - generic [ref=e19]: Start
+        - link "Abstimmungen" [ref=e20] [cursor=pointer]:
+          - /url: /vote-map/
+          - img [ref=e22]
+          - generic [ref=e25]: Abstimmungen
+        - link "Parteiprofil" [ref=e26] [cursor=pointer]:
+          - /url: /party-profile/
+          - img [ref=e28]
+          - generic [ref=e33]: Parteiprofil
+        - link "Nebeneinkünfte" [ref=e34] [cursor=pointer]:
+          - /url: /sidejobs/
+          - img [ref=e36]
+          - generic [ref=e39]: Nebeneinkünfte
+    - main [ref=e40]:
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - paragraph [ref=e43]: Bundestag · KI-Analyse
+          - heading "Parlascanned" [level=1] [ref=e44]
+          - paragraph [ref=e45]: Parlascanned macht die Arbeit des Deutschen Bundestags transparent. Wie ähnlich stimmen Abgeordnete ab? Wie unterscheiden sich die Fraktionen demografisch? Und wer verdient neben dem Mandat?
+        - generic [ref=e46]:
+          - generic [ref=e50]: Abgeordnete
+          - generic [ref=e54]: Fraktionen
+          - generic [ref=e58]: Abstimmungen
+          - generic [ref=e62]: Nebentätigkeiten
+        - generic [ref=e63]:
+          - link "KI-Analyse Abstimmungslandkarte Ein KI-Modell hat das Abstimmungsverhalten aller Abgeordneten in einen zweidimensionalen Raum übersetzt. Je näher zwei Punkte beieinanderliegen, desto ähnlicher haben die Abgeordneten historisch abgestimmt — unabhängig von Fraktionsgrenzen. Öffnen" [ref=e64] [cursor=pointer]:
+            - /url: /vote-map/
+            - generic [ref=e65]:
+              - img [ref=e67]
+              - generic [ref=e70]: KI-Analyse
+            - heading "Abstimmungslandkarte" [level=2] [ref=e71]
+            - paragraph [ref=e72]: Ein KI-Modell hat das Abstimmungsverhalten aller Abgeordneten in einen zweidimensionalen Raum übersetzt. Je näher zwei Punkte beieinanderliegen, desto ähnlicher haben die Abgeordneten historisch abgestimmt — unabhängig von Fraktionsgrenzen.
+            - generic [ref=e73]:
+              - text: Öffnen
+              - img [ref=e74]
+          - link "Demografie Parteiprofil Wie alt ist der Bundestag, wie divers sind die Fraktionen, und welche Berufsbilder prägen das Parlament? Demografische Kennzahlen aller Fraktionen im direkten Vergleich. Öffnen" [ref=e76] [cursor=pointer]:
+            - /url: /party-profile/
+            - generic [ref=e77]:
+              - img [ref=e79]
+              - generic [ref=e84]: Demografie
+            - heading "Parteiprofil" [level=2] [ref=e85]
+            - paragraph [ref=e86]: Wie alt ist der Bundestag, wie divers sind die Fraktionen, und welche Berufsbilder prägen das Parlament? Demografische Kennzahlen aller Fraktionen im direkten Vergleich.
+            - generic [ref=e87]:
+              - text: Öffnen
+              - img [ref=e88]
+          - link "Transparenz Nebeneinkünfte Abgeordnete sind gesetzlich verpflichtet, Nebentätigkeiten ab einem bestimmten Einkommen zu melden. Diese Analyse zeigt, welche Parteien, Branchen und Themenfelder dabei dominieren. Öffnen" [ref=e90] [cursor=pointer]:
+            - /url: /sidejobs/
+            - generic [ref=e91]:
+              - img [ref=e93]
+              - generic [ref=e96]: Transparenz
+            - heading "Nebeneinkünfte" [level=2] [ref=e97]
+            - paragraph [ref=e98]: Abgeordnete sind gesetzlich verpflichtet, Nebentätigkeiten ab einem bestimmten Einkommen zu melden. Diese Analyse zeigt, welche Parteien, Branchen und Themenfelder dabei dominieren.
+            - generic [ref=e99]:
+              - text: Öffnen
+              - img [ref=e100]
+        - generic [ref=e102]:
+          - text: von
+          - link "Robert Kübler" [ref=e103] [cursor=pointer]:
+            - /url: https://robkuebler.github.io
+          - text: "| Code auf"
+          - link "GitHub" [ref=e104] [cursor=pointer]:
+            - /url: https://github.com/RobKuebler/politician_embeddings
+          - text: "| Daten von"
+          - link "abgeordnetenwatch.de" [ref=e105] [cursor=pointer]:
+            - /url: https://www.abgeordnetenwatch.de
+  - button "Open Next.js Dev Tools" [ref=e111] [cursor=pointer]:
+    - img [ref=e112]

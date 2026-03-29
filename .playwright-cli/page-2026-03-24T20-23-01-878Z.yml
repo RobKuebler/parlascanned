@@ -1,0 +1,59 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - paragraph [ref=e6]: KI-Analyse
+        - heading "Abstimmungslandkarte" [level=1] [ref=e7]
+        - paragraph [ref=e8]: KI-generierte Karte aller Abgeordneten. Nähe = ähnliches Abstimmungsverhalten.
+      - generic [ref=e9]:
+        - heading "Abstimmungslandkarte" [level=2] [ref=e10]
+        - status "Wird geladen…" [ref=e11]
+      - generic [ref=e12]:
+        - heading "Abstimmungsverhalten" [level=2] [ref=e13]
+        - paragraph [ref=e14]: Abgeordnete auswählen, um ihre Abstimmungen zu sehen
+      - generic [ref=e15]:
+        - heading "Fraktionsdisziplin" [level=2] [ref=e16]
+        - paragraph [ref=e17]: Kurzer Balken = hohe Disziplin (Abgeordnete stimmen eng mit ihrer Fraktion).
+        - status "Wird geladen…" [ref=e18]
+      - generic [ref=e19]:
+        - text: von
+        - link "Robert Kübler" [ref=e20] [cursor=pointer]:
+          - /url: https://robkuebler.github.io
+        - text: "| Code auf"
+        - link "GitHub" [ref=e21] [cursor=pointer]:
+          - /url: https://github.com/RobKuebler/politician_embeddings
+        - text: "| Daten von"
+        - link "abgeordnetenwatch.de" [ref=e22] [cursor=pointer]:
+          - /url: https://www.abgeordnetenwatch.de
+  - banner [ref=e23]:
+    - img [ref=e25]
+  - navigation [ref=e31]:
+    - generic [ref=e32]:
+      - link "Start" [ref=e33] [cursor=pointer]:
+        - /url: /
+        - img [ref=e36]
+        - generic [ref=e39]: Start
+      - link "Abstimmungen" [ref=e40] [cursor=pointer]:
+        - /url: /vote-map/
+        - img [ref=e43]
+        - generic [ref=e46]: Abstimmungen
+      - link "Parteiprofil" [ref=e47] [cursor=pointer]:
+        - /url: /party-profile/
+        - img [ref=e50]
+        - generic [ref=e55]: Parteiprofil
+      - link "Nebeneinkünfte" [ref=e56] [cursor=pointer]:
+        - /url: /sidejobs/
+        - img [ref=e59]
+        - generic [ref=e62]: Nebeneinkünfte
+  - generic [ref=e67] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e68]:
+      - img [ref=e69]
+    - generic [ref=e72]:
+      - button "Open issues overlay" [ref=e73]:
+        - generic [ref=e74]:
+          - generic [ref=e75]: "0"
+          - generic [ref=e76]: "1"
+        - generic [ref=e77]: Issue
+      - button "Collapse issues badge" [ref=e78]:
+        - img [ref=e79]
+  - alert [ref=e81]

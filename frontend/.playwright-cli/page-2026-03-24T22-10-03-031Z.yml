@@ -1,0 +1,75 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - paragraph [ref=e6]: Bundestag · KI-Analyse
+        - heading "Parlascanned" [level=1] [ref=e7]
+        - paragraph [ref=e8]: Parlascanned macht die Arbeit des Deutschen Bundestags transparent. Wie ähnlich stimmen Abgeordnete ab? Wie unterscheiden sich die Fraktionen demografisch? Und wer verdient neben dem Mandat?
+      - generic [ref=e9]:
+        - generic [ref=e13]: Abgeordnete
+        - generic [ref=e17]: Fraktionen
+        - generic [ref=e21]: Abstimmungen
+        - generic [ref=e25]: Nebentätigkeiten
+      - generic [ref=e26]:
+        - link "KI-Analyse Abstimmungslandkarte Ein KI-Modell hat das Abstimmungsverhalten aller Abgeordneten in einen zweidimensionalen Raum übersetzt. Je näher zwei Punkte beieinanderliegen, desto ähnlicher haben die Abgeordneten historisch abgestimmt — unabhängig von Fraktionsgrenzen. Öffnen" [ref=e27] [cursor=pointer]:
+          - /url: /vote-map/
+          - generic [ref=e28]:
+            - img [ref=e30]
+            - generic [ref=e33]: KI-Analyse
+          - heading "Abstimmungslandkarte" [level=2] [ref=e34]
+          - paragraph [ref=e35]: Ein KI-Modell hat das Abstimmungsverhalten aller Abgeordneten in einen zweidimensionalen Raum übersetzt. Je näher zwei Punkte beieinanderliegen, desto ähnlicher haben die Abgeordneten historisch abgestimmt — unabhängig von Fraktionsgrenzen.
+          - generic [ref=e36]:
+            - text: Öffnen
+            - img [ref=e37]
+        - link "Demografie Parteiprofil Wie alt ist der Bundestag, wie divers sind die Fraktionen, und welche Berufsbilder prägen das Parlament? Demografische Kennzahlen aller Fraktionen im direkten Vergleich. Öffnen" [ref=e39] [cursor=pointer]:
+          - /url: /party-profile/
+          - generic [ref=e40]:
+            - img [ref=e42]
+            - generic [ref=e47]: Demografie
+          - heading "Parteiprofil" [level=2] [ref=e48]
+          - paragraph [ref=e49]: Wie alt ist der Bundestag, wie divers sind die Fraktionen, und welche Berufsbilder prägen das Parlament? Demografische Kennzahlen aller Fraktionen im direkten Vergleich.
+          - generic [ref=e50]:
+            - text: Öffnen
+            - img [ref=e51]
+        - link "Transparenz Nebeneinkünfte Abgeordnete sind gesetzlich verpflichtet, Nebentätigkeiten ab einem bestimmten Einkommen zu melden. Diese Analyse zeigt, welche Parteien, Branchen und Themenfelder dabei dominieren. Öffnen" [ref=e53] [cursor=pointer]:
+          - /url: /sidejobs/
+          - generic [ref=e54]:
+            - img [ref=e56]
+            - generic [ref=e59]: Transparenz
+          - heading "Nebeneinkünfte" [level=2] [ref=e60]
+          - paragraph [ref=e61]: Abgeordnete sind gesetzlich verpflichtet, Nebentätigkeiten ab einem bestimmten Einkommen zu melden. Diese Analyse zeigt, welche Parteien, Branchen und Themenfelder dabei dominieren.
+          - generic [ref=e62]:
+            - text: Öffnen
+            - img [ref=e63]
+      - generic [ref=e65]:
+        - text: von
+        - link "Robert Kübler" [ref=e66] [cursor=pointer]:
+          - /url: https://robkuebler.github.io
+        - text: "| Code auf"
+        - link "GitHub" [ref=e67] [cursor=pointer]:
+          - /url: https://github.com/RobKuebler/politician_embeddings
+        - text: "| Daten von"
+        - link "abgeordnetenwatch.de" [ref=e68] [cursor=pointer]:
+          - /url: https://www.abgeordnetenwatch.de
+  - banner [ref=e69]:
+    - img [ref=e71]
+  - navigation [ref=e77]:
+    - generic [ref=e78]:
+      - link "Start" [ref=e79] [cursor=pointer]:
+        - /url: /
+        - img [ref=e82]
+        - generic [ref=e85]: Start
+      - link "Abstimmungen" [ref=e86] [cursor=pointer]:
+        - /url: /vote-map/
+        - img [ref=e89]
+        - generic [ref=e92]: Abstimmungen
+      - link "Parteiprofil" [ref=e93] [cursor=pointer]:
+        - /url: /party-profile/
+        - img [ref=e96]
+        - generic [ref=e101]: Parteiprofil
+      - link "Nebeneinkünfte" [ref=e102] [cursor=pointer]:
+        - /url: /sidejobs/
+        - img [ref=e105]
+        - generic [ref=e108]: Nebeneinkünfte
+  - button "Open Next.js Dev Tools" [ref=e114] [cursor=pointer]:
+    - img [ref=e115]

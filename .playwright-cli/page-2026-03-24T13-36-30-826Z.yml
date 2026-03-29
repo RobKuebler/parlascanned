@@ -1,0 +1,49 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - img [ref=e6]
+      - navigation [ref=e13]:
+        - link "Start" [ref=e14] [cursor=pointer]:
+          - /url: /
+          - img [ref=e16]
+          - generic [ref=e19]: Start
+        - link "Abstimmungen" [ref=e20] [cursor=pointer]:
+          - /url: /vote-map/
+          - img [ref=e22]
+          - generic [ref=e25]: Abstimmungen
+        - link "Parteiprofil" [ref=e26] [cursor=pointer]:
+          - /url: /party-profile/
+          - img [ref=e28]
+          - generic [ref=e33]: Parteiprofil
+        - link "Nebeneinkünfte" [ref=e34] [cursor=pointer]:
+          - /url: /sidejobs/
+          - img [ref=e36]
+          - generic [ref=e39]: Nebeneinkünfte
+    - main [ref=e40]:
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - paragraph [ref=e43]: KI-Analyse
+          - heading "Abstimmungslandkarte" [level=1] [ref=e44]
+          - paragraph [ref=e45]: KI-generierte Karte aller Abgeordneten. Nähe = ähnliches Abstimmungsverhalten.
+        - generic [ref=e46]:
+          - heading "Abstimmungslandkarte" [level=2] [ref=e47]
+          - status "Wird geladen…" [ref=e48]
+        - generic [ref=e49]:
+          - heading "Abstimmungsverhalten" [level=2] [ref=e50]
+          - paragraph [ref=e51]: Abgeordnete auswählen, um ihre Abstimmungen zu sehen
+        - generic [ref=e52]:
+          - heading "Fraktionsdisziplin" [level=2] [ref=e53]
+          - paragraph [ref=e54]: Kurzer Balken = hohe Disziplin (Abgeordnete stimmen eng mit ihrer Fraktion).
+          - status "Wird geladen…" [ref=e55]
+        - generic [ref=e56]:
+          - text: von
+          - link "Robert Kübler" [ref=e57] [cursor=pointer]:
+            - /url: https://robkuebler.github.io
+          - text: "| Code auf"
+          - link "GitHub" [ref=e58] [cursor=pointer]:
+            - /url: https://github.com/RobKuebler/politician_embeddings
+          - text: "| Daten von"
+          - link "abgeordnetenwatch.de" [ref=e59] [cursor=pointer]:
+            - /url: https://www.abgeordnetenwatch.de
+  - button "Open Next.js Dev Tools" [ref=e65] [cursor=pointer]:
+    - img [ref=e66]

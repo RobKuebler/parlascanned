@@ -1,0 +1,44 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - img [ref=e6]
+      - navigation [ref=e13]:
+        - link "Start" [ref=e14] [cursor=pointer]:
+          - /url: /
+          - img [ref=e16]
+          - generic [ref=e19]: Start
+        - link "Abstimmungen" [ref=e20] [cursor=pointer]:
+          - /url: /vote-map/
+          - img [ref=e22]
+          - generic [ref=e25]: Abstimmungen
+        - link "Parteiprofil" [ref=e26] [cursor=pointer]:
+          - /url: /party-profile/
+          - img [ref=e28]
+          - generic [ref=e33]: Parteiprofil
+        - link "Nebeneinkünfte" [ref=e34] [cursor=pointer]:
+          - /url: /sidejobs/
+          - img [ref=e36]
+          - generic [ref=e39]: Nebeneinkünfte
+    - main [ref=e40]:
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - paragraph [ref=e43]: Demografie
+          - heading "Parteiprofil" [level=1] [ref=e44]
+          - paragraph [ref=e45]: Demografische Zusammensetzung der Fraktionen im Vergleich.
+        - generic [ref=e46]:
+          - status "Wird geladen…" [ref=e47]
+          - status "Wird geladen…" [ref=e48]
+          - status "Wird geladen…" [ref=e49]
+        - generic [ref=e50]:
+          - text: von
+          - link "Robert Kübler" [ref=e51] [cursor=pointer]:
+            - /url: https://robkuebler.github.io
+          - text: "| Code auf"
+          - link "GitHub" [ref=e52] [cursor=pointer]:
+            - /url: https://github.com/RobKuebler/politician_embeddings
+          - text: "| Daten von"
+          - link "abgeordnetenwatch.de" [ref=e53] [cursor=pointer]:
+            - /url: https://www.abgeordnetenwatch.de
+  - button "Open Next.js Dev Tools" [ref=e59] [cursor=pointer]:
+    - img [ref=e60]
+  - alert [ref=e63]

@@ -1,0 +1,93 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - paragraph [ref=e6]: KI-Analyse
+        - heading "Abstimmungslandkarte" [level=1] [ref=e7]
+        - paragraph [ref=e8]: Ein KI-Modell hat das Abstimmungsverhalten aller Abgeordneten in einen zweidimensionalen Raum eingebettet. Abgeordnete, die häufig gleich abstimmen, landen nah beieinander — unabhängig von Fraktionsgrenzen.
+      - generic [ref=e9]:
+        - heading "Abstimmungslandkarte" [level=2] [ref=e10]
+        - paragraph [ref=e11]: Klicken Sie auf einzelne Punkte oder ziehen Sie eine Auswahl, um das Abstimmungsverhalten der betreffenden Abgeordneten im Detail zu analysieren. Fraktionsnamen im Diagramm sind ebenfalls anklickbar.
+        - generic [ref=e84]:
+          - generic [ref=e86]:
+            - button "Pan" [ref=e87] [cursor=pointer]:
+              - img [ref=e88]
+              - text: Pan
+            - button "Rechteck" [ref=e90] [cursor=pointer]:
+              - img [ref=e91]
+              - text: Rechteck
+            - button "Lasso" [ref=e93] [cursor=pointer]:
+              - img [ref=e94]
+              - text: Lasso
+          - img [ref=e97]:
+            - generic [ref=e747]:
+              - generic: BÜNDNIS 90/DIE GRÜNEN
+              - generic: Die Linke
+              - generic: CDU/CSU
+              - generic: SPD
+              - generic: AfD
+              - generic: fraktionslos
+      - generic [ref=e13]:
+        - heading "Abstimmungsverhalten" [level=2] [ref=e14]
+        - paragraph [ref=e15]: Die Heatmap zeigt, wie die ausgewählten Abgeordneten bei einzelnen Abstimmungen votiert haben. Wählen Sie zunächst Abgeordnete aus der Karte oder über die Suche aus.
+        - generic [ref=e751]:
+          - img
+          - textbox "Politiker suchen…" [ref=e752]
+        - paragraph [ref=e16]: Abgeordnete auswählen, um ihre Abstimmungen zu sehen
+      - generic [ref=e17]:
+        - heading "Fraktionsdisziplin" [level=2] [ref=e18]
+        - paragraph [ref=e19]: Die Fraktionsdisziplin ist der mittlere euklidische Abstand jedes Abgeordneten zum Schwerpunkt seiner Fraktion in der Abstimmungskarte. Ein kurzer Balken bedeutet, dass die Mitglieder sehr geschlossen abstimmen; ein langer Balken zeigt größere interne Meinungsverschiedenheiten.
+        - img [ref=e754]:
+          - generic [ref=e756]:
+            - generic [ref=e758]: Die Linke
+            - generic [ref=e760]: AfD
+            - generic [ref=e762]: BÜNDNIS 90/DIE GRÜNEN
+            - generic [ref=e764]: CDU/CSU
+            - generic [ref=e766]: SPD
+      - generic [ref=e21]:
+        - text: von
+        - link "Robert Kübler" [ref=e22] [cursor=pointer]:
+          - /url: https://robkuebler.github.io
+        - text: "| Code auf"
+        - link "GitHub" [ref=e23] [cursor=pointer]:
+          - /url: https://github.com/RobKuebler/politician_embeddings
+        - text: "| Daten von"
+        - link "abgeordnetenwatch.de" [ref=e24] [cursor=pointer]:
+          - /url: https://www.abgeordnetenwatch.de
+  - banner [ref=e25]:
+    - img [ref=e27]
+    - generic [ref=e773]:
+      - paragraph [ref=e774]: Bundestag
+      - button "Wahlperiode auswählen" [ref=e775]:
+        - generic [ref=e776]: 2025–2029
+        - img [ref=e777]
+  - navigation [ref=e33]:
+    - generic [ref=e34]:
+      - link "Start" [ref=e35] [cursor=pointer]:
+        - /url: /
+        - img [ref=e38]
+        - generic [ref=e41]: Start
+      - link "Abstimmungen" [ref=e42] [cursor=pointer]:
+        - /url: /vote-map/
+        - img [ref=e45]
+        - generic [ref=e48]: Abstimmungen
+      - link "Parteiprofil" [ref=e49] [cursor=pointer]:
+        - /url: /party-profile/
+        - img [ref=e52]
+        - generic [ref=e57]: Parteiprofil
+      - link "Nebeneinkünfte" [ref=e58] [cursor=pointer]:
+        - /url: /sidejobs/
+        - img [ref=e61]
+        - generic [ref=e64]: Nebeneinkünfte
+  - generic [ref=e69] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e70]:
+      - img [ref=e71]
+    - generic [ref=e74]:
+      - button "Open issues overlay" [ref=e75]:
+        - generic [ref=e76]:
+          - generic [ref=e77]: "0"
+          - generic [ref=e78]: "1"
+        - generic [ref=e79]: Issue
+      - button "Collapse issues badge" [ref=e80]:
+        - img [ref=e81]
+  - alert [ref=e83]
