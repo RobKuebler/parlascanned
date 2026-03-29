@@ -37,7 +37,10 @@ export default function SpeechesPage() {
         setSpeechStats(ss);
         setLoading(false);
       })
-      .catch(console.error);
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
   }, [activePeriodId]);
 
   // Normalize word freq keys (strip soft-hyphen)
