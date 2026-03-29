@@ -376,6 +376,8 @@ def main() -> None:
                     "has_data": True,
                 }
             )
+        export_party_word_freq(period_id)
+        export_party_speech_stats(period_id)
 
     _write(OUTPUT_DIR / "periods.json", available)
     log.info("Done. Exported %d periods.", len(available))
