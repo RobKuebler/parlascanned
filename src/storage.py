@@ -1,4 +1,5 @@
 import logging
+from datetime import UTC
 from pathlib import Path
 from typing import Any
 
@@ -9,6 +10,21 @@ log = logging.getLogger(__name__)
 
 DATA_DIR = Path(__file__).parents[1] / "data"
 OUTPUTS_DIR = Path(__file__).parents[1] / "outputs"
+
+
+def current_bundestag_number() -> int:
+    """Return the bundestag_number of the currently active legislature from periods.csv.
+
+    Falls back to the latest known period if today falls outside all known ranges
+    (e.g. a future period whose end_date is not yet set).
+    """
+    from datetime import datetime
+
+    df = pd.read_csv(DATA_DIR / "periods.csv")
+    today = datetime.now(tz=UTC).date().isoformat()
+    active = df[(df["start_date"] <= today) & (df["end_date"] >= today)]
+    row = active.iloc[0] if not active.empty else df.iloc[-1]
+    return int(row["bundestag_number"])
 
 
 def load_data(period_id: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:

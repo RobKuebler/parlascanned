@@ -17,7 +17,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .storage import DATA_DIR
+from .storage import DATA_DIR, current_bundestag_number
 
 log = logging.getLogger(__name__)
 
@@ -232,8 +232,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--wahlperiode",
         type=int,
-        required=True,
-        help="Bundestag Wahlperiode (z.B. 20 oder 21)",
+        default=None,
+        help="Bundestag Wahlperiode (z.B. 20 oder 21); default: aktuelle Periode",
     )
     parser.add_argument(
         "--limit",
@@ -243,21 +243,21 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    # period_id aus periods.csv ermitteln
+    wahlperiode = args.wahlperiode or current_bundestag_number()
     periods_df = pd.read_csv(DATA_DIR / "periods.csv")
-    match = periods_df[periods_df["bundestag_number"] == args.wahlperiode]
+    match = periods_df[periods_df["bundestag_number"] == wahlperiode]
     if match.empty:
-        msg = f"Wahlperiode {args.wahlperiode} nicht in periods.csv gefunden."
+        msg = f"Wahlperiode {wahlperiode} nicht in periods.csv gefunden."
         raise SystemExit(msg)
     period_id = int(match.iloc[0]["period_id"])
     out_dir = DATA_DIR / str(period_id)
 
     log.info(
         "Fetching Plenarprotokolle for Wahlperiode %d (period_id=%d)…",
-        args.wahlperiode,
+        wahlperiode,
         period_id,
     )
-    new_df = fetch_dip_plenarprotokolle(args.wahlperiode, out_dir, limit=args.limit)
+    new_df = fetch_dip_plenarprotokolle(wahlperiode, out_dir, limit=args.limit)
     if new_df.empty:
         log.info("Nichts Neues.")
     else:

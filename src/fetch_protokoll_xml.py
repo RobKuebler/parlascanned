@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .storage import DATA_DIR
+from .storage import DATA_DIR, current_bundestag_number
 
 log = logging.getLogger(__name__)
 
@@ -84,17 +84,18 @@ if __name__ == "__main__":
         datefmt="%H:%M:%S",
     )
     parser = argparse.ArgumentParser(description="Download Plenarprotokoll XMLs")
-    parser.add_argument("--wahlperiode", type=int, required=True)
+    parser.add_argument("--wahlperiode", type=int, default=None)
     args = parser.parse_args()
 
+    wahlperiode = args.wahlperiode or current_bundestag_number()
     periods_df = pd.read_csv(DATA_DIR / "periods.csv")
-    match = periods_df[periods_df["bundestag_number"] == args.wahlperiode]
+    match = periods_df[periods_df["bundestag_number"] == wahlperiode]
     if match.empty:
-        msg = f"Wahlperiode {args.wahlperiode} nicht in periods.csv."
+        msg = f"Wahlperiode {wahlperiode} nicht in periods.csv."
         raise SystemExit(msg)
     period_id = int(match.iloc[0]["period_id"])
     out_dir = DATA_DIR / str(period_id)
 
-    log.info("Wahlperiode %d (period_id=%d)…", args.wahlperiode, period_id)
-    n = fetch_protokoll_xmls(args.wahlperiode, out_dir)
+    log.info("Wahlperiode %d (period_id=%d)…", wahlperiode, period_id)
+    n = fetch_protokoll_xmls(wahlperiode, out_dir)
     log.info("Fertig. %d neue XMLs.", n)

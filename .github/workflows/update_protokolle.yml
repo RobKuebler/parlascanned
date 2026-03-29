@@ -22,53 +22,25 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
-      - name: Determine current Wahlperiode
-        id: current_wp
-        run: |
-          wp=$(uv run python3 -c "
-          import pandas as pd
-          from datetime import date
-          df = pd.read_csv('data/periods.csv')
-          today = str(date.today())
-          row = df[(df['start_date'] <= today) & (df['end_date'] >= today)]
-          if row.empty:
-              row = df.iloc[[-1]]  # fallback: use latest known period
-          print(int(row.iloc[0]['bundestag_number']))
-          ")
-          echo "wahlperiode=$wp" >> "$GITHUB_OUTPUT"
-          echo "Current Wahlperiode: $wp"
-
-      - name: Determine period_id for cache key
-        id: current_period
-        run: |
-          pid=$(uv run python3 -c "
-          import pandas as pd
-          from datetime import date
-          df = pd.read_csv('data/periods.csv')
-          today = str(date.today())
-          row = df[(df['start_date'] <= today) & (df['end_date'] >= today)]
-          if row.empty:
-              row = df.iloc[[-1]]
-          print(int(row.iloc[0]['period_id']))
-          ")
-          echo "period_id=$pid" >> "$GITHUB_OUTPUT"
-
       - name: Fetch new Plenarprotokolle
-        run: uv run python -m src.fetch_protokolle --wahlperiode ${{ steps.current_wp.outputs.wahlperiode }}
+        run: uv run python -m src.fetch_protokolle
 
+      # Cache key includes the CSV of known protocol IDs — changes when new
+      # protocols are fetched, causing the cache to be updated after the run.
+      # restore-keys ensures existing XMLs are reused even when key changes.
       - name: Cache Plenarprotokoll XMLs and speeches
         uses: actions/cache@v4
         with:
           path: |
-            data/${{ steps.current_period.outputs.period_id }}/plenarprotokolle/
-            data/${{ steps.current_period.outputs.period_id }}/speeches.csv
-          key: plenarprotokolle-wp${{ steps.current_wp.outputs.wahlperiode }}-${{ hashFiles(format('data/{0}/dip_plenarprotokolle.csv', steps.current_period.outputs.period_id)) }}
-          restore-keys: plenarprotokolle-wp${{ steps.current_wp.outputs.wahlperiode }}-
+            data/*/plenarprotokolle/
+            data/*/speeches.csv
+          key: plenarprotokolle-${{ hashFiles('data/*/dip_plenarprotokolle.csv') }}
+          restore-keys: plenarprotokolle-
 
       - name: Download new XMLs
         id: fetch_xml
         run: |
-          output=$(uv run python -m src.fetch_protokoll_xml --wahlperiode ${{ steps.current_wp.outputs.wahlperiode }} 2>&1)
+          output=$(uv run python -m src.fetch_protokoll_xml 2>&1)
           echo "$output"
           if echo "$output" | grep -q "0 neue XMLs"; then
             echo "new_xmls=false" >> "$GITHUB_OUTPUT"
@@ -78,11 +50,11 @@ jobs:
 
       - name: Parse speeches from XMLs
         if: steps.fetch_xml.outputs.new_xmls == 'true'
-        run: uv run python -m src.parse_protokolle --wahlperiode ${{ steps.current_wp.outputs.wahlperiode }}
+        run: uv run python -m src.parse_protokolle
 
       - name: Compute TF-IDF word stats
         if: steps.fetch_xml.outputs.new_xmls == 'true'
-        run: uv run python -m src.compute_word_stats --wahlperiode ${{ steps.current_wp.outputs.wahlperiode }}
+        run: uv run python -m src.compute_word_stats
 
       - name: Export JSON for frontend
         if: steps.fetch_xml.outputs.new_xmls == 'true'
@@ -94,5 +66,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/ frontend/public/data/
-          git diff --staged --quiet || git commit -m "data: update Plenarprotokolle WP${{ steps.current_wp.outputs.wahlperiode }} $(date -u +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "data: update Plenarprotokolle $(date -u +%Y-%m-%d)"
           git pull --rebase && git push
