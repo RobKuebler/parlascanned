@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-import src.fetch_protokoll_xml as fxml
+import src.fetch.protokoll_xml as fxml
 
 
 def _make_csv(tmp_path: Path, rows: list[dict]) -> Path:

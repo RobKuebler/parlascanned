@@ -31,9 +31,9 @@ export function PeriodProvider({ children }: { children: ReactNode }) {
         setPeriods(available);
         if (available.length > 0) {
           const latest = available.reduce((a, b) =>
-            b.period_id > a.period_id ? b : a,
+            b.wahlperiode > a.wahlperiode ? b : a,
           );
-          setActivePeriodId(latest.period_id);
+          setActivePeriodId(latest.wahlperiode);
         }
       })
       .catch(console.error);

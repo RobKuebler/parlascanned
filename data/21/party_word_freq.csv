@@ -1,0 +1,501 @@
+fraktion,wort,tfidf,rang
+AfD,masseneinwanderung,0.000103,1
+AfD,kernkraftwerk,9.2e-05,2
+AfD,landsleute,8.4e-05,3
+AfD,abgelehnt,8.4e-05,4
+AfD,sonderschuld,8e-05,5
+AfD,klimawahn,7.9e-05,6
+AfD,kernenergie,7.9e-05,7
+AfD,asylbewerber,7.6e-05,8
+AfD,sozialist,7.5e-05,9
+AfD,altpartei,6.8e-05,10
+AfD,kernkraft,6.4e-05,11
+AfD,klimaseken,6.2e-05,12
+AfD,planwirtschaftlich,6e-05,13
+AfD,ideologe,6e-05,14
+AfD,energiesteuer,5.7e-05,15
+AfD,asylant,5.7e-05,16
+AfD,klimahysterie,5.7e-05,17
+AfD,schuldenkoalition,5.7e-05,18
+AfD,hochverehrn,5.7e-05,19
+AfD,klimarettung,5.7e-05,20
+AfD,heizungshammer,5.5e-05,21
+AfD,steuergeldverschwendung,5.3e-05,22
+AfD,dämmwahn,5.3e-05,23
+AfD,messerattack,5.3e-05,24
+AfD,klimaideologie,5e-05,25
+AfD,parallelgesellschaft,5e-05,26
+AfD,woken,5e-05,27
+AfD,sozialismus,5e-05,28
+AfD,weltdümm,4.9e-05,29
+AfD,schuldenfinanzierte,4.9e-05,30
+AfD,alimentierung,4.9e-05,31
+AfD,ortskraft,4.9e-05,32
+AfD,wehrmaterial,4.9e-05,33
+AfD,schuldenorgie,4.8e-05,34
+AfD,sanktionspolitik,4.5e-05,35
+AfD,sozialistisch,4.5e-05,36
+AfD,gundremming,4.4e-05,37
+AfD,ttpa,4.4e-05,38
+AfD,versagens,4.3e-05,39
+AfD,bürokrat,4.3e-05,40
+AfD,asylmigrant,4.3e-05,41
+AfD,islam,4.2e-05,42
+AfD,marktwirtschaftlich,4.1e-05,43
+AfD,derya,4e-05,44
+AfD,verbrennungsmotors,4e-05,45
+AfD,gruße,4e-05,46
+AfD,klimahysteriker,4e-05,47
+AfD,klimareligion,4e-05,48
+AfD,zufallsenergeinen,4e-05,49
+AfD,migrationskrise,4e-05,50
+AfD,denkend,4e-05,51
+AfD,sabin,4e-05,52
+AfD,zweifler,4e-05,53
+AfD,hidschab,4e-05,54
+AfD,ruinieren,3.8e-05,55
+AfD,abgewählt,3.8e-05,56
+AfD,ausreisepflichtig,3.6e-05,57
+AfD,ideologieprojeken,3.5e-05,58
+AfD,aufgebläht,3.5e-05,59
+AfD,wohneigentumsquote,3.5e-05,60
+AfD,flatterstrom,3.5e-05,61
+AfD,firmenplein,3.5e-05,62
+AfD,mittelalterlich,3.5e-05,63
+AfD,milei,3.5e-05,64
+AfD,amigos,3.5e-05,65
+AfD,establishment,3.5e-05,66
+AfD,genderprojeken,3.5e-05,67
+AfD,multikulti,3.5e-05,68
+AfD,basistarif,3.5e-05,69
+AfD,linksextremer,3.5e-05,70
+AfD,friederich,3.5e-05,71
+AfD,rettungsassistenen,3.5e-05,72
+AfD,grundsicherungsgeld,3.5e-05,73
+AfD,kartellparteien,3.5e-05,74
+AfD,ökosozialistisch,3.5e-05,75
+AfD,baerbock,3.4e-05,76
+AfD,wertschöpfend,3.3e-05,77
+AfD,zinslast,3.3e-05,78
+AfD,vierköpfig,3.3e-05,79
+AfD,nasenring,3.3e-05,80
+AfD,neckarwestheim,3.3e-05,81
+AfD,afghane,3.3e-05,82
+AfD,misere,3.3e-05,83
+AfD,niedergang,3.2e-05,84
+AfD,nebenkosn,3.2e-05,85
+AfD,regierungskritisch,3.1e-05,86
+AfD,sanierungsfall,3.1e-05,87
+AfD,amen,3.1e-05,88
+AfD,unbelieben,3.1e-05,89
+AfD,dämmvorschrift,3.1e-05,90
+AfD,iraker,3.1e-05,91
+AfD,betriebsphysiker,3.1e-05,92
+AfD,philippsburg,3.1e-05,93
+AfD,nils,3.1e-05,94
+AfD,staatskasse,3.1e-05,95
+AfD,hitzeschutzplan,3.1e-05,96
+AfD,zahlmeist,3.1e-05,97
+AfD,freiwild,3.1e-05,98
+AfD,liana,3.1e-05,99
+AfD,unternehmensinsolvenz,3.1e-05,100
+BÜNDNIS 90/­DIE GRÜNEN,soldatin,6.3e-05,1
+BÜNDNIS 90/­DIE GRÜNEN,wahlgeschenk,6e-05,2
+BÜNDNIS 90/­DIE GRÜNEN,aaron,5.8e-05,3
+BÜNDNIS 90/­DIE GRÜNEN,allerreichst,5.8e-05,4
+BÜNDNIS 90/­DIE GRÜNEN,bürgerfonds,5.4e-05,5
+BÜNDNIS 90/­DIE GRÜNEN,bündnisgrün,5.4e-05,6
+BÜNDNIS 90/­DIE GRÜNEN,credit,5.4e-05,7
+BÜNDNIS 90/­DIE GRÜNEN,stromsteuerabsenkung,5.4e-05,8
+BÜNDNIS 90/­DIE GRÜNEN,kriminalpolitik,5.1e-05,9
+BÜNDNIS 90/­DIE GRÜNEN,tierversuch,5.1e-05,10
+BÜNDNIS 90/­DIE GRÜNEN,quatschantrag,5.1e-05,11
+BÜNDNIS 90/­DIE GRÜNEN,wohngemeinnützigkeit,4.6e-05,12
+BÜNDNIS 90/­DIE GRÜNEN,zuhörend,4.6e-05,13
+BÜNDNIS 90/­DIE GRÜNEN,garantierent,4.4e-05,14
+BÜNDNIS 90/­DIE GRÜNEN,verbraucherschutzministerin,4.4e-05,15
+BÜNDNIS 90/­DIE GRÜNEN,fact,4.4e-05,16
+BÜNDNIS 90/­DIE GRÜNEN,finding,4.4e-05,17
+BÜNDNIS 90/­DIE GRÜNEN,venturecapital,4.4e-05,18
+BÜNDNIS 90/­DIE GRÜNEN,tierheime,4.4e-05,19
+BÜNDNIS 90/­DIE GRÜNEN,demokratin,4.2e-05,20
+BÜNDNIS 90/­DIE GRÜNEN,taurus,4.2e-05,21
+BÜNDNIS 90/­DIE GRÜNEN,gökay,3.7e-05,22
+BÜNDNIS 90/­DIE GRÜNEN,akbulut,3.7e-05,23
+BÜNDNIS 90/­DIE GRÜNEN,doris,3.7e-05,24
+BÜNDNIS 90/­DIE GRÜNEN,köstering,3.7e-05,25
+BÜNDNIS 90/­DIE GRÜNEN,innovationspolitik,3.7e-05,26
+BÜNDNIS 90/­DIE GRÜNEN,mondmission,3.6e-05,27
+BÜNDNIS 90/­DIE GRÜNEN,bodenpreise,3.6e-05,28
+BÜNDNIS 90/­DIE GRÜNEN,biodiversitätsfinanzierung,3.6e-05,29
+BÜNDNIS 90/­DIE GRÜNEN,klimatopf,3.6e-05,30
+BÜNDNIS 90/­DIE GRÜNEN,zukunftsvergess,3.6e-05,31
+BÜNDNIS 90/­DIE GRÜNEN,notinstandsetzung,3.6e-05,32
+BÜNDNIS 90/­DIE GRÜNEN,genwern,3.6e-05,33
+BÜNDNIS 90/­DIE GRÜNEN,akkreditieren,3.6e-05,34
+BÜNDNIS 90/­DIE GRÜNEN,umweltschützer,3.6e-05,35
+BÜNDNIS 90/­DIE GRÜNEN,abonnentin,3.6e-05,36
+BÜNDNIS 90/­DIE GRÜNEN,renditestark,3.6e-05,37
+BÜNDNIS 90/­DIE GRÜNEN,hennadepperle,3.6e-05,38
+BÜNDNIS 90/­DIE GRÜNEN,ghazal,3.6e-05,39
+BÜNDNIS 90/­DIE GRÜNEN,valent,3.3e-05,40
+BÜNDNIS 90/­DIE GRÜNEN,glattzieh,3.3e-05,41
+BÜNDNIS 90/­DIE GRÜNEN,trassenpreisen,3.3e-05,42
+BÜNDNIS 90/­DIE GRÜNEN,sozialabbau,3.3e-05,43
+BÜNDNIS 90/­DIE GRÜNEN,klimatechnologien,3.3e-05,44
+BÜNDNIS 90/­DIE GRÜNEN,frozen,3.2e-05,45
+BÜNDNIS 90/­DIE GRÜNEN,reichling,2.9e-05,46
+BÜNDNIS 90/­DIE GRÜNEN,foodblogge,2.9e-05,47
+BÜNDNIS 90/­DIE GRÜNEN,zusammentragen,2.9e-05,48
+BÜNDNIS 90/­DIE GRÜNEN,überwachungskatalog,2.9e-05,49
+BÜNDNIS 90/­DIE GRÜNEN,haftsach,2.9e-05,50
+BÜNDNIS 90/­DIE GRÜNEN,gaspolitik,2.9e-05,51
+BÜNDNIS 90/­DIE GRÜNEN,nominallöhne,2.9e-05,52
+BÜNDNIS 90/­DIE GRÜNEN,klimaschutzverträg,2.9e-05,53
+BÜNDNIS 90/­DIE GRÜNEN,neubaustrecken,2.9e-05,54
+BÜNDNIS 90/­DIE GRÜNEN,autobahnkernnetz,2.9e-05,55
+BÜNDNIS 90/­DIE GRÜNEN,wiederherstellungsverordnung,2.9e-05,56
+BÜNDNIS 90/­DIE GRÜNEN,wortbruchs,2.9e-05,57
+BÜNDNIS 90/­DIE GRÜNEN,infektiologie,2.9e-05,58
+BÜNDNIS 90/­DIE GRÜNEN,playbook,2.9e-05,59
+BÜNDNIS 90/­DIE GRÜNEN,autobahnneubau,2.9e-05,60
+BÜNDNIS 90/­DIE GRÜNEN,exxon,2.9e-05,61
+BÜNDNIS 90/­DIE GRÜNEN,sicherheitsthema,2.9e-05,62
+BÜNDNIS 90/­DIE GRÜNEN,gastrosteuersenkung,2.9e-05,63
+BÜNDNIS 90/­DIE GRÜNEN,seneca,2.9e-05,64
+BÜNDNIS 90/­DIE GRÜNEN,holzhandwerk,2.9e-05,65
+BÜNDNIS 90/­DIE GRÜNEN,public,2.9e-05,66
+BÜNDNIS 90/­DIE GRÜNEN,gerechtigkeitsperspektive,2.9e-05,67
+BÜNDNIS 90/­DIE GRÜNEN,mäßigend,2.9e-05,68
+BÜNDNIS 90/­DIE GRÜNEN,freizukaufe,2.9e-05,69
+BÜNDNIS 90/­DIE GRÜNEN,konfliktherden,2.9e-05,70
+BÜNDNIS 90/­DIE GRÜNEN,privatanleg,2.9e-05,71
+BÜNDNIS 90/­DIE GRÜNEN,tanklag,2.9e-05,72
+BÜNDNIS 90/­DIE GRÜNEN,einlegesohl,2.9e-05,73
+BÜNDNIS 90/­DIE GRÜNEN,violetta,2.9e-05,74
+BÜNDNIS 90/­DIE GRÜNEN,donata,2.9e-05,75
+BÜNDNIS 90/­DIE GRÜNEN,pflichtbeistand,2.9e-05,76
+BÜNDNIS 90/­DIE GRÜNEN,ungeheuerlich,2.9e-05,77
+BÜNDNIS 90/­DIE GRÜNEN,thiel,2.9e-05,78
+BÜNDNIS 90/­DIE GRÜNEN,bundestagsfraktion,2.8e-05,79
+BÜNDNIS 90/­DIE GRÜNEN,migrationsgeschichen,2.8e-05,80
+BÜNDNIS 90/­DIE GRÜNEN,jörg,2.8e-05,81
+BÜNDNIS 90/­DIE GRÜNEN,verbraucherin,2.7e-05,82
+BÜNDNIS 90/­DIE GRÜNEN,landwirtin,2.6e-05,83
+BÜNDNIS 90/­DIE GRÜNEN,klimafinanzierung,2.5e-05,84
+BÜNDNIS 90/­DIE GRÜNEN,seenotrettung,2.5e-05,85
+BÜNDNIS 90/­DIE GRÜNEN,zweckentfremden,2.5e-05,86
+BÜNDNIS 90/­DIE GRÜNEN,rückmeldung,2.5e-05,87
+BÜNDNIS 90/­DIE GRÜNEN,cezanne,2.5e-05,88
+BÜNDNIS 90/­DIE GRÜNEN,haushaltsverfahr,2.5e-05,89
+BÜNDNIS 90/­DIE GRÜNEN,selenskyjn,2.5e-05,90
+BÜNDNIS 90/­DIE GRÜNEN,sondersitzung,2.5e-05,91
+BÜNDNIS 90/­DIE GRÜNEN,luke,2.5e-05,92
+BÜNDNIS 90/­DIE GRÜNEN,siedler,2.5e-05,93
+BÜNDNIS 90/­DIE GRÜNEN,klientelgeschenken,2.5e-05,94
+BÜNDNIS 90/­DIE GRÜNEN,obere,2.5e-05,95
+BÜNDNIS 90/­DIE GRÜNEN,königsrecht,2.5e-05,96
+BÜNDNIS 90/­DIE GRÜNEN,bmftr,2.5e-05,97
+BÜNDNIS 90/­DIE GRÜNEN,clemen,2.5e-05,98
+BÜNDNIS 90/­DIE GRÜNEN,diskriminierungsschutz,2.5e-05,99
+BÜNDNIS 90/­DIE GRÜNEN,expertin,2.4e-05,100
+CDU/CSU,arbeitskoalition,8e-05,1
+CDU/CSU,soldatin,6.8e-05,2
+CDU/CSU,versteinerung,5.8e-05,3
+CDU/CSU,vergelts,5.4e-05,4
+CDU/CSU,vorfestlegung,5.2e-05,5
+CDU/CSU,bauernfamilien,4.7e-05,6
+CDU/CSU,marktwirtschaftlich,4.5e-05,7
+CDU/CSU,mentalitätswechsel,4.4e-05,8
+CDU/CSU,reformfähigkeit,4e-05,9
+CDU/CSU,tilgungsverpflichtung,4e-05,10
+CDU/CSU,zielgerichtet,3.7e-05,11
+CDU/CSU,rietenberg,3.6e-05,12
+CDU/CSU,entkoppelung,3.6e-05,13
+CDU/CSU,zinsausgaben,3.5e-05,14
+CDU/CSU,kernkraftwerk,3.4e-05,15
+CDU/CSU,westbalkan,3.3e-05,16
+CDU/CSU,arbeitskost,3.3e-05,17
+CDU/CSU,asylerstantrag,3.3e-05,18
+CDU/CSU,wasserwegen,3.3e-05,19
+CDU/CSU,angeschlagen,3.3e-05,20
+CDU/CSU,dreiklang,3.1e-05,21
+CDU/CSU,unheimlich,3.1e-05,22
+CDU/CSU,dzienus,3.1e-05,23
+CDU/CSU,extremisen,3e-05,24
+CDU/CSU,iranpolitik,2.9e-05,25
+CDU/CSU,bundesfinanz,2.9e-05,26
+CDU/CSU,luftfahrtstandort,2.9e-05,27
+CDU/CSU,gläser,2.9e-05,28
+CDU/CSU,energieangebot,2.9e-05,29
+CDU/CSU,standorts,2.9e-05,30
+CDU/CSU,verbraucherin,2.8e-05,31
+CDU/CSU,berichterstattern,2.7e-05,32
+CDU/CSU,berufs,2.5e-05,33
+CDU/CSU,steuerbaren,2.5e-05,34
+CDU/CSU,ausgewogenes,2.5e-05,35
+CDU/CSU,bauhaushalt,2.5e-05,36
+CDU/CSU,blockchain,2.5e-05,37
+CDU/CSU,kandidieren,2.5e-05,38
+CDU/CSU,umwelttechnologien,2.5e-05,39
+CDU/CSU,verteidigungsfähiger,2.5e-05,40
+CDU/CSU,scheinbeschäftigung,2.5e-05,41
+CDU/CSU,politikwechsel,2.5e-05,42
+CDU/CSU,neckarwestheim,2.5e-05,43
+CDU/CSU,ronald,2.5e-05,44
+CDU/CSU,geburtenstarken,2.5e-05,45
+CDU/CSU,gebäudemodernisierungsgesetz,2.3e-05,46
+CDU/CSU,ernährungswirtschaft,2.3e-05,47
+CDU/CSU,bundeswirtschaftsministerin,2.2e-05,48
+CDU/CSU,hauptzielland,2.2e-05,49
+CDU/CSU,fluchtursachenbekämpfung,2.2e-05,50
+CDU/CSU,denis,2.2e-05,51
+CDU/CSU,ambulantisierung,2.2e-05,52
+CDU/CSU,niedrigpreissegment,2.2e-05,53
+CDU/CSU,fluchthintergrund,2.2e-05,54
+CDU/CSU,niederlassungserlaubnis,2.2e-05,55
+CDU/CSU,automobilland,2.2e-05,56
+CDU/CSU,kleinschmidt,2.2e-05,57
+CDU/CSU,asylblg,2.2e-05,58
+CDU/CSU,baukostenzuschüsse,2.2e-05,59
+CDU/CSU,verkehrsleistung,2.2e-05,60
+CDU/CSU,mathematisch,2.2e-05,61
+CDU/CSU,ausgabenwachstum,2.2e-05,62
+CDU/CSU,aktivrentengesetz,2.2e-05,63
+CDU/CSU,steuersach,2.2e-05,64
+CDU/CSU,leistungsfähigkeit,2.1e-05,65
+CDU/CSU,überregulierung,2.1e-05,66
+CDU/CSU,entwicklungsländ,2.1e-05,67
+CDU/CSU,überstundenzuschlag,2.1e-05,68
+CDU/CSU,planungshoheit,2.1e-05,69
+CDU/CSU,enrico,2.1e-05,70
+CDU/CSU,komning,2.1e-05,71
+CDU/CSU,loslösen,2.1e-05,72
+CDU/CSU,kleinvermieter,2.1e-05,73
+CDU/CSU,umstritten,2.1e-05,74
+CDU/CSU,timon,2.1e-05,75
+CDU/CSU,aufgabenkritik,2.1e-05,76
+CDU/CSU,abweich,2.1e-05,77
+CDU/CSU,investitionsbooster,2.1e-05,78
+CDU/CSU,haushälter,2.1e-05,79
+CDU/CSU,sozialismus,2.1e-05,80
+CDU/CSU,einbetten,2e-05,81
+CDU/CSU,aussöhnung,2e-05,82
+CDU/CSU,investitionssofortprogramm,2e-05,83
+CDU/CSU,innovationsfreiheitsgesetz,2e-05,84
+CDU/CSU,realitäen,1.9e-05,85
+CDU/CSU,herausfordernd,1.9e-05,86
+CDU/CSU,asylzahl,1.9e-05,87
+CDU/CSU,gesellschaftsdienst,1.9e-05,88
+CDU/CSU,tatbestand,1.9e-05,89
+CDU/CSU,helferich,1.9e-05,90
+CDU/CSU,handelspartner,1.9e-05,91
+CDU/CSU,sylvia,1.9e-05,92
+CDU/CSU,petitionsrecht,1.9e-05,93
+CDU/CSU,notariat,1.9e-05,94
+CDU/CSU,wiehlen,1.8e-05,95
+CDU/CSU,seltene,1.8e-05,96
+CDU/CSU,tapfer,1.8e-05,97
+CDU/CSU,dreiklangs,1.8e-05,98
+CDU/CSU,nachbarkontinent,1.8e-05,99
+CDU/CSU,luftverkehrsstandort,1.8e-05,100
+Die Linke,zuhörend,0.000137,1
+Die Linke,abrüstung,9.9e-05,2
+Die Linke,erwerbslos,9.6e-05,3
+Die Linke,fluchtwegen,8.7e-05,4
+Die Linke,sozialsprechstund,7.7e-05,5
+Die Linke,leyla,7.7e-05,6
+Die Linke,finanzlobby,7.7e-05,7
+Die Linke,whateve,7e-05,8
+Die Linke,zweiklassenmedizin,6.7e-05,9
+Die Linke,konzerninteress,6.6e-05,10
+Die Linke,takes,6.1e-05,11
+Die Linke,finanzinvestor,6e-05,12
+Die Linke,sicherheitsbeauftragen,6e-05,13
+Die Linke,schulverpflegung,5.8e-05,14
+Die Linke,mietenwahnsin,5.8e-05,15
+Die Linke,heimatbegriff,5.8e-05,16
+Die Linke,bürgergeldbeziehenden,5.8e-05,17
+Die Linke,schuldnerberatungsdienste,5.8e-05,18
+Die Linke,doktorandin,5.8e-05,19
+Die Linke,doktorand,5.8e-05,20
+Die Linke,mindestrent,5.5e-05,21
+Die Linke,energiekonzern,5.5e-05,22
+Die Linke,chefetag,5.5e-05,23
+Die Linke,kurdin,5.2e-05,24
+Die Linke,erderhitzung,4.9e-05,25
+Die Linke,waiblingen,4.9e-05,26
+Die Linke,neoliberal,4.9e-05,27
+Die Linke,lobbyistin,4.8e-05,28
+Die Linke,profitlogik,4.8e-05,29
+Die Linke,ernährungsarmut,4.8e-05,30
+Die Linke,preisbeobachtungsstelle,4.8e-05,31
+Die Linke,agrarwend,4.8e-05,32
+Die Linke,kapitalinteresse,4.8e-05,33
+Die Linke,profitinteress,4.8e-05,34
+Die Linke,fußbreit,4.8e-05,35
+Die Linke,rojava,4.8e-05,36
+Die Linke,durchschnittsverdienend,4.8e-05,37
+Die Linke,privatisieren,4.8e-05,38
+Die Linke,urenco,4.8e-05,39
+Die Linke,pfand,4.8e-05,40
+Die Linke,kolleg,4.8e-05,41
+Die Linke,großerben,4.8e-05,42
+Die Linke,onlinewerbung,4.8e-05,43
+Die Linke,großvermiet,4.8e-05,44
+Die Linke,netzersatzanlag,4.8e-05,45
+Die Linke,vonovia,4.4e-05,46
+Die Linke,faschisn,4e-05,47
+Die Linke,völkerrechtsbrüch,3.8e-05,48
+Die Linke,aufrüstungsprogramm,3.8e-05,49
+Die Linke,sozialkahlschlag,3.8e-05,50
+Die Linke,krankmach,3.8e-05,51
+Die Linke,eheunabhängig,3.8e-05,52
+Die Linke,tierquälerei,3.8e-05,53
+Die Linke,mietenansteigen,3.8e-05,54
+Die Linke,dauerstell,3.8e-05,55
+Die Linke,hilchenbach,3.8e-05,56
+Die Linke,informationsfreiheitsgesetz,3.8e-05,57
+Die Linke,klassenfrage,3.8e-05,58
+Die Linke,immobilienhaie,3.8e-05,59
+Die Linke,krupp,3.8e-05,60
+Die Linke,mannesmann,3.8e-05,61
+Die Linke,nullrunde,3.8e-05,62
+Die Linke,nama,3.8e-05,63
+Die Linke,konzernbossen,3.8e-05,64
+Die Linke,raubbau,3.8e-05,65
+Die Linke,glanzleistung,3.8e-05,66
+Die Linke,klassenpolitik,3.8e-05,67
+Die Linke,studienkredit,3.8e-05,68
+Die Linke,serpil,3.8e-05,69
+Die Linke,melek,3.8e-05,70
+Die Linke,firmenanteile,3.8e-05,71
+Die Linke,rechtsprüfung,3.8e-05,72
+Die Linke,arbeitsinspektion,3.8e-05,73
+Die Linke,jugendverband,3.8e-05,74
+Die Linke,nordostsyri,3.8e-05,75
+Die Linke,werbeindustrie,3.8e-05,76
+Die Linke,hartung,3.8e-05,77
+Die Linke,gruppenantrag,3.8e-05,78
+Die Linke,kindergrundsicherung,3.8e-05,79
+Die Linke,konfliktlösung,3.8e-05,80
+Die Linke,profitmaximierung,3.8e-05,81
+Die Linke,rheinmetall,3.8e-05,82
+Die Linke,sozialabbau,3.8e-05,83
+Die Linke,ronja,3.8e-05,84
+Die Linke,gefährdungsbeurteilung,3.8e-05,85
+Die Linke,kurdisch,3.7e-05,86
+Die Linke,wahleinsprüch,3.7e-05,87
+Die Linke,superreichen,3.5e-05,88
+Die Linke,landwirtin,3.5e-05,89
+Die Linke,armutsgefährdet,3.4e-05,90
+Die Linke,milliardäre,3.3e-05,91
+Die Linke,blackrock,3.3e-05,92
+Die Linke,deporti,3.3e-05,93
+Die Linke,unternehmensteuerreform,3.3e-05,94
+Die Linke,gendern,3.3e-05,95
+Die Linke,preisexplosion,3.3e-05,96
+Die Linke,wohnungskonzern,3.3e-05,97
+Die Linke,patientin,3.2e-05,98
+Die Linke,verbraucherin,3.2e-05,99
+Die Linke,überreich,3.1e-05,100
+SPD,sozialdemokratin,9.5e-05,1
+SPD,soldatin,8.9e-05,2
+SPD,auftretens,8.6e-05,3
+SPD,charterflug,8.6e-05,4
+SPD,linienflüge,8.6e-05,5
+SPD,unterstützungsoption,8.6e-05,6
+SPD,gesamtgruppe,8.6e-05,7
+SPD,kabinettsmitgliedern,8.6e-05,8
+SPD,parteispitzen,8.6e-05,9
+SPD,afghanin,8.4e-05,10
+SPD,kabinettsmitglied,8.1e-05,11
+SPD,verfassungsmäßigkeit,7.9e-05,12
+SPD,aufnahmezusage,7.5e-05,13
+SPD,vertrauensschutz,5.9e-05,14
+SPD,menschenrechtsverteidigerin,5.6e-05,15
+SPD,bundesaufnahmeprogramms,5.5e-05,16
+SPD,rebecca,5.2e-05,17
+SPD,familieneinheit,5.2e-05,18
+SPD,visierung,5.2e-05,19
+SPD,visumabholung,5.2e-05,20
+SPD,vergleicher,5.2e-05,21
+SPD,überbrückungsprogramms,4.9e-05,22
+SPD,sicherheitsinterview,4.9e-05,23
+SPD,abgegeben,4.9e-05,24
+SPD,termingarantie,4.6e-05,25
+SPD,krämer,4.6e-05,26
+SPD,antragsformat,4.6e-05,27
+SPD,hiernach,4.6e-05,28
+SPD,wiederaufnehmen,4.6e-05,29
+SPD,bnetza,4.6e-05,30
+SPD,augenblicklich,4.3e-05,31
+SPD,bonus,4e-05,32
+SPD,stop,4e-05,33
+SPD,louvre,4e-05,34
+SPD,marleisen,4e-05,35
+SPD,verbraucherin,4e-05,36
+SPD,marschbahn,3.9e-05,37
+SPD,auslandsvertretung,3.9e-05,38
+SPD,geschlossenheit,3.7e-05,39
+SPD,wachstumsbooster,3.6e-05,40
+SPD,aufenthaltsgesetzes,3.6e-05,41
+SPD,beschrieben,3.5e-05,42
+SPD,rechtschutz,3.5e-05,43
+SPD,chancenprogramm,3.5e-05,44
+SPD,postinfektiöse,3.5e-05,45
+SPD,missbrauchsprüfung,3.5e-05,46
+SPD,haushälterin,3.3e-05,47
+SPD,filiz,3.3e-05,48
+SPD,inkrafttretens,3.3e-05,49
+SPD,emrk,3.3e-05,50
+SPD,unüberwindbar,3.3e-05,51
+SPD,hybride,3.1e-05,52
+SPD,gefährdet,3.1e-05,53
+SPD,nordfriesland,2.9e-05,54
+SPD,lenhard,2.9e-05,55
+SPD,schmerzhafter,2.9e-05,56
+SPD,vermögensverteilung,2.9e-05,57
+SPD,zusicherung,2.9e-05,58
+SPD,menschenrechtsverteidiger,2.9e-05,59
+SPD,selbstverständnisses,2.9e-05,60
+SPD,westerland,2.9e-05,61
+SPD,ophelia,2.9e-05,62
+SPD,kaputtrede,2.9e-05,63
+SPD,imperium,2.9e-05,64
+SPD,nizza,2.9e-05,65
+SPD,moritz,2.9e-05,66
+SPD,swantje,2.9e-05,67
+SPD,henrike,2.9e-05,68
+SPD,bmleh,2.9e-05,69
+SPD,defensiver,2.9e-05,70
+SPD,detektion,2.9e-05,71
+SPD,embargo,2.9e-05,72
+SPD,sharepic,2.9e-05,73
+SPD,henny,2.9e-05,74
+SPD,schermann,2.9e-05,75
+SPD,patientin,2.8e-05,76
+SPD,rechtsgültig,2.7e-05,77
+SPD,eilantrag,2.7e-05,78
+SPD,sachleistung,2.7e-05,79
+SPD,psychosozialer,2.7e-05,80
+SPD,misbah,2.6e-05,81
+SPD,kompromisses,2.6e-05,82
+SPD,paula,2.6e-05,83
+SPD,härtefälle,2.6e-05,84
+SPD,herausfordernd,2.5e-05,85
+SPD,verfassungsbeschwerde,2.5e-05,86
+SPD,überstehen,2.4e-05,87
+SPD,besprech,2.3e-05,88
+SPD,zufluchtsort,2.3e-05,89
+SPD,loop,2.3e-05,90
+SPD,grundig,2.3e-05,91
+SPD,kaufanreizeen,2.3e-05,92
+SPD,umweltpolitiker,2.3e-05,93
+SPD,stammtischniveau,2.3e-05,94
+SPD,umwandlungsverbot,2.3e-05,95
+SPD,victoria,2.3e-05,96
+SPD,gleichstellungspolitisch,2.3e-05,97
+SPD,nedžad,2.3e-05,98
+SPD,straftäterin,2.3e-05,99
+SPD,modus,2.3e-05,100

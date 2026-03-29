@@ -25,7 +25,7 @@ jobs:
       - name: Fetch data
         id: fetch
         run: |
-          output=$(uv run python -m src.fetch_data 2>&1)
+          output=$(uv run python -m src.fetch.abgeordnetenwatch 2>&1)
           echo "$output"
           if echo "$output" | grep -q "nothing to fetch"; then
             echo "new_data=false" >> "$GITHUB_OUTPUT"
@@ -35,10 +35,10 @@ jobs:
 
       - name: Train model
         if: steps.fetch.outputs.new_data == 'true'
-        run: uv run python -m src.train_model
+        run: uv run python -m src.model.train
 
       - name: Export JSON for frontend
-        run: uv run python -m src.export_json
+        run: uv run python -m src.export
 
       - name: Commit and push
         run: |

@@ -119,7 +119,7 @@ const FEATURES = [
 
 export default function Home() {
   const { activePeriodId, periods } = usePeriod();
-  const activePeriod = periods.find((p) => p.period_id === activePeriodId);
+  const activePeriod = periods.find((p) => p.wahlperiode === activePeriodId);
 
   type Stats = {
     politicians: number;
@@ -186,7 +186,7 @@ export default function Home() {
           className="text-[11px] font-bold tracking-[0.14em] uppercase mb-2"
           style={{ color: "#9A9790" }}
         >
-          {activePeriod.bundestag_number}. Legislaturperiode
+          {activePeriod.wahlperiode}. Legislaturperiode
         </p>
       )}
 

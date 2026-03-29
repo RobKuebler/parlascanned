@@ -20,10 +20,12 @@ export default function SpeechesPage() {
   const [wordFreq, setWordFreq] = useState<WordFreqFile | null>(null);
   const [speechStats, setSpeechStats] = useState<SpeechStatsFile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
     if (!activePeriodId) return;
     setLoading(true);
+    setUnavailable(false);
     Promise.all([
       fetchData<WordFreqFile>(
         dataUrl("party_word_freq_{period}.json", activePeriodId),
@@ -37,8 +39,8 @@ export default function SpeechesPage() {
         setSpeechStats(ss);
         setLoading(false);
       })
-      .catch((err) => {
-        console.error(err);
+      .catch(() => {
+        setUnavailable(true);
         setLoading(false);
       });
   }, [activePeriodId]);
@@ -97,7 +99,11 @@ export default function SpeechesPage() {
         </p>
       </div>
 
-      {loading || !wordFreq || !speechStats ? (
+      {unavailable ? (
+        <p className="text-[14px]" style={{ color: "#9A9790" }}>
+          Für diese Wahlperiode sind noch keine Rededaten verfügbar.
+        </p>
+      ) : loading || !wordFreq || !speechStats ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <ChartSkeleton key={i} height={480} />

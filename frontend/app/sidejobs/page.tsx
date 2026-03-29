@@ -51,7 +51,7 @@ export default function SidejobsPage() {
   const [loading, setLoading] = useState(true);
 
   // Derive whether the active period is still ongoing from the label end year
-  const activePeriod = periods.find((p) => p.period_id === activePeriodId);
+  const activePeriod = periods.find((p) => p.wahlperiode === activePeriodId);
   const labelEndYear = activePeriod
     ? parseInt(activePeriod.label.match(/\d{4}$/)?.[0] ?? "0", 10)
     : 0;

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.transforms import (
+from src.analysis.transforms import (
     compute_age_df,
     compute_cohesion,
     compute_occupation_pivot,

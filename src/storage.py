@@ -12,9 +12,10 @@ DATA_DIR = Path(__file__).parents[1] / "data"
 OUTPUTS_DIR = Path(__file__).parents[1] / "outputs"
 
 
-def current_bundestag_number() -> int:
-    """Return the bundestag_number of the currently active legislature from periods.csv.
+def current_wahlperiode() -> int:
+    """Return the wahlperiode (bundestag_number) of the currently active legislature.
 
+    Reads periods.csv and finds the period whose date range contains today.
     Falls back to the latest known period if today falls outside all known ranges
     (e.g. a future period whose end_date is not yet set).
     """
@@ -27,14 +28,27 @@ def current_bundestag_number() -> int:
     return int(row["bundestag_number"])
 
 
-def load_data(period_id: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Load votes, politicians and polls CSVs for a given period."""
-    period_dir = DATA_DIR / str(period_id)
+def period_id_for(wahlperiode: int) -> int:
+    """Return the abgeordnetenwatch API period_id for a given wahlperiode.
+
+    Reads periods.csv. Used internally by fetch/abgeordnetenwatch.py for API calls.
+    """
+    df = pd.read_csv(DATA_DIR / "periods.csv")
+    match = df[df["bundestag_number"] == wahlperiode]
+    if match.empty:
+        msg = f"Wahlperiode {wahlperiode} nicht in periods.csv gefunden."
+        raise ValueError(msg)
+    return int(match.iloc[0]["period_id"])
+
+
+def load_data(wahlperiode: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Load votes, politicians and polls CSVs for a given wahlperiode."""
+    period_dir = DATA_DIR / str(wahlperiode)
     votes_path = period_dir / "votes.csv"
     if not votes_path.exists():
         log.error("%s not found! Run fetch_data.py first.", votes_path)
         raise SystemExit(1)
-    log.info("Loading data for period %d...", period_id)
+    log.info("Loading data for Wahlperiode %d...", wahlperiode)
     return (
         pd.read_csv(votes_path),
         pd.read_csv(period_dir / "politicians.csv"),
@@ -46,7 +60,7 @@ def save_embeddings(
     model: Any,
     p_df: pd.DataFrame,
     p_ids: np.ndarray,
-    period_id: int,
+    wahlperiode: int,
 ) -> None:
     """Export embeddings to CSV with politician metadata. Columns: x, y (z for 3D)."""
     weights = model.p_embed.weight.detach().numpy()
@@ -55,6 +69,6 @@ def save_embeddings(
     if n_dims == 3:
         coords["z"] = weights[:, 2]
     emb_df = pd.DataFrame({"politician_id": p_ids, **coords})
-    path = OUTPUTS_DIR / f"politician_embeddings_{period_id}.csv"
+    path = OUTPUTS_DIR / f"politician_embeddings_{wahlperiode}.csv"
     p_df.merge(emb_df, on="politician_id").to_csv(path, index=False)
     log.info("Embeddings saved to %s", path)

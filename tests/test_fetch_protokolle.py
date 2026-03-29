@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-import src.fetch_protokolle as fp
+import src.fetch.protokolle as fp
 
 # ---------------------------------------------------------------------------
 # Hilfsfunktionen

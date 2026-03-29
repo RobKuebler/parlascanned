@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-import src.parse_protokolle as pp
+import src.parse.protokolle as pp
 
 # ---------------------------------------------------------------------------
 # Fixtures

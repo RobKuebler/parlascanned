@@ -1,4 +1,4 @@
-"""Tests for src/export_json.py.
+"""Tests for src/export.py.
 
 Verifies that export_period produces correctly-shaped JSON output.
 Uses synthetic CSV fixtures — no fetched data required.
@@ -12,7 +12,7 @@ from typing import Any
 
 import pytest
 
-PERIOD_ID = 161
+WAHLPERIODE = 21
 
 _POLITICIANS_CSV = textwrap.dedent("""\
     politician_id,name,party,sex,year_of_birth,occupation,education,field_title
@@ -57,10 +57,10 @@ _SIDEJOBS_CSV = textwrap.dedent("""\
 @pytest.fixture(autouse=True)
 def run_export(tmp_path, monkeypatch):
     """Run export_period with synthetic CSV fixtures into a temp dir."""
-    import src.export_json as ej
+    import src.export as ej
 
     # Build input directory structure
-    period_dir = tmp_path / "data" / str(PERIOD_ID)
+    period_dir = tmp_path / "data" / str(WAHLPERIODE)
     period_dir.mkdir(parents=True)
     outputs_dir = tmp_path / "outputs"
     outputs_dir.mkdir()
@@ -71,7 +71,7 @@ def run_export(tmp_path, monkeypatch):
     (period_dir / "votes.csv").write_text(_VOTES_CSV, encoding="utf-8")
     (period_dir / "polls.csv").write_text(_POLLS_CSV, encoding="utf-8")
     (period_dir / "sidejobs.csv").write_text(_SIDEJOBS_CSV, encoding="utf-8")
-    (outputs_dir / f"politician_embeddings_{PERIOD_ID}.csv").write_text(
+    (outputs_dir / f"politician_embeddings_{WAHLPERIODE}.csv").write_text(
         _EMBEDDINGS_CSV, encoding="utf-8"
     )
 
@@ -79,7 +79,7 @@ def run_export(tmp_path, monkeypatch):
     monkeypatch.setattr(ej, "OUTPUTS_DIR", outputs_dir)
     monkeypatch.setattr(ej, "OUTPUT_DIR", out_dir)
 
-    ej.export_period(PERIOD_ID, date(2025, 1, 1), date(2029, 12, 31))
+    ej.export_period(WAHLPERIODE, date(2025, 1, 1), date(2029, 12, 31))
     return out_dir
 
 
@@ -88,7 +88,7 @@ def _load(run_export: Path, name: str) -> Any:
 
 
 def test_politicians_shape(run_export):
-    data = _load(run_export, f"politicians_{PERIOD_ID}.json")
+    data = _load(run_export, f"politicians_{WAHLPERIODE}.json")
     assert isinstance(data, list)
     assert len(data) > 0
     required = {
@@ -105,7 +105,7 @@ def test_politicians_shape(run_export):
 
 
 def test_embeddings_shape(run_export):
-    data = _load(run_export, f"embeddings_{PERIOD_ID}.json")
+    data = _load(run_export, f"embeddings_{WAHLPERIODE}.json")
     assert data["dimensions"] == 2
     assert len(data["data"]) > 0
     assert {"politician_id", "x", "y"}.issubset(data["data"][0].keys())
@@ -113,20 +113,20 @@ def test_embeddings_shape(run_export):
 
 
 def test_votes_shape(run_export):
-    data = _load(run_export, f"votes_{PERIOD_ID}.json")
+    data = _load(run_export, f"votes_{WAHLPERIODE}.json")
     assert isinstance(data, list)
     assert len(data) > 0
     assert {"politician_id", "poll_id", "answer"}.issubset(data[0].keys())
 
 
 def test_polls_shape(run_export):
-    data = _load(run_export, f"polls_{PERIOD_ID}.json")
+    data = _load(run_export, f"polls_{WAHLPERIODE}.json")
     assert isinstance(data, list)
     assert {"poll_id", "topic"}.issubset(data[0].keys())
 
 
 def test_cohesion_shape(run_export):
-    data = _load(run_export, f"cohesion_{PERIOD_ID}.json")
+    data = _load(run_export, f"cohesion_{WAHLPERIODE}.json")
     assert isinstance(data, list)
     assert len(data) > 0
     assert {"party", "label", "streuung"}.issubset(data[0].keys())
@@ -143,7 +143,7 @@ def test_sidejobs_interval_float64_proration(tmp_path, monkeypatch):
     skipping all proration. This test uses a CSV with a null-interval row
     to trigger the float64 coercion and verifies that proration still fires.
     """
-    import src.export_json as ej
+    import src.export as ej
 
     # CSV with one null-interval row → forces pandas to read interval as float64
     csv_content = textwrap.dedent("""\
@@ -190,12 +190,12 @@ def test_sidejobs_interval_float64_proration(tmp_path, monkeypatch):
 
 
 def test_sidejobs_shape(run_export):
-    data = _load(run_export, f"sidejobs_{PERIOD_ID}.json")
+    data = _load(run_export, f"sidejobs_{WAHLPERIODE}.json")
     assert "jobs" in data
     assert "coverage" in data
     assert {"total", "with_amount"}.issubset(data["coverage"].keys())
     assert len(data["jobs"]) > 0, (
-        "Expected period 161 to have sidejobs with income amounts"
+        "Expected wahlperiode 21 to have sidejobs with income amounts"
     )
     job = data["jobs"][0]
     assert {
@@ -209,7 +209,7 @@ def test_sidejobs_shape(run_export):
 
 
 def test_party_profile_shape(run_export):
-    data = _load(run_export, f"party_profile_{PERIOD_ID}.json")
+    data = _load(run_export, f"party_profile_{WAHLPERIODE}.json")
     assert "parties" in data
     assert "age" in data
     assert "sex" in data
@@ -249,9 +249,9 @@ _SPEECH_STATS_CSV = textwrap.dedent("""\
 @pytest.fixture
 def speech_export(tmp_path, monkeypatch):
     """Set up tmp dirs with speech CSV fixtures and run the two export functions."""
-    import src.export_json as ej
+    import src.export as ej
 
-    period_dir = tmp_path / str(PERIOD_ID)
+    period_dir = tmp_path / str(WAHLPERIODE)
     period_dir.mkdir(parents=True)
     (period_dir / "party_word_freq.csv").write_text(_WORD_FREQ_CSV, encoding="utf-8")
     (period_dir / "party_speech_stats.csv").write_text(
@@ -263,8 +263,8 @@ def speech_export(tmp_path, monkeypatch):
     monkeypatch.setattr(ej, "DATA_DIR", tmp_path)
     monkeypatch.setattr(ej, "OUTPUT_DIR", out_dir)
 
-    ej.export_party_word_freq(PERIOD_ID)
-    ej.export_party_speech_stats(PERIOD_ID)
+    ej.export_party_word_freq(WAHLPERIODE)
+    ej.export_party_speech_stats(WAHLPERIODE)
     return out_dir
 
 
@@ -273,7 +273,7 @@ def _load_speech(out_dir, filename):
 
 
 def test_word_freq_structure(speech_export):
-    data = _load_speech(speech_export, f"party_word_freq_{PERIOD_ID}.json")
+    data = _load_speech(speech_export, f"party_word_freq_{WAHLPERIODE}.json")
     assert isinstance(data, dict)
     assert set(data.keys()) == {"SPD", "AfD"}
     spd = data["SPD"]
@@ -285,19 +285,19 @@ def test_word_freq_structure(speech_export):
 
 
 def test_word_freq_missing_csv_does_not_raise(tmp_path, monkeypatch):
-    import src.export_json as ej
+    import src.export as ej
 
     out_dir = tmp_path / "out"
     out_dir.mkdir()
     monkeypatch.setattr(ej, "DATA_DIR", tmp_path)
     monkeypatch.setattr(ej, "OUTPUT_DIR", out_dir)
     # no CSV present — should log warning, not raise
-    ej.export_party_word_freq(PERIOD_ID)
-    assert not (out_dir / f"party_word_freq_{PERIOD_ID}.json").exists()
+    ej.export_party_word_freq(WAHLPERIODE)
+    assert not (out_dir / f"party_word_freq_{WAHLPERIODE}.json").exists()
 
 
 def test_speech_stats_structure(speech_export):
-    data = _load_speech(speech_export, f"party_speech_stats_{PERIOD_ID}.json")
+    data = _load_speech(speech_export, f"party_speech_stats_{WAHLPERIODE}.json")
     assert isinstance(data, list)
     assert len(data) == 3
     required = {
@@ -315,11 +315,11 @@ def test_speech_stats_structure(speech_export):
 
 
 def test_speech_stats_missing_csv_does_not_raise(tmp_path, monkeypatch):
-    import src.export_json as ej
+    import src.export as ej
 
     out_dir = tmp_path / "out"
     out_dir.mkdir()
     monkeypatch.setattr(ej, "DATA_DIR", tmp_path)
     monkeypatch.setattr(ej, "OUTPUT_DIR", out_dir)
-    ej.export_party_speech_stats(PERIOD_ID)
-    assert not (out_dir / f"party_speech_stats_{PERIOD_ID}.json").exists()
+    ej.export_party_speech_stats(WAHLPERIODE)
+    assert not (out_dir / f"party_speech_stats_{WAHLPERIODE}.json").exists()

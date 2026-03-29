@@ -23,24 +23,24 @@ jobs:
         run: uv sync
 
       - name: Fetch new Plenarprotokolle
-        run: uv run python -m src.fetch_protokolle
+        run: uv run python -m src.fetch.protokolle
 
       # Cache key includes the CSV of known protocol IDs — changes when new
       # protocols are fetched, causing the cache to be updated after the run.
       # restore-keys ensures existing XMLs are reused even when key changes.
-      - name: Cache Plenarprotokoll XMLs and speeches
+      # speeches.csv is not cached — parsing all XMLs takes ~3s and is cheaper
+      # than storing/restoring a 26 MB file.
+      - name: Cache Plenarprotokoll XMLs
         uses: actions/cache@v4
         with:
-          path: |
-            data/*/plenarprotokolle/
-            data/*/speeches.csv
+          path: data/*/plenarprotokolle/
           key: plenarprotokolle-${{ hashFiles('data/*/dip_plenarprotokolle.csv') }}
           restore-keys: plenarprotokolle-
 
       - name: Download new XMLs
         id: fetch_xml
         run: |
-          output=$(uv run python -m src.fetch_protokoll_xml 2>&1)
+          output=$(uv run python -m src.fetch.protokoll_xml 2>&1)
           echo "$output"
           if echo "$output" | grep -q "0 neue XMLs"; then
             echo "new_xmls=false" >> "$GITHUB_OUTPUT"
@@ -50,15 +50,15 @@ jobs:
 
       - name: Parse speeches from XMLs
         if: steps.fetch_xml.outputs.new_xmls == 'true'
-        run: uv run python -m src.parse_protokolle
+        run: uv run python -m src.parse.protokolle
 
       - name: Compute TF-IDF word stats
         if: steps.fetch_xml.outputs.new_xmls == 'true'
-        run: uv run python -m src.compute_word_stats
+        run: uv run python -m src.analysis.word_stats
 
       - name: Export JSON for frontend
         if: steps.fetch_xml.outputs.new_xmls == 'true'
-        run: uv run python -m src.export_json
+        run: uv run python -m src.export
 
       - name: Commit and push
         if: steps.fetch_xml.outputs.new_xmls == 'true'

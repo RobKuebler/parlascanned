@@ -43,7 +43,7 @@ export function PeriodSelector({
   };
 
   const activeYears = yearsOnly(
-    periods.find((p) => p.period_id === activePeriodId)?.label ?? "",
+    periods.find((p) => p.wahlperiode === activePeriodId)?.label ?? "",
   );
 
   return (
@@ -113,13 +113,13 @@ export function PeriodSelector({
           }`}
         >
           {periods.map((p) => {
-            const isActive = p.period_id === activePeriodId;
+            const isActive = p.wahlperiode === activePeriodId;
             return (
               <button
-                key={p.period_id}
+                key={p.wahlperiode}
                 type="button"
                 onClick={() => {
-                  setActivePeriodId(p.period_id);
+                  setActivePeriodId(p.wahlperiode);
                   setOpen(false);
                 }}
                 className={`w-full text-left px-3 py-2.5 text-[13px] font-bold tabular-nums outline-none transition-colors duration-100 ${

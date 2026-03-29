@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 import torch
 
-from src.model import (
+from src.model.model import (
     PoliticianEmbeddingModel,
     RelativeEarlyStopping,
     VoteDataset,
@@ -135,7 +135,7 @@ class _FakeModule:
 def test_early_stopping_stops_below_threshold():
     """Loss improves only 3%, threshold 5% -> should stop."""
     cb = RelativeEarlyStopping(min_rel=0.05)
-    cb._prev = 1.0  # noqa: SLF001
+    cb._prev = 1.0
     trainer = _FakeTrainer(0.97)
     cb.on_train_epoch_end(trainer, _FakeModule())  # type: ignore[arg-type]
     assert trainer.should_stop is True
@@ -144,7 +144,7 @@ def test_early_stopping_stops_below_threshold():
 def test_early_stopping_continues_above_threshold():
     """Loss improves 10%, threshold 5% -> should continue."""
     cb = RelativeEarlyStopping(min_rel=0.05)
-    cb._prev = 1.0  # noqa: SLF001
+    cb._prev = 1.0
     trainer = _FakeTrainer(0.90)
     cb.on_train_epoch_end(trainer, _FakeModule())  # type: ignore[arg-type]
     assert trainer.should_stop is False
@@ -160,10 +160,10 @@ def test_early_stopping_first_epoch_never_stops():
 
 def test_early_stopping_updates_prev():
     cb = RelativeEarlyStopping(min_rel=0.05)
-    cb._prev = 1.0  # noqa: SLF001
+    cb._prev = 1.0
     trainer = _FakeTrainer(0.90)
     cb.on_train_epoch_end(trainer, _FakeModule())  # type: ignore[arg-type]
-    assert cb._prev == pytest.approx(0.90)  # noqa: SLF001
+    assert cb._prev == pytest.approx(0.90)
 
 
 def test_early_stopping_missing_metric():
@@ -193,7 +193,7 @@ def test_save_embeddings_2d(tmp_path, monkeypatch):
         }
     )
 
-    save_embeddings(model, p_df, np.array([10, 20, 30]), period_id=999)
+    save_embeddings(model, p_df, np.array([10, 20, 30]), wahlperiode=999)
 
     df = pd.read_csv(tmp_path / "politician_embeddings_999.csv")
     assert {"politician_id", "name", "party", "x", "y"} <= set(df.columns)
@@ -212,7 +212,7 @@ def test_save_embeddings_3d(tmp_path, monkeypatch):
         {"politician_id": [1, 2], "name": ["A", "B"], "party": ["X", "Y"]}
     )
 
-    save_embeddings(model, p_df, np.array([1, 2]), period_id=1)
+    save_embeddings(model, p_df, np.array([1, 2]), wahlperiode=1)
 
     df = pd.read_csv(tmp_path / "politician_embeddings_1.csv")
     assert "z" in df.columns

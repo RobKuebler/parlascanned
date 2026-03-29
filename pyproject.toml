@@ -15,6 +15,7 @@ dependencies = [
     "pandas>=3.0.1",
     "pytest>=9.0.2",
     "requests>=2.32.5",
+    "spacy>=3.8.0",
 ]
 
 [tool.uv]
@@ -31,10 +32,10 @@ explicit = true
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D", "ANN", "COM812", "PLR0913", "N812", "PLC0415", "PLR2004"]
+ignore = ["D", "ANN", "COM812", "PLR0913", "N812", "PLC0415", "PLR2004", "TID252"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = ["S101", "INP001", "SLF001", "ERA001", "ARG001", "ARG005", "E501"]
+"tests/**/*.py" = ["S101", "INP001", "SLF001", "ERA001", "ARG001", "ARG005", "E501", "RUF001"]
 
 [tool.ty.rules]
 # torch and lightning are in the optional 'train' group and not installed by

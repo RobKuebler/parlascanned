@@ -33,10 +33,10 @@ export const DARK_FILL_PARTY = "CDU/CSU";
 
 export const NO_FACTION_LABEL = "fraktionslos";
 
-// Governing coalition parties per period (period_id → party names).
+// Governing coalition parties per wahlperiode.
 export const GOVERNING_PARTIES: Record<number, string[]> = {
-  132: ["SPD", "Grüne", "FDP"], // 20. BT: Ampel
-  161: ["CDU/CSU", "SPD"], // 21. BT: GroKo
+  20: ["SPD", "Grüne", "FDP"], // 20. BT: Ampel
+  21: ["CDU/CSU", "SPD"], // 21. BT: GroKo
 };
 
 /**

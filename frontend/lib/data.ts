@@ -2,9 +2,8 @@
 // All field names match the CSV column names exactly (as documented in the spec).
 
 export interface Period {
-  period_id: number;
+  wahlperiode: number;
   label: string;
-  bundestag_number: number;
   has_data: boolean;
 }
 

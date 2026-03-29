@@ -3,7 +3,7 @@
 import pandas as pd
 import pytest
 
-import src.compute_word_stats as cws
+import src.analysis.word_stats as cws
 
 
 @pytest.fixture(autouse=True)
@@ -25,8 +25,6 @@ def test_tokenize_lowercase_und_nur_alpha():
     tokens = cws._tokenize("Klimawandel bedroht unsere Zukunft")
     assert "klimawandel" in tokens
     assert "zukunft" in tokens
-    # Nicht-alphabetische Tokens werden gefiltert
-    assert "zukunft!" not in tokens
 
 
 def test_tokenize_filtert_kurze_woerter():
@@ -35,6 +33,47 @@ def test_tokenize_filtert_kurze_woerter():
     assert "klimawandel" in tokens
     assert "wir" not in tokens
     assert "in" not in tokens
+
+
+def test_tokenize_typografische_anfuehrungszeichen():
+    # „Wort" und "Wort" → "wort" (Anführungszeichen abgestreift)
+    tokens = cws._tokenize('„Klimawandel" "Zukunft" ‹Energie›')
+    assert "klimawandel" in tokens
+    assert "zukunft" in tokens
+    assert "energie" in tokens
+
+
+def test_tokenize_wort_mit_anhaengender_interpunktion():
+    # "Zukunft," und "Klima." → clean tokens
+    tokens = cws._tokenize("Klima. Zukunft, Sicherheit!")
+    assert "zukunft" in tokens
+    assert "sicherheit" in tokens
+
+
+def test_tokenize_genderstern():
+    # Bürger*innen → bürger (alles ab * abgeschnitten)
+    tokens = cws._tokenize("Bürger*innen fordern mehr Rechte")
+    assert "bürger" in tokens
+    assert "bürgerinnen" not in tokens
+
+
+def test_tokenize_gender_slash():
+    # Lehrer/innen → lehrer
+    tokens = cws._tokenize("Lehrer/innen sollen besser bezahlt werden")
+    assert "lehrer" in tokens
+
+
+def test_tokenize_gender_doppelpunkt():
+    # Lehrer:innen → lehrer
+    tokens = cws._tokenize("Lehrer:innen sollen besser bezahlt werden")
+    assert "lehrer" in tokens
+
+
+def test_tokenize_doppelpunkt_nicht_bei_zeitangabe():
+    # "10:30" darf nicht fälschlich gesplittet werden — fällt durch isalpha
+    tokens = cws._tokenize("Sitzung 10:30 Uhr")
+    assert "10" not in tokens
+    assert "30" not in tokens
 
 
 # ---------------------------------------------------------------------------
