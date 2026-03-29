@@ -22,25 +22,53 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
-      - name: Fetch new Plenarprotokolle (WP21)
-        run: uv run python -m src.fetch_protokolle --wahlperiode 21
+      - name: Determine current Wahlperiode
+        id: current_wp
+        run: |
+          wp=$(uv run python3 -c "
+          import pandas as pd
+          from datetime import date
+          df = pd.read_csv('data/periods.csv')
+          today = str(date.today())
+          row = df[(df['start_date'] <= today) & (df['end_date'] >= today)]
+          if row.empty:
+              row = df.iloc[[-1]]  # fallback: use latest known period
+          print(int(row.iloc[0]['bundestag_number']))
+          ")
+          echo "wahlperiode=$wp" >> "$GITHUB_OUTPUT"
+          echo "Current Wahlperiode: $wp"
 
-      # Cache key includes the CSV of known protocol IDs — changes when new
-      # protocols are fetched, causing the cache to be updated after the run.
-      # restore-keys ensures existing XMLs are reused even when key changes.
-      - name: Cache Plenarprotokoll XMLs and speeches (WP21)
+      - name: Determine period_id for cache key
+        id: current_period
+        run: |
+          pid=$(uv run python3 -c "
+          import pandas as pd
+          from datetime import date
+          df = pd.read_csv('data/periods.csv')
+          today = str(date.today())
+          row = df[(df['start_date'] <= today) & (df['end_date'] >= today)]
+          if row.empty:
+              row = df.iloc[[-1]]
+          print(int(row.iloc[0]['period_id']))
+          ")
+          echo "period_id=$pid" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch new Plenarprotokolle
+        run: uv run python -m src.fetch_protokolle --wahlperiode ${{ steps.current_wp.outputs.wahlperiode }}
+
+      - name: Cache Plenarprotokoll XMLs and speeches
         uses: actions/cache@v4
         with:
           path: |
-            data/161/plenarprotokolle/
-            data/161/speeches.csv
-          key: plenarprotokolle-wp21-${{ hashFiles('data/161/dip_plenarprotokolle.csv') }}
-          restore-keys: plenarprotokolle-wp21-
+            data/${{ steps.current_period.outputs.period_id }}/plenarprotokolle/
+            data/${{ steps.current_period.outputs.period_id }}/speeches.csv
+          key: plenarprotokolle-wp${{ steps.current_wp.outputs.wahlperiode }}-${{ hashFiles(format('data/{0}/dip_plenarprotokolle.csv', steps.current_period.outputs.period_id)) }}
+          restore-keys: plenarprotokolle-wp${{ steps.current_wp.outputs.wahlperiode }}-
 
-      - name: Download new XMLs (WP21)
+      - name: Download new XMLs
         id: fetch_xml
         run: |
-          output=$(uv run python -m src.fetch_protokoll_xml --wahlperiode 21 2>&1)
+          output=$(uv run python -m src.fetch_protokoll_xml --wahlperiode ${{ steps.current_wp.outputs.wahlperiode }} 2>&1)
           echo "$output"
           if echo "$output" | grep -q "0 neue XMLs"; then
             echo "new_xmls=false" >> "$GITHUB_OUTPUT"
@@ -48,13 +76,13 @@ jobs:
             echo "new_xmls=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Parse speeches from XMLs (WP21)
+      - name: Parse speeches from XMLs
         if: steps.fetch_xml.outputs.new_xmls == 'true'
-        run: uv run python -m src.parse_protokolle --wahlperiode 21
+        run: uv run python -m src.parse_protokolle --wahlperiode ${{ steps.current_wp.outputs.wahlperiode }}
 
-      - name: Compute TF-IDF word stats (WP21)
+      - name: Compute TF-IDF word stats
         if: steps.fetch_xml.outputs.new_xmls == 'true'
-        run: uv run python -m src.compute_word_stats --wahlperiode 21
+        run: uv run python -m src.compute_word_stats --wahlperiode ${{ steps.current_wp.outputs.wahlperiode }}
 
       - name: Export JSON for frontend
         if: steps.fetch_xml.outputs.new_xmls == 'true'
@@ -66,5 +94,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/ frontend/public/data/
-          git diff --staged --quiet || git commit -m "data: update Plenarprotokolle WP21 $(date -u +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "data: update Plenarprotokolle WP${{ steps.current_wp.outputs.wahlperiode }} $(date -u +%Y-%m-%d)"
           git pull --rebase && git push
