@@ -41,33 +41,62 @@ Voraussetzungen: Python 3.13, [uv](https://github.com/astral-sh/uv), Node.js 20+
 # Python-Abhängigkeiten installieren (inkl. Dev-Tools)
 uv sync --group dev
 
-# Voting-Daten von abgeordnetenwatch.de laden (aktuelle Wahlperiode)
-uv run src/fetch_data.py
-
-# Modell trainieren und Embeddings berechnen
-uv run src/train_model.py
-
-# Frontend starten (Next.js)
-cd frontend && npm install && npm run dev
+# spaCy-Modell für Textanalyse herunterladen
+uv run python -m spacy download de_core_news_sm
 ```
 
-Optionale Parameter (jeweils `--help` für Details):
+### Datenpipeline
+
+Die Schritte müssen in dieser Reihenfolge ausgeführt werden. Alle Scripts akzeptieren `--wahlperiode INT` (default: aktuelle Periode). Jeweils `--help` für alle Optionen.
 
 ```bash
-uv run src/fetch_data.py --period 111       # bestimmte Wahlperiode
-uv run src/train_model.py --factors 2 --epochs 50 --lr 0.01
+# 1. Abstimmungen, Politiker, Nebenjobs und Ausschüsse von abgeordnetenwatch.de laden
+uv run src/fetch/abgeordnetenwatch.py
+
+# 2. Plenarprotokoll-Liste vom DIP Bundestag API laden
+uv run src/fetch/protokolle.py
+
+# 3. Protokoll-XMLs herunterladen (liest dip_plenarprotokolle.csv aus Schritt 2)
+uv run src/fetch/protokoll_xml.py
+
+# 4. XMLs parsen → speeches.csv
+uv run src/parse/protokolle.py
+
+# 5. TF-IDF Wortstatistiken aus speeches.csv berechnen
+uv run src/analysis/word_stats.py
+
+# 6. Embedding-Modell trainieren (benötigt PyTorch; --group train)
+uv run --group train src/model/train.py
+
+# 7. JSON-Dateien für das Frontend exportieren
+uv run src/export.py
+```
+
+```bash
+# Frontend starten (Next.js)
+cd frontend && npm install && npm run dev
 ```
 
 ## Projektstruktur
 
 ```
 src/
-  fetch_data.py           Datenabruf von der abgeordnetenwatch.de API
-  model.py                Modellarchitektur (PoliticianEmbeddingModel)
+  fetch/
+    abgeordnetenwatch.py  Abstimmungen, Politiker, Nebenjobs, Ausschüsse
+    protokolle.py         Plenarprotokoll-Liste vom DIP API
+    protokoll_xml.py      Protokoll-XMLs herunterladen
+  parse/
+    protokolle.py         XMLs parsen → speeches.csv
+  analysis/
+    word_stats.py         TF-IDF Wortstatistiken berechnen
+    transforms.py         Reine Datentransformationen (Cohesion, Pivot, ...)
+    occupation_clusters.py  Normalisierung von Berufsbezeichnungen
+    education_clusters.py   Normalisierung von Bildungsabschlüssen
+  model/
+    model.py              Modellarchitektur (PoliticianEmbeddingModel)
+    train.py              Einstiegspunkt für das Training
+  export.py               JSON-Dateien für das Frontend generieren
   storage.py              CSV-Lesen/Schreiben, Pfade
-  transforms.py           Reine Datentransformationen (Cohesion, Pivot, ...)
-  occupation_clusters.py  Normalisierung von Berufsbezeichnungen
-  train_model.py          Einstiegspunkt für das Training
 frontend/
   app/                    Next.js App Router (Seiten und Layout)
   components/             UI-Komponenten und D3-Charts

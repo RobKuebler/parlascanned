@@ -2,8 +2,8 @@ import pandas as pd
 import pytest
 import requests
 
-import src.fetch_data
-from src.fetch_data import BASE_URL, fetch_all_v2, find_polls_missing_votes
+import src.fetch.abgeordnetenwatch
+from src.fetch.abgeordnetenwatch import BASE_URL, fetch_all_v2, find_polls_missing_votes
 
 
 def test_fetch_all_v2_single_page(requests_mock):
@@ -19,7 +19,7 @@ def test_fetch_all_v2_single_page(requests_mock):
 
 def test_fetch_all_v2_pagination(requests_mock, monkeypatch):
     """Multiple pages: fetches until page is smaller than PAGE_SIZE."""
-    monkeypatch.setattr(src.fetch_data, "PAGE_SIZE", 2)
+    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "PAGE_SIZE", 2)
     requests_mock.get(
         f"{BASE_URL}/ep",
         [
@@ -85,7 +85,7 @@ def test_fetch_politicians_active_party(requests_mock):
         json={"data": mandates},
     )
 
-    from src.fetch_data import fetch_politicians
+    from src.fetch.abgeordnetenwatch import fetch_politicians
 
     df, mapping = fetch_politicians(132)
 
@@ -108,7 +108,7 @@ def test_fetch_politicians_no_membership(requests_mock):
         json={"data": mandates},
     )
 
-    from src.fetch_data import fetch_politicians
+    from src.fetch.abgeordnetenwatch import fetch_politicians
 
     df, _ = fetch_politicians(132)
 
@@ -134,7 +134,7 @@ def test_fetch_politicians_deduplicates(requests_mock):
         json={"data": mandates},
     )
 
-    from src.fetch_data import fetch_politicians
+    from src.fetch.abgeordnetenwatch import fetch_politicians
 
     df, mapping = fetch_politicians(1)
 
@@ -151,7 +151,7 @@ def test_fetch_votes_writes_csv(requests_mock, tmp_path):
     ]
     requests_mock.get(f"{BASE_URL}/votes", json={"data": mock_votes})
 
-    from src.fetch_data import fetch_votes
+    from src.fetch.abgeordnetenwatch import fetch_votes
 
     path = tmp_path / "votes.csv"
     fetch_votes([500], {1000: 1}, path, append=False)
@@ -185,7 +185,7 @@ def test_fetch_votes_append_mode(requests_mock, tmp_path):
 
     import pandas as pd
 
-    from src.fetch_data import fetch_votes
+    from src.fetch.abgeordnetenwatch import fetch_votes
 
     path = tmp_path / "votes.csv"
     fetch_votes([10], {1: 100}, path, append=False)
@@ -236,8 +236,17 @@ def test_find_polls_missing_votes_self_heals_after_failed_fetch(
     find_polls_missing_votes must still detect it as missing by checking
     votes.csv instead of polls.csv.
     """
-    monkeypatch.setattr(src.fetch_data, "DATA_DIR", tmp_path)
-    period_dir = tmp_path / "132"
+    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
+    pd.DataFrame(
+        {
+            "period_id": [132],
+            "label": ["21. WP"],
+            "bundestag_number": [21],
+            "start_date": ["2021-10-26"],
+            "end_date": ["2025-10-22"],
+        }
+    ).to_csv(tmp_path / "periods.csv", index=False)
+    period_dir = tmp_path / "21"
     period_dir.mkdir()
 
     # API returns polls 1 and 2
@@ -252,7 +261,7 @@ def test_find_polls_missing_votes_self_heals_after_failed_fetch(
     )
 
     # Run 1: upsert_polls writes both polls to polls.csv
-    df_polls, _ = src.fetch_data.upsert_polls(132)
+    df_polls, _ = src.fetch.abgeordnetenwatch.upsert_polls(21)
 
     # Simulate: votes fetched for poll 1 only (poll 2 failed)
     votes_path = period_dir / "votes.csv"
@@ -261,7 +270,7 @@ def test_find_polls_missing_votes_self_heals_after_failed_fetch(
     )
 
     # Run 2: upsert_polls returns no "new" polls (both in polls.csv)
-    _, new_from_upsert = src.fetch_data.upsert_polls(132)
+    _, new_from_upsert = src.fetch.abgeordnetenwatch.upsert_polls(21)
     assert new_from_upsert == []  # upsert_polls can't detect the gap
 
     # But find_polls_missing_votes correctly identifies poll 2 as missing
