@@ -1,12 +1,19 @@
 """Tests for src/fetch/protocols.py."""
 
 import pandas as pd
+import pytest
 
 import src.fetch.protocols as fp
 
 # ---------------------------------------------------------------------------
 # Hilfsfunktionen
 # ---------------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def set_dummy_dip_api_key(monkeypatch):
+    """Keep mocked protocol fetch tests independent from real secrets."""
+    monkeypatch.setenv("DIP_API_KEY", "test-key")
 
 
 def _make_page(docs: list, cursor: str | None = None) -> dict:
