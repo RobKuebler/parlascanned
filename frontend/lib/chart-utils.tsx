@@ -101,6 +101,10 @@ export function styleAxisText(
 export const MOBILE_BAR_W = 480;
 // Pixels reserved per bar row for the category label rendered above the bar.
 export const MOBILE_BAR_LABEL_H = 14;
+// Shared slot height and padding used by ALL horizontal bar charts so that
+// bars are the same pixel thickness everywhere (≈ 15px).
+export const HBAR_ROW_SLOT = 36;
+export const HBAR_Y_PADDING = 0.2;
 
 // ── renderBarLabels ───────────────────────────────────────────────────────────
 // Renders category labels above each bar row. Used by all horizontal bar charts
@@ -184,11 +188,12 @@ function _hBarLayout(
   width: number,
   labelCount: number,
   rowSlotHeight: number,
-  minHeight: number,
 ): { M: _HBarM; H: number; iW: number; iH: number } {
   const M: _HBarM = { left: 0, right: 8, top: 6, bottom: 36 };
-  const H = Math.max(minHeight, labelCount * rowSlotHeight + M.top + M.bottom);
-  return { M, H, iW: width - M.left - M.right, iH: H - M.top - M.bottom };
+  // iH is always derived from bar count so bar thickness stays constant
+  // across all charts regardless of how many bars they contain.
+  const iH = labelCount * rowSlotHeight;
+  return { M, H: iH + M.top + M.bottom, iW: width - M.left - M.right, iH };
 }
 
 // ── drawSimpleHorizontalBarChart ──────────────────────────────────────────────
@@ -205,7 +210,6 @@ export interface HBarConfig {
   rowSlotHeight?: number;
   xTickFormat?: (v: d3.NumberValue) => string;
   barRx?: number;
-  minHeight?: number;
   yPadding?: number;
 }
 
@@ -218,18 +222,12 @@ export function drawSimpleHorizontalBarChart({
   tooltipHtml,
   tooltip,
   container,
-  rowSlotHeight = 32,
+  rowSlotHeight = HBAR_ROW_SLOT,
   xTickFormat,
   barRx = 2,
-  minHeight = 200,
-  yPadding = 0.25,
+  yPadding = HBAR_Y_PADDING,
 }: HBarConfig): void {
-  const { M, H, iW, iH } = _hBarLayout(
-    width,
-    labels.length,
-    rowSlotHeight,
-    minHeight,
-  );
+  const { M, H, iW, iH } = _hBarLayout(width, labels.length, rowSlotHeight);
   const svg = d3.select(svgEl);
   svg.selectAll("*").remove();
   svg.attr("width", width).attr("height", H);
@@ -295,7 +293,6 @@ export interface HStackedBarConfig {
   container: Element;
   rowSlotHeight?: number;
   xTickFormat?: (v: d3.NumberValue) => string;
-  minHeight?: number;
 }
 
 export function drawStackedHorizontalBarChart({
@@ -309,16 +306,10 @@ export function drawStackedHorizontalBarChart({
   tooltipHtml,
   tooltip,
   container,
-  rowSlotHeight = 36,
+  rowSlotHeight = HBAR_ROW_SLOT,
   xTickFormat,
-  minHeight = 300,
 }: HStackedBarConfig): void {
-  const { M, H, iW, iH } = _hBarLayout(
-    width,
-    categories.length,
-    rowSlotHeight,
-    minHeight,
-  );
+  const { M, H, iW, iH } = _hBarLayout(width, categories.length, rowSlotHeight);
   const svg = d3.select(svgEl);
   svg.selectAll("*").remove();
   svg.attr("width", width).attr("height", H);
@@ -334,7 +325,11 @@ export function drawStackedHorizontalBarChart({
     .scaleLinear()
     .domain([0, xMax * 1.02])
     .range([0, iW]);
-  const yScale = d3.scaleBand().domain(categories).range([0, iH]).padding(0.2);
+  const yScale = d3
+    .scaleBand()
+    .domain(categories)
+    .range([0, iH])
+    .padding(HBAR_Y_PADDING);
 
   appendHBarXAxis(
     g,
@@ -836,7 +831,7 @@ export function drawPartyColoredStackedBarChart({
   }
 
   if (width < MOBILE_BAR_W) {
-    const { M, H, iW, iH } = _hBarLayout(width, labels.length, 36, 200);
+    const { M, H, iW, iH } = _hBarLayout(width, labels.length, HBAR_ROW_SLOT);
     const svg = d3.select(svgEl);
     svg.selectAll("*").remove();
     svg.attr("width", width).attr("height", H);
@@ -844,7 +839,11 @@ export function drawPartyColoredStackedBarChart({
       .append("g")
       .attr("transform", `translate(${M.left},${M.top})`);
     const xScale = d3.scaleLinear().domain([0, 100]).range([0, iW]);
-    const yScale = d3.scaleBand().domain(labels).range([0, iH]).padding(0.2);
+    const yScale = d3
+      .scaleBand()
+      .domain(labels)
+      .range([0, iH])
+      .padding(HBAR_Y_PADDING);
 
     appendHBarXAxis(g, xScale, iH, (v) => `${+v}%`);
     renderBarLabels(g, labels, yScale, width, M.right, tooltip, container);

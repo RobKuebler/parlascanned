@@ -64,7 +64,6 @@ export function IncomeByPartyChart({
           `<b>${label}</b><br/>${Math.round(value).toLocaleString("de")} €`,
         tooltip: d3.select(tooltipRef.current!),
         container: containerRef.current!,
-        hBar: { rowSlotHeight: 30, minHeight: 180 },
       });
     };
 
@@ -145,8 +144,6 @@ export function IncomeByCategoryChart({
         `<b>${party}</b><br/>${cat}<br/>${value.toLocaleString("de")} €`,
       tooltip: d3.select(tooltipRef.current!),
       container: containerRef.current!,
-      rowSlotHeight: 36,
-      minHeight: 300,
     });
   }, [jobs, parties, width]);
 
@@ -237,8 +234,6 @@ export function TopTopicsChart({
         `<b>${party}</b><br/>${topic}<br/>${value.toLocaleString("de")} €`,
       tooltip: d3.select(tooltipRef.current!),
       container: containerRef.current!,
-      rowSlotHeight: 32,
-      minHeight: 300,
     });
   }, [jobs, parties, width]);
 
@@ -322,8 +317,6 @@ export function TopEarnersChart({
         `<b>${label}</b><br/>${Math.round(value).toLocaleString("de")} €`,
       tooltip: d3.select(tooltipRef.current!),
       container: containerRef.current!,
-      rowSlotHeight: 28,
-      minHeight: 300,
     });
   }, [jobs, politicians, width]);
 

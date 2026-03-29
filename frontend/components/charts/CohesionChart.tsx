@@ -8,10 +8,9 @@ import { ChartTooltip, drawSimpleHorizontalBarChart } from "@/lib/chart-utils";
 
 interface Props {
   cohesion: CohesionRecord[];
-  height?: number;
 }
 
-export function CohesionChart({ cohesion, height = 300 }: Props) {
+export function CohesionChart({ cohesion }: Props) {
   const { ref: containerRef, width } = useContainerWidth();
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -32,10 +31,8 @@ export function CohesionChart({ cohesion, height = 300 }: Props) {
       tooltip: d3.select(tooltipRef.current!),
       container: containerRef.current!,
       xTickFormat: (v) => String(parseFloat((+v).toFixed(2))),
-      yPadding: 0.3,
-      minHeight: height,
     });
-  }, [cohesion, height, width]);
+  }, [cohesion, width]);
 
   return (
     <div ref={containerRef} style={{ position: "relative" }}>
