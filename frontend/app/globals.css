@@ -29,6 +29,18 @@ body {
   animation: shimmer 1.6s ease-in-out infinite;
 }
 
+/* ── Word cloud word-by-word fade-in ─────────────────────────────────────── */
+/* CSS animation instead of D3 transition so it runs on the compositor thread
+   and doesn't stutter when the main thread is busy with layout computation. */
+@keyframes wc-word-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* ── Page fade-in ─────────────────────────────────────────────────────────── */
 /* Only opacity — no transform. transform on an ancestor breaks position:fixed
    on D3 tooltip descendants (creates a new containing block). */

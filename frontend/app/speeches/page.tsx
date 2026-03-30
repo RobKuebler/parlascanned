@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { usePeriod } from "@/lib/period-context";
 import {
   fetchData,
@@ -56,13 +56,16 @@ export default function SpeechesPage() {
       });
   }, [activePeriodId]);
 
-  // Normalize word freq keys (strip soft-hyphen)
-  const normalizedWordFreq: WordFreqFile = {};
-  if (wordFreq) {
+  // Normalize word freq keys (strip soft-hyphen). Memoized so word arrays keep
+  // stable references — prevents WordCloud from re-running layout on every render.
+  const normalizedWordFreq = useMemo<WordFreqFile>(() => {
+    if (!wordFreq) return {};
+    const result: WordFreqFile = {};
     for (const [fraktion, words] of Object.entries(wordFreq)) {
-      normalizedWordFreq[stripSoftHyphen(fraktion)] = words;
+      result[stripSoftHyphen(fraktion)] = words;
     }
-  }
+    return result;
+  }, [wordFreq]);
 
   // Group speakers by normalized party name
   const speakersByParty: Record<string, SpeakerRecord[]> = {};
@@ -87,6 +90,15 @@ export default function SpeechesPage() {
   const parties = sortParties(
     Object.keys(normalizedWordFreq).filter((p) => p !== "fraktionslos"),
   );
+
+  // Pre-sliced word arrays per party — stable references so WordCloud memo works.
+  const wordSlices = useMemo<Record<string, WordFreqFile[string]>>(() => {
+    const result: Record<string, WordFreqFile[string]> = {};
+    for (const party of Object.keys(normalizedWordFreq)) {
+      result[party] = normalizedWordFreq[party].slice(0, 30);
+    }
+    return result;
+  }, [normalizedWordFreq]);
 
   return (
     <>
@@ -122,8 +134,8 @@ export default function SpeechesPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {parties.map((party) => {
-            const words = (normalizedWordFreq[party] ?? []).slice(0, 30);
+          {parties.map((party, i) => {
+            const words = wordSlices[party] ?? [];
             const speakers = speakersByParty[party] ?? [];
             const color = PARTY_COLORS[party] ?? FALLBACK_COLOR;
             const total = totalWords[party] ?? 0;
@@ -162,6 +174,7 @@ export default function SpeechesPage() {
                   color={color}
                   height={200}
                   onClick={() => setExpandedParty(party)}
+                  startDelay={i * 180}
                 />
 
                 {/* Speaker list */}

@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, memo } from "react";
 import * as d3 from "d3";
 import cloud from "d3-cloud";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
@@ -10,6 +10,9 @@ interface Props {
   color: string;
   height?: number;
   onClick?: () => void;
+  // Delay in ms before the layout starts — stagger multiple clouds to avoid
+  // event-loop contention from concurrent d3-cloud setTimeout steps.
+  startDelay?: number;
 }
 
 // Minimal shape of a d3-cloud Word (mirrors the d3-cloud internal interface).
@@ -34,7 +37,15 @@ function mulberry32(seed: number) {
   };
 }
 
-export function WordCloud({ words, color, height = 200, onClick }: Props) {
+// Wrapped in memo: onClick changes reference on every parent render (expandedParty
+// state), but is not a layout dependency — skip re-renders when only it changes.
+export const WordCloud = memo(function WordCloud({
+  words,
+  color,
+  height = 200,
+  onClick,
+  startDelay = 0,
+}: Props) {
   const { ref: containerRef, width } = useContainerWidth();
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -64,12 +75,14 @@ export function WordCloud({ words, color, height = 200, onClick }: Props) {
       .fontSize((d) => d.size ?? 11)
       .on("end", draw);
 
-    layout.start();
+    const startTimer = setTimeout(() => layout.start(), startDelay);
 
     function draw(placed: CloudWord[]) {
       if (!svgRef.current) return;
       const svg = d3.select(svgRef.current);
       svg.selectAll("*").remove();
+      // Words enter staggered: each fades in after the previous one starts,
+      // so the cloud builds up word by word instead of popping in all at once.
       svg
         .attr("width", width)
         .attr("height", height)
@@ -92,9 +105,19 @@ export function WordCloud({ words, color, height = 200, onClick }: Props) {
           "transform",
           (d) => `translate(${d.x ?? 0},${d.y ?? 0})rotate(${d.rotate ?? 0})`,
         )
-        .text((d) => d.text ?? "");
+        .text((d) => d.text ?? "")
+        // CSS animation runs on the compositor thread — stays smooth even when
+        // the main thread is busy processing other cloud layouts.
+        .style(
+          "animation",
+          (_, i) => `wc-word-in 350ms ease-out ${i * 22}ms both`,
+        );
     }
-  }, [width, height, words, color]);
+    return () => {
+      clearTimeout(startTimer);
+      layout.stop();
+    };
+  }, [width, height, words, color, startDelay]);
 
   return (
     <div
@@ -106,4 +129,4 @@ export function WordCloud({ words, color, height = 200, onClick }: Props) {
       <svg ref={svgRef} style={{ display: "block" }} />
     </div>
   );
-}
+});
