@@ -12,6 +12,7 @@ Usage:
 import argparse
 import logging
 import math
+import re
 from collections import Counter
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -22,114 +23,49 @@ from ..cli import add_period_argument, build_parser, configure_logging
 from ..storage import DATA_DIR, current_period
 
 if TYPE_CHECKING:
-    import spacy as spacy_type
+    from HanTa.HanoverTagger import HanoverTagger
 
 log = logging.getLogger(__name__)
 
-# Lazy-loaded spaCy model — avoids import cost when module is imported but not used.
-_nlp: "spacy_type.Language | None" = None
+# Lazy-loaded HanTa tagger — avoids import cost when module is imported but not used.
+_tagger: "HanoverTagger | None" = None
 
 
-def _get_nlp() -> "spacy_type.Language":
-    """Load German spaCy model on first call and cache it.
+def _get_tagger() -> "HanoverTagger":
+    """Load HanTa German morphology tagger on first call and cache it."""
+    global _tagger  # noqa: PLW0603
+    if _tagger is None:
+        from HanTa.HanoverTagger import HanoverTagger as HanoverTaggerClass
 
-    Loads de_core_news_sm with parser, NER and sentencizer disabled
-    for speed — only tokenizer + lemmatizer are needed.
-    """
-    global _nlp  # noqa: PLW0603
-    if _nlp is None:
-        import spacy
-
-        _nlp = spacy.load("de_core_news_sm", disable=["parser", "ner", "senter"])
-    return _nlp
-
-
-def _fix_feminine_lemma(lemma: str) -> str:
-    """Fix spaCy's known bad lemmas for German feminine forms.
-
-    de_core_news_sm truncates "-innen" plurals incorrectly:
-      "demokratinnen" → "demokratinne" (should be "demokratin")
-    """
-    if lemma.endswith("inne") and len(lemma) >= 6:
-        return lemma[:-2]  # demokratinne → demokratin
-    if lemma.endswith("inn") and len(lemma) >= 5:
-        return lemma[:-1]  # politikerinn → politikerin
-    return lemma
-
-
-def _spacy_isolated_pass(
-    nlp: "spacy_type.Language",
-    words: list[str],
-) -> tuple[dict[str, str], list[str]]:
-    """Run isolated spaCy lemmatization; return (lemma_map, words_needing_retry).
-
-    Words ending in -en/-em that spaCy left unchanged are collected for a
-    second pass with adjective context (stage 3 in _lemmatize_tokens).
-    """
-    lemma_map: dict[str, str] = {}
-    needs_retry: list[str] = []
-    for word, doc in zip(words, nlp.pipe(words), strict=False):
-        lemma = doc[0].lemma_.lower() if doc else word
-        if not (lemma.isalpha() and len(lemma) >= 4):
-            lemma = word
-        lemma = _fix_feminine_lemma(lemma)
-        if lemma == word and word.endswith(("en", "em")):
-            needs_retry.append(word)
-        else:
-            lemma_map[word] = lemma
-    return lemma_map, needs_retry
-
-
-def _spacy_adj_context_pass(
-    nlp: "spacy_type.Language",
-    words: list[str],
-) -> dict[str, str]:
-    """Retry lemmatization in adjective context ("ein X Mensch").
-
-    Accepts the result only if spaCy produced a shorter form (i.e. an
-    inflection ending was stripped), e.g. "rechtsextremen" → "rechtsextrem".
-    """
-    sentences = [f"ein {w} Mensch" for w in words]
-    lemma_map: dict[str, str] = {}
-    for word, doc in zip(words, nlp.pipe(sentences), strict=False):
-        result = word
-        for tok in doc:
-            if tok.text.lower() == word:
-                candidate = tok.lemma_.lower()
-                if (
-                    candidate.isalpha()
-                    and len(candidate) >= 4
-                    and len(candidate) < len(word)
-                ):
-                    result = candidate
-                break
-        lemma_map[word] = result
-    return lemma_map
+        _tagger = HanoverTaggerClass("morphmodel_ger.pgz")
+    return _tagger
 
 
 def _lemmatize_tokens(tokens: list[str]) -> list[str]:
-    """Lemmatize German tokens using spaCy with a three-stage pipeline.
+    """Lemmatize German tokens using HanTa.
 
-    1. Pre-process: -innen plurals → -in directly (spaCy lookup table is wrong).
-    2. Isolated spaCy pass; post-fix bad -inne/-inn lemmas.
-    3. ADJ-context retry for -en/-em tokens spaCy left unchanged.
+    Hyphenated compounds (rheinland-pfalz) and gender-marked forms
+    (bürger*innen, lehrer:innen) are kept verbatim — HanTa can't handle them
+    and they are intentionally preserved as distinct word forms in TF-IDF.
+    All other tokens are lemmatized and lowercased via HanTa's morphological
+    analyzer, which correctly handles German adjective inflections and feminine
+    plurals without any heuristic post-processing.
     """
     if not tokens:
         return tokens
-    nlp = _get_nlp()
+
+    tagger = _get_tagger()
     unique = list(set(tokens))
 
-    # Stage 1: German feminine plurals bypass spaCy
-    pre_processed = {w for w in unique if w.endswith("innen") and len(w) >= 7}
-    lemma_map: dict[str, str] = {w: w[:-3] for w in pre_processed}  # -innen → -in
+    # Keep hyphenated compounds and gender-marked forms as-is
+    special_forms = {w for w in unique if any(c in w for c in "-*:")}
+    lemma_map: dict[str, str] = {w: w for w in special_forms}
 
-    # Stage 2: isolated spaCy pass
-    to_spacy = [w for w in unique if w not in pre_processed]
-    stage2_map, needs_retry = _spacy_isolated_pass(nlp, to_spacy)
-    lemma_map.update(stage2_map)
-
-    # Stage 3: adjective-context retry
-    lemma_map.update(_spacy_adj_context_pass(nlp, needs_retry))
+    for word in unique:
+        if word in special_forms:
+            continue
+        lemma = tagger.analyze(word)[0].lower()
+        lemma_map[word] = lemma if (lemma.isalpha() and len(lemma) >= 3) else word
 
     return [lemma_map.get(t, t) for t in tokens]
 
@@ -335,41 +271,53 @@ _SPEECH_STATS_COLS = [
 ]
 
 
-def _tokenize(text: str) -> list[str]:
-    """Lowercase, split on whitespace, normalize punctuation and gender markers.
+# Gültige Token nach Edge-Stripping:
+#   - Reine Buchstabenfolge:       "klimawandel", "migration"
+#   - Bindestrich-Kompositum:      "rheinland-pfalz", "verbrenner-aus", "rot-grüne"
+#   - Genderform mit * oder ::     "bürger*innen", "lehrer:innen"
+# Ziffern, §, Schrägstrich etc. → ungültig
+_VALID_TOKEN = re.compile(r"^[^\W\d_]+(?:[-*:][^\W\d_]+)*$", re.UNICODE)
 
-    Handles:
-    - Typographic quotes stripped from token boundaries (e.g. „Wort" → wort)
-    - Gender markers: Bürger*innen → bürger, Lehrer:innen → lehrer (only when
-      the base part is alphabetic, so "10:30" stays intact and gets filtered)
-    - Gender slash: Lehrer/innen → lehrer (base part only)
-    - Trailing punctuation: Klima. → klima, Zukunft, → zukunft
+# Nicht-Buchstaben (inkl. Ziffern) an Worträndern abstreifen:
+# „Klimawandel" → Klimawandel | Hallo! → Hallo | 21.Wahlperiode → Wahlperiode
+_EDGE_STRIP_RE = re.compile(r"^[\W\d_]+|[\W\d_]+$", re.UNICODE)
 
-    Keeps only tokens that are purely alphabetic and at least 4 chars long.
+
+def _preprocess_text(text: str) -> str:
+    """Normalize whitespace variants and separator characters before tokenizing.
+
+    Converts non-breaking spaces to regular spaces so they split correctly.
+    En-dash and em-dash are sentence separators in Bundestag transcripts
+    (not part of words) and are replaced with spaces.
+    Slashes are replaced with spaces so CDU/CSU → two separate tokens.
     """
-    result = []
-    for raw in text.split():
-        w = raw.lower()
-        # Truncate at gender markers * and : if the base part is alphabetic
-        for sep in ("*", ":"):
-            if sep in w:
-                base = w.split(sep)[0]
-                if base.isalpha():
-                    w = base
-                    break
-        # Gender slash: take base form if it's alphabetic (filters CDU/CSU etc.)
-        if "/" in w:
-            base = w.split("/")[0]
-            if base.isalpha():
-                w = base
-        # Strip non-alphabetic chars from both ends (typographic quotes, punctuation)
-        while w and not w[0].isalpha():
-            w = w[1:]
-        while w and not w[-1].isalpha():
-            w = w[:-1]
-        if w.isalpha() and len(w) >= 4:
-            result.append(w)
-    return result
+    return (
+        text.replace("\u00a0", " ")
+        .replace("\u202f", " ")  # non-breaking spaces
+        .replace("\u2013", " ")
+        .replace("\u2014", " ")  # en-dash / em-dash
+        .replace("/", " ")  # CDU/CSU → "CDU CSU"
+    )
+
+
+def _tokenize(text: str) -> list[str]:
+    """Split text into clean lowercase tokens of at least 3 characters.
+
+    Processing per token:
+    1. Preprocess text: normalize whitespace, replace en-dashes and slashes.
+    2. Strip non-letter characters from token edges (quotes, punctuation, digits).
+    3. Strip leading/trailing hyphens and gender markers that ended up at the edge.
+    4. Validate: token must consist only of letters, or letters connected by
+       hyphens (Rheinland-Pfalz), asterisks (Bürger*innen), or colons (Lehrer:innen).
+    5. Keep tokens >= 3 chars; common short words are removed by stopwords later.
+    """
+    tokens = []
+    for raw in _preprocess_text(text).split():
+        word = _EDGE_STRIP_RE.sub("", raw)
+        word = word.strip("-*:")  # remove markers that ended up at edges
+        if len(word) >= 3 and _VALID_TOKEN.match(word):
+            tokens.append(word.lower())
+    return tokens
 
 
 def compute_tfidf(
@@ -384,7 +332,7 @@ def compute_tfidf(
     TF = word_count_in_party / total_words_in_party
     IDF = log(n_parties / n_parties_containing_word)
     Words in stopwords are excluded before computation.
-    When lemmatize=True (default), German tokens are lemmatized via spaCy
+    When lemmatize=True (default), German tokens are lemmatized via HanTa
     before counting so inflected forms merge (e.g. "rechtsextreme" → "rechtsextrem").
 
     Returns DataFrame with columns: fraktion, wort, tfidf, rang.

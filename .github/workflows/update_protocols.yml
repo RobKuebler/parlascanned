@@ -27,9 +27,6 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen
 
-      - name: Install spaCy German model
-        run: uv run python -m spacy download de_core_news_sm
-
       - name: Fetch new plenary protocols
         id: fetch_protocols
         run: uv run python -m src.fetch.protocols

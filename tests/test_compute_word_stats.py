@@ -8,9 +8,9 @@ import src.analysis.word_stats as cws
 
 @pytest.fixture(autouse=True)
 def disable_lemmatization(monkeypatch):
-    """Deactivate spaCy lemmatization for all tests.
+    """Deactivate lemmatization for all tests.
 
-    Tests run without the German model installed. Lemmatization is tested
+    Keeps tests fast and independent of HanTa. Lemmatization is tested
     separately via test_lemmatize_tokens_* below.
     """
     monkeypatch.setattr(cws, "_lemmatize_tokens", lambda tokens: tokens)
@@ -28,11 +28,13 @@ def test_tokenize_lowercase_und_nur_alpha():
 
 
 def test_tokenize_filtert_kurze_woerter():
-    # Wörter <= 3 Zeichen werden gefiltert
+    # Wörter <= 2 Zeichen werden gefiltert (Min. 3 Zeichen).
+    # 3-Zeichen-Wörter wie "wir" überleben die Tokenisierung — Stopwords filtern sie später.
     tokens = cws._tokenize("wir in an ja klimawandel")
     assert "klimawandel" in tokens
-    assert "wir" not in tokens
-    assert "in" not in tokens
+    assert "wir" in tokens  # 3 Zeichen → bleibt
+    assert "in" not in tokens  # 2 Zeichen → weg
+    assert "ja" not in tokens  # 2 Zeichen → weg
 
 
 def test_tokenize_typografische_anfuehrungszeichen():
@@ -50,27 +52,58 @@ def test_tokenize_wort_mit_anhaengender_interpunktion():
     assert "sicherheit" in tokens
 
 
-def test_tokenize_genderstern():
-    # Bürger*innen → bürger (alles ab * abgeschnitten)
+def test_tokenize_bindestrich_kompositum():
+    # Bindestrich bleibt erhalten — Komposita werden nicht zerrissen
+    tokens = cws._tokenize("Rheinland-Pfalz beschloss das Verbrenner-Aus")
+    assert "rheinland-pfalz" in tokens
+    assert "verbrenner-aus" in tokens
+    assert "rheinland" not in tokens
+    assert "pfalz" not in tokens
+
+
+def test_tokenize_cdu_csu_splittet():
+    # Schrägstrich → zwei separate Tokens
+    tokens = cws._tokenize("CDU/CSU stimmt dagegen")
+    assert "cdu" in tokens
+    assert "csu" in tokens
+
+
+def test_tokenize_en_dash_als_trenner():
+    # En-Dash (U+2013) ist Satztrenner, kein Wortbestandteil
+    tokens = cws._tokenize("Ende \u2013 Anfang")
+    assert "ende" in tokens
+    assert "anfang" in tokens
+
+
+def test_tokenize_non_breaking_space():
+    # Non-breaking Space (U+00A0) wird als Wortgrenze behandelt
+    tokens = cws._tokenize("21.\u00a0Wahlperiode")
+    assert "wahlperiode" in tokens
+    assert "21" not in tokens
+
+
+def test_tokenize_genderstern_bleibt():
+    # Bürger*innen bleibt als eigene Wortform — interessant für Gendering-Analyse
     tokens = cws._tokenize("Bürger*innen fordern mehr Rechte")
-    assert "bürger" in tokens
-    assert "bürgerinnen" not in tokens
+    assert "bürger*innen" in tokens
+    assert "bürger" not in tokens
 
 
 def test_tokenize_gender_slash():
-    # Lehrer/innen → lehrer
+    # Lehrer/innen → Slash wird zu Leerzeichen → "lehrer" und "innen" getrennt
     tokens = cws._tokenize("Lehrer/innen sollen besser bezahlt werden")
     assert "lehrer" in tokens
 
 
-def test_tokenize_gender_doppelpunkt():
-    # Lehrer:innen → lehrer
+def test_tokenize_gender_doppelpunkt_bleibt():
+    # Lehrer:innen bleibt als eigene Wortform
     tokens = cws._tokenize("Lehrer:innen sollen besser bezahlt werden")
-    assert "lehrer" in tokens
+    assert "lehrer:innen" in tokens
+    assert "lehrer" not in tokens
 
 
 def test_tokenize_doppelpunkt_nicht_bei_zeitangabe():
-    # "10:30" darf nicht fälschlich gesplittet werden — fällt durch isalpha
+    # "10:30" wird komplett verworfen (Ziffern werden an Rändern abgestreift)
     tokens = cws._tokenize("Sitzung 10:30 Uhr")
     assert "10" not in tokens
     assert "30" not in tokens
@@ -253,32 +286,38 @@ def test_fetch_word_stats_fehlendes_csv_wirft_systemexit(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# _lemmatize_tokens (benötigt echtes spaCy-Modell, autouse-Fixture deaktiviert)
+# _lemmatize_tokens (benötigt HanTa, autouse-Fixture deaktiviert)
 # ---------------------------------------------------------------------------
 
 
 def test_lemmatize_tokens_fasst_flexionsformen_zusammen(monkeypatch):
     """Adjektiv-Flexionsformen werden auf Grundform reduziert."""
-    pytest.importorskip("spacy")
-    pytest.importorskip("de_core_news_sm")
+    pytest.importorskip("HanTa")
     monkeypatch.undo()
 
     tokens = ["rechtsextreme", "rechtsextremen", "rechtsextremem", "rechtsextrem"]
     lemmas = cws._lemmatize_tokens(tokens)
-    lemma_set = set(lemmas)
-    # Die häufigsten Flexionsformen (-e, -en) müssen zur Grundform "rechtsextrem" zusammenlaufen
-    assert "rechtsextrem" in lemma_set, f"Grundform fehlt: {lemma_set}"
-    idx_e = tokens.index("rechtsextreme")
-    idx_en = tokens.index("rechtsextremen")
-    assert lemmas[idx_e] == lemmas[idx_en] == "rechtsextrem", (
-        f"rechtsextreme→{lemmas[idx_e]}, rechtsextremen→{lemmas[idx_en]}"
+    # Alle Flexionsformen müssen zur Grundform "rechtsextrem" zusammenlaufen
+    assert all(lemma == "rechtsextrem" for lemma in lemmas), (
+        f"Nicht alle auf Grundform: {lemmas}"
+    )
+
+
+def test_lemmatize_tokens_gefluechtete_konsistent(monkeypatch):
+    """Alle Flexionsformen von 'Geflüchtete(r)' landen auf demselben Lemma."""
+    pytest.importorskip("HanTa")
+    monkeypatch.undo()
+
+    tokens = ["geflüchteter", "geflüchtete", "geflüchteten", "geflüchtetem"]
+    lemmas = cws._lemmatize_tokens(tokens)
+    assert len(set(lemmas)) == 1, (
+        f"Inkonsistente Lemmas: {list(zip(tokens, lemmas, strict=True))}"
     )
 
 
 def test_lemmatize_tokens_innen_plural(monkeypatch):
     """Feminine Pluralformen auf -innen werden auf -in reduziert."""
-    pytest.importorskip("spacy")
-    pytest.importorskip("de_core_news_sm")
+    pytest.importorskip("HanTa")
     monkeypatch.undo()
 
     tokens = ["demokratinnen", "politikerinnen", "sozialdemokratinnen"]
@@ -290,17 +329,25 @@ def test_lemmatize_tokens_innen_plural(monkeypatch):
 
 def test_lemmatize_tokens_identity_fuer_grundformen(monkeypatch):
     """Wörter die bereits Grundform sind, bleiben unverändert."""
-    pytest.importorskip("spacy")
-    pytest.importorskip("de_core_news_sm")
+    pytest.importorskip("HanTa")
     monkeypatch.undo()
 
     tokens = ["klimawandel", "migration", "sicherheit"]
     lemmas = cws._lemmatize_tokens(tokens)
-    # Grundformen sollten sich nicht wesentlich ändern
-    assert all(len(lemma) >= 4 and lemma.isalpha() for lemma in lemmas)
+    assert all(len(lemma) >= 3 and lemma.isalpha() for lemma in lemmas)
+
+
+def test_lemmatize_tokens_sonderformen_unveraendert(monkeypatch):
+    """Bindestrich-Komposita und Gender-Formen werden nicht lemmatisiert."""
+    pytest.importorskip("HanTa")
+    monkeypatch.undo()
+
+    tokens = ["rheinland-pfalz", "bürger*innen", "lehrer:innen"]
+    lemmas = cws._lemmatize_tokens(tokens)
+    assert lemmas == tokens
 
 
 def test_lemmatize_tokens_leere_liste(monkeypatch):
-    """Leere Token-Liste gibt leere Liste zurück ohne spaCy aufzurufen."""
+    """Leere Token-Liste gibt leere Liste zurück ohne HanTa aufzurufen."""
     monkeypatch.undo()
     assert cws._lemmatize_tokens([]) == []
