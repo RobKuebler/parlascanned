@@ -337,14 +337,27 @@ def test_lemmatize_tokens_identity_fuer_grundformen(monkeypatch):
     assert all(len(lemma) >= 3 and lemma.isalpha() for lemma in lemmas)
 
 
-def test_lemmatize_tokens_sonderformen_unveraendert(monkeypatch):
-    """Bindestrich-Komposita und Gender-Formen werden nicht lemmatisiert."""
+def test_lemmatize_tokens_bindestrich_unveraendert(monkeypatch):
+    """Bindestrich-Komposita werden nicht lemmatisiert."""
     pytest.importorskip("HanTa")
     monkeypatch.undo()
 
-    tokens = ["rheinland-pfalz", "bürger*innen", "lehrer:innen"]
+    tokens = ["rheinland-pfalz", "verbrenner-aus"]
     lemmas = cws._lemmatize_tokens(tokens)
     assert lemmas == tokens
+
+
+def test_lemmatize_tokens_gender_marker_wird_normalisiert(monkeypatch):
+    """Gender-Marker werden entfernt und das Ergebnis lemmatisiert."""
+    pytest.importorskip("HanTa")
+    monkeypatch.undo()
+
+    # Bürger*innen → bürgerinnen → bürgerin
+    assert cws._lemmatize_tokens(["bürger*innen"]) == ["bürgerin"]
+    # Ärzt*innen → ärztinnen → ärztin  (nicht "ärzt", was kein Wort wäre)
+    assert cws._lemmatize_tokens(["ärzt*innen"]) == ["ärztin"]
+    # Lehrer:innen → lehrerinnen → lehrerin
+    assert cws._lemmatize_tokens(["lehrer:innen"]) == ["lehrerin"]
 
 
 def test_lemmatize_tokens_leere_liste(monkeypatch):

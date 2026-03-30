@@ -44,12 +44,15 @@ def _get_tagger() -> "HanoverTagger":
 def _lemmatize_tokens(tokens: list[str]) -> list[str]:
     """Lemmatize German tokens using HanTa.
 
-    Hyphenated compounds (rheinland-pfalz) and gender-marked forms
-    (bürger*innen, lehrer:innen) are kept verbatim — HanTa can't handle them
-    and they are intentionally preserved as distinct word forms in TF-IDF.
-    All other tokens are lemmatized and lowercased via HanTa's morphological
-    analyzer, which correctly handles German adjective inflections and feminine
-    plurals without any heuristic post-processing.
+    Hyphenated compounds (rheinland-pfalz) are kept verbatim — HanTa splits
+    on hyphens and would only return the first component.
+
+    Gender-marked forms (bürger*innen, lehrer:innen) have their marker
+    stripped before lemmatization so HanTa receives a real word:
+      bürger*innen → bürgerinnen → bürgerin
+      ärzt*innen   → ärztinnen   → ärztin
+
+    All other tokens go through HanTa's morphological analyzer directly.
     """
     if not tokens:
         return tokens
@@ -57,12 +60,23 @@ def _lemmatize_tokens(tokens: list[str]) -> list[str]:
     tagger = _get_tagger()
     unique = list(set(tokens))
 
-    # Keep hyphenated compounds and gender-marked forms as-is
-    special_forms = {w for w in unique if any(c in w for c in "-*:")}
-    lemma_map: dict[str, str] = {w: w for w in special_forms}
+    # Hyphenated compounds: keep as-is
+    lemma_map: dict[str, str] = {w: w for w in unique if "-" in w}
 
+    # Gender-marked forms: strip marker, then lemmatize the resulting real word
     for word in unique:
-        if word in special_forms:
+        if "-" in word:
+            continue
+        if "*" in word or ":" in word:
+            normalized = word.replace("*", "").replace(":", "")
+            lemma = tagger.analyze(normalized)[0].lower()
+            lemma_map[word] = (
+                lemma if (lemma.isalpha() and len(lemma) >= 3) else normalized
+            )
+
+    # Regular tokens: lemmatize directly
+    for word in unique:
+        if word in lemma_map:
             continue
         lemma = tagger.analyze(word)[0].lower()
         lemma_map[word] = lemma if (lemma.isalpha() and len(lemma) >= 3) else word
