@@ -20,8 +20,8 @@ from typing import TYPE_CHECKING
 import pandas as pd
 
 from ..cli import add_period_argument, build_parser, configure_logging
+from ..fetch.abgeordnetenwatch import DATA_DIR, current_period
 from ..parse.protocols import parse_alle_sitzungen
-from ..storage import DATA_DIR, current_period
 
 if TYPE_CHECKING:
     from HanTa.HanoverTagger import HanoverTagger

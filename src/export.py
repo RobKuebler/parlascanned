@@ -24,8 +24,7 @@ from .analysis.transforms import (
     compute_title_counts,
 )
 from .cli import add_period_argument, build_parser, configure_logging
-from .fetch.abgeordnetenwatch import fetch_periods_df
-from .storage import DATA_DIR, OUTPUTS_DIR
+from .fetch.abgeordnetenwatch import DATA_DIR, OUTPUTS_DIR, fetch_periods_df
 
 log = logging.getLogger(__name__)
 

@@ -22,7 +22,7 @@ from ..cli import (
     configure_logging,
     write_github_output,
 )
-from ..storage import DATA_DIR, current_period
+from ..fetch.abgeordnetenwatch import DATA_DIR, current_period
 
 log = logging.getLogger(__name__)
 

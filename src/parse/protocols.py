@@ -15,7 +15,7 @@ from xml.etree import ElementTree as ET
 import pandas as pd
 
 from ..cli import add_period_argument, build_parser, configure_logging
-from ..storage import DATA_DIR, current_period
+from ..fetch.abgeordnetenwatch import DATA_DIR, current_period
 
 log = logging.getLogger(__name__)
 

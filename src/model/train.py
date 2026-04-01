@@ -53,9 +53,13 @@ def main(argv: list[str] | None = None) -> None:
 
     import lightning as L
 
-    from ..fetch.abgeordnetenwatch import refresh_politicians, refresh_polls
-    from ..storage import DATA_DIR, OUTPUTS_DIR, current_period, save_embeddings
-    from .model import prepare_votes, train
+    from ..fetch.abgeordnetenwatch import (
+        DATA_DIR,
+        current_period,
+        refresh_politicians,
+        refresh_polls,
+    )
+    from .model import OUTPUTS_DIR, prepare_votes, save_embeddings, train
 
     period = args.period or current_period()
     votes_path = DATA_DIR / str(period) / "votes.csv"

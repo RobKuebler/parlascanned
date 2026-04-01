@@ -12,6 +12,9 @@ from urllib3.util import Retry
 
 log = logging.getLogger(__name__)
 
+DATA_DIR = Path(__file__).parents[2] / "data"
+OUTPUTS_DIR = Path(__file__).parents[2] / "outputs"
+
 BASE_URL = "https://www.abgeordnetenwatch.de/api/v2"
 BUNDESTAG_PARLIAMENT_ID = 5
 PAGE_SIZE = 1000  # API supports up to 1000 results per page
@@ -542,3 +545,22 @@ def fetch_committees(
     )
     log.info("Fetched %d committee memberships.", len(df_memberships))
     return df_committees, df_memberships
+
+
+def current_period() -> int:
+    """Return the bundestag_number of the currently active legislature.
+
+    Fetches periods from the API and finds the one whose date range contains today.
+    Falls back to the latest known period if today falls outside all known ranges
+    (e.g. a future period whose end_date is not yet set).
+    """
+    df = fetch_periods_df()
+    today = datetime.now(tz=UTC).date().isoformat()
+    active = df[(df["start_date"] <= today) & (df["end_date"] >= today)]
+    row = active.iloc[0] if not active.empty else df.iloc[-1]
+    return int(row["bundestag_number"])
+
+
+def current_wahlperiode() -> int:
+    """Backward-compatible wrapper for the old helper name."""
+    return current_period()

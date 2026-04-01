@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 import lightning as L
 import numpy as np
@@ -6,6 +7,8 @@ import pandas as pd
 import torch
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
+
+from ..fetch.abgeordnetenwatch import OUTPUTS_DIR
 
 log = logging.getLogger(__name__)
 
@@ -137,3 +140,29 @@ def train(
     )
     trainer.fit(model, train_dl)
     return model
+
+
+def save_embeddings(
+    model: Any,
+    p_df: pd.DataFrame,
+    p_ids: np.ndarray,
+    period: int | None = None,
+    *,
+    wahlperiode: int | None = None,
+) -> None:
+    """Export embeddings to CSV with politician metadata. Columns: x, y (z for 3D)."""
+    if period is None:
+        period = wahlperiode
+    if period is None:
+        msg = "save_embeddings() requires a period."
+        raise TypeError(msg)
+
+    weights = model.p_embed.weight.detach().numpy()
+    n_dims = weights.shape[1]
+    coords = {"x": weights[:, 0], "y": weights[:, 1]}
+    if n_dims == 3:
+        coords["z"] = weights[:, 2]
+    emb_df = pd.DataFrame({"politician_id": p_ids, **coords})
+    path = OUTPUTS_DIR / f"politician_embeddings_{period}.csv"
+    p_df.merge(emb_df, on="politician_id").to_csv(path, index=False)
+    log.info("Embeddings saved to %s", path)

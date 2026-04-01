@@ -34,7 +34,7 @@ from .fetch.abgeordnetenwatch import (
     refresh_polls,
     refresh_sidejobs,
 )
-from .storage import OUTPUTS_DIR, save_embeddings
+from .model.model import OUTPUTS_DIR, save_embeddings
 
 
 def _read_bytes_or_none(path: Path) -> bytes | None:

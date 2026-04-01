@@ -8,8 +8,8 @@ from src.model.model import (
     RelativeEarlyStopping,
     VoteDataset,
     prepare_votes,
+    save_embeddings,
 )
-from src.storage import save_embeddings
 
 # ─── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -180,7 +180,7 @@ def test_early_stopping_missing_metric():
 
 def test_save_embeddings_2d(tmp_path, monkeypatch):
     """2D model produces CSV with x and y columns, no z."""
-    from src import storage
+    import src.model.model as storage
 
     monkeypatch.setattr(storage, "OUTPUTS_DIR", tmp_path)
 
@@ -203,7 +203,7 @@ def test_save_embeddings_2d(tmp_path, monkeypatch):
 
 def test_save_embeddings_3d(tmp_path, monkeypatch):
     """3D model produces CSV with z column."""
-    from src import storage
+    import src.model.model as storage
 
     monkeypatch.setattr(storage, "OUTPUTS_DIR", tmp_path)
 
