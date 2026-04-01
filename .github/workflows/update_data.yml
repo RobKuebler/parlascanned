@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      DIP_API_KEY: ${{ secrets.DIP_API_KEY }}
 
     steps:
       - uses: actions/checkout@v4
@@ -26,16 +27,28 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen --group train
 
-      - name: Fetch data
-        id: fetch
+      - name: Cache plenary protocol XMLs
+        uses: actions/cache@v4
+        with:
+          path: data/*/plenary_protocols/
+          key: plenary-protocols-${{ github.run_id }}
+          restore-keys: plenary-protocols-
+
+      - name: Fetch Abgeordnetenwatch data
+        id: fetch_aw
         run: uv run python -m src.fetch.abgeordnetenwatch
 
+      - name: Download new plenary protocol XMLs
+        run: uv run python -m src.fetch.protocol_xml
+
+      - name: Compute TF-IDF word stats
+        run: uv run python -m src.analysis.word_stats
+
       - name: Train model
-        if: steps.fetch.outputs.model_inputs_changed == 'true'
+        if: steps.fetch_aw.outputs.model_inputs_changed == 'true'
         run: uv run python -m src.model.train
 
       - name: Export JSON for frontend
-        if: steps.fetch.outputs.changed == 'true'
         run: uv run python -m src.export
 
       - name: Commit and push

@@ -424,7 +424,6 @@ def main(argv: list[str] | None = None) -> None:
 
     for _, row in periods_df.iterrows():
         period = int(row["bundestag_number"])
-        period_dir = DATA_DIR / str(period)
         p_start = date.fromisoformat(str(row["start_date"]))
         p_end = date.fromisoformat(str(row["end_date"]))
 
@@ -440,14 +439,9 @@ def main(argv: list[str] | None = None) -> None:
         if args.period is not None and period != args.period:
             continue
 
-        if export_period(period, p_start, p_end):
-            export_party_word_freq(period)
-            export_party_speech_stats(period)
-            continue
-
-        if (period_dir / "politicians.csv").exists():
-            export_party_word_freq(period)
-            export_party_speech_stats(period)
+        export_period(period, p_start, p_end)
+        export_party_word_freq(period)
+        export_party_speech_stats(period)
 
     _write(OUTPUT_DIR / "periods.json", available)
     log.info("Done. Exported %d periods.", len(available))
