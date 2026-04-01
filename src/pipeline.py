@@ -153,7 +153,7 @@ def main(argv: list[str] | None = None) -> None:
     log.info("Done. Exported %d periods.", len(available))
 
     write_github_output(
-        changed=True,
+        changed=votes_changed,
         model_inputs_changed=votes_changed,
         votes_changed=votes_changed,
         fetched_polls=len(missing),

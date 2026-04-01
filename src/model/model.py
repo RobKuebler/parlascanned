@@ -1,5 +1,4 @@
 import logging
-from typing import Any
 
 import lightning as L
 import numpy as np
@@ -143,7 +142,7 @@ def train(
 
 
 def save_embeddings(
-    model: Any,
+    model: PoliticianEmbeddingModel,
     p_df: pd.DataFrame,
     p_ids: np.ndarray,
     period: int | None = None,

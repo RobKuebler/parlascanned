@@ -28,7 +28,8 @@ def fetch_periods_df() -> pd.DataFrame:
     """Fetch all Bundestag legislature periods from API and return as DataFrame.
 
     Returns columns: period_id, label, bundestag_number, start_date, end_date.
-    Always fetches fresh — the data is small and changes rarely.
+    Cached per process run — fetched once on the first call and reused across all
+    subsequent calls within the same process.
     """
     raw = fetch_all_v2(
         "parliament-periods",
@@ -98,20 +99,18 @@ def fetch_all_v2(endpoint: str, params: dict | None = None) -> list:
 
 
 def refresh_periods() -> int:
-    """Fetch all Bundestag legislature periods and return the current bundestag_number.
+    """Return the bundestag_number of the currently active legislature.
 
-    No CSV is written — the data is small and always fetched fresh.
+    Falls back to the latest known period if today falls outside all known ranges
+    (e.g. during a parliamentary recess between dissolution and new Bundestag).
     """
     df = fetch_periods_df()
     today = datetime.now(tz=UTC).date().isoformat()
-    for _, row in df.iterrows():
-        end = row["end_date"] or "9999-12-31"
-        if str(row["start_date"]) <= today <= str(end):
-            period = int(row["bundestag_number"])
-            log.info("Current period: %s (period=%d)", row["label"], period)
-            return period
-    msg = "No active Bundestag legislative period found."
-    raise RuntimeError(msg)
+    active = df[(df["start_date"] <= today) & (df["end_date"] >= today)]
+    row = active.iloc[0] if not active.empty else df.iloc[-1]
+    period = int(row["bundestag_number"])
+    log.info("Current period: %s (period=%d)", row["label"], period)
+    return period
 
 
 def fetch_polls(period_id: int) -> pd.DataFrame:
@@ -358,7 +357,9 @@ def _parse_date(
     if m:
         day, month = int(m.group(1)), int(m.group(2))
         if not (1 <= month <= 12 and 1 <= day <= 31):
-            pass  # malformed date in source data (e.g. "30.0.2024"); skip
+            log.debug(
+                "Malformed date in source data (skipped): %r", text
+            )  # e.g. "30.0.2024"
         else:
             year = int(m.group(3)) if m.group(3) else fallback_year
             return f"{year:04d}-{month:02d}-{day:02d}" if year else None
@@ -548,17 +549,8 @@ def fetch_committees(
 
 
 def current_period() -> int:
-    """Return the bundestag_number of the currently active legislature.
-
-    Fetches periods from the API and finds the one whose date range contains today.
-    Falls back to the latest known period if today falls outside all known ranges
-    (e.g. a future period whose end_date is not yet set).
-    """
-    df = fetch_periods_df()
-    today = datetime.now(tz=UTC).date().isoformat()
-    active = df[(df["start_date"] <= today) & (df["end_date"] >= today)]
-    row = active.iloc[0] if not active.empty else df.iloc[-1]
-    return int(row["bundestag_number"])
+    """Return the bundestag_number of the currently active legislature."""
+    return refresh_periods()
 
 
 def current_wahlperiode() -> int:

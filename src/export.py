@@ -28,7 +28,7 @@ from .fetch.abgeordnetenwatch import DATA_DIR, OUTPUTS_DIR, fetch_periods_df
 
 log = logging.getLogger(__name__)
 
-OUTPUT_DIR = Path("frontend/public/data")
+OUTPUT_DIR = Path(__file__).parents[1] / "frontend" / "public" / "data"
 
 # Mirrors pages/constants.py — soft-hyphen (\xad) in GRÜNEN is intentional.
 PARTY_ORDER = [
@@ -198,23 +198,22 @@ def _export_sidejobs(
     sj_income = sj_income.assign(
         prorated_income=lambda df: df.apply(_effective_income, axis=1)
     )
-    topics_col = "topics" if "topics" in sj_income.columns else None
+    has_topics = "topics" in sj_income.columns
 
-    jobs = []
-    for _, row in sj_income.iterrows():
-        jobs.append(
-            {
-                "politician_id": int(row["politician_id"]),
-                "party": str(row.get("party_label", "")),
-                "category_label": str(row.get("category_label", "Sonstiges")),
-                "income_level": int(row["income_level"])
-                if pd.notna(row.get("income_level"))
-                else None,
-                "prorated_income": round(float(row["prorated_income"]), 2),
-                "topics": _split_topics(row.get(topics_col)) if topics_col else [],
-                "has_amount": True,
-            }
-        )
+    jobs = [
+        {
+            "politician_id": int(row["politician_id"]),
+            "party": str(row.get("party_label") or ""),
+            "category_label": str(row.get("category_label") or "Sonstiges"),
+            "income_level": int(row["income_level"])
+            if pd.notna(row.get("income_level"))
+            else None,
+            "prorated_income": round(float(row["prorated_income"]), 2),
+            "topics": _split_topics(row.get("topics")) if has_topics else [],
+            "has_amount": True,
+        }
+        for row in sj_income.to_dict("records")
+    ]
 
     _write(
         OUTPUT_DIR / f"sidejobs_{period}.json",
@@ -332,7 +331,11 @@ def export_period(
     )
 
     # ── votes ─────────────────────────────────────────────────────────────────
-    votes_df = pd.read_csv(period_dir / "votes.csv")
+    votes_path = period_dir / "votes.csv"
+    if not votes_path.exists():
+        log.warning("No votes.csv for period %d, skipping", period)
+        return False
+    votes_df = pd.read_csv(votes_path)
     _write(
         OUTPUT_DIR / f"votes_{period}.json",
         votes_df.filter(["politician_id", "poll_id", "answer"]).to_dict("records"),
