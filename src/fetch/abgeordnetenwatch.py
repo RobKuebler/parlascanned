@@ -1,5 +1,6 @@
 import argparse
 import csv
+import functools
 import logging
 import re
 from datetime import UTC, datetime
@@ -28,6 +29,7 @@ PAGE_SIZE = 1000  # API supports up to 1000 results per page
 FIRST_BUNDESTAG_NUMBER = 16
 
 
+@functools.lru_cache(maxsize=1)
 def fetch_periods_df() -> pd.DataFrame:
     """Fetch all Bundestag legislature periods from API and return as DataFrame.
 
