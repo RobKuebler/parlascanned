@@ -34,10 +34,6 @@ jobs:
           key: plenary-protocols-${{ github.run_id }}
           restore-keys: plenary-protocols-
 
-      - name: Fetch Abgeordnetenwatch data
-        id: fetch_aw
-        run: uv run python -m src.fetch.abgeordnetenwatch
-
       - name: Download new plenary protocol XMLs
         id: fetch_xml
         run: uv run python -m src.fetch.protocol_xml
@@ -46,12 +42,9 @@ jobs:
         if: steps.fetch_xml.outputs.changed == 'true'
         run: uv run python -m src.analysis.word_stats
 
-      - name: Train model
-        if: steps.fetch_aw.outputs.model_inputs_changed == 'true'
-        run: uv run python -m src.model.train
-
-      - name: Export JSON for frontend
-        run: uv run python -m src.export
+      - name: Fetch, train, and export
+        id: pipeline
+        run: uv run python -m src.pipeline
 
       - name: Commit and push
         run: |

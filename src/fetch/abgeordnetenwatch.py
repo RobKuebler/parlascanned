@@ -1,4 +1,3 @@
-import argparse
 import csv
 import functools
 import logging
@@ -10,14 +9,6 @@ import pandas as pd
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
-
-from ..cli import (
-    add_period_argument,
-    build_parser,
-    configure_logging,
-    write_github_output,
-)
-from ..storage import DATA_DIR
 
 log = logging.getLogger(__name__)
 
@@ -82,13 +73,6 @@ def get_session() -> requests.Session:
 
 
 SESSION = get_session()
-
-
-def _read_bytes_or_none(path: Path) -> bytes | None:
-    """Return file bytes if path exists, else None."""
-    if not path.exists():
-        return None
-    return path.read_bytes()
 
 
 def fetch_all_v2(endpoint: str, params: dict | None = None) -> list:
@@ -234,11 +218,10 @@ def find_polls_missing_votes(all_poll_ids: list[int], votes_path: Path) -> list[
 
 
 def refresh_polls(period: int) -> pd.DataFrame:
-    """Fetch all polls from API and write to CSV. Returns the polls DataFrame."""
+    """Fetch all polls from API and return as DataFrame."""
     period_id = _period_id_for(period)
     df = fetch_polls(period_id)
-    df.to_csv(DATA_DIR / str(period) / "polls.csv", index=False)
-    log.info("Wrote %d polls.", len(df))
+    log.info("Fetched %d polls.", len(df))
     return df
 
 
@@ -307,7 +290,7 @@ def fetch_politician_details(politician_ids: list[int]) -> pd.DataFrame:
 
 
 def refresh_politicians(period: int) -> tuple[pd.DataFrame, dict]:
-    """Fetch all politicians and their details from API, write to CSV.
+    """Fetch all politicians and their details from API.
 
     Returns (full politicians df, mandate_id -> politician_id mapping).
     """
@@ -315,9 +298,7 @@ def refresh_politicians(period: int) -> tuple[pd.DataFrame, dict]:
     df, mandate_to_politician = fetch_politicians(period_id)
     df_details = fetch_politician_details(df["politician_id"].tolist())
     df = df.merge(df_details, on="politician_id", how="left")
-    df.to_csv(DATA_DIR / str(period) / "politicians.csv", index=False)
-    log.info("Wrote %d politicians.", len(df))
-
+    log.info("Fetched %d politicians.", len(df))
     return df, mandate_to_politician
 
 
@@ -445,13 +426,14 @@ def _parse_sidejob_dates(extra: str | None) -> tuple[str | None, str | None]:
     return _parse_date(text), None
 
 
-def refresh_sidejobs(period: int, mandate_to_politician: dict[int, int]) -> None:
-    """Fetch all sidejobs, filter to this period's mandates, and save to CSV.
+def refresh_sidejobs(
+    period: int, mandate_to_politician: dict[int, int]
+) -> pd.DataFrame:
+    """Fetch all sidejobs, filter to this period's mandates, and return as DataFrame.
 
     The sidejobs API has no parliament_period filter, so we fetch everything
     and keep only entries whose mandate ID belongs to this period. This ensures
-    each period's CSV contains only sidejobs disclosed under that legislature.
-    Overwrites sidejobs.csv on every run so newly disclosed income is captured.
+    each period's data contains only sidejobs disclosed under that legislature.
     """
     log.info("Fetching sidejobs...")
     raw = fetch_all_v2("sidejobs")
@@ -508,9 +490,8 @@ def refresh_sidejobs(period: int, mandate_to_politician: dict[int, int]) -> None
         "topics",
     ]
     df = pd.DataFrame(rows, columns=_cols)
-    path = DATA_DIR / str(period) / "sidejobs.csv"
-    df.to_csv(path, index=False)
-    log.info("Saved %d sidejobs for period %d.", len(df), period)
+    log.info("Fetched %d sidejobs for period %d.", len(df), period)
+    return df
 
 
 def fetch_committees(
@@ -561,52 +542,3 @@ def fetch_committees(
     )
     log.info("Fetched %d committee memberships.", len(df_memberships))
     return df_committees, df_memberships
-
-
-def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    parser = build_parser("Lade und aktualisiere Bundestags-Abstimmungsdaten.")
-    add_period_argument(parser)
-    return parser.parse_args(argv)
-
-
-def main(argv: list[str] | None = None) -> None:
-    configure_logging()
-    args = parse_args(argv)
-
-    period = args.period or refresh_periods()
-    period_dir = DATA_DIR / str(period)
-    period_dir.mkdir(parents=True, exist_ok=True)
-
-    df_polls = refresh_polls(period)
-    _, mandate_to_politician = refresh_politicians(period)
-    refresh_sidejobs(period, mandate_to_politician)
-
-    votes_path = period_dir / "votes.csv"
-    votes_before = _read_bytes_or_none(votes_path)
-    missing = find_polls_missing_votes(df_polls["poll_id"].tolist(), votes_path)
-    if missing:
-        log.info("%d poll(s) need vote fetching.", len(missing))
-        fetch_votes(
-            missing,
-            mandate_to_politician,
-            votes_path,
-            append=votes_path.exists(),
-        )
-    else:
-        log.info("All votes up to date, nothing to fetch.")
-    votes_changed = _read_bytes_or_none(votes_path) != votes_before
-
-    write_github_output(
-        changed=True,  # always export: other data changes independently of votes
-        model_inputs_changed=votes_changed,
-        votes_changed=votes_changed,
-        fetched_polls=len(missing),
-        period=period,
-        wahlperiode=period,
-    )
-
-    log.info("Done! Data saved to %s", DATA_DIR / str(period))
-
-
-if __name__ == "__main__":
-    main()

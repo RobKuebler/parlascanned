@@ -148,26 +148,26 @@ def _export_sidejobs(
     pols_df: pd.DataFrame,
     period_start: date,
     period_end: date,
+    df_sidejobs: pd.DataFrame | None = None,
 ) -> None:
     """Build and write sidejobs JSON for one period.
 
-    Skipped silently if sidejobs.csv is absent.
+    Uses df_sidejobs if provided, otherwise reads sidejobs.csv from disk.
+    Skipped silently if neither is available.
     """
-    sj_path = period_dir / "sidejobs.csv"
-    if not sj_path.exists():
-        return
+    if df_sidejobs is None:
+        sj_path = period_dir / "sidejobs.csv"
+        if not sj_path.exists():
+            return
+        df_sidejobs = pd.read_csv(sj_path)
 
-    sj_df = (
-        pd.read_csv(sj_path)
-        .merge(
-            pols_df.filter(["politician_id", "party_label"]),
-            on="politician_id",
-            how="left",
-        )
-        .assign(
-            category_label=lambda df: (
-                df["category"].map(SIDEJOB_CATEGORIES).fillna("Sonstiges")
-            )
+    sj_df = df_sidejobs.merge(
+        pols_df.filter(["politician_id", "party_label"]),
+        on="politician_id",
+        how="left",
+    ).assign(
+        category_label=lambda df: (
+            df["category"].map(SIDEJOB_CATEGORIES).fillna("Sonstiges")
         )
     )
     n_total = len(sj_df)
@@ -268,22 +268,34 @@ def _export_party_profile(
     )
 
 
-def export_period(period: int, period_start: date, period_end: date) -> bool:
+def export_period(
+    period: int,
+    period_start: date,
+    period_end: date,
+    *,
+    df_politicians: pd.DataFrame | None = None,
+    df_polls: pd.DataFrame | None = None,
+    df_sidejobs: pd.DataFrame | None = None,
+) -> bool:
     """Export all JSON files for one parliament period.
 
-    Returns False if embeddings are missing (period skipped).
+    Uses df_politicians/df_polls/df_sidejobs if provided, otherwise reads from disk.
+    Returns False if required data is missing (period skipped).
     """
     period_dir = DATA_DIR / str(period)
     emb_path = OUTPUTS_DIR / f"politician_embeddings_{period}.csv"
 
-    if not (period_dir / "politicians.csv").exists():
-        log.warning("No politicians.csv for period %d, skipping", period)
-        return False
+    if df_politicians is None:
+        if not (period_dir / "politicians.csv").exists():
+            log.warning("No politicians.csv for period %d, skipping", period)
+            return False
+        df_politicians = pd.read_csv(period_dir / "politicians.csv")
+
     if not emb_path.exists():
         log.warning("No embeddings for period %d, skipping", period)
         return False
 
-    pols_df = pd.read_csv(period_dir / "politicians.csv").assign(
+    pols_df = df_politicians.assign(
         party_label=lambda df: df["party"].str.replace("\xad", "", regex=False)
     )
 
@@ -328,7 +340,9 @@ def export_period(period: int, period_start: date, period_end: date) -> bool:
     )
 
     # ── polls ─────────────────────────────────────────────────────────────────
-    polls_df = pd.read_csv(period_dir / "polls.csv")
+    if df_polls is None:
+        df_polls = pd.read_csv(period_dir / "polls.csv")
+    polls_df = df_polls
     _write(
         OUTPUT_DIR / f"polls_{period}.json",
         polls_df.filter(["poll_id", "topic"]).to_dict("records"),
@@ -346,7 +360,7 @@ def export_period(period: int, period_start: date, period_end: date) -> bool:
     _write(OUTPUT_DIR / f"cohesion_{period}.json", coh_df.to_dict("records"))
 
     # ── sidejobs ──────────────────────────────────────────────────────────────
-    _export_sidejobs(period, period_dir, pols_df, period_start, period_end)
+    _export_sidejobs(period, period_dir, pols_df, period_start, period_end, df_sidejobs)
 
     # ── party profile ─────────────────────────────────────────────────────────
     _export_party_profile(period, pols_df, period_start)

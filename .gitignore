@@ -16,7 +16,6 @@ outputs/*.pth
 # OS
 .DS_Store
 Thumbs.db
-*.stackdump
 *.tmp
 *.log
 *.bak
@@ -24,19 +23,14 @@ Thumbs.db
 # IDE
 .idea/
 .vscode/
-.devcontainer/
 
 # Claude Code local settings
 .claude/
+.playwright-cli/
+frontend/.playwright-cli/
 
 # Next.js build output
 .next/
-
-# Playwright
-.playwright-cli/
-frontend/.playwright-cli/
-playwright-report/
-test-results/
 
 # Coverage
 .coverage
@@ -54,7 +48,3 @@ docs/superpowers/
 # Plenarprotokoll XMLs — zu groß für Git, per CI-Cache verwaltet
 data/*/plenary_protocols/
 
-# Werden bei jedem CI-Run frisch aus der API geladen, nicht persistiert
-data/*/polls.csv
-data/*/politicians.csv
-data/*/sidejobs.csv

@@ -125,11 +125,9 @@ def test_fetch_votes_missing_mandate_key_skipped(requests_mock, tmp_path):
 # ─── refresh_polls: correctness ────────────────────────────────────────────────
 
 
-def test_refresh_polls_schreibt_csv(requests_mock, monkeypatch, tmp_path):
-    """Polls werden von API geladen und als CSV gespeichert."""
-    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
+def test_refresh_polls_gibt_dataframe_zurueck(requests_mock, monkeypatch, tmp_path):
+    """Polls werden von API geladen und als DataFrame zurückgegeben."""
     monkeypatch.setattr(src.fetch.abgeordnetenwatch, "_period_id_for", lambda p: 111)
-    (tmp_path / "20").mkdir()
     _mock_polls(
         requests_mock, [{"id": 1, "label": "Poll A"}, {"id": 2, "label": "Poll B"}]
     )
@@ -137,23 +135,18 @@ def test_refresh_polls_schreibt_csv(requests_mock, monkeypatch, tmp_path):
     df = src.fetch.abgeordnetenwatch.refresh_polls(20)
 
     assert set(df["poll_id"]) == {1, 2}
-    saved = pd.read_csv(tmp_path / "20" / "polls.csv")
-    assert len(saved) == 2
-    assert set(saved["poll_id"]) == {1, 2}
+    assert not (tmp_path / "20" / "polls.csv").exists()
 
 
 def test_refresh_polls_poll_id_stays_integer(requests_mock, monkeypatch, tmp_path):
     """poll_id muss int64 bleiben — float würde Downstream-Joins brechen."""
-    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
     monkeypatch.setattr(src.fetch.abgeordnetenwatch, "_period_id_for", lambda p: 111)
-    (tmp_path / "20").mkdir()
     _mock_polls(requests_mock, [{"id": 1, "label": "A"}, {"id": 2, "label": "B"}])
 
-    src.fetch.abgeordnetenwatch.refresh_polls(20)
+    df = src.fetch.abgeordnetenwatch.refresh_polls(20)
 
-    saved = pd.read_csv(tmp_path / "20" / "polls.csv")
-    assert pd.api.types.is_integer_dtype(saved["poll_id"]), (
-        f"poll_id dtype is {saved['poll_id'].dtype}, expected int"
+    assert pd.api.types.is_integer_dtype(df["poll_id"]), (
+        f"poll_id dtype is {df['poll_id'].dtype}, expected int"
     )
 
 
@@ -177,11 +170,11 @@ def _politicians_csv(period_dir, rows):
     ).to_csv(period_dir / "politicians.csv", index=False)
 
 
-def test_refresh_politicians_first_run(requests_mock, monkeypatch, tmp_path):
-    """First run: politicians.csv created and details fetched."""
-    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
+def test_refresh_politicians_gibt_dataframe_zurueck(
+    requests_mock, monkeypatch, tmp_path
+):
+    """First run: DataFrame mit Details wird zurückgegeben, keine CSV geschrieben."""
     monkeypatch.setattr(src.fetch.abgeordnetenwatch, "_period_id_for", lambda p: 111)
-    (tmp_path / "20").mkdir()
     _mock_mandates(requests_mock, [_mandate(100, 1, "Alice", "SPD")])
     _mock_details(
         requests_mock,
@@ -197,19 +190,17 @@ def test_refresh_politicians_first_run(requests_mock, monkeypatch, tmp_path):
         ],
     )
 
-    _df, mapping = src.fetch.abgeordnetenwatch.refresh_politicians(20)
+    df, mapping = src.fetch.abgeordnetenwatch.refresh_politicians(20)
 
     assert mapping[100] == 1
-    saved = pd.read_csv(tmp_path / "20" / "politicians.csv")
-    assert len(saved) == 1
-    assert saved.iloc[0]["occupation"] == "Lehrerin"
+    assert len(df) == 1
+    assert df.iloc[0]["occupation"] == "Lehrerin"
+    assert not (tmp_path / "20" / "politicians.csv").exists()
 
 
 def test_refresh_politicians_party_korrekt(requests_mock, monkeypatch, tmp_path):
-    """Party aus API wird korrekt gespeichert."""
-    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
+    """Party aus API wird korrekt im zurückgegebenen DataFrame gesetzt."""
     monkeypatch.setattr(src.fetch.abgeordnetenwatch, "_period_id_for", lambda p: 111)
-    (tmp_path / "20").mkdir()
     _mock_mandates(requests_mock, [_mandate(100, 1, "Alice", "CDU")])
     _mock_details(
         requests_mock,
@@ -225,11 +216,10 @@ def test_refresh_politicians_party_korrekt(requests_mock, monkeypatch, tmp_path)
         ],
     )
 
-    _df, _ = src.fetch.abgeordnetenwatch.refresh_politicians(20)
+    df, _ = src.fetch.abgeordnetenwatch.refresh_politicians(20)
 
-    saved = pd.read_csv(tmp_path / "20" / "politicians.csv")
-    assert saved.iloc[0]["party"] == "CDU"
-    assert saved.iloc[0]["occupation"] == "Lehrerin"
+    assert df.iloc[0]["party"] == "CDU"
+    assert df.iloc[0]["occupation"] == "Lehrerin"
 
 
 # ─── refresh_periods: correctness ──────────────────────────────────────────────
@@ -296,19 +286,13 @@ def test_refresh_periods_period_id_stays_integer(requests_mock):
 # ─── refresh_sidejobs: date parsing from label ─────────────────────────────────
 
 
-def test_refresh_sidejobs_dates_parsed_from_label_parentheses(
-    requests_mock, monkeypatch, tmp_path
-):
+def test_refresh_sidejobs_dates_parsed_from_label_parentheses(requests_mock):
     """ASSUMPTION: date info is always in job_title_extra.
     REALITY: many sidejobs have job_title_extra=null but embed dates in the label,
     e.g. 'Mitglied des Aufsichtsrates (ab 01.01.2024)' or '... (bis Juni 2023)'.
     Without parsing these, active_months falls back to created/period_start and
     monthly jobs accumulate months they were never active for.
     """
-    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
-    period_dir = tmp_path / "20"
-    period_dir.mkdir()
-
     sj_start = {
         **_sidejob(1, [100]),
         "label": "Mitglied des Aufsichtsrates (ab 01.06.2023)",
@@ -328,60 +312,44 @@ def test_refresh_sidejobs_dates_parsed_from_label_parentheses(
         f"{BASE_URL}/sidejobs", json={"data": [sj_start, sj_end, sj_range]}
     )
 
-    src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
+    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
 
-    saved = pd.read_csv(period_dir / "sidejobs.csv")
-    assert saved.iloc[0]["date_start"] == "2023-06-01"
-    assert pd.isna(saved.iloc[0]["date_end"])
-    assert pd.isna(saved.iloc[1]["date_start"])
-    assert saved.iloc[1]["date_end"] == "2023-12-31"
-    assert saved.iloc[2]["date_start"] == "2023-01-01"
-    assert saved.iloc[2]["date_end"] == "2023-06-30"
+    assert df.iloc[0]["date_start"] == "2023-06-01"
+    assert pd.isna(df.iloc[0]["date_end"])
+    assert pd.isna(df.iloc[1]["date_start"])
+    assert df.iloc[1]["date_end"] == "2023-12-31"
+    assert df.iloc[2]["date_start"] == "2023-01-01"
+    assert df.iloc[2]["date_end"] == "2023-06-30"
 
 
 # ─── refresh_sidejobs: edge cases ──────────────────────────────────────────────
 
 
-def test_refresh_sidejobs_null_organization_no_crash(
-    requests_mock, monkeypatch, tmp_path
-):
+def test_refresh_sidejobs_null_organization_no_crash(requests_mock):
     """sidejob_organization=null: must not crash, organization column is NaN."""
-    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
-    period_dir = tmp_path / "20"
-    period_dir.mkdir()
     requests_mock.get(
         f"{BASE_URL}/sidejobs", json={"data": [{**_sidejob(1, [100], org_label=None)}]}
     )
 
-    src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
+    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
 
-    saved = pd.read_csv(period_dir / "sidejobs.csv")
-    assert len(saved) == 1
-    assert pd.isna(saved.iloc[0]["organization"])
+    assert len(df) == 1
+    assert pd.isna(df.iloc[0]["organization"])
 
 
-def test_refresh_sidejobs_null_mandates_list_skipped(
-    requests_mock, monkeypatch, tmp_path
-):
+def test_refresh_sidejobs_null_mandates_list_skipped(requests_mock):
     """Sidejob with mandates=null is silently skipped (not included in output)."""
-    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
-    period_dir = tmp_path / "20"
-    period_dir.mkdir()
     sj = _sidejob(1, [])  # start with empty mandates
     sj["mandates"] = None  # override to null
     requests_mock.get(f"{BASE_URL}/sidejobs", json={"data": [sj]})
 
-    src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
+    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
 
-    saved = pd.read_csv(period_dir / "sidejobs.csv")
-    assert len(saved) == 0
+    assert len(df) == 0
 
 
-def test_refresh_sidejobs_only_keeps_this_period(requests_mock, monkeypatch, tmp_path):
+def test_refresh_sidejobs_only_keeps_this_period(requests_mock):
     """Sidejobs from other periods (mandate IDs not in this period) are filtered out."""
-    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
-    period_dir = tmp_path / "20"
-    period_dir.mkdir()
     requests_mock.get(
         f"{BASE_URL}/sidejobs",
         json={
@@ -392,47 +360,34 @@ def test_refresh_sidejobs_only_keeps_this_period(requests_mock, monkeypatch, tmp
         },
     )
 
-    src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
+    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
 
-    saved = pd.read_csv(period_dir / "sidejobs.csv")
-    assert len(saved) == 1
-    assert saved.iloc[0]["job_title"] == "Job 1"
+    assert len(df) == 1
+    assert df.iloc[0]["job_title"] == "Job 1"
 
 
-def test_refresh_sidejobs_null_field_topics_no_crash(
-    requests_mock, monkeypatch, tmp_path
-):
+def test_refresh_sidejobs_null_field_topics_no_crash(requests_mock):
     """field_topics=null must not crash; topics column is empty string."""
-    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
-    period_dir = tmp_path / "20"
-    period_dir.mkdir()
     sj = _sidejob(1, [100])
     sj["field_topics"] = None
     requests_mock.get(f"{BASE_URL}/sidejobs", json={"data": [sj]})
 
-    src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
+    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
 
-    saved = pd.read_csv(period_dir / "sidejobs.csv")
-    assert len(saved) == 1
+    assert len(df) == 1
 
 
-def test_refresh_sidejobs_mandate_without_id_key_skipped(
-    requests_mock, monkeypatch, tmp_path
-):
+def test_refresh_sidejobs_mandate_without_id_key_skipped(requests_mock):
     """ASSUMPTION: mandate objects always have an 'id' key.
     REALITY: mandate_to_politician.get(mandate['id']) raises KeyError if 'id' is absent.
     """
-    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
-    period_dir = tmp_path / "20"
-    period_dir.mkdir()
     sj = _sidejob(1, [])
     sj["mandates"] = [{"label": "no-id-key"}]  # mandate without 'id'
     requests_mock.get(f"{BASE_URL}/sidejobs", json={"data": [sj]})
 
-    src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
+    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
 
-    saved = pd.read_csv(period_dir / "sidejobs.csv")
-    assert len(saved) == 0  # should be silently skipped, not crash
+    assert len(df) == 0  # should be silently skipped, not crash
 
 
 # ─── fetch_votes: missing 'vote' key ─────────────────────────────────────────

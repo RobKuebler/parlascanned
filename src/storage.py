@@ -15,13 +15,15 @@ OUTPUTS_DIR = Path(__file__).parents[1] / "outputs"
 def current_period() -> int:
     """Return the bundestag_number of the currently active legislature.
 
-    Reads periods.csv and finds the period whose date range contains today.
+    Fetches periods from the API and finds the one whose date range contains today.
     Falls back to the latest known period if today falls outside all known ranges
     (e.g. a future period whose end_date is not yet set).
     """
     from datetime import datetime
 
-    df = pd.read_csv(DATA_DIR / "periods.csv")
+    from .fetch.abgeordnetenwatch import fetch_periods_df
+
+    df = fetch_periods_df()
     today = datetime.now(tz=UTC).date().isoformat()
     active = df[(df["start_date"] <= today) & (df["end_date"] >= today)]
     row = active.iloc[0] if not active.empty else df.iloc[-1]
@@ -31,45 +33,6 @@ def current_period() -> int:
 def current_wahlperiode() -> int:
     """Backward-compatible wrapper for the old helper name."""
     return current_period()
-
-
-def period_id_for(period: int) -> int:
-    """Return the abgeordnetenwatch API period_id for a given period.
-
-    Reads periods.csv. Used internally by fetch/abgeordnetenwatch.py for API calls.
-    """
-    df = pd.read_csv(DATA_DIR / "periods.csv")
-    match = df[df["bundestag_number"] == period]
-    if match.empty:
-        msg = f"Period {period} not found in periods.csv."
-        raise ValueError(msg)
-    return int(match.iloc[0]["period_id"])
-
-
-def load_data(period: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """Load votes, politicians and polls CSVs for a given period."""
-    period_dir = DATA_DIR / str(period)
-    required_paths = {
-        "votes.csv": period_dir / "votes.csv",
-        "politicians.csv": period_dir / "politicians.csv",
-        "polls.csv": period_dir / "polls.csv",
-    }
-    missing = [name for name, path in required_paths.items() if not path.exists()]
-    if missing:
-        missing_list = ", ".join(missing)
-        msg = (
-            f"Missing input files for period {period}: {missing_list}. "
-            "Run `python -m src.fetch.abgeordnetenwatch` first."
-        )
-        log.error(msg)
-        raise SystemExit(msg)
-
-    log.info("Loading data for period %d...", period)
-    return (
-        pd.read_csv(required_paths["votes.csv"]),
-        pd.read_csv(required_paths["politicians.csv"]),
-        pd.read_csv(required_paths["polls.csv"]),
-    )
 
 
 def save_embeddings(

@@ -1,6 +1,8 @@
 import argparse
 import logging
 
+import pandas as pd
+
 from ..cli import add_period_argument, build_parser, configure_logging
 
 log = logging.getLogger(__name__)
@@ -51,17 +53,26 @@ def main(argv: list[str] | None = None) -> None:
 
     import lightning as L
 
-    from ..storage import OUTPUTS_DIR, current_period, load_data, save_embeddings
+    from ..fetch.abgeordnetenwatch import refresh_politicians, refresh_polls
+    from ..storage import DATA_DIR, OUTPUTS_DIR, current_period, save_embeddings
     from .model import prepare_votes, train
 
     period = args.period or current_period()
-    L.seed_everything(42)
-    OUTPUTS_DIR.mkdir(exist_ok=True)
-    df_votes, p_df, poll_df = load_data(period)
+    votes_path = DATA_DIR / str(period) / "votes.csv"
+    if not votes_path.exists():
+        log.warning("No votes.csv for period %d. Run the pipeline first.", period)
+        return
+
+    df_votes = pd.read_csv(votes_path)
     if df_votes.empty:
         log.warning("No voting data found for period %d. Skipping training.", period)
         return
 
+    p_df, _ = refresh_politicians(period)
+    poll_df = refresh_polls(period)
+
+    L.seed_everything(42)
+    OUTPUTS_DIR.mkdir(exist_ok=True)
     df_votes, p_ids, poll_ids = prepare_votes(df_votes, p_df, poll_df)
     model = train(
         df_votes,
