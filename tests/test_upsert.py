@@ -425,9 +425,8 @@ def test_fetch_votes_missing_vote_key_skips_that_row(requests_mock, tmp_path):
 # ─── fetch_committees ────────────────────────────────────────────────────────
 
 
-def test_fetch_committees_empty_result(requests_mock, monkeypatch, tmp_path):
+def test_fetch_committees_empty_result(requests_mock, monkeypatch):
     """If API returns 0 committees, both returned DataFrames are empty with correct columns."""
-    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
     monkeypatch.setattr(src.fetch.abgeordnetenwatch, "_period_id_for", lambda p: 111)
     requests_mock.get(f"{BASE_URL}/committees", json={"data": []})
     requests_mock.get(f"{BASE_URL}/committee-memberships", json={"data": []})
@@ -440,11 +439,8 @@ def test_fetch_committees_empty_result(requests_mock, monkeypatch, tmp_path):
     assert len(df_m) == 0
 
 
-def test_fetch_committees_null_candidacy_mandate_no_crash(
-    requests_mock, monkeypatch, tmp_path
-):
+def test_fetch_committees_null_candidacy_mandate_no_crash(requests_mock, monkeypatch):
     """candidacy_mandate=null in API response must be handled gracefully."""
-    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
     monkeypatch.setattr(src.fetch.abgeordnetenwatch, "_period_id_for", lambda p: 111)
     requests_mock.get(f"{BASE_URL}/committees", json={"data": []})
     requests_mock.get(
@@ -464,9 +460,8 @@ def test_fetch_committees_null_candidacy_mandate_no_crash(
     assert len(df_m) == 0  # row skipped — no matching politician
 
 
-def test_fetch_committees_null_committee_no_crash(requests_mock, monkeypatch, tmp_path):
+def test_fetch_committees_null_committee_no_crash(requests_mock, monkeypatch):
     """committee=null in a membership row must be skipped gracefully, not crash."""
-    monkeypatch.setattr(src.fetch.abgeordnetenwatch, "DATA_DIR", tmp_path)
     monkeypatch.setattr(src.fetch.abgeordnetenwatch, "_period_id_for", lambda p: 111)
     requests_mock.get(f"{BASE_URL}/committees", json={"data": []})
     requests_mock.get(
