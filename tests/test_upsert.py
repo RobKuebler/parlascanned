@@ -509,7 +509,7 @@ def test_refresh_periods_null_end_date_does_not_crash(requests_mock):
     )
 
     period = src.fetch.abgeordnetenwatch.refresh_periods()
-    assert period == 16  # FIRST_BUNDESTAG_NUMBER + 0 (only one period in mock)
+    assert period == 20  # parsed from label "20. WP"
 
 
 # ─── fetch_all_v2: null data field ────────────────────────────────────────────

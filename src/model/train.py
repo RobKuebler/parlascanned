@@ -1,3 +1,10 @@
+"""Train the politician embedding model on vote data.
+
+Standalone entry point for retraining the model outside the full pipeline.
+Reads votes.csv from disk and fetches politicians/polls live from the API,
+so network access is required. For offline use, run src.pipeline instead.
+"""
+
 import argparse
 import logging
 

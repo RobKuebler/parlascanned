@@ -141,6 +141,26 @@ def _pivot_to_json(
     }
 
 
+def _effective_income(row: pd.Series, period_start: date, period_end: date) -> float:
+    """Prorate income to period duration. Mirrors sidejobs.py.
+
+    interval is read from CSV as float64 (pandas coerces int columns with
+    NaN values to float), so compare as int, not as string.
+    """
+    raw_interval = row.get("interval")
+    try:
+        interval = int(raw_interval)
+    except (TypeError, ValueError):
+        interval = None
+    ds = row.get("date_start") if pd.notna(row.get("date_start")) else None
+    de = row.get("date_end") if pd.notna(row.get("date_end")) else None
+    created = row.get("created") if pd.notna(row.get("created")) else None
+    if interval in (1, 2):
+        months = _active_months(ds, de, period_start, period_end, created)
+        return row["income"] * (months if interval == 1 else months / 12)
+    return row["income"]
+
+
 def _export_sidejobs(
     period: int,
     period_dir: Path,
@@ -175,28 +195,20 @@ def _export_sidejobs(
     sj_income = sj_df[sj_df["income"].notna()].assign(
         income=lambda df: pd.to_numeric(df["income"], errors="coerce")
     )
-
-    def _effective_income(row: pd.Series) -> float:
-        """Prorate income to period duration. Mirrors sidejobs.py.
-
-        interval is read from CSV as float64 (pandas coerces int columns with
-        NaN values to float), so compare as int, not as string.
-        """
-        raw_interval = row.get("interval")
-        try:
-            interval = int(raw_interval)
-        except (TypeError, ValueError):
-            interval = None
-        ds = row.get("date_start") if pd.notna(row.get("date_start")) else None
-        de = row.get("date_end") if pd.notna(row.get("date_end")) else None
-        created = row.get("created") if pd.notna(row.get("created")) else None
-        if interval in (1, 2):
-            months = _active_months(ds, de, period_start, period_end, created)
-            return row["income"] * (months if interval == 1 else months / 12)
-        return row["income"]
+    n_nan = int(sj_income["income"].isna().sum())
+    if n_nan:
+        log.warning(
+            "Period %d: %d sidejob income value(s) could not be parsed as numeric"
+            " and will be skipped.",
+            period,
+            n_nan,
+        )
+    sj_income = sj_income[sj_income["income"].notna()]
 
     sj_income = sj_income.assign(
-        prorated_income=lambda df: df.apply(_effective_income, axis=1)
+        prorated_income=lambda df: df.apply(
+            lambda row: _effective_income(row, period_start, period_end), axis=1
+        )
     )
     has_topics = "topics" in sj_income.columns
 

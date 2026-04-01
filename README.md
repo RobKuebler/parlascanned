@@ -17,6 +17,8 @@ Namentliche Abstimmungen, Berufe, Alter, Geschlecht, akademische Titel -- all da
 - **Fraktionsdisziplin:** Wie geschlossen stimmt eine Fraktion ab? Ein Balkendiagramm zeigt die durchschnittliche Streuung der Abgeordneten um den Fraktionsmittelpunkt.
 - **Parteiprofil:** Demografische und berufliche Profile der Fraktionen im Vergleich: Berufe, Altersverteilung, Geschlecht, akademische Titel.
 - **Nebeneinkünfte:** Offengelegte Nebentätigkeiten und Einkünfte der Abgeordneten nach Partei, Kategorie und Themenfeld.
+- **Redestatistiken:** Anzahl Reden und Gesamtwortanzahl pro Abgeordnetem aus den Plenarprotokollen.
+- **Wortfrequenz:** Die charakteristischsten Wörter jeder Fraktion auf Basis von TF-IDF über alle Plenarprotokolle der Wahlperiode.
 - **Wahlperioden-Auswahl:** Alle Wahlperioden ab dem 20. Bundestag (2021) sind verfügbar, sofern Daten und trainierte Embeddings vorhanden sind.
 
 ## Das Modell
@@ -47,28 +49,39 @@ uv run python -m spacy download de_core_news_sm
 
 ### Datenpipeline
 
-Die Schritte müssen in dieser Reihenfolge ausgeführt werden. Die Python-CLIs werden als Module gestartet, also mit `uv run python -m ...`. Alle Pipeline-Schritte akzeptieren `--period INT`; bei `src.export` ist das optional und ohne Angabe werden alle exportierbaren Perioden verarbeitet. Jeweils `--help` für alle Optionen.
+#### Kombinierte Pipeline (empfohlen)
+
+`src.pipeline` führt Fetch → Train → Export in einem einzigen Prozess aus. In-Memory-DataFrames werden zwischen den Phasen weitergegeben; nur `votes.csv` wird auf Disk geschrieben.
+
+```bash
+# Aktuelle Wahlperiode automatisch ermitteln und vollständig verarbeiten
+uv run --group train python -m src.pipeline
+
+# Explizit eine bestimmte Wahlperiode angeben
+uv run --group train python -m src.pipeline --period 20
+```
+
+#### Einzelschritte (manuell)
+
+Alle Schritte akzeptieren `--period INT`; bei `src.export` ist das optional. Jeweils `--help` für alle Optionen.
 
 ```bash
 # 1. Abstimmungen, Politiker, Nebenjobs und Ausschüsse von abgeordnetenwatch.de laden
 uv run python -m src.fetch.abgeordnetenwatch
 
-# 2. Plenary protocol list vom DIP Bundestag API laden
-uv run python -m src.fetch.protocols
-
-# 3. Protocol XMLs herunterladen (liest dip_plenary_protocols.csv aus Schritt 2)
+# 2. Protocol XMLs herunterladen (liest dip_plenary_protocols.csv)
 uv run python -m src.fetch.protocol_xml
 
-# 4. XMLs parsen → speeches.csv
+# 3. XMLs parsen → speeches.csv
 uv run python -m src.parse.protocols
 
-# 5. TF-IDF Wortstatistiken aus speeches.csv berechnen
+# 4. TF-IDF Wortstatistiken aus speeches.csv berechnen
 uv run python -m src.analysis.word_stats
 
-# 6. Embedding-Modell trainieren (benötigt PyTorch; --group train)
+# 5. Embedding-Modell trainieren (benötigt --group train, erfordert Netzwerkzugriff für API-Daten)
 uv run --group train python -m src.model.train
 
-# 7. JSON-Dateien für das Frontend exportieren
+# 6. JSON-Dateien für das Frontend exportieren
 uv run python -m src.export
 ```
 
@@ -81,12 +94,14 @@ cd frontend && npm install && npm run dev
 
 ```
 src/
+  pipeline.py             Kombinierte Pipeline: Fetch → Train → Export
+  export.py               JSON-Dateien für das Frontend generieren
+  cli.py                  Gemeinsame CLI-Helfer (Parser, Logging, GitHub Output)
   fetch/
     abgeordnetenwatch.py  Abstimmungen, Politiker, Nebenjobs, Ausschüsse
-    protocols.py          Plenary protocol list from the DIP API
-    protocol_xml.py       Download protocol XMLs
+    protocol_xml.py       Protocol XMLs vom DIP Bundestag API herunterladen
   parse/
-    protocols.py          Parse XMLs -> speeches.csv
+    protocols.py          XMLs parsen → speeches.csv
   analysis/
     word_stats.py         TF-IDF Wortstatistiken berechnen
     transforms.py         Reine Datentransformationen (Cohesion, Pivot, ...)
@@ -95,8 +110,6 @@ src/
   model/
     model.py              Modellarchitektur (PoliticianEmbeddingModel)
     train.py              Einstiegspunkt für das Training
-  export.py               JSON-Dateien für das Frontend generieren
-  storage.py              CSV-Lesen/Schreiben, Pfade
 frontend/
   app/                    Next.js App Router (Seiten und Layout)
   components/             UI-Komponenten und D3-Charts

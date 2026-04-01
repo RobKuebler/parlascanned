@@ -1,3 +1,5 @@
+from .. import match_rules
+
 # Keyword rules for normalizing raw education strings into canonical study-field
 # categories and academic degree levels.
 # Order matters: first match wins. Matching is case-insensitive substring search.
@@ -397,8 +399,6 @@ def normalize_education_field(edu: str | None) -> str:
 
     Returns "Keine Angabe" for null values, "Sonstiges" if no rule matches.
     """
-    from src import match_rules
-
     return match_rules(edu, _FIELD_RULES)
 
 
@@ -408,6 +408,4 @@ def normalize_education_degree(edu: str | None) -> str:
     Returns "Keine Angabe" for null values,
     "Nicht erkennbar" if no degree keyword matches.
     """
-    from src import match_rules
-
     return match_rules(edu, _DEGREE_RULES, default="Nicht erkennbar")

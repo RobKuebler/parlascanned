@@ -1,3 +1,5 @@
+from .. import match_rules
+
 # Keyword rules for normalizing raw occupation strings into canonical categories.
 # Order matters: first match wins. Matching is case-insensitive substring search.
 _OCCUPATION_RULES: list[tuple[list[str], str]] = [
@@ -162,6 +164,4 @@ def normalize_occupation(occ: str | None) -> str:
 
     Returns "Keine Angabe" for null values, "Sonstiges" if no rule matches.
     """
-    from src import match_rules
-
     return match_rules(occ, _OCCUPATION_RULES)

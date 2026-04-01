@@ -34,7 +34,7 @@ _tagger: "HanoverTagger | None" = None
 
 def _get_tagger() -> "HanoverTagger":
     """Load HanTa German morphology tagger on first call and cache it."""
-    global _tagger  # noqa: PLW0603
+    global _tagger  # noqa: PLW0603 — deliberate module-level cache; single-process CLI only
     if _tagger is None:
         from HanTa.HanoverTagger import HanoverTagger as HanoverTaggerClass
 
@@ -333,6 +333,8 @@ def _with_umlaut_variants(words: set[str]) -> set[str]:
     return expanded
 
 
+# Expand the base set with ae/oe/ue → ä/ö/ü variants so tokens without proper
+# umlaut encoding (common in older texts) are still filtered out.
 _STOPWORDS = _with_umlaut_variants(_STOPWORDS)
 
 _WORD_FREQ_COLS = ["fraktion", "wort", "tfidf", "rang"]
@@ -497,7 +499,7 @@ def compute_tfidf(
         }
 
     n_parties = len(party_tokens)
-    df_counts: Counter = Counter()
+    df_counts: Counter[str] = Counter()
     for tokens in party_tokens.values():
         for w in set(tokens):
             df_counts[w] += 1

@@ -5,6 +5,7 @@ polls, politicians, and sidejobs are passed in-memory between stages; only
 votes.csv is read/written to disk (it accumulates incrementally across runs).
 """
 
+import argparse
 import logging
 from datetime import date
 from pathlib import Path
@@ -78,7 +79,7 @@ def _train(
     save_embeddings(model, df_politicians, p_ids, period)
 
 
-def parse_args(argv: list[str] | None = None):
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = build_parser("Führe die komplette Datenpipeline in einem Prozess aus.")
     add_period_argument(parser)
     return parser.parse_args(argv)
@@ -146,19 +147,18 @@ def main(argv: list[str] | None = None) -> None:
                     "has_data": True,
                 }
             )
-        export_party_word_freq(p)
-        export_party_speech_stats(p)
+            # Only export speech data for periods that passed the full export
+            # check — avoids writing partial JSON for periods absent from periods.json.
+            export_party_word_freq(p)
+            export_party_speech_stats(p)
 
     _write(OUTPUT_DIR / "periods.json", available)
     log.info("Done. Exported %d periods.", len(available))
 
     write_github_output(
-        changed=votes_changed,
-        model_inputs_changed=votes_changed,
         votes_changed=votes_changed,
         fetched_polls=len(missing),
         period=period,
-        wahlperiode=period,
     )
 
 

@@ -50,7 +50,10 @@ def _normalize_fraktion(raw: str | None) -> str:
     normalized = re.sub(r"[\s\u00a0]+", " ", raw).strip()
     if normalized in _FRAKTION_MAP:
         return _FRAKTION_MAP[normalized]
-    if normalized not in _FRAKTION_MAP and re.search(r"[\n\u00a0]", raw):
+    # Only warn when the raw string contained non-standard whitespace that was
+    # normalized away. A clean string not in the map is likely a valid party name
+    # that the map simply doesn't cover; a mangled string is a data quality issue.
+    if re.search(r"[\n\u00a0]", raw):
         log.warning(
             "Unknown faction after normalization: %r (raw: %r)", normalized, raw
         )

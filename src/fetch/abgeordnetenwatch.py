@@ -1,3 +1,10 @@
+"""Fetch and refresh data from the abgeordnetenwatch.de API v2.
+
+Provides functions to load legislators, polls, votes, sidejobs, and committees
+for a given Bundestag legislature period. All data is returned as DataFrames or
+written to disk; no storage side-effects unless explicitly documented.
+"""
+
 import csv
 import functools
 import logging
@@ -37,18 +44,41 @@ def fetch_periods_df() -> pd.DataFrame:
     )
     legislatures = [p for p in raw if p["type"] == "legislature"]
     legislatures.sort(key=lambda p: p["start_date_period"])
-    return pd.DataFrame(
-        [
+    rows = []
+    for i, p in enumerate(legislatures):
+        label = p["label"]
+        computed = i + FIRST_BUNDESTAG_NUMBER
+        # Parse the period number from the label (e.g. "20. Wahlperiode (2021-2025)")
+        # rather than relying purely on the sorted index. If the API ever adds entries
+        # before WP16, the index-based fallback would silently produce wrong numbers.
+        label_match = re.search(r"^(\d+)\.", label)
+        if label_match:
+            bundestag_number = int(label_match.group(1))
+            if bundestag_number != computed:
+                log.warning(
+                    "bundestag_number mismatch for %r: label implies %d, "
+                    "index implies %d. Using label.",
+                    label,
+                    bundestag_number,
+                    computed,
+                )
+        else:
+            log.warning(
+                "Could not parse period number from label %r; "
+                "using index-based fallback.",
+                label,
+            )
+            bundestag_number = computed
+        rows.append(
             {
                 "period_id": p["id"],
-                "label": p["label"],
-                "bundestag_number": i + FIRST_BUNDESTAG_NUMBER,
+                "label": label,
+                "bundestag_number": bundestag_number,
                 "start_date": p["start_date_period"],
                 "end_date": p["end_date_period"],
             }
-            for i, p in enumerate(legislatures)
-        ]
-    )
+        )
+    return pd.DataFrame(rows)
 
 
 def _period_id_for(period: int) -> int:
@@ -106,7 +136,10 @@ def refresh_periods() -> int:
     """
     df = fetch_periods_df()
     today = datetime.now(tz=UTC).date().isoformat()
-    active = df[(df["start_date"] <= today) & (df["end_date"] >= today)]
+    # Fill null end_date with a far-future sentinel so ongoing periods are
+    # included in the active filter (null means the period has no known end).
+    end_col = df["end_date"].fillna("9999-12-31")
+    active = df[(df["start_date"] <= today) & (end_col >= today)]
     row = active.iloc[0] if not active.empty else df.iloc[-1]
     period = int(row["bundestag_number"])
     log.info("Current period: %s (period=%d)", row["label"], period)

@@ -27,7 +27,7 @@ class VoteDataset(Dataset):
     def __len__(self) -> int:
         return len(self.y)
 
-    def __getitem__(self, idx) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:  # ty: ignore[invalid-method-override]
+    def __getitem__(self, idx: int) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:  # type: ignore[override]
         return self.p[idx], self.poll[idx], self.y[idx]
 
 
@@ -84,7 +84,7 @@ class RelativeEarlyStopping(L.Callback):
         if loss is None:
             return
         curr = loss.item()
-        if (self._prev - curr) / self._prev < self.min_rel:
+        if self._prev == 0 or (self._prev - curr) / self._prev < self.min_rel:
             log.info(
                 "Early stopping: loss improved by less than %.0f%% (%.4f → %.4f).",
                 self.min_rel * 100,
@@ -163,5 +163,10 @@ def save_embeddings(
         coords["z"] = weights[:, 2]
     emb_df = pd.DataFrame({"politician_id": p_ids, **coords})
     path = OUTPUTS_DIR / f"politician_embeddings_{period}.csv"
-    p_df.merge(emb_df, on="politician_id").to_csv(path, index=False)
+    merged = p_df.merge(emb_df, on="politician_id")
+    # Inner join intentionally drops politicians with no embedding (no votes).
+    n_dropped = len(p_df) - len(merged)
+    if n_dropped:
+        log.info("Dropped %d politician(s) with no votes from embeddings.", n_dropped)
+    merged.to_csv(path, index=False)
     log.info("Embeddings saved to %s", path)
