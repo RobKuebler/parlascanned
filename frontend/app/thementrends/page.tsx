@@ -71,8 +71,11 @@ export default function ThemenTrendsPage() {
       return;
     }
     const q = query.trim().toLowerCase();
-    setSuggestions(termList.filter((t) => t.startsWith(q)).slice(0, 8));
-  }, [query, termList, data]);
+    const activeSet = new Set(activeKeywords.map((k) => k.keyword));
+    setSuggestions(
+      termList.filter((t) => t.startsWith(q) && !activeSet.has(t)).slice(0, 8),
+    );
+  }, [query, termList, data, activeKeywords]);
 
   const usedColors = new Set(activeKeywords.map((k) => k.color));
   const nextColor =
@@ -90,6 +93,7 @@ export default function ThemenTrendsPage() {
     if (activeKeywords.length >= MAX_KEYWORDS) {
       setQuery("");
       setSuggestions([]);
+      setNotFoundMsg("");
       return;
     }
     if (!(normalizedTerm in data.terms)) {
@@ -127,7 +131,7 @@ export default function ThemenTrendsPage() {
   return (
     <>
       <PageHeader
-        color="#2980B9"
+        color="#4A5C8C"
         label="Zeitverlauf"
         title="Wann wurde worüber gesprochen?"
         description="Verfolge, wie oft ein Begriff in Plenardebatten erwähnt wurde — und wann Themen politisch heiß wurden."
