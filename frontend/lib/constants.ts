@@ -70,6 +70,8 @@ export function truncateText(s: string, maxLen: number): string {
 }
 
 // Design tokens
+// Shared card style — use on every main content card for visual consistency
+export const CARD_CLASS = "bg-white rounded-xl border border-[#E3E0DA]";
 export const COLOR_SECONDARY = "#6B6760";
 export const COLOR_BODY = "#171613";
 

@@ -15,7 +15,12 @@ import { ChartSkeleton } from "@/components/ui/ChartSkeleton";
 import { Footer } from "@/components/ui/Footer";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SpeechShareBars } from "@/components/charts/SpeechShareBars";
-import { sortParties, PARTY_COLORS, FALLBACK_COLOR } from "@/lib/constants";
+import {
+  sortParties,
+  PARTY_COLORS,
+  FALLBACK_COLOR,
+  CARD_CLASS,
+} from "@/lib/constants";
 
 export default function SpeechesPage() {
   const { activePeriodId } = usePeriod();
@@ -112,76 +117,77 @@ export default function SpeechesPage() {
 
       {!loading && speechStats && <SpeechShareBars speechStats={speechStats} />}
 
-      {unavailable ? (
-        <p className="text-[14px]" style={{ color: "#9A9790" }}>
-          Für diese Wahlperiode sind noch keine Rededaten verfügbar.
-        </p>
-      ) : loading || !wordFreq || !speechStats ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <ChartSkeleton key={i} height={480} />
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {parties.map((party, i) => {
-            const words = wordSlices[party] ?? [];
-            const speakers = speakersByParty[party] ?? [];
-            const color = PARTY_COLORS[party] ?? FALLBACK_COLOR;
-            const total = totalWords[party] ?? 0;
+      <div className="mt-8">
+        {unavailable ? (
+          <p className="text-[14px]" style={{ color: "#9A9790" }}>
+            Für diese Wahlperiode sind noch keine Rededaten verfügbar.
+          </p>
+        ) : loading || !wordFreq || !speechStats ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <ChartSkeleton key={i} height={480} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {parties.map((party, i) => {
+              const words = wordSlices[party] ?? [];
+              const speakers = speakersByParty[party] ?? [];
+              const color = PARTY_COLORS[party] ?? FALLBACK_COLOR;
+              const total = totalWords[party] ?? 0;
 
-            return (
-              <div
-                key={party}
-                className="bg-white border border-gray-100 flex flex-col gap-3 p-4"
-                style={{ borderRadius: 20 }}
-              >
-                {/* Card header */}
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="shrink-0 rounded-full"
-                      style={{ width: 4, height: 20, background: color }}
-                    />
+              return (
+                <div
+                  key={party}
+                  className={`${CARD_CLASS} flex flex-col gap-3 p-4`}
+                >
+                  {/* Card header */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="shrink-0 rounded-full"
+                        style={{ width: 4, height: 20, background: color }}
+                      />
+                      <span
+                        className="font-extrabold text-[15px]"
+                        style={{ color: "#1E1B5E" }}
+                      >
+                        {party}
+                      </span>
+                    </div>
                     <span
-                      className="font-extrabold text-[15px]"
-                      style={{ color: "#1E1B5E" }}
+                      className="text-[12px] tabular-nums shrink-0"
+                      style={{ color: "#9A9790" }}
                     >
-                      {party}
+                      {total.toLocaleString("de")} Wörter
                     </span>
                   </div>
-                  <span
-                    className="text-[12px] tabular-nums shrink-0"
-                    style={{ color: "#9A9790" }}
-                  >
-                    {total.toLocaleString("de")} Wörter
-                  </span>
-                </div>
 
-                {/* Word cloud — click to expand */}
-                <WordCloud
-                  words={words}
-                  color={color}
-                  height={200}
-                  onClick={() => setExpandedParty(party)}
-                  startDelay={i * 180}
-                />
+                  {/* Word cloud — click to expand */}
+                  <WordCloud
+                    words={words}
+                    color={color}
+                    height={200}
+                    onClick={() => setExpandedParty(party)}
+                    startDelay={i * 180}
+                  />
 
-                {/* Speaker list */}
-                <div>
-                  <p
-                    className="text-[11px] font-bold tracking-[0.08em] uppercase mb-1"
-                    style={{ color: "#9A9790" }}
-                  >
-                    Redner nach Wortanzahl
-                  </p>
-                  <SpeakerBars speakers={speakers} partyColor={color} />
+                  {/* Speaker list */}
+                  <div>
+                    <p
+                      className="text-[11px] font-bold tracking-[0.08em] uppercase mb-1"
+                      style={{ color: "#9A9790" }}
+                    >
+                      Redner nach Wortanzahl
+                    </p>
+                    <SpeakerBars speakers={speakers} partyColor={color} />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       <Footer />
 
@@ -200,9 +206,8 @@ export default function SpeechesPage() {
               onClick={() => setExpandedParty(null)}
             >
               <div
-                className="relative bg-white flex flex-col"
+                className={`relative ${CARD_CLASS} flex flex-col`}
                 style={{
-                  borderRadius: 20,
                   width: "min(90vw, 760px)",
                   maxHeight: "85vh",
                 }}
