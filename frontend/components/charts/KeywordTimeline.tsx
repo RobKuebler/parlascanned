@@ -37,7 +37,12 @@ export function KeywordTimeline({
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!width || !svgRef.current || series.length === 0) {
+    if (
+      !width ||
+      !svgRef.current ||
+      series.length === 0 ||
+      months.length === 0
+    ) {
       d3.select(svgRef.current).selectAll("*").remove();
       return;
     }
@@ -188,13 +193,7 @@ export function KeywordTimeline({
         const html = `<span style="font-size:11px;color:#9A9790">${months[i]}</span><br/>${rows}`;
 
         const [cx, cy] = d3.pointer(event, containerRef.current!);
-        positionTooltip(
-          tooltip,
-          containerRef.current!,
-          cx + TOOLTIP_DX,
-          cy + TOOLTIP_DY,
-          html,
-        );
+        positionTooltip(tooltip, containerRef.current!, cx, cy, html);
       })
       .on("mouseleave", () => {
         crosshair.attr("opacity", 0);

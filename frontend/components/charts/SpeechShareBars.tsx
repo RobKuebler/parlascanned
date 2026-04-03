@@ -1,5 +1,5 @@
 import { SpeechStatsFile } from "@/lib/data";
-import { PARTY_COLORS, FALLBACK_COLOR, sortParties } from "@/lib/constants";
+import { PARTY_COLORS, FALLBACK_COLOR } from "@/lib/constants";
 import { stripSoftHyphen } from "@/lib/data";
 
 interface Props {
@@ -22,9 +22,7 @@ export function SpeechShareBars({ speechStats }: Props) {
     totals[party] = (totals[party] ?? 0) + s.wortanzahl_gesamt;
   }
 
-  const sorted = sortParties(Object.keys(totals)).sort(
-    (a, b) => totals[b] - totals[a],
-  );
+  const sorted = Object.keys(totals).sort((a, b) => totals[b] - totals[a]);
   const max = Math.max(...sorted.map((p) => totals[p]), 1);
 
   return (
