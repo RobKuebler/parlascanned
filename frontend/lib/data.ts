@@ -125,8 +125,7 @@ export async function fetchData<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-/** Build the URL for a period-specific JSON file. */
+/** Build the URL for a period-specific JSON file under /data/{periodId}/. */
 export function dataUrl(filename: string, periodId: number): string {
-  const base = filename.replace("{period}", String(periodId));
-  return `/data/${base}`;
+  return `/data/${periodId}/${filename}`;
 }
