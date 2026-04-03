@@ -37,11 +37,31 @@ MINIMAL_XML = """\
   </sitzungsverlauf>
 </dbtplenarprotokoll>"""
 
+DATED_XML = """\
+<?xml version="1.0" encoding="utf-8"?>
+<dbtplenarprotokoll wahlperiode="21" sitzung-nr="1" sitzung-datum="25.03.2025">
+  <sitzungsverlauf>
+    <rede id="ID001">
+      <p klasse="redner"><redner id="R001"><name>
+        <vorname>Anna</vorname><nachname>Mueller</nachname>
+        <fraktion>SPD</fraktion></name></redner>Anna Mueller (SPD):</p>
+      <p klasse="J_1">Klimawandel ist wichtig fuer die Zukunft.</p>
+    </rede>
+  </sitzungsverlauf>
+</dbtplenarprotokoll>"""
+
 
 @pytest.fixture
 def xml_file(tmp_path) -> Path:
     p = tmp_path / "003.xml"
     p.write_text(MINIMAL_XML, encoding="utf-8")
+    return p
+
+
+@pytest.fixture
+def dated_xml_file(tmp_path) -> Path:
+    p = tmp_path / "001.xml"
+    p.write_text(DATED_XML, encoding="utf-8")
     return p
 
 
@@ -94,6 +114,18 @@ def test_parse_sitzung_fehlende_fraktion_ist_fraktionslos(xml_file):
     assert weber["fraktion"] == "fraktionslos"
 
 
+def test_parse_sitzung_datum_iso_format(dated_xml_file):
+    """sitzung-datum DD.MM.YYYY → datum YYYY-MM-DD in every row."""
+    rows = pp.parse_sitzung(dated_xml_file)
+    assert rows[0]["datum"] == "2025-03-25"
+
+
+def test_parse_sitzung_datum_fehlt_ist_none(xml_file):
+    """Fehlendes sitzung-datum → datum=None in every row."""
+    rows = pp.parse_sitzung(xml_file)
+    assert rows[0]["datum"] is None
+
+
 # ---------------------------------------------------------------------------
 # parse_alle_sitzungen
 # ---------------------------------------------------------------------------
@@ -118,6 +150,7 @@ def test_parse_alle_sitzungen_kombiniert(tmp_path):
         "fraktion",
         "wortanzahl",
         "text",
+        "datum",
     }
     assert not (tmp_path / "speeches.csv").exists()
 
@@ -181,4 +214,5 @@ def test_parse_alle_sitzungen_leeres_verzeichnis(tmp_path):
         "fraktion",
         "wortanzahl",
         "text",
+        "datum",
     }

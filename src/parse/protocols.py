@@ -70,6 +70,7 @@ _COLS = [
     "fraktion",
     "wortanzahl",
     "text",
+    "datum",
 ]
 
 
@@ -84,6 +85,16 @@ def parse_sitzung(xml_path: Path) -> list[dict]:
     if sitzung_nr_raw is None:
         log.warning("No sitzung-nr in %s, using 0", xml_path.name)
     sitzungsnr = int(sitzung_nr_raw or 0)
+
+    datum_raw = root.get("sitzung-datum")  # "DD.MM.YYYY" or None
+    datum: str | None = None
+    if datum_raw:
+        try:
+            d, m, y = datum_raw.split(".")
+            datum = f"{y}-{m}-{d}"
+        except ValueError:
+            log.warning("Cannot parse sitzung-datum %r in %s", datum_raw, xml_path.name)
+
     rows = []
 
     for rede in root.findall(".//rede"):
@@ -124,6 +135,7 @@ def parse_sitzung(xml_path: Path) -> list[dict]:
                 "fraktion": fraktion,
                 "wortanzahl": wortanzahl,
                 "text": full_text,
+                "datum": datum,
             }
         )
 
