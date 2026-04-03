@@ -5,19 +5,23 @@ applaudiert, ruft, lacht, usw. Zusätzlich: Cross-Partei-Matrix (wer klatscht
 bei wem, wer ruft bei wessen Rede).
 
 Usage:
-    uv run python -m src.analysis.kommentare
-    uv run python -m src.analysis.kommentare --period 20
-    uv run python -m src.analysis.kommentare --top 10
+    uv run python -m src.analysis.comments
+    uv run python -m src.analysis.comments --period 20
+    uv run python -m src.analysis.comments --top 10
 """
 
 import argparse
+import logging
 import re
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
 import pandas as pd
 
+from ..cli import configure_logging
 from ..paths import DATA_DIR
+
+log = logging.getLogger(__name__)
 
 # ─── Party extraction ────────────────────────────────────────────────────────
 
@@ -261,7 +265,7 @@ def export_kommentare_json(df: pd.DataFrame, out_dir: Path) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / "kommentare.json"
     out_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
-    print(f"  -> {out_path}")  # noqa: T201
+    log.info("  -> %s", out_path)
 
 
 def _summary_table(df: pd.DataFrame, top: int | None = None) -> pd.DataFrame:
@@ -331,9 +335,10 @@ def main(argv: list[str] | None = None) -> None:
         help="Exportiere JSON für das Next.js-Frontend.",
     )
     args = parser.parse_args(argv)
+    configure_logging()
 
     periods = [args.period] if args.period else None
-    print("Lade Daten …", flush=True)  # noqa: T201
+    log.info("Lade Daten …")
     df = load_all_events(periods)
     if args.export:
         _frontend_data = Path(__file__).parents[2] / "frontend" / "public" / "data"
@@ -347,29 +352,27 @@ def main(argv: list[str] | None = None) -> None:
                 df[df["wahlperiode"] == wp] if "wahlperiode" in df.columns else df
             )
             export_kommentare_json(period_df, _frontend_data / str(wp))
-        print(f"JSON für {export_periods} exportiert.")  # noqa: T201
+        log.info("JSON für %s exportiert.", export_periods)
         return
-    print(f"{len(df):,} Events aus {df['wahlperiode'].nunique()} Wahlperiode(n).\n")  # noqa: T201
+    log.info("%d Events aus %d Wahlperiode(n).", len(df), df["wahlperiode"].nunique())
 
     # ── Gesamtübersicht ───────────────────────────────────────────────────────
-    print("=" * 60)  # noqa: T201
-    print("GESAMTÜBERSICHT — Ereignisse pro Partei")  # noqa: T201
-    print("=" * 60)  # noqa: T201
+    log.info("=" * 60)
+    log.info("GESAMTÜBERSICHT — Ereignisse pro Partei")
+    log.info("=" * 60)
     summary = _summary_table(df, top=args.top)
-    print(_fmt(summary))  # noqa: T201
-    print()  # noqa: T201
+    log.info("\n%s", _fmt(summary))
 
     # ── Cross-Partei-Tabellen ─────────────────────────────────────────────────
     for etype in _EVENT_ORDER:
         ct = _cross_table(df, etype, top=args.top)
         if ct.empty:
             continue
-        print("=" * 60)  # noqa: T201
-        print(f"CROSS-PARTEI: {etype.upper()}")  # noqa: T201
-        print("Zeile = handelnde Partei | Spalte = Redner-Partei")  # noqa: T201
-        print("=" * 60)  # noqa: T201
-        print(_fmt(ct))  # noqa: T201
-        print()  # noqa: T201
+        log.info("=" * 60)
+        log.info("CROSS-PARTEI: %s", etype.upper())
+        log.info("Zeile = handelnde Partei | Spalte = Redner-Partei")
+        log.info("=" * 60)
+        log.info("\n%s", _fmt(ct))
 
 
 if __name__ == "__main__":
