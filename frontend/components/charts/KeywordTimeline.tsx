@@ -2,12 +2,7 @@
 import { useRef, useEffect } from "react";
 import * as d3 from "d3";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
-import {
-  positionTooltip,
-  ChartTooltip,
-  TOOLTIP_DX,
-  TOOLTIP_DY,
-} from "@/lib/chart-utils";
+import { positionTooltip, ChartTooltip } from "@/lib/chart-utils";
 
 export interface KeywordSeries {
   keyword: string;
