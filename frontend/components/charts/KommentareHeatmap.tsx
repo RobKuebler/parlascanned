@@ -53,6 +53,11 @@ function fmt(n: number): string {
   return String(n);
 }
 
+function fmtCompact(n: number): string {
+  if (n >= 1000) return `${Math.round(n / 1000)}k`;
+  return String(n);
+}
+
 function HeatmapCanvas({
   data,
   eventType,
@@ -225,8 +230,9 @@ function HeatmapCanvas({
           })
           .on("mouseleave", () => tip.style("opacity", "0"));
 
-        // Cell value label — only when cell is large enough
-        if (cellW >= 34 && cellH >= 24 && val > 0) {
+        // Cell value label — show on all cells >= minimum size
+        if (val > 0) {
+          const isSmall = cellW < 34;
           const textColor =
             colorScale(val) === COLOR_LOW
               ? "#888"
@@ -238,11 +244,11 @@ function HeatmapCanvas({
             .attr("y", i * cellH + cellH / 2)
             .attr("text-anchor", "middle")
             .attr("dominant-baseline", "central")
-            .style("font-size", "9px")
+            .style("font-size", isSmall ? "7.5px" : "9px")
             .style("font-family", CHART_FONT_FAMILY)
             .style("fill", textColor)
             .style("pointer-events", "none")
-            .text(fmt(val));
+            .text(isSmall ? fmtCompact(val) : fmt(val));
         }
       }
     }
