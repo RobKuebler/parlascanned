@@ -1,7 +1,6 @@
 """Convert period CSVs to JSON files for the Next.js frontend.
 
-Run after fetch/abgeordnetenwatch.py and model/train.py.
-Writes to frontend/public/data/.
+Writes to frontend/public/data/. Run via src.pipeline or standalone.
 """
 
 import argparse
@@ -19,11 +18,13 @@ from .analysis.transforms import (
     compute_cohesion,
     compute_education_degree_pivot,
     compute_education_field_pivot,
+    compute_effective_income,
     compute_occupation_pivot,
     compute_sex_counts,
     compute_title_counts,
 )
 from .cli import add_period_argument, build_parser, configure_logging
+from .constants import PARTY_ORDER, SIDEJOB_CATEGORIES
 from .fetch.abgeordnetenwatch import fetch_periods_df
 from .paths import DATA_DIR, OUTPUTS_DIR
 
@@ -37,62 +38,6 @@ def _period_output_dir(period: int) -> Path:
     d = OUTPUT_DIR / str(period)
     d.mkdir(exist_ok=True)
     return d
-
-
-# Mirrors pages/constants.py — soft-hyphen (\xad) in GRÜNEN is intentional.
-PARTY_ORDER = [
-    "CDU/CSU",
-    "SPD",
-    "AfD",
-    "BÜNDNIS 90/\xadDIE GRÜNEN",
-    "Die Linke",
-    "BSW",
-    "FDP",
-    "fraktionslos",
-]
-
-SIDEJOB_CATEGORIES: dict[int, str] = {
-    29647: "Entgeltliche Tätigkeit",
-    29228: "Unternehmensbeteiligung / Organmitglied",
-    29229: "Funktionen in öffentlichen Institutionen",
-    29230: "Verband / Stiftung / Verein",
-    29231: "Unternehmensbeteiligung",
-    29232: "Spende / Zuwendung",
-    29233: "Vereinbarung über künftige Tätigkeit",
-    29234: "Tätigkeit vor Mitgliedschaft",
-}
-
-
-def _active_months(
-    date_start_str: str | None,
-    date_end_str: str | None,
-    period_start: date,
-    period_end: date,
-    created_ts: float | None = None,
-) -> int:
-    """Compute active months within period boundaries.
-
-    Adapted from pages/sidejobs.py — adds a created_ts fallback for jobs with no
-    date_start.
-
-    created_ts is the disclosure timestamp, not the job start date. For retroactive
-    disclosures (created after period_end), it tells us nothing about when the job
-    started, so we fall back to period_start (assume active for the full period).
-    """
-    today = datetime.now(tz=UTC).date()
-    if date_start_str:
-        job_start = date.fromisoformat(date_start_str)
-    elif created_ts:
-        created_date = datetime.fromtimestamp(created_ts, tz=UTC).date()
-        job_start = created_date if created_date <= period_end else period_start
-    else:
-        job_start = period_start
-    job_end = date.fromisoformat(date_end_str) if date_end_str else today
-    start = max(job_start, period_start)
-    end = min(job_end, period_end, today)
-    if start > end:
-        return 0
-    return (end.year - start.year) * 12 + (end.month - start.month) + 1
 
 
 def _sanitize(obj: object) -> object:
@@ -150,26 +95,6 @@ def _pivot_to_json(
     }
 
 
-def _effective_income(row: pd.Series, period_start: date, period_end: date) -> float:
-    """Prorate income to period duration. Mirrors sidejobs.py.
-
-    interval is read from CSV as float64 (pandas coerces int columns with
-    NaN values to float), so compare as int, not as string.
-    """
-    raw_interval = row.get("interval")
-    try:
-        interval = int(raw_interval)
-    except (TypeError, ValueError):
-        interval = None
-    ds = row.get("date_start") if pd.notna(row.get("date_start")) else None
-    de = row.get("date_end") if pd.notna(row.get("date_end")) else None
-    created = row.get("created") if pd.notna(row.get("created")) else None
-    if interval in (1, 2):
-        months = _active_months(ds, de, period_start, period_end, created)
-        return row["income"] * (months if interval == 1 else months / 12)
-    return row["income"]
-
-
 def _export_sidejobs(
     period: int,
     period_dir: Path,
@@ -216,7 +141,7 @@ def _export_sidejobs(
 
     sj_income = sj_income.assign(
         prorated_income=lambda df: df.apply(
-            lambda row: _effective_income(row, period_start, period_end), axis=1
+            lambda row: compute_effective_income(row, period_start, period_end), axis=1
         )
     )
     has_topics = "topics" in sj_income.columns

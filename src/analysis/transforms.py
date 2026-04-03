@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from datetime import UTC, date, datetime
 
 import numpy as np
 import pandas as pd
@@ -246,3 +247,55 @@ def compute_title_counts(pols_df: pd.DataFrame) -> pd.DataFrame:
         .reset_index(name="count")  # type: ignore[call-overload]
         .pipe(_add_party_pct)
     )
+
+
+def compute_active_months(
+    date_start_str: str | None,
+    date_end_str: str | None,
+    period_start: date,
+    period_end: date,
+    created_ts: float | None = None,
+) -> int:
+    """Compute how many months a sidejob was active within the period boundaries.
+
+    Uses created_ts as a fallback start date when date_start is missing.
+    For retroactive disclosures (created after period_end), created_ts is
+    uninformative, so we assume the job was active for the full period.
+    """
+    today = datetime.now(tz=UTC).date()
+    if date_start_str:
+        job_start = date.fromisoformat(date_start_str)
+    elif created_ts:
+        created_date = datetime.fromtimestamp(created_ts, tz=UTC).date()
+        job_start = created_date if created_date <= period_end else period_start
+    else:
+        job_start = period_start
+    job_end = date.fromisoformat(date_end_str) if date_end_str else today
+    start = max(job_start, period_start)
+    end = min(job_end, period_end, today)
+    if start > end:
+        return 0
+    return (end.year - start.year) * 12 + (end.month - start.month) + 1
+
+
+def compute_effective_income(
+    row: pd.Series, period_start: date, period_end: date
+) -> float:
+    """Prorate a sidejob's income to the duration it was active within the period.
+
+    interval=1 → monthly income, interval=2 → annual income. Other intervals
+    are returned as-is. interval is read as float64 (pandas coerces int columns
+    with NaN to float), so we cast to int before comparing.
+    """
+    raw_interval = row.get("interval")
+    try:
+        interval = int(raw_interval)
+    except (TypeError, ValueError):
+        interval = None
+    ds = row.get("date_start") if pd.notna(row.get("date_start")) else None
+    de = row.get("date_end") if pd.notna(row.get("date_end")) else None
+    created = row.get("created") if pd.notna(row.get("created")) else None
+    if interval in (1, 2):
+        months = compute_active_months(ds, de, period_start, period_end, created)
+        return row["income"] * (months if interval == 1 else months / 12)
+    return row["income"]
