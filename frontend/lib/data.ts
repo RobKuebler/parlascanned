@@ -91,7 +91,7 @@ export interface WordFreqEntry {
   rang: number;
 }
 
-/** party_word_freq_{period}.json — keys are raw fraktion names (may contain soft-hyphen) */
+/** party_word_freq.json (under /data/{period}/) — keys are raw fraktion names (may contain soft-hyphen) */
 export type WordFreqFile = Record<string, WordFreqEntry[]>;
 
 export interface SpeakerRecord {
@@ -103,7 +103,7 @@ export interface SpeakerRecord {
   wortanzahl_gesamt: number;
 }
 
-/** party_speech_stats_{period}.json — flat array sorted by fraktion then wortanzahl_gesamt desc */
+/** party_speech_stats.json (under /data/{period}/) — flat array sorted by fraktion then wortanzahl_gesamt desc */
 export type SpeechStatsFile = SpeakerRecord[];
 
 // ── Data loading utilities ──────────────────────────────────────────────────
