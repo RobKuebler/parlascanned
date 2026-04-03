@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 import src.fetch.protocol_xml as fxml
+from src.fetch import dip
 
 
 @pytest.fixture(autouse=True)
@@ -55,7 +56,7 @@ def test_curl_get_gibt_json_zurueck(monkeypatch):
         return subprocess.CompletedProcess(cmd, 0, b'{"numFound": 1}', b"")
 
     monkeypatch.setattr("subprocess.run", fake_run)
-    result = fxml._curl_get("https://example.com", {"foo": "bar"})
+    result = dip._curl_get("https://example.com", {"foo": "bar"})
     assert result == {"numFound": 1}
 
 
@@ -67,7 +68,7 @@ def test_curl_get_wirft_bei_curl_fehler(monkeypatch):
 
     monkeypatch.setattr("subprocess.run", fake_run)
     with pytest.raises(RuntimeError, match="curl failed"):
-        fxml._curl_get("https://example.com", {})
+        dip._curl_get("https://example.com", {})
 
 
 # ---------------------------------------------------------------------------
@@ -85,8 +86,8 @@ def test_fetch_dip_all_einzelne_seite(monkeypatch):
         call_count += 1
         return _make_page(docs)
 
-    monkeypatch.setattr(fxml, "_curl_get", fake_curl_get)
-    result = fxml.fetch_dip_all("plenarprotokoll", {"f.wahlperiode": 20})
+    monkeypatch.setattr(dip, "_curl_get", fake_curl_get)
+    result = dip.fetch_dip_all("plenarprotokoll", {"f.wahlperiode": 20})
     assert len(result) == 4
     assert call_count == 1
 
@@ -107,8 +108,8 @@ def test_fetch_dip_all_mehrere_seiten(monkeypatch):
         call_idx += 1
         return resp
 
-    monkeypatch.setattr(fxml, "_curl_get", fake_curl_get)
-    result = fxml.fetch_dip_all("plenarprotokoll", {})
+    monkeypatch.setattr(dip, "_curl_get", fake_curl_get)
+    result = dip.fetch_dip_all("plenarprotokoll", {})
     assert len(result) == 104
     assert call_idx == 2
 
