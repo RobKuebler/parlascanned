@@ -25,7 +25,13 @@ import {
   PARTY_COLORS,
   FALLBACK_COLOR,
   VOTE_META,
+  CARD_CLASS,
+  CARD_SHADOW,
+  CARD_PADDING,
 } from "@/lib/constants";
+import { PAGE_META } from "@/lib/page-meta";
+
+const META = PAGE_META.find((p) => p.href === "/vote-map")!;
 
 /** Computes per-party cohesion (mean distance to centroid) and centroid positions. */
 function computeCohesion(
@@ -275,12 +281,7 @@ export default function VoteMapPage() {
 
   return (
     <>
-      <PageHeader
-        color="#4C46D9"
-        label="Abstimmungsverhalten"
-        title="Wer stimmt mit wem?"
-        description="Ein KI-Modell hat das Abstimmungsverhalten aller Abgeordneten in einen zweidimensionalen Raum eingebettet. Abgeordnete, die häufig gleich abstimmen, landen nah beieinander — unabhängig von Fraktionsgrenzen."
-      />
+      <PageHeader {...META} />
 
       {/* Coalition banner */}
       {activePeriodId && GOVERNING_PARTIES[activePeriodId] && (
@@ -315,8 +316,8 @@ export default function VoteMapPage() {
 
       {/* Scatter */}
       <div
-        className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6 mb-5"
-        style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+        className={`${CARD_CLASS} ${CARD_PADDING} mb-5`}
+        style={{ boxShadow: CARD_SHADOW }}
       >
         <h2
           className="font-extrabold text-[15px] mb-1"
@@ -346,8 +347,8 @@ export default function VoteMapPage() {
 
       {/* Heatmap */}
       <div
-        className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6 mb-5"
-        style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+        className={`${CARD_CLASS} ${CARD_PADDING} mb-5`}
+        style={{ boxShadow: CARD_SHADOW }}
       >
         <h2
           className="font-extrabold text-[15px] mb-1"
@@ -423,8 +424,8 @@ export default function VoteMapPage() {
 
       {/* Cohesion */}
       <div
-        className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6 mb-5"
-        style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+        className={`${CARD_CLASS} ${CARD_PADDING} mb-5`}
+        style={{ boxShadow: CARD_SHADOW }}
       >
         <h2
           className="font-extrabold text-[15px] mb-1"

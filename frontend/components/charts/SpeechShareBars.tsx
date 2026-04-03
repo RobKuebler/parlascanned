@@ -1,5 +1,11 @@
 import { SpeechStatsFile } from "@/lib/data";
-import { PARTY_COLORS, FALLBACK_COLOR } from "@/lib/constants";
+import {
+  PARTY_COLORS,
+  FALLBACK_COLOR,
+  CARD_CLASS,
+  CARD_SHADOW,
+  CARD_PADDING,
+} from "@/lib/constants";
 import { stripSoftHyphen } from "@/lib/data";
 
 interface Props {
@@ -27,8 +33,8 @@ export function SpeechShareBars({ speechStats }: Props) {
 
   return (
     <section
-      className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
-      style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+      className={`${CARD_CLASS} ${CARD_PADDING}`}
+      style={{ boxShadow: CARD_SHADOW }}
     >
       <h2
         className="font-extrabold text-[15px] mb-1"

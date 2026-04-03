@@ -21,6 +21,9 @@ import {
   FALLBACK_COLOR,
   CARD_CLASS,
 } from "@/lib/constants";
+import { PAGE_META } from "@/lib/page-meta";
+
+const META = PAGE_META.find((p) => p.href === "/speeches")!;
 
 export default function SpeechesPage() {
   const { activePeriodId } = usePeriod();
@@ -108,12 +111,7 @@ export default function SpeechesPage() {
   return (
     <>
       {/* Page header */}
-      <PageHeader
-        color="#9B59B6"
-        label="Wortanalyse"
-        title="Wer redet worüber?"
-        description="Welche Themen prägen jede Fraktion im Plenum? TF-IDF-Wordclouds der parteispezifischen Begriffe und die redeaktivsten Abgeordneten."
-      />
+      <PageHeader {...META} />
 
       {!loading && speechStats && <SpeechShareBars speechStats={speechStats} />}
 

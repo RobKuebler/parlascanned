@@ -7,7 +7,11 @@ import {
   FALLBACK_COLOR,
   CHART_FONT_FAMILY,
   PARTY_ORDER,
+  CARD_SHADOW,
 } from "@/lib/constants";
+import { PAGE_META } from "@/lib/page-meta";
+
+const META = PAGE_META.find((p) => p.href === "/comments")!;
 import { ChartSkeleton } from "@/components/ui/ChartSkeleton";
 import ApplauseChord from "@/components/charts/ApplauseChord";
 import KommentareHeatmap from "@/components/charts/KommentareHeatmap";
@@ -29,15 +33,16 @@ function Section({
     <div
       style={{
         background: "white",
-        borderRadius: 16,
+        borderRadius: "0.75rem",
+        border: "1px solid #E3E0DA",
         padding: "20px 20px 24px",
-        boxShadow: "0 2px 12px rgba(78,70,217,0.08)",
+        boxShadow: CARD_SHADOW,
         ...(flex ? { flex, minWidth: 0 } : { marginBottom: 16 }),
       }}
     >
       <p
         style={{
-          fontSize: 15,
+          fontSize: "var(--t-title)",
           fontWeight: 800,
           color: "#171613",
           marginBottom: subtitle ? 4 : 16,
@@ -46,7 +51,13 @@ function Section({
         {title}
       </p>
       {subtitle && (
-        <p style={{ fontSize: 12, color: "#9A9790", marginBottom: 16 }}>
+        <p
+          style={{
+            fontSize: "var(--t-small)",
+            color: "#9A9790",
+            marginBottom: 16,
+          }}
+        >
           {subtitle}
         </p>
       )}
@@ -363,12 +374,7 @@ export default function CommentsPage() {
 
   return (
     <>
-      <PageHeader
-        color="#E74C3C"
-        label="Plenardynamik"
-        title="Wer stört wen?"
-        description="Jede Unterbrechung im Plenum — Zwischenrufe, Lachen, Applaus — ist im Stenografischen Bericht festgehalten. Diese Analyse zeigt, welche Partei wie oft und bei wessen Reden reagiert."
-      />
+      <PageHeader {...META} />
 
       {error && (
         <p style={{ color: "#EA580C", fontSize: 13, marginBottom: 16 }}>
@@ -379,7 +385,7 @@ export default function CommentsPage() {
       {/* Summary */}
       <Section
         title="Gesamtübersicht"
-        subtitle="Reaktionen nach Partei — jede Skala unabhängig"
+        subtitle="Reaktionen nach Partei, jede Skala unabhängig"
       >
         {data ? (
           <>

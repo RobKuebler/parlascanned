@@ -69,9 +69,25 @@ export function truncateText(s: string, maxLen: number): string {
   return s.length > maxLen ? s.slice(0, maxLen) + "\u2026" : s;
 }
 
-// Design tokens
+// ── Design tokens ────────────────────────────────────────────────────────────
+
 // Shared card style — use on every main content card for visual consistency
 export const CARD_CLASS = "bg-white rounded-xl border border-[#E3E0DA]";
+// Standard content-card padding (mobile → desktop)
+export const CARD_PADDING = "p-5 md:p-6";
+// Standard content-card drop shadow — spread as style={{ boxShadow: CARD_SHADOW }}
+export const CARD_SHADOW = "0 1px 4px rgba(0,0,0,0.05)";
+
+// ── Typography scale ─────────────────────────────────────────────────────────
+// Always use one of these values; never use ad-hoc pixel sizes.
+// label  11px  eyebrows, metadata, axis legends
+// small  12px  CTA text, tag labels
+// body   13px  card body text, descriptions
+// base   14px  standard body, inputs, page subtitles
+// title  15px  card titles, section headers
+// stat   22px  statistic numbers
+// page   28px  page headings (PageHeader h1)
+
 export const COLOR_SECONDARY = "#6B6760";
 export const COLOR_BODY = "#171613";
 

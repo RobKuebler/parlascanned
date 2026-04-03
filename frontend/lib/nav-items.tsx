@@ -128,8 +128,8 @@ export const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    href: "/thementrends",
-    label: "Thementrends",
+    href: "/trends",
+    label: "Trends",
     icon: (active, size = 24) => (
       <svg
         width={size}

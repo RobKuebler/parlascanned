@@ -1,5 +1,29 @@
 @import "tailwindcss";
 
+/* ── Design system tokens ─────────────────────────────────────────────────── */
+/* Typography scale — use these sizes; never use arbitrary px values.          */
+:root {
+  --t-label: 11px; /* eyebrow labels, metadata, axis legends */
+  --t-small: 12px; /* CTA text, tag labels                  */
+  --t-body: 13px; /* card body text, descriptions           */
+  --t-base: 14px; /* standard body text, inputs             */
+  --t-title: 15px; /* card titles, section headers           */
+  --t-stat: 22px; /* statistic numbers                      */
+  --t-page: 28px; /* page headings                          */
+
+  /* Spacing scale (matches CLAUDE.md spacing guide)                           */
+  --sp-xs: 4px;
+  --sp-sm: 8px;
+  --sp-md: 16px;
+  --sp-lg: 24px;
+  --sp-xl: 32px;
+  --sp-2xl: 48px;
+
+  /* Card primitives                                                            */
+  --card-radius: 0.75rem; /* rounded-xl */
+  --card-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
 /* ── Base ─────────────────────────────────────────────────────────────────── */
 *,
 *::before,

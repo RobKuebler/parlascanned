@@ -18,7 +18,15 @@ import {
 import { ChartSkeleton } from "@/components/ui/ChartSkeleton";
 import { Footer } from "@/components/ui/Footer";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { PARTY_ORDER } from "@/lib/constants";
+import {
+  PARTY_ORDER,
+  CARD_CLASS,
+  CARD_SHADOW,
+  CARD_PADDING,
+} from "@/lib/constants";
+import { PAGE_META } from "@/lib/page-meta";
+
+const META = PAGE_META.find((p) => p.href === "/sidejobs")!;
 
 /** Animates a number from 0 to `target` over ~1.2 s using easeOutExpo. */
 function useCountUp(target: number, active: boolean) {
@@ -103,12 +111,7 @@ export default function SidejobsPage() {
 
   return (
     <>
-      <PageHeader
-        color="#E67E22"
-        label="Transparenz"
-        title="Wer verdient noch dazu?"
-        description="Bundestagsabgeordnete sind gesetzlich verpflichtet, entgeltliche Nebentätigkeiten ab 1.000 € monatlich zu melden (§ 44a AbgG). Diese Auswertung basiert auf den öffentlich zugänglichen Meldungen und zeigt, in welchen Parteien, Branchen und Themenfeldern Nebeneinkünfte besonders verbreitet sind."
-      />
+      <PageHeader {...META} />
 
       {/* Hero card — total income */}
       <div
@@ -267,8 +270,8 @@ export default function SidejobsPage() {
         <div className="flex flex-col gap-5 stagger">
           {/* Coverage chart: per-party breakdown of Nebenverdienst / keine Angabe / kein Nebenjob */}
           <section
-            className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+            className={`${CARD_CLASS} ${CARD_PADDING}`}
+            style={{ boxShadow: CARD_SHADOW }}
           >
             <h2
               className="font-extrabold text-[15px] mb-1"
@@ -290,8 +293,8 @@ export default function SidejobsPage() {
           </section>
 
           <section
-            className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+            className={`${CARD_CLASS} ${CARD_PADDING}`}
+            style={{ boxShadow: CARD_SHADOW }}
           >
             <h2
               className="font-extrabold text-[15px] mb-1"
@@ -314,8 +317,8 @@ export default function SidejobsPage() {
           </section>
 
           <section
-            className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+            className={`${CARD_CLASS} ${CARD_PADDING}`}
+            style={{ boxShadow: CARD_SHADOW }}
           >
             <h2
               className="font-extrabold text-[15px] mb-1"
@@ -333,8 +336,8 @@ export default function SidejobsPage() {
           </section>
 
           <section
-            className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+            className={`${CARD_CLASS} ${CARD_PADDING}`}
+            style={{ boxShadow: CARD_SHADOW }}
           >
             <h2
               className="font-extrabold text-[15px] mb-1"
@@ -352,8 +355,8 @@ export default function SidejobsPage() {
           </section>
 
           <section
-            className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+            className={`${CARD_CLASS} ${CARD_PADDING}`}
+            style={{ boxShadow: CARD_SHADOW }}
           >
             <h2
               className="font-extrabold text-[15px] mb-1"

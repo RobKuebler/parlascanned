@@ -9,6 +9,10 @@ import {
 import { ChartSkeleton } from "@/components/ui/ChartSkeleton";
 import { Footer } from "@/components/ui/Footer";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { CARD_CLASS, CARD_SHADOW } from "@/lib/constants";
+import { PAGE_META } from "@/lib/page-meta";
+
+const META = PAGE_META.find((p) => p.href === "/trends")!;
 
 // Fixed color palette for active keyword chips (max 6 simultaneous keywords)
 const KEYWORD_COLORS = [
@@ -130,12 +134,7 @@ export default function ThemenTrendsPage() {
 
   return (
     <>
-      <PageHeader
-        color="#4A5C8C"
-        label="Zeitverlauf"
-        title="Wann wurde worüber gesprochen?"
-        description="Verfolge, wie oft ein Begriff in Plenardebatten erwähnt wurde — und wann Themen politisch heiß wurden."
-      />
+      <PageHeader {...META} />
 
       {unavailable ? (
         <p className="text-[14px]" style={{ color: "#9A9790" }}>
@@ -145,8 +144,8 @@ export default function ThemenTrendsPage() {
         <ChartSkeleton height={360} />
       ) : (
         <div
-          className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6 flex flex-col gap-5"
-          style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+          className={`${CARD_CLASS} p-5 md:p-6 flex flex-col gap-5`}
+          style={{ boxShadow: CARD_SHADOW }}
         >
           {/* Search + chips */}
           <div className="flex flex-col gap-3">

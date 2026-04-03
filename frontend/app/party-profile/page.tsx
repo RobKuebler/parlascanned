@@ -8,8 +8,16 @@ import { DeviationHeatmap } from "@/components/charts/DeviationHeatmap";
 import { ChartSkeleton } from "@/components/ui/ChartSkeleton";
 import { Footer } from "@/components/ui/Footer";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { sortParties } from "@/lib/constants";
+import {
+  sortParties,
+  CARD_CLASS,
+  CARD_SHADOW,
+  CARD_PADDING,
+} from "@/lib/constants";
 import { stripSoftHyphen } from "@/lib/data";
+import { PAGE_META } from "@/lib/page-meta";
+
+const META = PAGE_META.find((p) => p.href === "/party-profile")!;
 
 export default function PartyProfilePage() {
   const { activePeriodId } = usePeriod();
@@ -49,12 +57,7 @@ export default function PartyProfilePage() {
 
   return (
     <>
-      <PageHeader
-        color="#16A085"
-        label="Demografie"
-        title="Wer sitzt im Bundestag?"
-        description="Wer sitzt im Bundestag? Diese Seite vergleicht Altersstruktur, Geschlechterverteilung, Berufsfelder und Bildungshintergrund der Fraktionen und zeigt, wie sie sich vom Gesamtparlament unterscheiden."
-      />
+      <PageHeader {...META} />
 
       {loading || !data ? (
         <div className="flex flex-col gap-5">
@@ -65,8 +68,8 @@ export default function PartyProfilePage() {
       ) : (
         <div className="flex flex-col gap-5 stagger">
           <section
-            className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+            className={`${CARD_CLASS} ${CARD_PADDING}`}
+            style={{ boxShadow: CARD_SHADOW }}
           >
             <h2
               className="font-extrabold text-[15px] mb-1"
@@ -85,8 +88,8 @@ export default function PartyProfilePage() {
           </section>
 
           <section
-            className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+            className={`${CARD_CLASS} ${CARD_PADDING}`}
+            style={{ boxShadow: CARD_SHADOW }}
           >
             <h2
               className="font-extrabold text-[15px] mb-1"
@@ -102,8 +105,8 @@ export default function PartyProfilePage() {
           </section>
 
           <section
-            className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+            className={`${CARD_CLASS} ${CARD_PADDING}`}
+            style={{ boxShadow: CARD_SHADOW }}
           >
             <h2
               className="font-extrabold text-[15px] mb-1"
@@ -126,8 +129,8 @@ export default function PartyProfilePage() {
           </section>
 
           <section
-            className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+            className={`${CARD_CLASS} ${CARD_PADDING}`}
+            style={{ boxShadow: CARD_SHADOW }}
           >
             <h2
               className="font-extrabold text-[15px] mb-1"
@@ -147,8 +150,8 @@ export default function PartyProfilePage() {
           </section>
 
           <section
-            className="bg-white rounded-xl border border-[#E3E0DA] p-5 md:p-6"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}
+            className={`${CARD_CLASS} ${CARD_PADDING}`}
+            style={{ boxShadow: CARD_SHADOW }}
           >
             <h2
               className="font-extrabold text-[15px] mb-1"
