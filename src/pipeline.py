@@ -90,7 +90,11 @@ def _export_period_or_check(
         "party_word_freq.json",
         "party_speech_stats.json",
     ]
-    return all((period_out / f).exists() for f in output_files)
+    missing = [f for f in output_files if not (period_out / f).exists()]
+    if missing:
+        log.warning("Period %d skipped — missing output files: %s", p, missing)
+        return False
+    return True
 
 
 def _train(
