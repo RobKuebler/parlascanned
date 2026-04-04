@@ -107,6 +107,10 @@ export function IncomeByCategoryChart({
       totalByParty[party] = (totalByParty[party] ?? 0) + income;
 
   const sortedParties = sortParties(parties);
+  const gesamtMax = Math.max(
+    ...sortedParties.map((p) => totalByParty[p] ?? 0),
+    1,
+  );
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
@@ -171,10 +175,6 @@ export function IncomeByCategoryChart({
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {sortedParties.map((party) => {
             const total = totalByParty[party] ?? 0;
-            const gesamtMax = Math.max(
-              ...sortedParties.map((p) => totalByParty[p] ?? 0),
-              1,
-            );
             return (
               <div
                 key={party}
@@ -290,6 +290,7 @@ export function TopTopicsChart({
 export function TopEarnersChart({
   jobs,
   politicians,
+  parties,
 }: {
   jobs: SidejobRecord[];
   politicians: { politician_id: number; name: string; party: string }[];
@@ -297,11 +298,14 @@ export function TopEarnersChart({
 }) {
   const polMap = new Map(politicians.map((p) => [p.politician_id, p]));
   const byPol = new Map<number, number>();
-  for (const j of jobs)
+  for (const j of jobs) {
+    const party = stripSoftHyphen(polMap.get(j.politician_id)?.party ?? "");
+    if (!parties.includes(party)) continue;
     byPol.set(
       j.politician_id,
       (byPol.get(j.politician_id) ?? 0) + j.prorated_income,
     );
+  }
 
   const top = Array.from(byPol.entries())
     .sort((a, b) => b[1] - a[1])
