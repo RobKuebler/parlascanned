@@ -66,6 +66,7 @@ export function HorizontalBarRow({
   }
 
   function handleMouseLeave() {
+    if (timeoutRef.current !== null) clearTimeout(timeoutRef.current);
     setShowTooltip(false);
   }
 
