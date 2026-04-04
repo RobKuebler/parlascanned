@@ -2,28 +2,11 @@
 import { PARTY_COLORS, FALLBACK_COLOR, sortParties } from "@/lib/constants";
 import { SidejobRecord, stripSoftHyphen } from "@/lib/data";
 import { HorizontalBarRow } from "@/components/charts/HorizontalBarRow";
-
-function formatEur(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M €`;
-  if (n >= 1_000) return `${Math.round(n / 1_000)}K €`;
-  return `${Math.round(n)} €`;
-}
-
-/** Small colored dot used as party legend marker in group headers. */
-function PartyDot({ color }: { color: string }) {
-  return (
-    <span
-      style={{
-        display: "inline-block",
-        width: 8,
-        height: 8,
-        borderRadius: "50%",
-        background: color,
-        flexShrink: 0,
-      }}
-    />
-  );
-}
+import {
+  GroupedPartyBars,
+  GroupedBarSection,
+  formatEur,
+} from "@/components/charts/GroupedPartyBars";
 
 // ── Chart 1: Sidejobs per party ───────────────────────────────────────────────
 
@@ -34,8 +17,8 @@ export function SidejobsByPartyChart({ jobs }: { jobs: SidejobRecord[] }) {
     if (party === "fraktionslos") continue;
     counts[party] = (counts[party] ?? 0) + 1;
   }
-  const parties = sortParties(Object.keys(counts));
-  const max = Math.max(...parties.map((p) => counts[p]), 1);
+  const parties = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+  const max = counts[parties[0]] ?? 1;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -106,99 +89,20 @@ export function IncomeByCategoryChart({
     for (const [party, income] of pm)
       totalByParty[party] = (totalByParty[party] ?? 0) + income;
 
-  const sortedParties = sortParties(parties);
-  const gesamtMax = Math.max(
-    ...sortedParties.map((p) => totalByParty[p] ?? 0),
-    1,
-  );
+  const sections: GroupedBarSection[] = [
+    ...sortedCats.map((cat) => ({
+      label: cat,
+      partyValues: Object.fromEntries(catMap.get(cat)!),
+    })),
+    {
+      label: "Gesamt alle Kategorien",
+      partyValues: totalByParty,
+      variant: "total" as const,
+    },
+  ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-      {sortedCats.map((cat) => {
-        const pm = catMap.get(cat)!;
-        const catMax = Math.max(...sortedParties.map((p) => pm.get(p) ?? 0), 1);
-        return (
-          <div key={cat} style={{ marginBottom: 16 }}>
-            <p
-              style={{
-                fontSize: 12,
-                fontWeight: 700,
-                color: "#555",
-                marginBottom: 8,
-              }}
-            >
-              {cat}
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {sortedParties.map((party) => {
-                const income = pm.get(party) ?? 0;
-                return (
-                  <div
-                    key={party}
-                    style={{ display: "flex", alignItems: "center", gap: 8 }}
-                  >
-                    <PartyDot color={PARTY_COLORS[party] ?? FALLBACK_COLOR} />
-                    <HorizontalBarRow
-                      label={party}
-                      labelWidth={72}
-                      value={income}
-                      max={catMax}
-                      color={PARTY_COLORS[party] ?? FALLBACK_COLOR}
-                      displayValue={formatEur(income)}
-                      barHeight={7}
-                      valueWidth={52}
-                      style={{ flex: 1, minWidth: 0 }}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-
-      {/* Gesamt section */}
-      <div
-        style={{ borderTop: "1px solid #F0EEE9", paddingTop: 14, marginTop: 2 }}
-      >
-        <p
-          style={{
-            fontSize: 10,
-            fontWeight: 700,
-            color: "#9A9790",
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            marginBottom: 10,
-          }}
-        >
-          Gesamt alle Kategorien
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          {sortedParties.map((party) => {
-            const total = totalByParty[party] ?? 0;
-            return (
-              <div
-                key={party}
-                style={{ display: "flex", alignItems: "center", gap: 8 }}
-              >
-                <PartyDot color={PARTY_COLORS[party] ?? FALLBACK_COLOR} />
-                <HorizontalBarRow
-                  label={party}
-                  labelWidth={72}
-                  value={total}
-                  max={gesamtMax}
-                  color={PARTY_COLORS[party] ?? FALLBACK_COLOR}
-                  displayValue={formatEur(total)}
-                  barHeight={7}
-                  valueWidth={52}
-                  style={{ flex: 1, minWidth: 0 }}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
+    <GroupedPartyBars sections={sections} parties={sortParties(parties)} />
   );
 }
 
@@ -234,57 +138,13 @@ export function TopTopicsChart({
     .slice(0, 10)
     .map((x) => x.topic);
 
-  const sortedParties = sortParties(parties);
+  const sections: GroupedBarSection[] = topTopics.map((topic) => ({
+    label: topic,
+    partyValues: Object.fromEntries(topicMap.get(topic)!),
+  }));
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-      {topTopics.map((topic) => {
-        const pm = topicMap.get(topic)!;
-        const topicMax = Math.max(
-          ...sortedParties.map((p) => pm.get(p) ?? 0),
-          1,
-        );
-        return (
-          <div key={topic} style={{ marginBottom: 16 }}>
-            <p
-              style={{
-                fontSize: 12,
-                fontWeight: 700,
-                color: "#555",
-                marginBottom: 8,
-                lineHeight: 1.4,
-              }}
-            >
-              {topic}
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {sortedParties.map((party) => {
-                const income = pm.get(party) ?? 0;
-                return (
-                  <div
-                    key={party}
-                    style={{ display: "flex", alignItems: "center", gap: 8 }}
-                  >
-                    <PartyDot color={PARTY_COLORS[party] ?? FALLBACK_COLOR} />
-                    <HorizontalBarRow
-                      label={party}
-                      labelWidth={72}
-                      value={income}
-                      max={topicMax}
-                      color={PARTY_COLORS[party] ?? FALLBACK_COLOR}
-                      displayValue={formatEur(income)}
-                      barHeight={7}
-                      valueWidth={52}
-                      style={{ flex: 1, minWidth: 0 }}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-    </div>
+    <GroupedPartyBars sections={sections} parties={sortParties(parties)} />
   );
 }
 
@@ -345,7 +205,7 @@ export function TopEarnersChart({
 }
 
 // ── Chart 5: Sidejob coverage per party ──────────────────────────────────────
-// Party as group header, 3 sub-bars: income / no_amount / none.
+// Rubric as section header, one bar per party below.
 
 const COVERAGE_LABELS = {
   income: "Nebenverdienst ≥ 1.000 €/Monat",
@@ -384,65 +244,28 @@ export function SidejobCoverageByPartyChart({
   }
 
   const parties = sortParties(Array.from(byParty.keys()));
+  const keys: CoverageKey[] = ["income", "no_amount", "none"];
 
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      {parties.map((party) => {
+  const sections: GroupedBarSection[] = keys.map((key) => ({
+    label: COVERAGE_LABELS[key],
+    partyValues: Object.fromEntries(
+      parties.map((party) => {
         const counts = byParty.get(party)!;
-        const color = PARTY_COLORS[party] ?? FALLBACK_COLOR;
-        const keys: CoverageKey[] = ["income", "no_amount", "none"];
-        return (
-          <div key={party}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                marginBottom: 6,
-              }}
-            >
-              <PartyDot color={color} />
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#171613" }}>
-                {party}
-              </span>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 5,
-                marginLeft: 14,
-              }}
-            >
-              {keys.map((key) => {
-                const pct =
-                  counts.total > 0
-                    ? Math.round((counts[key] / counts.total) * 100)
-                    : 0;
-                const barColor =
-                  key === "none"
-                    ? "#D0CEC8"
-                    : key === "no_amount"
-                      ? (PARTY_COLORS[party] ?? FALLBACK_COLOR) + "99"
-                      : color;
-                return (
-                  <HorizontalBarRow
-                    key={key}
-                    label={COVERAGE_LABELS[key]}
-                    labelWidth={90}
-                    value={pct}
-                    max={100}
-                    color={barColor}
-                    displayValue={`${pct}%`}
-                    barHeight={7}
-                    valueWidth={36}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
+        const pct =
+          counts.total > 0 ? Math.round((counts[key] / counts.total) * 100) : 0;
+        return [party, pct];
+      }),
+    ),
+    max: 100,
+    formatValue: (v) => `${v}%`,
+    barColor: (party) =>
+      key === "none"
+        ? "#D0CEC8"
+        : key === "no_amount"
+          ? (PARTY_COLORS[party] ?? FALLBACK_COLOR) + "99"
+          : (PARTY_COLORS[party] ?? FALLBACK_COLOR),
+    valueWidth: 36,
+  }));
+
+  return <GroupedPartyBars sections={sections} parties={parties} />;
 }
