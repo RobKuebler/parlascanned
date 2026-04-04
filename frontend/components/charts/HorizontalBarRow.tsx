@@ -52,6 +52,7 @@ export function HorizontalBarRow({
         </span>
       )}
       <span
+        data-testid="bar-label"
         style={{
           width: labelWidth,
           flexShrink: 0,

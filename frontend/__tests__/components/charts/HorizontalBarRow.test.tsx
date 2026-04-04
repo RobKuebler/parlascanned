@@ -76,12 +76,16 @@ describe("label tooltip", () => {
       "[data-testid='bar-label']",
     ) as HTMLElement;
     Object.defineProperty(label, "scrollWidth", {
+      get() {
+        return 200;
+      },
       configurable: true,
-      value: 200,
     });
     Object.defineProperty(label, "offsetWidth", {
+      get() {
+        return 80;
+      },
       configurable: true,
-      value: 80,
     });
   }
 
@@ -91,12 +95,16 @@ describe("label tooltip", () => {
       "[data-testid='bar-label']",
     ) as HTMLElement;
     Object.defineProperty(label, "scrollWidth", {
+      get() {
+        return 80;
+      },
       configurable: true,
-      value: 80,
     });
     Object.defineProperty(label, "offsetWidth", {
+      get() {
+        return 80;
+      },
       configurable: true,
-      value: 80,
     });
   }
 
