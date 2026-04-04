@@ -7,7 +7,7 @@ import argparse
 import json
 import logging
 import math
-from datetime import UTC, date, datetime
+from datetime import date
 from pathlib import Path
 
 import numpy as np
@@ -97,30 +97,21 @@ def _pivot_to_json(
 
 def _export_sidejobs(
     period: int,
-    period_dir: Path,
     pols_df: pd.DataFrame,
     period_start: date,
     period_end: date,
-    df_sidejobs: pd.DataFrame | None = None,
+    df_sidejobs: pd.DataFrame,
 ) -> None:
-    """Build and write sidejobs JSON for one period.
-
-    Uses df_sidejobs if provided, otherwise reads sidejobs.csv from disk.
-    Skipped silently if neither is available.
-    """
-    if df_sidejobs is None:
-        sj_path = period_dir / "sidejobs.csv"
-        if not sj_path.exists():
-            return
-        df_sidejobs = pd.read_csv(sj_path)
-
+    """Build and write sidejobs JSON for one period."""
     sj_df = df_sidejobs.merge(
         pols_df.filter(["politician_id", "party_label"]),
         on="politician_id",
         how="left",
     ).assign(
         category_label=lambda df: (
-            df["category"].map(SIDEJOB_CATEGORIES).fillna("Sonstiges")
+            pd.to_numeric(df["category"], errors="coerce")
+            .map(SIDEJOB_CATEGORIES)
+            .fillna("Sonstiges")
         )
     )
     n_total = len(sj_df)
@@ -217,23 +208,16 @@ def export_period(
     period_start: date,
     period_end: date,
     *,
-    df_politicians: pd.DataFrame | None = None,
-    df_polls: pd.DataFrame | None = None,
+    df_politicians: pd.DataFrame,
+    df_polls: pd.DataFrame,
     df_sidejobs: pd.DataFrame | None = None,
 ) -> bool:
     """Export all JSON files for one parliament period.
 
-    Uses df_politicians/df_polls/df_sidejobs if provided, otherwise reads from disk.
-    Returns False if required data is missing (period skipped).
+    Returns False if required auxiliary files (embeddings, votes) are missing.
     """
     period_dir = DATA_DIR / str(period)
     emb_path = OUTPUTS_DIR / f"politician_embeddings_{period}.csv"
-
-    if df_politicians is None:
-        if not (period_dir / "politicians.csv").exists():
-            log.warning("No politicians.csv for period %d, skipping", period)
-            return False
-        df_politicians = pd.read_csv(period_dir / "politicians.csv")
 
     if not emb_path.exists():
         log.warning("No embeddings for period %d, skipping", period)
@@ -288,12 +272,6 @@ def export_period(
     )
 
     # ── polls ─────────────────────────────────────────────────────────────────
-    if df_polls is None:
-        polls_path = period_dir / "polls.csv"
-        if not polls_path.exists():
-            log.warning("No polls.csv for period %d, skipping", period)
-            return False
-        df_polls = pd.read_csv(polls_path)
     _write(
         _period_output_dir(period) / "polls.json",
         df_polls.filter(["poll_id", "topic"]).to_dict("records"),
@@ -311,7 +289,8 @@ def export_period(
     _write(_period_output_dir(period) / "cohesion.json", coh_df.to_dict("records"))
 
     # ── sidejobs ──────────────────────────────────────────────────────────────
-    _export_sidejobs(period, period_dir, pols_df, period_start, period_end, df_sidejobs)
+    if df_sidejobs is not None:
+        _export_sidejobs(period, pols_df, period_start, period_end, df_sidejobs)
 
     # ── party profile ─────────────────────────────────────────────────────────
     _export_party_profile(period, pols_df, period_start)
@@ -377,7 +356,29 @@ def export_keyword_timeline(period: int) -> None:
         return
 
     data = fetch_keyword_timeline(DATA_DIR / str(period))
-    _write(_period_output_dir(period) / "keyword_timeline.json", data)
+    out = _period_output_dir(period)
+
+    # Main file: backward-compatible schema (meta without party fields, terms only)
+    _write(
+        out / "keyword_timeline.json",
+        {
+            "meta": {
+                "months": data["meta"]["months"],
+                "total_words_per_month": data["meta"]["total_words_per_month"],
+            },
+            "terms": data["terms"],
+        },
+    )
+
+    # Party file: lazy-loaded by the frontend when party features are used
+    _write(
+        out / "keyword_timeline_parties.json",
+        {
+            "parties": data["meta"]["parties"],
+            "party_words": data["meta"]["party_words"],
+            "by_party": data["by_party"],
+        },
+    )
 
 
 def export_motions(period: int) -> None:
@@ -455,8 +456,8 @@ def export_periods(available: list[dict]) -> None:
 
 
 def _period_is_exportable(period: int) -> bool:
-    """Return whether a period has been exported (votes.json exists in output dir)."""
-    return (OUTPUT_DIR / str(period) / "votes.json").exists()
+    """Return True if a period has input data available (votes.csv exists)."""
+    return (DATA_DIR / str(period) / "votes.csv").exists()
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -481,10 +482,6 @@ def main(argv: list[str] | None = None) -> None:
 
     for _, row in periods_df.iterrows():
         period = int(row["bundestag_number"])
-        p_start = date.fromisoformat(str(row["start_date"]))
-        raw_end = row["end_date"]
-        now = datetime.now(tz=UTC).date()
-        p_end = date.fromisoformat(str(raw_end)) if pd.notna(raw_end) else now
 
         if _period_is_exportable(period):
             available.append(
@@ -498,7 +495,6 @@ def main(argv: list[str] | None = None) -> None:
         if args.period is not None and period != args.period:
             continue
 
-        export_period(period, p_start, p_end)
         export_party_word_freq(period)
         export_party_speech_stats(period)
         export_keyword_timeline(period)

@@ -10,18 +10,62 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
+import pandas as pd
 import pytest
 
 WAHLPERIODE = 21
 
-_POLITICIANS_CSV = textwrap.dedent("""\
-    politician_id,name,party,sex,year_of_birth,occupation,education,field_title
-    1,Hans Müller,CDU/CSU,m,1970,Rechtsanwalt,Dr. jur. Rechtswissenschaften,Dr.
-    2,Maria Schmidt,SPD,f,1980,Ärztin,Diplom-Medizin,
-    3,Klaus Fischer,AfD,m,1965,Lehrer,Staatsexamen Pädagogik,
-    4,Anna Weber,CDU/CSU,f,1975,Unternehmerin,Diplom-Wirtschaftswissenschaften,
-    5,Peter Braun,SPD,m,1985,Ingenieur,Dipl.-Ing. Ingenieurwissenschaften,
-""")
+_DF_POLITICIANS = pd.DataFrame(
+    {
+        "politician_id": [1, 2, 3, 4, 5],
+        "name": [
+            "Hans Müller",
+            "Maria Schmidt",
+            "Klaus Fischer",
+            "Anna Weber",
+            "Peter Braun",
+        ],
+        "party": ["CDU/CSU", "SPD", "AfD", "CDU/CSU", "SPD"],
+        "sex": ["m", "f", "m", "f", "m"],
+        "year_of_birth": [1970, 1980, 1965, 1975, 1985],
+        "occupation": [
+            "Rechtsanwalt",
+            "Ärztin",
+            "Lehrer",
+            "Unternehmerin",
+            "Ingenieur",
+        ],
+        "education": [
+            "Dr. jur. Rechtswissenschaften",
+            "Diplom-Medizin",
+            "Staatsexamen Pädagogik",
+            "Diplom-Wirtschaftswissenschaften",
+            "Dipl.-Ing. Ingenieurwissenschaften",
+        ],
+        "field_title": ["Dr.", None, None, None, None],
+    }
+)
+
+_DF_POLLS = pd.DataFrame(
+    {
+        "poll_id": [101, 102],
+        "topic": ["Haushalt", "Klimaschutz"],
+    }
+)
+
+_DF_SIDEJOBS = pd.DataFrame(
+    {
+        "politician_id": [1, 2],
+        "income": [5000.0, 10000.0],
+        "income_level": [2, 3],
+        "category": ["29647", "29228"],
+        "date_start": ["2025-01-01", None],
+        "date_end": [None, None],
+        "created": [1640000000, 1640000000],
+        "interval": [1, 2],
+        "topics": ["Wirtschaft|Recht", "Gesundheit"],
+    }
+)
 
 _VOTES_CSV = textwrap.dedent("""\
     politician_id,poll_id,answer
@@ -32,12 +76,6 @@ _VOTES_CSV = textwrap.dedent("""\
     5,102,yes
 """)
 
-_POLLS_CSV = textwrap.dedent("""\
-    poll_id,topic
-    101,Haushalt
-    102,Klimaschutz
-""")
-
 _EMBEDDINGS_CSV = textwrap.dedent("""\
     politician_id,x,y
     1,0.1,0.2
@@ -45,12 +83,6 @@ _EMBEDDINGS_CSV = textwrap.dedent("""\
     3,0.5,0.6
     4,0.2,0.3
     5,0.4,0.5
-""")
-
-_SIDEJOBS_CSV = textwrap.dedent("""\
-    politician_id,income,income_level,category,date_start,date_end,created,interval,topics
-    1,5000,2,29647,2025-01-01,,1640000000,1,Wirtschaft|Recht
-    2,10000,3,29228,,,1640000000,2,Gesundheit
 """)
 
 
@@ -67,10 +99,7 @@ def run_export(tmp_path, monkeypatch):
     out_dir = tmp_path / "output"
     out_dir.mkdir()
 
-    (period_dir / "politicians.csv").write_text(_POLITICIANS_CSV, encoding="utf-8")
     (period_dir / "votes.csv").write_text(_VOTES_CSV, encoding="utf-8")
-    (period_dir / "polls.csv").write_text(_POLLS_CSV, encoding="utf-8")
-    (period_dir / "sidejobs.csv").write_text(_SIDEJOBS_CSV, encoding="utf-8")
     (outputs_dir / f"politician_embeddings_{WAHLPERIODE}.csv").write_text(
         _EMBEDDINGS_CSV, encoding="utf-8"
     )
@@ -79,7 +108,14 @@ def run_export(tmp_path, monkeypatch):
     monkeypatch.setattr(ej, "OUTPUTS_DIR", outputs_dir)
     monkeypatch.setattr(ej, "OUTPUT_DIR", out_dir)
 
-    ej.export_period(WAHLPERIODE, date(2025, 1, 1), date(2029, 12, 31))
+    ej.export_period(
+        WAHLPERIODE,
+        date(2025, 1, 1),
+        date(2029, 12, 31),
+        df_politicians=_DF_POLITICIANS,
+        df_polls=_DF_POLLS,
+        df_sidejobs=_DF_SIDEJOBS,
+    )
     return out_dir
 
 
@@ -135,23 +171,29 @@ def test_cohesion_shape(run_export):
 
 
 def test_sidejobs_interval_float64_proration(tmp_path, monkeypatch):
-    """REGRESSION: interval column is float64 after CSV roundtrip with NaN rows.
+    """REGRESSION: interval column is float64 when NaN rows are present.
 
-    When some rows have interval=null, pandas reads the column as float64,
+    When some rows have interval=NaN, the column dtype is float64,
     making values 1.0 and 2.0 instead of 1 and 2. The old code compared
     str(row["interval"]) == "1" which gives "1.0" == "1" → False, silently
-    skipping all proration. This test uses a CSV with a null-interval row
-    to trigger the float64 coercion and verifies that proration still fires.
+    skipping all proration. Verifies that proration still fires with float64 intervals.
     """
     import src.export as ej
 
-    # CSV with one null-interval row → forces pandas to read interval as float64
-    csv_content = textwrap.dedent("""\
-        politician_id,income,income_level,category,date_start,date_end,created,interval,topics
-        1,1000,,29647,2025-01-01,2025-06-30,,1,
-        2,12000,,29647,2025-01-01,2025-06-30,,2,
-        3,500,,29647,,,1640000000,,
-    """)
+    # Row 3 has no interval → forces the column dtype to float64
+    df_sidejobs = pd.DataFrame(
+        {
+            "politician_id": [1, 2, 3],
+            "income": [1000.0, 12000.0, 500.0],
+            "income_level": [None, None, None],
+            "category": ["29647", "29647", "29647"],
+            "date_start": ["2025-01-01", "2025-01-01", None],
+            "date_end": ["2025-06-30", "2025-06-30", None],
+            "created": [None, None, 1640000000],
+            "interval": pd.array([1, 2, None], dtype="Float64"),
+            "topics": [None, None, None],
+        }
+    )
     pid = 999  # use a different ID to avoid conflict with the autouse fixture
     period_dir = tmp_path / "data" / str(pid)
     period_dir.mkdir(parents=True)
@@ -160,10 +202,7 @@ def test_sidejobs_interval_float64_proration(tmp_path, monkeypatch):
     out_dir = tmp_path / "output"
     out_dir.mkdir(exist_ok=True)
 
-    (period_dir / "politicians.csv").write_text(_POLITICIANS_CSV, encoding="utf-8")
     (period_dir / "votes.csv").write_text(_VOTES_CSV, encoding="utf-8")
-    (period_dir / "polls.csv").write_text(_POLLS_CSV, encoding="utf-8")
-    (period_dir / "sidejobs.csv").write_text(csv_content, encoding="utf-8")
     (outputs_dir / f"politician_embeddings_{pid}.csv").write_text(
         _EMBEDDINGS_CSV, encoding="utf-8"
     )
@@ -172,7 +211,14 @@ def test_sidejobs_interval_float64_proration(tmp_path, monkeypatch):
     monkeypatch.setattr(ej, "OUTPUT_DIR", out_dir)
 
     # Period: Jan-Jun 2025 (6 months). date_start=2025-01-01, date_end=2025-06-30.
-    ej.export_period(pid, date(2025, 1, 1), date(2025, 6, 30))
+    ej.export_period(
+        pid,
+        date(2025, 1, 1),
+        date(2025, 6, 30),
+        df_politicians=_DF_POLITICIANS,
+        df_polls=_DF_POLLS,
+        df_sidejobs=df_sidejobs,
+    )
 
     data = json.loads((out_dir / str(pid) / "sidejobs.json").read_text())
     jobs = {j["politician_id"]: j for j in data["jobs"]}
@@ -345,17 +391,12 @@ def test_main_can_limit_export_to_one_period(tmp_path, monkeypatch):
     for period in (20, 21):
         period_dir = data_dir / str(period)
         period_dir.mkdir(parents=True, exist_ok=True)
-        (period_dir / "politicians.csv").write_text(_POLITICIANS_CSV, encoding="utf-8")
         (period_dir / "votes.csv").write_text(_VOTES_CSV, encoding="utf-8")
-        (period_dir / "polls.csv").write_text(_POLLS_CSV, encoding="utf-8")
         (period_dir / "party_word_freq.csv").write_text(
             _WORD_FREQ_CSV, encoding="utf-8"
         )
         (period_dir / "party_speech_stats.csv").write_text(
             _SPEECH_STATS_CSV, encoding="utf-8"
-        )
-        (outputs_dir / f"politician_embeddings_{period}.csv").write_text(
-            _EMBEDDINGS_CSV, encoding="utf-8"
         )
 
     monkeypatch.setattr(ej, "DATA_DIR", data_dir)
@@ -364,8 +405,9 @@ def test_main_can_limit_export_to_one_period(tmp_path, monkeypatch):
 
     ej.main(["--period", "21"])
 
-    assert not (out_dir / "20" / "politicians.json").exists()
-    assert (out_dir / "21" / "politicians.json").exists()
+    # Only WP 21 should get its word_freq exported; WP 20 is skipped by --period filter
+    assert not (out_dir / "20" / "party_word_freq.json").exists()
+    assert (out_dir / "21" / "party_word_freq.json").exists()
 
     periods = json.loads((out_dir / "periods.json").read_text(encoding="utf-8"))
     assert {row["wahlperiode"] for row in periods} == {20, 21}

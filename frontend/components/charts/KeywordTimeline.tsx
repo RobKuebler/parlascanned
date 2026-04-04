@@ -15,9 +15,12 @@ interface Props {
   totalWords: number[];
   series: KeywordSeries[];
   normalized: boolean;
+  /** Per-series word counts for independent normalization (e.g. party comparison).
+   * When provided, series[i] is normalized by seriesWords[i] instead of totalWords. */
+  seriesWords?: number[][];
 }
 
-const MARGIN = { top: 16, right: 24, bottom: 36, left: 48 };
+const MARGIN = { top: 16, right: 24, bottom: 48, left: 48 };
 const HEIGHT = 320;
 
 /** D3 line chart rendering one line per active keyword over time. */
@@ -26,6 +29,7 @@ export function KeywordTimeline({
   totalWords,
   series,
   normalized,
+  seriesWords,
 }: Props) {
   const { ref: containerRef, width } = useContainerWidth();
   const svgRef = useRef<SVGSVGElement>(null);
@@ -46,18 +50,22 @@ export function KeywordTimeline({
     const innerH = HEIGHT - MARGIN.top - MARGIN.bottom;
     const dates = months.map((m) => new Date(m + "-01"));
 
-    // Y value: normalized (per 1000 words) or absolute count
-    const val = (s: KeywordSeries, i: number): number =>
-      normalized && totalWords[i] > 0
-        ? (s.counts[i] / totalWords[i]) * 1000
-        : s.counts[i];
+    // Y value: normalized (per 1000 words) or absolute count.
+    // When seriesWords is provided, each series uses its own word baseline (party comparison).
+    const val = (s: KeywordSeries, i: number, si: number): number => {
+      if (!normalized) return s.counts[i];
+      const base = seriesWords ? (seriesWords[si]?.[i] ?? 0) : totalWords[i];
+      return base > 0 ? (s.counts[i] / base) * 1000 : 0;
+    };
 
     const xScale = d3
       .scaleTime()
       .domain([dates[0], dates[dates.length - 1]])
       .range([0, innerW]);
 
-    const allVals = series.flatMap((s) => months.map((_, i) => val(s, i)));
+    const allVals = series.flatMap((s, si) =>
+      months.map((_, i) => val(s, i, si)),
+    );
     const yScale = d3
       .scaleLinear()
       .domain([0, d3.max(allVals) ?? 1])
@@ -88,9 +96,12 @@ export function KeywordTimeline({
           .attr("stroke-dasharray", "3,3"),
       );
 
-    // X axis — reduce tick density for long date ranges
+    // X axis — reduce tick density for long date ranges or narrow screens
+    const isMobile = width < 480;
     const tickEvery =
-      months.length > 24 ? d3.timeMonth.every(3) : d3.timeMonth.every(1);
+      months.length > 24 || (isMobile && months.length > 12)
+        ? d3.timeMonth.every(3)
+        : d3.timeMonth.every(1);
     const DE_MONTHS = [
       "Jan",
       "Feb",
@@ -105,20 +116,34 @@ export function KeywordTimeline({
       "Nov",
       "Dez",
     ];
+    // Month label: first letter on mobile, 3-letter abbreviation on desktop.
+    // Year appears as a second line only at year boundaries (January + first tick).
     const fmtMonth = (d: Date) =>
-      `${DE_MONTHS[d.getMonth()]} ${String(d.getFullYear()).slice(2)}`;
-    g.append("g")
+      isMobile ? String(d.getMonth() + 1) : DE_MONTHS[d.getMonth()];
+
+    const xAxisG = g
+      .append("g")
       .attr("transform", `translate(0,${innerH})`)
       .call(
         d3
           .axisBottom(xScale)
           .ticks(tickEvery)
           .tickFormat((d) => fmtMonth(d as Date)),
-      )
-      .call((ax) => ax.select(".domain").remove())
-      .selectAll("text")
-      .style("font-size", "11px")
-      .attr("fill", "#9A9790");
+      );
+
+    xAxisG.select(".domain").remove();
+    xAxisG.selectAll("text").style("font-size", "11px").attr("fill", "#9A9790");
+
+    // Year label below January ticks (and the first tick for immediate context)
+    xAxisG
+      .selectAll<SVGGElement, Date>(".tick")
+      .filter((d, i) => d.getMonth() === 0 || i === 0)
+      .append("text")
+      .attr("y", 30)
+      .attr("text-anchor", "middle")
+      .style("font-size", "10px")
+      .attr("fill", "#9A9790")
+      .text((d) => `'${String(d.getFullYear()).slice(2)}`);
 
     // Y axis
     g.append("g")
@@ -140,8 +165,8 @@ export function KeywordTimeline({
       .y((v) => yScale(v))
       .curve(d3.curveCatmullRom.alpha(0.5));
 
-    for (const s of series) {
-      const values = months.map((_, i) => val(s, i));
+    for (const [si, s] of series.entries()) {
+      const values = months.map((_, i) => val(s, i, si));
       g.append("path")
         .datum(values)
         .attr("fill", "none")
@@ -194,9 +219,9 @@ export function KeywordTimeline({
 
         const rows = series
           .map(
-            (s) =>
+            (s, si) =>
               `<span style="color:${s.color}">■</span> ${s.keyword}: <b>${
-                normalized ? val(s, i).toFixed(2) : val(s, i)
+                normalized ? val(s, i, si).toFixed(2) : val(s, i, si)
               }</b>`,
           )
           .join("<br/>");
@@ -209,7 +234,7 @@ export function KeywordTimeline({
         crosshair.attr("opacity", 0);
         tooltip.style("opacity", "0");
       });
-  }, [months, totalWords, series, normalized, width]);
+  }, [months, totalWords, series, normalized, seriesWords, width]);
 
   return (
     <div ref={containerRef} style={{ position: "relative" }}>

@@ -77,3 +77,59 @@ def test_compute_keyword_timeline_fehlende_daten(sample_df):
     # Should not raise; months may differ but structure is valid
     assert "meta" in result
     assert "terms" in result
+
+
+# ── Party breakdown tests ─────────────────────────────────────────────────────
+
+
+def test_compute_keyword_timeline_parties_present(sample_df):
+    """meta.parties lists parties from PARTY_ORDER that appear in data, excluding fraktionslos."""
+    result = kt.compute_keyword_timeline(sample_df, stopwords=set(), min_count=1)
+    parties = result["meta"]["parties"]
+    # sample_df has SPD and AfD; SPD comes before AfD in PARTY_ORDER
+    assert parties == ["SPD", "AfD"]
+
+
+def test_compute_keyword_timeline_party_words(sample_df):
+    """meta.party_words contains total wortanzahl per party per month.
+
+    sample_df: SPD Jan=5, SPD Feb=4 → [5, 4]; AfD Jan=3, AfD Feb=0 → [3, 0]
+    """
+    result = kt.compute_keyword_timeline(sample_df, stopwords=set(), min_count=1)
+    pw = result["meta"]["party_words"]
+    assert pw["SPD"] == [5, 4]
+    assert pw["AfD"] == [3, 0]
+
+
+def test_compute_keyword_timeline_by_party_counts(sample_df):
+    """by_party contains per-party term counts parallel to meta.months.
+
+    sample_df texts:
+      speech 1 SPD Jan: "klimawandel klimawandel migration energie energie"
+      speech 2 AfD Jan: "migration sicherheit sicherheit"
+      speech 3 SPD Feb: "energie energie energie wirtschaft"
+    """
+    result = kt.compute_keyword_timeline(sample_df, stopwords=set(), min_count=1)
+    bp = result["by_party"]
+    # energie: SPD Jan=2, SPD Feb=3; AfD always 0
+    assert bp["energie"]["SPD"] == [2, 3]
+    assert bp["energie"]["AfD"] == [0, 0]
+    # migration: SPD Jan=1, AfD Jan=1
+    assert bp["migration"]["SPD"] == [1, 0]
+    assert bp["migration"]["AfD"] == [1, 0]
+
+
+def test_compute_keyword_timeline_by_party_only_filtered_terms(sample_df):
+    """by_party only contains terms that passed the min_count filter."""
+    result = kt.compute_keyword_timeline(sample_df, stopwords=set(), min_count=2)
+    assert set(result["by_party"].keys()) == set(result["terms"].keys())
+
+
+def test_compute_keyword_timeline_fraktionslos_excluded(sample_df):
+    """fraktionslos is never included in parties or by_party."""
+    df = sample_df.copy()
+    df.loc[0, "fraktion"] = "fraktionslos"
+    result = kt.compute_keyword_timeline(df, stopwords=set(), min_count=1)
+    assert "fraktionslos" not in result["meta"]["parties"]
+    for term_parties in result["by_party"].values():
+        assert "fraktionslos" not in term_parties

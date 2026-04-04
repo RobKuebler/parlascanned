@@ -1,6 +1,7 @@
 """Compute keyword frequency timelines from plenary protocol XMLs.
 
 Produces keyword_timeline.json: per-term monthly mention counts.
+Produces keyword_timeline_parties.json: per-party breakdown (lazy-loaded).
 
 Usage:
     uv run python -m src.analysis.keyword_timeline --period 21
@@ -14,6 +15,7 @@ from pathlib import Path
 import pandas as pd
 
 from ..cli import add_period_argument, build_parser, configure_logging
+from ..constants import PARTY_ORDER
 from ..fetch.abgeordnetenwatch import refresh_periods
 from ..parse.protocols import parse_alle_sitzungen
 from ..paths import DATA_DIR
@@ -29,14 +31,20 @@ def compute_keyword_timeline(
 ) -> dict:
     """Compute per-month term frequencies from a speeches DataFrame.
 
-    Returns a dict matching the keyword_timeline.json schema:
+    Returns a dict with the full keyword_timeline data including party breakdowns:
     {
-        "meta": {"months": [...], "total_words_per_month": [...]},
-        "terms": {"migration": [45, 38, ...], ...}
+        "meta": {
+            "months": [...],
+            "total_words_per_month": [...],
+            "parties": ["CDU/CSU", "SPD", ...],
+            "party_words": {"SPD": [...], ...},
+        },
+        "terms": {"migration": [45, 38, ...], ...},
+        "by_party": {"migration": {"SPD": [10, 8, ...], ...}, ...},
     }
 
     Terms in stopwords or with fewer than min_count total mentions are excluded.
-    Rows with datum=None are skipped.
+    fraktionslos is excluded from party breakdown. Rows with datum=None are skipped.
     """
     df = df.dropna(subset=["datum", "text"]).copy()
     df["month"] = df["datum"].str[:7]  # "YYYY-MM"
@@ -48,27 +56,55 @@ def compute_keyword_timeline(
     total_words_series = df.groupby("month")["wortanzahl"].sum()
     total_words_per_month = [int(total_words_series.get(m, 0)) for m in months]
 
-    # Count term occurrences per month across all speeches
+    # Parties present in data, ordered by PARTY_ORDER, excluding fraktionslos
+    present = set(df["fraktion"].dropna().unique())
+    parties = [p for p in PARTY_ORDER if p in present and p != "fraktionslos"]
+
+    # Total words per party per month (for per-party normalization in the frontend)
+    party_words: dict[str, list[int]] = {}
+    for party in parties:
+        ws = df[df["fraktion"] == party].groupby("month")["wortanzahl"].sum()
+        party_words[party] = [int(ws.get(m, 0)) for m in months]
+
+    # Count term occurrences per month — total and per party in one pass
     term_counts: dict[str, list[int]] = defaultdict(lambda: [0] * n)
+    # Use a plain dict of defaultdicts to avoid closure issues with n
+    party_term_counts: dict[str, dict[str, list[int]]] = {
+        party: defaultdict(lambda: [0] * n) for party in parties
+    }
+
     for row in df.itertuples(index=False):  # type: ignore[call-overload]
         idx = month_to_idx.get(row.month)  # type: ignore[attr-defined]
         if idx is None:
             continue
         tokens = _tokenize(row.text)  # type: ignore[attr-defined]
-        for term, count in Counter(t for t in tokens if t not in stopwords).items():
+        fraktion = row.fraktion  # type: ignore[attr-defined]
+        term_bag = Counter(t for t in tokens if t not in stopwords)
+        for term, count in term_bag.items():
             term_counts[term][idx] += count
+            if fraktion in party_term_counts:
+                party_term_counts[fraktion][term][idx] += count
 
     # Filter: remove terms below minimum total count
     terms = {
         term: counts for term, counts in term_counts.items() if sum(counts) >= min_count
     }
 
+    # Build per-party counts only for terms that passed the filter
+    by_party = {
+        term: {party: list(party_term_counts[party][term]) for party in parties}
+        for term in terms
+    }
+
     return {
         "meta": {
             "months": months,
             "total_words_per_month": total_words_per_month,
+            "parties": parties,
+            "party_words": party_words,
         },
         "terms": terms,
+        "by_party": by_party,
     }
 
 

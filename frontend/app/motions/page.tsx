@@ -123,19 +123,20 @@ export default function MotionsPage() {
     [typData],
   );
 
-  // Keyword search: count matching titles per party
+  // Keyword search: count matching titles per party, and collect the actual titles
   const searchResults = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q || !titles) return null;
-    const counts: Record<string, number> = {};
+    const byParty: Record<string, string[]> = {};
     for (const t of titles) {
       if (t.typ !== activeTab) continue;
       if (!t.titel.toLowerCase().includes(q)) continue;
       const party = stripSoftHyphen(t.party);
-      counts[party] = (counts[party] ?? 0) + 1;
+      if (!byParty[party]) byParty[party] = [];
+      byParty[party].push(t.titel);
     }
-    return Object.entries(counts)
-      .map(([party, count]) => ({ party, count }))
+    return Object.entries(byParty)
+      .map(([party, matched]) => ({ party, count: matched.length, matched }))
       .sort((a, b) => b.count - a.count);
   }, [query, titles, activeTab]);
 
@@ -312,15 +313,63 @@ export default function MotionsPage() {
               </p>
             )}
             {searchResults && searchResults.length > 0 && (
-              <MotionCountBars
-                items={searchResults}
-                label={`Treffer für „${query}"`}
-                sublabel={`${searchResults
-                  .reduce((s, i) => s + i.count, 0)
-                  .toLocaleString(
-                    "de",
-                  )} ${TAB_LABELS[activeTab]} enthalten diesen Begriff.`}
-              />
+              <>
+                <MotionCountBars
+                  items={searchResults}
+                  label={`Treffer für „${query}"`}
+                  sublabel={`${searchResults
+                    .reduce((s, i) => s + i.count, 0)
+                    .toLocaleString(
+                      "de",
+                    )} ${TAB_LABELS[activeTab]} enthalten diesen Begriff.`}
+                />
+
+                {/* Title list grouped by party */}
+                <div className="mt-5 flex flex-col gap-4">
+                  {searchResults.map(({ party, count, matched }) => {
+                    const color = PARTY_COLORS[party] ?? FALLBACK_COLOR;
+                    return (
+                      <div key={party}>
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <div
+                            className="shrink-0 rounded-full"
+                            style={{ width: 4, height: 16, background: color }}
+                          />
+                          <span
+                            className="font-bold text-[13px]"
+                            style={{ color: "#1E1B5E" }}
+                          >
+                            {party}
+                          </span>
+                          <span
+                            className="text-[12px] tabular-nums"
+                            style={{ color: "#9A9790" }}
+                          >
+                            {count.toLocaleString("de")}
+                          </span>
+                        </div>
+                        <ul className="pl-3">
+                          {matched.map((title, i) => (
+                            <li
+                              key={i}
+                              className="text-[13px] leading-snug py-1.5"
+                              style={{
+                                color: "#171613",
+                                borderBottom:
+                                  i < matched.length - 1
+                                    ? "1px solid #F0EEE9"
+                                    : "none",
+                              }}
+                            >
+                              {title}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
             {searchResults &&
               searchResults.length === 0 &&

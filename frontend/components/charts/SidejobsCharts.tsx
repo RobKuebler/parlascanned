@@ -340,13 +340,11 @@ export function TopTopicsChart({
 export function TopEarnersChart({
   jobs,
   politicians,
-  parties,
 }: {
   jobs: SidejobRecord[];
   politicians: { politician_id: number; name: string; party: string }[];
   parties: string[];
 }) {
-  void parties; // available for future filtering
   const { ref: containerRef, width } = useContainerWidth();
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);

@@ -117,6 +117,16 @@ export interface KeywordTimelineFile {
   terms: Record<string, number[]>;
 }
 
+/** keyword_timeline_parties.json — lazy-loaded when party features are used */
+export interface KeywordTimelinePartiesFile {
+  /** Parties present in the period, ordered by PARTY_ORDER, excluding fraktionslos */
+  parties: string[];
+  /** Total words spoken per party per month (parallel to keyword_timeline months) */
+  party_words: Record<string, number[]>;
+  /** term → party → counts array parallel to keyword_timeline months */
+  by_party: Record<string, Record<string, number[]>>;
+}
+
 // ── Data loading utilities ──────────────────────────────────────────────────
 
 /** Normalize a raw party name from the API: strip soft-hyphens and apply short display names. */
