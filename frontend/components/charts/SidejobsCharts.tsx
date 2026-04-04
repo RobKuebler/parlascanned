@@ -48,6 +48,7 @@ export function SidejobsByPartyChart({ jobs }: { jobs: SidejobRecord[] }) {
           max={max}
           color={PARTY_COLORS[party] ?? FALLBACK_COLOR}
           displayValue={String(counts[party])}
+          barHeight={8}
         />
       ))}
     </div>
