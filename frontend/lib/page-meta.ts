@@ -23,7 +23,7 @@ export const PAGE_META: PageMeta[] = [
     label: "Abstimmungsverhalten",
     title: "Wer stimmt mit wem?",
     description:
-      "Ein KI-Modell hat das Abstimmungsverhalten aller Abgeordneten in einen zweidimensionalen Raum eingebettet. Abgeordnete, die häufig gleich abstimmen, landen nah beieinander, unabhängig von Fraktionsgrenzen.",
+      "Jeder Punkt ist ein Abgeordneter. Wer oft gleich abstimmt, landet nah beieinander, egal welcher Fraktion er angehört. So entstehen Muster, die Fraktionsgrenzen überschreiten.",
     wide: true,
   },
   {
@@ -40,7 +40,7 @@ export const PAGE_META: PageMeta[] = [
     label: "Transparenz",
     title: "Wer verdient noch dazu?",
     description:
-      "Bundestagsabgeordnete sind gesetzlich verpflichtet, entgeltliche Nebentätigkeiten ab 1.000 € monatlich zu melden (§ 44a AbgG). Diese Auswertung zeigt, in welchen Parteien, Branchen und Themenfeldern Nebeneinkünfte besonders verbreitet sind.",
+      "Abgeordnete müssen bezahlte Nebentätigkeiten ab 1.000 € monatlich öffentlich melden. Diese Auswertung zeigt, in welchen Parteien, Branchen und Themenfeldern solche Einkünfte besonders verbreitet sind.",
   },
   {
     href: "/comments",
@@ -48,7 +48,7 @@ export const PAGE_META: PageMeta[] = [
     label: "Plenardynamik",
     title: "Wer reagiert auf wen?",
     description:
-      "Jede Unterbrechung im Plenum, Zwischenrufe, Lachen, Applaus, ist im Stenografischen Bericht festgehalten. Diese Analyse zeigt, welche Partei wie oft und bei wessen Reden reagiert.",
+      "Zwischenrufe, Lachen, Applaus: Jede Reaktion im Bundestag wird protokolliert. Diese Analyse zeigt, welche Partei wie oft und bei wessen Reden reagiert.",
   },
   {
     href: "/speeches",
@@ -56,7 +56,7 @@ export const PAGE_META: PageMeta[] = [
     label: "Wortanalyse",
     title: "Wer redet worüber?",
     description:
-      "Welche Themen prägen jede Fraktion im Plenum? Wordclouds der Begriffe, die jede Partei besonders prägen, und die redeaktivsten Abgeordneten im direkten Vergleich.",
+      "Welche Begriffe fallen bei einer Partei besonders häufig? Wordclouds zeigen die typische Sprache jeder Fraktion, dazu die redeaktivsten Abgeordneten im Vergleich.",
   },
   {
     href: "/trends",
@@ -64,7 +64,7 @@ export const PAGE_META: PageMeta[] = [
     label: "Zeitverlauf",
     title: "Wann wurde welches Thema heiß?",
     description:
-      "Verfolge, wie oft ein Begriff in Plenardebatten erwähnt wurde, und wann Themen politisch heiß wurden.",
+      "Verfolge, wie oft ein Begriff in Plenardebatten erwähnt wurde, und erkenne, wann ein Thema plötzlich an Fahrt aufnahm.",
     wide: true,
   },
 ];
