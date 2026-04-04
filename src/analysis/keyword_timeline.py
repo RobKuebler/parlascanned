@@ -61,10 +61,11 @@ def compute_keyword_timeline(
     parties = [p for p in PARTY_ORDER if p in present and p != "fraktionslos"]
 
     # Total words per party per month (for per-party normalization in the frontend)
-    party_words: dict[str, list[int]] = {}
-    for party in parties:
-        ws = df[df["fraktion"] == party].groupby("month")["wortanzahl"].sum()
-        party_words[party] = [int(ws.get(m, 0)) for m in months]
+    # Single groupby instead of N per-party filter+groupby passes.
+    _pw = df.groupby(["fraktion", "month"])["wortanzahl"].sum()
+    party_words: dict[str, list[int]] = {
+        party: [int(_pw.get((party, m), 0)) for m in months] for party in parties
+    }
 
     # Count term occurrences per month — total and per party in one pass
     term_counts: dict[str, list[int]] = defaultdict(lambda: [0] * n)

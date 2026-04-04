@@ -248,8 +248,9 @@ export default function ThemenTrendsPage() {
       } else {
         // Sum only selected parties
         const n = data.meta.months.length;
+        const selected = [...selectedParties];
         counts = Array.from({ length: n }, (_, i) =>
-          [...selectedParties].reduce(
+          selected.reduce(
             (sum, p) => sum + (partyData.by_party[k.keyword]?.[p]?.[i] ?? 0),
             0,
           ),
@@ -264,8 +265,9 @@ export default function ThemenTrendsPage() {
     if (!data) return [];
     if (!selectedParties || !partyData) return data.meta.total_words_per_month;
     const n = data.meta.months.length;
+    const selected = [...selectedParties];
     return Array.from({ length: n }, (_, i) =>
-      [...selectedParties].reduce(
+      selected.reduce(
         (sum, p) => sum + (partyData.party_words[p]?.[i] ?? 0),
         0,
       ),
