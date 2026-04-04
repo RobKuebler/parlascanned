@@ -5,12 +5,12 @@ import {
   PARTY_ORDER,
 } from "@/lib/constants";
 import { KommentareData } from "@/lib/data";
-import { HorizontalBarRow } from "@/components/charts/HorizontalBarRow";
+import { GroupedPartyBars } from "@/components/charts/GroupedPartyBars";
 
 const SMALL_TYPES = ["Lachen", "Heiterkeit", "Widerspruch"] as const;
 type SmallType = (typeof SMALL_TYPES)[number];
 
-// Design tokens shared with HorizontalBarRow
+// Design tokens used in SummarySmall
 const TRACK_COLOR = "#F0EEE9";
 const VALUE_COLOR = "#9A9790";
 const LABEL_COLOR = "#171613";
@@ -163,85 +163,33 @@ export function SummarySmall({ data }: { data: KommentareData }) {
 
 /**
  * Horizontal bar chart for Zwischenrufe and Beifall per party.
- * Uses HorizontalBarRow for the sub-rows so styling is in sync with all other bar charts.
+ * Reaction type is the section header; one bar per party below.
  */
 export function SummaryBars({ data }: { data: KommentareData }) {
   const sorted = [...data.summary].sort(
     (a, b) => PARTY_ORDER.indexOf(a.party) - PARTY_ORDER.indexOf(b.party),
   );
-  const maxZwischenruf = Math.max(...sorted.map((r) => r.Zwischenruf));
-  const maxBeifall = Math.max(...sorted.map((r) => r.Beifall));
+  const parties = sorted.map((r) => r.party);
+
+  const sections = [
+    {
+      label: "Zwischenrufe",
+      partyValues: Object.fromEntries(
+        sorted.map((r) => [r.party, r.Zwischenruf]),
+      ),
+      formatValue: (v: number) => `${(v / 1000).toFixed(0)}k`,
+      valueWidth: 36,
+    },
+    {
+      label: "Beifall",
+      partyValues: Object.fromEntries(sorted.map((r) => [r.party, r.Beifall])),
+      formatValue: (v: number) => `${(v / 1000).toFixed(0)}k`,
+      valueWidth: 36,
+      fillOpacity: 0.45,
+    },
+  ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      {sorted.map((row) => {
-        const color = PARTY_COLORS[row.party] ?? FALLBACK_COLOR;
-        return (
-          <div key={row.party}>
-            {/* Party name header */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                marginBottom: 4,
-              }}
-            >
-              <div
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: color,
-                  flexShrink: 0,
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: LABEL_COLOR,
-                  fontFamily: CHART_FONT_FAMILY,
-                }}
-              >
-                {row.party}
-              </span>
-            </div>
-
-            {/* Zwischenrufe and Beifall as HorizontalBarRows */}
-            <div
-              style={{
-                marginLeft: 16,
-                display: "flex",
-                flexDirection: "column",
-                gap: 3,
-              }}
-            >
-              <HorizontalBarRow
-                label="Zwischenrufe"
-                labelWidth={72}
-                value={row.Zwischenruf}
-                max={maxZwischenruf}
-                color={color}
-                displayValue={`${(row.Zwischenruf / 1000).toFixed(0)}k`}
-                barHeight={8}
-                valueWidth={36}
-              />
-              <HorizontalBarRow
-                label="Beifall"
-                labelWidth={72}
-                value={row.Beifall}
-                max={maxBeifall}
-                color={color}
-                displayValue={`${(row.Beifall / 1000).toFixed(0)}k`}
-                barHeight={8}
-                valueWidth={36}
-                fillOpacity={0.45}
-              />
-            </div>
-          </div>
-        );
-      })}
-    </div>
+    <GroupedPartyBars sections={sections} parties={parties} barHeight={8} />
   );
 }

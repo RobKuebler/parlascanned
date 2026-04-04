@@ -27,6 +27,8 @@ export interface GroupedBarSection {
    * Use for summary rows like "Gesamt alle Kategorien".
    */
   variant?: "default" | "total";
+  /** Opacity of the bar fill — use to visually de-emphasise a secondary metric. */
+  fillOpacity?: number;
 }
 
 /**
@@ -68,6 +70,7 @@ export function GroupedPartyBars({
           barColor,
           valueWidth = 52,
           variant = "default",
+          fillOpacity,
         } = section;
         const sectionMax =
           section.max ??
@@ -127,6 +130,7 @@ export function GroupedPartyBars({
                     displayValue={formatValue(value)}
                     barHeight={barHeight}
                     valueWidth={valueWidth}
+                    fillOpacity={fillOpacity}
                   />
                 );
               })}
