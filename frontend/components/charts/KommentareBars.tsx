@@ -88,27 +88,16 @@ export function SummarySmall({ data }: { data: KommentareData }) {
             }}
           >
             {/* Party label */}
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <div
-                style={{
-                  width: 7,
-                  height: 7,
-                  borderRadius: "50%",
-                  background: color,
-                  flexShrink: 0,
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  color: LABEL_COLOR,
-                  fontFamily: CHART_FONT_FAMILY,
-                }}
-              >
-                {row.party}
-              </span>
-            </div>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: LABEL_COLOR,
+                fontFamily: CHART_FONT_FAMILY,
+              }}
+            >
+              {row.party}
+            </span>
 
             {/* Mini bar + value per type */}
             {SMALL_TYPES.map((t) => {
@@ -132,7 +121,6 @@ export function SummarySmall({ data }: { data: KommentareData }) {
                         width: `${pct}%`,
                         height: "100%",
                         background: color,
-                        opacity: 0.55,
                         borderRadius: 2,
                       }}
                     />
@@ -185,7 +173,6 @@ export function SummaryBars({ data }: { data: KommentareData }) {
       partyValues: Object.fromEntries(sorted.map((r) => [r.party, r.Beifall])),
       formatValue: (v: number) => `${(v / 1000).toFixed(0)}k`,
       valueWidth: 36,
-      fillOpacity: 0.45,
     },
   ];
 
