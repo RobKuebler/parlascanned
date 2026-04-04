@@ -56,13 +56,16 @@ describe("GroupedPartyBars — partei-first view", () => {
         allowGroupToggle
       />,
     );
-    fireEvent.click(screen.getByText("Partei"));
+    const parteiButton = screen.getByText("Partei");
+    expect(parteiButton).toBeInTheDocument(); // Fails fast if toggle UI is missing
+    fireEvent.click(parteiButton);
   }
 
   it("renders party names as section headers after toggle", () => {
     renderToggled();
-    expect(screen.getAllByText("SPD").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText("CDU").length).toBeGreaterThanOrEqual(1);
+    // In partei-first mode, each party is a section header — appears exactly once
+    expect(screen.getAllByText("SPD")).toHaveLength(1);
+    expect(screen.getAllByText("CDU")).toHaveLength(1);
   });
 
   it("renders rubrik labels as bars after toggle", () => {
