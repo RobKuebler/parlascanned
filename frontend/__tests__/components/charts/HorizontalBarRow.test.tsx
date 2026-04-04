@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { HorizontalBarRow } from "@/components/charts/HorizontalBarRow";
 
 const base = {
@@ -65,4 +65,110 @@ it("bar fill width is 100% when value equals max", () => {
 it("does not crash when max is 0", () => {
   render(<HorizontalBarRow {...base} value={0} max={0} />);
   expect(screen.getByText("SPD")).toBeInTheDocument();
+});
+
+// ── Tooltip tests ──────────────────────────────────────────────────────────────
+
+describe("label tooltip", () => {
+  // Helper: make the label span appear truncated by mocking scrollWidth > offsetWidth
+  function mockTruncated(container: HTMLElement) {
+    const label = container.querySelector(
+      "[data-testid='bar-label']",
+    ) as HTMLElement;
+    Object.defineProperty(label, "scrollWidth", {
+      configurable: true,
+      value: 200,
+    });
+    Object.defineProperty(label, "offsetWidth", {
+      configurable: true,
+      value: 80,
+    });
+  }
+
+  // Helper: make the label span appear NOT truncated
+  function mockNotTruncated(container: HTMLElement) {
+    const label = container.querySelector(
+      "[data-testid='bar-label']",
+    ) as HTMLElement;
+    Object.defineProperty(label, "scrollWidth", {
+      configurable: true,
+      value: 80,
+    });
+    Object.defineProperty(label, "offsetWidth", {
+      configurable: true,
+      value: 80,
+    });
+  }
+
+  it("does not show tooltip on hover when label is not truncated", () => {
+    const { container } = render(<HorizontalBarRow {...base} />);
+    mockNotTruncated(container);
+    const label = container.querySelector(
+      "[data-testid='bar-label']",
+    ) as HTMLElement;
+    fireEvent.mouseEnter(label);
+    expect(screen.queryByRole("tooltip")).toBeNull();
+  });
+
+  it("shows tooltip on mouse enter when label is truncated", () => {
+    const { container } = render(
+      <HorizontalBarRow {...base} label="Very long label text" />,
+    );
+    mockTruncated(container);
+    const label = container.querySelector(
+      "[data-testid='bar-label']",
+    ) as HTMLElement;
+    act(() => {
+      fireEvent(window, new Event("resize"));
+    });
+    fireEvent.mouseEnter(label);
+    expect(screen.getByRole("tooltip")).toBeInTheDocument();
+    expect(screen.getByRole("tooltip")).toHaveTextContent(
+      "Very long label text",
+    );
+  });
+
+  it("hides tooltip on mouse leave", () => {
+    const { container } = render(
+      <HorizontalBarRow {...base} label="Very long label text" />,
+    );
+    mockTruncated(container);
+    const label = container.querySelector(
+      "[data-testid='bar-label']",
+    ) as HTMLElement;
+    act(() => {
+      fireEvent(window, new Event("resize"));
+    });
+    fireEvent.mouseEnter(label);
+    fireEvent.mouseLeave(label);
+    expect(screen.queryByRole("tooltip")).toBeNull();
+  });
+
+  it("shows tooltip on click when label is truncated (mobile)", () => {
+    const { container } = render(
+      <HorizontalBarRow {...base} label="Very long label text" />,
+    );
+    mockTruncated(container);
+    const label = container.querySelector(
+      "[data-testid='bar-label']",
+    ) as HTMLElement;
+    act(() => {
+      fireEvent(window, new Event("resize"));
+    });
+    fireEvent.click(label);
+    expect(screen.getByRole("tooltip")).toBeInTheDocument();
+  });
+
+  it("does not show tooltip on click when label is not truncated", () => {
+    const { container } = render(<HorizontalBarRow {...base} />);
+    mockNotTruncated(container);
+    const label = container.querySelector(
+      "[data-testid='bar-label']",
+    ) as HTMLElement;
+    act(() => {
+      fireEvent(window, new Event("resize"));
+    });
+    fireEvent.click(label);
+    expect(screen.queryByRole("tooltip")).toBeNull();
+  });
 });
