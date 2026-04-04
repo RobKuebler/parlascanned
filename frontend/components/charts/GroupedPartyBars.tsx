@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { PARTY_COLORS, FALLBACK_COLOR, sortParties } from "@/lib/constants";
 import { HorizontalBarRow } from "@/components/charts/HorizontalBarRow";
 
@@ -47,13 +48,21 @@ export function GroupedPartyBars({
   parties: partiesProp,
   labelWidth = 72,
   barHeight = 7,
+  allowGroupToggle = false,
+  sectionLabelWidth = 130,
 }: {
   sections: GroupedBarSection[];
   /** Party list in display order. Derived from sections via sortParties() if omitted. */
   parties?: string[];
   labelWidth?: number;
   barHeight?: number;
+  /** Renders a Rubrik/Partei toggle above the chart. State is internal. */
+  allowGroupToggle?: boolean;
+  /** Label column width (px) for rubric names in partei-first mode. Default 130. */
+  sectionLabelWidth?: number;
 }) {
+  const [groupBy, setGroupBy] = useState<"section" | "party">("section");
+
   const parties =
     partiesProp ??
     sortParties(
@@ -62,6 +71,34 @@ export function GroupedPartyBars({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+      {allowGroupToggle && (
+        <div style={{ display: "flex", gap: 2, marginBottom: 12 }}>
+          {(["section", "party"] as const).map((mode) => {
+            const label = mode === "section" ? "Rubrik" : "Partei";
+            const active = groupBy === mode;
+            return (
+              <button
+                key={mode}
+                onClick={() => setGroupBy(mode)}
+                style={{
+                  padding: "4px 10px",
+                  minHeight: 28,
+                  fontSize: 12,
+                  fontWeight: active ? 700 : 400,
+                  color: active ? "#171613" : "#9A9790",
+                  background: active ? "#F0EEE9" : "transparent",
+                  border: "none",
+                  borderRadius: 6,
+                  cursor: "pointer",
+                  lineHeight: 1,
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      )}
       {sections.map((section) => {
         const {
           label,

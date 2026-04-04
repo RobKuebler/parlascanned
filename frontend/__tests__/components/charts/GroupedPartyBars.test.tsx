@@ -37,7 +37,6 @@ describe("GroupedPartyBars — toggle UI", () => {
       <GroupedPartyBars
         sections={sections}
         parties={parties}
-        // @ts-expect-error allowGroupToggle not yet implemented — TDD
         allowGroupToggle
       />,
     );
@@ -52,7 +51,6 @@ describe("GroupedPartyBars — partei-first view", () => {
       <GroupedPartyBars
         sections={sections}
         parties={parties}
-        // @ts-expect-error allowGroupToggle not yet implemented — TDD
         allowGroupToggle
       />,
     );
