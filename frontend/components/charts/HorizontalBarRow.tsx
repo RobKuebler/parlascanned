@@ -55,6 +55,9 @@ export function HorizontalBarRow({
           fontSize: 13,
           color: "#171613",
           lineHeight: 1.3,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
         }}
       >
         {label}
