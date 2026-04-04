@@ -102,7 +102,11 @@ export function IncomeByCategoryChart({
   ];
 
   return (
-    <GroupedPartyBars sections={sections} parties={sortParties(parties)} />
+    <GroupedPartyBars
+      sections={sections}
+      parties={sortParties(parties)}
+      allowGroupToggle
+    />
   );
 }
 
@@ -144,7 +148,11 @@ export function TopTopicsChart({
   }));
 
   return (
-    <GroupedPartyBars sections={sections} parties={sortParties(parties)} />
+    <GroupedPartyBars
+      sections={sections}
+      parties={sortParties(parties)}
+      allowGroupToggle
+    />
   );
 }
 
@@ -267,5 +275,7 @@ export function SidejobCoverageByPartyChart({
     valueWidth: 36,
   }));
 
-  return <GroupedPartyBars sections={sections} parties={parties} />;
+  return (
+    <GroupedPartyBars sections={sections} parties={parties} allowGroupToggle />
+  );
 }
