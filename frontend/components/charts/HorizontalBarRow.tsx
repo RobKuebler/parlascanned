@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { useRef, useState, useEffect, type CSSProperties } from "react";
 
 /** Single horizontal bar row: [rank?] [label] [====track====] [value] */
 export interface HorizontalBarRowProps {
@@ -34,9 +34,58 @@ export function HorizontalBarRow({
   style,
 }: HorizontalBarRowProps) {
   const pct = max > 0 ? (value / max) * 100 : 0;
+  const labelRef = useRef<HTMLSpanElement>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isTruncated, setIsTruncated] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  // Measure truncation after render and on resize
+  useEffect(() => {
+    function measure() {
+      if (labelRef.current) {
+        setIsTruncated(
+          labelRef.current.scrollWidth > labelRef.current.offsetWidth,
+        );
+      }
+    }
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [label, labelWidth]);
+
+  // Clear any pending auto-hide timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current !== null) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  function handleMouseEnter() {
+    if (!isTruncated) return;
+    setShowTooltip(true);
+  }
+
+  function handleMouseLeave() {
+    setShowTooltip(false);
+  }
+
+  function handleClick() {
+    if (!isTruncated) return;
+    setShowTooltip(true);
+    if (timeoutRef.current !== null) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => setShowTooltip(false), 2000);
+  }
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12, ...style }}>
+    <div
+      style={{
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        ...style,
+      }}
+    >
       {rank !== undefined && (
         <span
           style={{
@@ -52,7 +101,11 @@ export function HorizontalBarRow({
         </span>
       )}
       <span
+        ref={labelRef}
         data-testid="bar-label"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
         style={{
           width: labelWidth,
           flexShrink: 0,
@@ -62,10 +115,32 @@ export function HorizontalBarRow({
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
+          cursor: isTruncated ? "default" : undefined,
         }}
       >
         {label}
       </span>
+      {showTooltip && (
+        <div
+          role="tooltip"
+          style={{
+            position: "absolute",
+            bottom: "calc(100% + 4px)",
+            left: 0,
+            maxWidth: 220,
+            whiteSpace: "normal",
+            background: "#171613",
+            color: "#fff",
+            borderRadius: 6,
+            padding: "4px 8px",
+            fontSize: 12,
+            zIndex: 10,
+            pointerEvents: "none",
+          }}
+        >
+          {label}
+        </div>
+      )}
       <div
         style={{
           flex: 1,
