@@ -213,12 +213,6 @@ def _export_conflicts(
         how="inner",
     )
 
-    # Keep only rows where sidejob topics intersect with committee topics
-    merged["intersection"] = merged.apply(
-        lambda r: r["committee_topics"] & r["sidejob_topics"], axis=1
-    )
-    conflicted = merged[merged["intersection"].map(len) > 0]
-
     empty_result = {
         "stats": {
             "total_income": 0.0,
@@ -227,6 +221,16 @@ def _export_conflicts(
         },
         "conflicts": [],
     }
+
+    # Keep only rows where sidejob topics intersect with committee topics
+    if merged.empty:
+        _write(_period_output_dir(period) / "conflicts.json", empty_result)
+        return
+    merged["intersection"] = merged.apply(
+        lambda r: r["committee_topics"] & r["sidejob_topics"], axis=1
+    )
+    conflicted = merged[merged["intersection"].map(len) > 0]
+
     if conflicted.empty:
         _write(_period_output_dir(period) / "conflicts.json", empty_result)
         return
