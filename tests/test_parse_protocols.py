@@ -126,6 +126,84 @@ def test_parse_sitzung_datum_fehlt_ist_none(xml_file):
     assert rows[0]["datum"] is None
 
 
+def test_recover_party_from_metadata_exact_name():
+    speeches = pp.pd.DataFrame(
+        [
+            {
+                "sitzungsnummer": 1,
+                "rede_id": "ID001",
+                "redner_id": "R001",
+                "vorname": "Nina",
+                "nachname": "Warken",
+                "fraktion": "fraktionslos",
+                "wortanzahl": 12,
+                "text": "Rede als Ministerin.",
+                "datum": "2025-05-01",
+            }
+        ]
+    )
+    politicians = pp.pd.DataFrame(
+        [{"name": "Nina Warken", "party": "CDU/CSU"}]
+    )
+
+    recovered = pp.recover_parties_from_metadata(speeches, politicians)
+
+    assert recovered.iloc[0]["fraktion"] == "CDU/CSU"
+
+
+def test_recover_party_from_metadata_partial_first_name_match():
+    speeches = pp.pd.DataFrame(
+        [
+            {
+                "sitzungsnummer": 1,
+                "rede_id": "ID001",
+                "redner_id": "R001",
+                "vorname": "Johann David",
+                "nachname": "Wadephul",
+                "fraktion": "fraktionslos",
+                "wortanzahl": 20,
+                "text": "Rede als Minister.",
+                "datum": "2025-05-01",
+            }
+        ]
+    )
+    politicians = pp.pd.DataFrame(
+        [{"name": "Johann Wadephul", "party": "CDU/CSU"}]
+    )
+
+    recovered = pp.recover_parties_from_metadata(speeches, politicians)
+
+    assert recovered.iloc[0]["fraktion"] == "CDU/CSU"
+
+
+def test_recover_party_from_metadata_ambiguous_name_keeps_fraktionslos():
+    speeches = pp.pd.DataFrame(
+        [
+            {
+                "sitzungsnummer": 1,
+                "rede_id": "ID001",
+                "redner_id": "R001",
+                "vorname": "Alex",
+                "nachname": "Meyer",
+                "fraktion": "fraktionslos",
+                "wortanzahl": 20,
+                "text": "Rede ohne Fraktion.",
+                "datum": "2025-05-01",
+            }
+        ]
+    )
+    politicians = pp.pd.DataFrame(
+        [
+            {"name": "Alex Meyer", "party": "SPD"},
+            {"name": "Alex Meyer", "party": "CDU/CSU"},
+        ]
+    )
+
+    recovered = pp.recover_parties_from_metadata(speeches, politicians)
+
+    assert recovered.iloc[0]["fraktion"] == "fraktionslos"
+
+
 # ---------------------------------------------------------------------------
 # parse_alle_sitzungen
 # ---------------------------------------------------------------------------

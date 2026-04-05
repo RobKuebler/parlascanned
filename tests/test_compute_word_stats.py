@@ -322,6 +322,48 @@ def test_fetch_word_stats_schreibt_csvs(tmp_path, monkeypatch):
     assert len(ss) == 2  # 1 Redner pro Partei
 
 
+def test_fetch_word_stats_recovers_role_only_speaker_party(tmp_path, monkeypatch):
+    speeches = pd.DataFrame(
+        [
+            {
+                "sitzungsnummer": 1,
+                "rede_id": "1",
+                "redner_id": "R1",
+                "vorname": "Nina",
+                "nachname": "Warken",
+                "fraktion": "fraktionslos",
+                "wortanzahl": 4,
+                "text": "gesundheit reform versorgung kliniken",
+                "datum": "2025-05-01",
+            },
+            {
+                "sitzungsnummer": 1,
+                "rede_id": "2",
+                "redner_id": "R2",
+                "vorname": "Anna",
+                "nachname": "M",
+                "fraktion": "SPD",
+                "wortanzahl": 4,
+                "text": "arbeit lohn sozial gerechtigkeit",
+                "datum": "2025-05-01",
+            },
+        ]
+    )
+    politicians = pd.DataFrame(
+        [{"name": "Nina Warken", "party": "CDU/CSU"}]
+    )
+    monkeypatch.setattr(cws, "parse_alle_sitzungen", lambda out_dir: speeches)
+    monkeypatch.setattr(cws, "_load_politician_metadata", lambda out_dir: politicians)
+
+    cws.fetch_word_stats(tmp_path, top_n=3)
+
+    stats = pd.read_csv(tmp_path / "party_speech_stats.csv")
+
+    nina = stats[stats["redner_id"] == "R1"].iloc[0]
+    assert nina["fraktion"] == "CDU/CSU"
+    assert set(stats["fraktion"]) == {"CDU/CSU", "SPD"}
+
+
 # ---------------------------------------------------------------------------
 # _lemmatize_tokens (benötigt HanTa, autouse-Fixture deaktiviert)
 # ---------------------------------------------------------------------------

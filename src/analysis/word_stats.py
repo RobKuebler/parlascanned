@@ -21,8 +21,8 @@ import pandas as pd
 
 from ..cli import add_period_argument, build_parser, configure_logging
 from ..fetch.abgeordnetenwatch import refresh_periods
-from ..parse.protocols import parse_alle_sitzungen
-from ..paths import DATA_DIR
+from ..parse.protocols import parse_alle_sitzungen, recover_parties_from_metadata
+from ..paths import DATA_DIR, FRONTEND_DATA_DIR
 
 if TYPE_CHECKING:
     from HanTa.HanoverTagger import HanoverTagger
@@ -544,9 +544,31 @@ def compute_speech_stats(speeches_df: pd.DataFrame) -> pd.DataFrame:
     )
 
 
+def _load_politician_metadata(out_dir: Path) -> pd.DataFrame:
+    """Load politician metadata for the current period if available."""
+    frontend_path = FRONTEND_DATA_DIR / out_dir.name / "politicians.json"
+    if frontend_path.exists():
+        return pd.read_json(frontend_path).filter(["name", "party"])
+
+    csv_path = out_dir / "politicians.csv"
+    if csv_path.exists():
+        df = pd.read_csv(csv_path)
+        party_col = "party" if "party" in df.columns else "party_label"
+        if {"name", party_col}.issubset(df.columns):
+            return df.rename(columns={party_col: "party"}).filter(["name", "party"])
+
+    return pd.DataFrame(columns=["name", "party"])
+
+
 def fetch_word_stats(out_dir: Path, top_n: int = 100) -> None:
     """Parse XMLs and write party_word_freq.csv + party_speech_stats.csv."""
     df = parse_alle_sitzungen(out_dir)
+    politicians_df = _load_politician_metadata(out_dir)
+    before_recovery = int(df["fraktion"].eq("fraktionslos").sum())
+    df = recover_parties_from_metadata(df, politicians_df)
+    recovered_count = before_recovery - int(df["fraktion"].eq("fraktionslos").sum())
+    if recovered_count:
+        log.info("Recovered %d speeches from politician metadata", recovered_count)
     df = df[~df["fraktion"].isin({"Unbekannt", "fraktionslos"})]
     log.info("Loaded speeches: %d", len(df))
 

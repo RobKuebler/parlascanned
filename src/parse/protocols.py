@@ -9,6 +9,7 @@ Usage:
 import argparse
 import logging
 import re
+import unicodedata
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
@@ -39,6 +40,8 @@ _FRAKTION_MAP: dict[str, str] = {
     "SPDCDU/CSU": "Unbekannt",
 }
 
+_SURNAME_PREFIXES = {"da", "de", "del", "der", "di", "du", "la", "le", "van", "von"}
+
 
 def _normalize_fraktion(raw: str | None) -> str:
     """Normalize XML fraktion text to canonical party name.
@@ -59,6 +62,91 @@ def _normalize_fraktion(raw: str | None) -> str:
             "Unknown faction after normalization: %r (raw: %r)", normalized, raw
         )
     return normalized
+
+
+def _normalize_name_tokens(text: str | None) -> list[str]:
+    """Normalize a person-name fragment into comparable lowercase tokens."""
+    if not text:
+        return []
+    normalized = unicodedata.normalize("NFKC", text).replace(_SOFT_HYPHEN, "")
+    normalized = re.sub(r"[-/]", " ", normalized.casefold())
+    normalized = re.sub(r"[^\w\s]", " ", normalized)
+    return [token for token in normalized.split() if token]
+
+
+def _split_politician_name(name: str) -> tuple[set[str], set[str]]:
+    """Split a full politician name into comparable first-name and surname tokens."""
+    tokens = _normalize_name_tokens(name)
+    if not tokens:
+        return set(), set()
+    surname_start = len(tokens) - 1
+    while surname_start > 0 and tokens[surname_start - 1] in _SURNAME_PREFIXES:
+        surname_start -= 1
+    return set(tokens[:surname_start]), set(tokens[surname_start:])
+
+
+def recover_parties_from_metadata(
+    speeches_df: pd.DataFrame, politicians_df: pd.DataFrame
+) -> pd.DataFrame:
+    """Fill fraktionslos speeches from politician metadata when the match is unique.
+
+    Matching is deliberately conservative:
+    - surname tokens from the speech must be contained in the politician name
+    - at least one given-name token must overlap
+    - if the resulting candidate set maps to multiple parties, the row stays
+      fraktionslos
+    """
+    if speeches_df.empty or politicians_df.empty:
+        return speeches_df
+    if not {"name", "party"}.issubset(politicians_df.columns):
+        return speeches_df
+
+    missing_mask = speeches_df["fraktion"].eq("fraktionslos")
+    if not missing_mask.any():
+        return speeches_df
+
+    candidates: list[tuple[set[str], set[str], str]] = []
+    unique_politicians = politicians_df[["name", "party"]].dropna().drop_duplicates()
+    for row in unique_politicians.itertuples(index=False):  # type: ignore[call-overload]
+        first_tokens, surname_tokens = _split_politician_name(row.name)
+        if not surname_tokens:
+            continue
+        candidates.append((first_tokens, surname_tokens, str(row.party)))
+
+    replacements: dict[tuple[str, str], str] = {}
+    speakers = (
+        speeches_df.loc[missing_mask, ["vorname", "nachname"]].drop_duplicates().itertuples(index=False)
+    )
+    for speaker in speakers:  # type: ignore[call-overload]
+        first_tokens = set(_normalize_name_tokens(speaker.vorname))
+        surname_tokens = set(_normalize_name_tokens(speaker.nachname))
+        if not first_tokens or not surname_tokens:
+            continue
+        parties = {
+            party
+            for candidate_first, candidate_surname, party in candidates
+            if surname_tokens.issubset(candidate_surname | candidate_first)
+            and bool(first_tokens & (candidate_first | candidate_surname))
+        }
+        if len(parties) == 1:
+            replacements[(speaker.vorname, speaker.nachname)] = next(iter(parties))
+
+    if not replacements:
+        return speeches_df
+
+    recovered = speeches_df.copy()
+    target_mask = recovered["fraktion"].eq("fraktionslos")
+    keys = list(
+        zip(
+            recovered.loc[target_mask, "vorname"],
+            recovered.loc[target_mask, "nachname"],
+            strict=False,
+        )
+    )
+    recovered.loc[target_mask, "fraktion"] = [
+        replacements.get(key, "fraktionslos") for key in keys
+    ]
+    return recovered
 
 
 _COLS = [
