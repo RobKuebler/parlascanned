@@ -44,7 +44,7 @@ export const PAGE_META: PageMeta[] = [
   },
   {
     href: "/ausschuesse",
-    color: "#c0392b",
+    color: "#C0392B",
     label: "Transparenz",
     title: "Wer verdient im eigenen Ausschuss?",
     description:
