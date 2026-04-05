@@ -130,7 +130,7 @@ export function HorizontalBarRow({
             left: 0,
             maxWidth: 220,
             whiteSpace: "normal",
-            background: "#171613",
+            background: "rgba(0,0,0,0.78)",
             color: "#fff",
             borderRadius: 6,
             padding: "4px 8px",
