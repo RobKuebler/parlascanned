@@ -158,6 +158,103 @@ def _export_sidejobs(
     )
 
 
+def _export_conflicts(
+    period: int,
+    pols_df: pd.DataFrame,
+    period_start: date,
+    period_end: date,
+    df_sidejobs: pd.DataFrame,
+    df_committees: pd.DataFrame,
+    df_memberships: pd.DataFrame,
+) -> None:
+    """Compute and export conflict-of-interest data.
+
+    A conflict exists when a politician earns income (via a disclosed sidejob)
+    in a topic area that their Ausschuss is also responsible for.
+    Output: conflicts.json with pre-aggregated rows + summary stats.
+    """
+    # Prepare income-bearing sidejobs with prorated income
+    sj = df_sidejobs[df_sidejobs["income"].notna()].copy()
+    sj["income"] = pd.to_numeric(sj["income"], errors="coerce")
+    sj = sj[sj["income"].notna()].copy()
+    sj["prorated_income"] = sj.apply(
+        lambda row: compute_effective_income(row, period_start, period_end), axis=1
+    )
+    sj["sidejob_topics"] = sj["topics"].apply(
+        lambda t: set(_split_topics(t)) if isinstance(t, str) else set()
+    )
+    sj = sj[sj["sidejob_topics"].map(len) > 0]
+
+    # Build committee topic sets; drop committees with no topics
+    committees = df_committees.copy()
+    committees["committee_topics"] = committees["topics"].apply(
+        lambda t: set(_split_topics(t)) if isinstance(t, str) else set()
+    )
+    committees = committees[committees["committee_topics"].map(len) > 0]
+
+    # Join memberships → committees to get (politician_id, committee_label, topics)
+    mem = df_memberships.merge(
+        committees.filter(["committee_id", "label", "committee_topics"]),
+        on="committee_id",
+        how="inner",
+    )
+
+    # Cross-join each politician's memberships with their income-bearing sidejobs
+    merged = mem.merge(
+        sj.filter(["politician_id", "sidejob_topics", "prorated_income"]),
+        on="politician_id",
+        how="inner",
+    )
+
+    # Keep only rows where sidejob topics intersect with committee topics
+    merged["intersection"] = merged.apply(
+        lambda r: r["committee_topics"] & r["sidejob_topics"], axis=1
+    )
+    conflicted = merged[merged["intersection"].map(len) > 0]
+
+    empty_result = {
+        "stats": {
+            "total_income": 0.0,
+            "affected_politicians": 0,
+            "affected_committees": 0,
+        },
+        "conflicts": [],
+    }
+    if conflicted.empty:
+        _write(_period_output_dir(period) / "conflicts.json", empty_result)
+        return
+
+    # Aggregate per (politician_id, committee): sum income, union matching topics
+    rows: list[dict] = []
+    party_map = pols_df.set_index("politician_id")["party_label"].to_dict()
+    for (politician_id, committee_label), group in conflicted.groupby(
+        ["politician_id", "label"]
+    ):
+        matching_topics = sorted(set().union(*group["intersection"]))
+        rows.append(
+            {
+                "politician_id": int(politician_id),
+                "party": str(party_map.get(int(politician_id), "")),
+                "committee_label": str(committee_label),
+                "matching_topics": matching_topics,
+                "conflicted_income": round(float(group["prorated_income"].sum()), 2),
+            }
+        )
+
+    rows.sort(key=lambda r: r["conflicted_income"], reverse=True)
+
+    stats = {
+        "total_income": round(sum(r["conflicted_income"] for r in rows), 2),
+        "affected_politicians": len({r["politician_id"] for r in rows}),
+        "affected_committees": len({r["committee_label"] for r in rows}),
+    }
+
+    _write(
+        _period_output_dir(period) / "conflicts.json",
+        {"stats": stats, "conflicts": rows},
+    )
+
+
 def _export_party_profile(
     period: int, pols_df: pd.DataFrame, period_start: date
 ) -> None:
