@@ -176,19 +176,25 @@ def _export_conflicts(
     # Prepare income-bearing sidejobs with prorated income
     sj = df_sidejobs[df_sidejobs["income"].notna()].copy()
     sj["income"] = pd.to_numeric(sj["income"], errors="coerce")
+    n_nan = int(sj["income"].isna().sum())
+    if n_nan:
+        log.warning(
+            "Period %d: %d sidejob income value(s) could not be parsed as numeric"
+            " and will be skipped.",
+            period,
+            n_nan,
+        )
     sj = sj[sj["income"].notna()].copy()
     sj["prorated_income"] = sj.apply(
         lambda row: compute_effective_income(row, period_start, period_end), axis=1
     )
-    sj["sidejob_topics"] = sj["topics"].apply(
-        lambda t: set(_split_topics(t)) if isinstance(t, str) else set()
-    )
+    sj["sidejob_topics"] = sj["topics"].apply(lambda t: set(_split_topics(t)))
     sj = sj[sj["sidejob_topics"].map(len) > 0]
 
     # Build committee topic sets; drop committees with no topics
     committees = df_committees.copy()
     committees["committee_topics"] = committees["topics"].apply(
-        lambda t: set(_split_topics(t)) if isinstance(t, str) else set()
+        lambda t: set(_split_topics(t))
     )
     committees = committees[committees["committee_topics"].map(len) > 0]
 

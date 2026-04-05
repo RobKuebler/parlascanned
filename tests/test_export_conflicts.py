@@ -73,7 +73,7 @@ def conflicts_json(tmp_path, monkeypatch):
 
 
 def test_only_matching_topics_produce_conflicts(conflicts_json):
-    # Pol 2 (Gesundheit) should not appear; pol 3 (Wirtschaft, Finanzausschuss) should not appear.
+    # Pol 3: sidejob topic is Wirtschaft, but committee is Finanzausschuss → no topic overlap, no conflict
     ids = {c["politician_id"] for c in conflicts_json["conflicts"]}
     assert ids == {1}
 
