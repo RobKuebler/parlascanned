@@ -166,7 +166,7 @@ export default function MotionsPage() {
       ) : (
         <>
           {/* Row 1: counts + timeline */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="flex flex-col gap-6 mb-6">
             <MotionCountBars
               items={typData.counts_by_party.map((i) => ({
                 party: stripSoftHyphen(i.party),

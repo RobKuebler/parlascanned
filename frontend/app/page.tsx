@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { Footer } from "@/components/ui/Footer";
 import { usePeriod } from "@/lib/period-context";
 import {
-  fetchData,
-  dataUrl,
+  fetchPeriodFiles,
   stripSoftHyphen,
   Politician,
   SidejobsFile,
@@ -29,17 +28,24 @@ export default function Home() {
 
   useEffect(() => {
     if (!activePeriodId) return;
-    Promise.all([
-      fetchData<Politician[]>(dataUrl("politicians.json", activePeriodId)),
-      fetchData<SidejobsFile>(dataUrl("sidejobs.json", activePeriodId)),
-      fetchData<Poll[]>(dataUrl("polls.json", activePeriodId)),
-    ])
-      .then(([pols, sj, polls]) => {
+    setStats(null);
+    fetchPeriodFiles<{
+      politicians: Politician[];
+      sidejobs: SidejobsFile;
+      polls: Poll[];
+    }>(activePeriodId, {
+      politicians: "politicians.json",
+      sidejobs: "sidejobs.json",
+      polls: "polls.json",
+    })
+      .then(({ politicians, sidejobs, polls }) => {
         setStats({
-          politicians: pols.length,
-          parties: new Set(pols.map((p) => stripSoftHyphen(p.party))).size,
+          politicians: politicians.length,
+          parties: new Set(
+            politicians.map((politician) => stripSoftHyphen(politician.party)),
+          ).size,
           polls: polls.length,
-          sidejobs: sj.coverage.total,
+          sidejobs: sidejobs.coverage.total,
         });
       })
       .catch(console.error);

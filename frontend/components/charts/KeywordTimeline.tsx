@@ -299,7 +299,16 @@ export function KeywordTimeline({
     svg.on("dblclick.zoom", () => {
       svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity);
     });
-  }, [months, totalWords, series, normalized, seriesWords, width, clipId]);
+  }, [
+    containerRef,
+    months,
+    totalWords,
+    series,
+    normalized,
+    seriesWords,
+    width,
+    clipId,
+  ]);
 
   return (
     <div ref={containerRef} style={{ position: "relative" }}>

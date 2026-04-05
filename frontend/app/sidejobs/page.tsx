@@ -1,9 +1,8 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { usePeriod } from "@/lib/period-context";
 import {
-  fetchData,
-  dataUrl,
+  fetchPeriodFiles,
   SidejobsFile,
   Politician,
   stripSoftHyphen,
@@ -18,42 +17,16 @@ import { ChartSkeleton } from "@/components/ui/ChartSkeleton";
 import { Footer } from "@/components/ui/Footer";
 import { PageHeader } from "@/components/ui/PageHeader";
 import {
-  PARTY_ORDER,
+  sortPresentParties,
   CARD_CLASS,
   CARD_SHADOW,
   CARD_PADDING,
 } from "@/lib/constants";
 import { PAGE_META } from "@/lib/page-meta";
+import { formatEuroStat } from "@/lib/format";
+import { useCountUp } from "@/hooks/useCountUp";
 
 const META = PAGE_META.find((p) => p.href === "/sidejobs")!;
-
-/** Animates a number from 0 to `target` over ~1.2 s using easeOutExpo. */
-function useCountUp(target: number, active: boolean) {
-  const [display, setDisplay] = useState(0);
-  const rafRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (!active || target === 0) return;
-    let cancelled = false;
-    const duration = 1200;
-    const start = performance.now();
-    const tick = (now: number) => {
-      if (cancelled) return;
-      const t = Math.min((now - start) / duration, 1);
-      // easeOutExpo
-      const ease = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-      setDisplay(Math.round(ease * target));
-      if (t < 1) rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      cancelled = true;
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    };
-  }, [target, active]);
-
-  return display;
-}
 
 export default function SidejobsPage() {
   const { activePeriodId, periods } = usePeriod();
@@ -75,40 +48,39 @@ export default function SidejobsPage() {
     ? sjData.jobs.reduce((s, j) => s + j.prorated_income, 0)
     : 0;
   const displayIncome = useCountUp(totalIncome, !loading && totalIncome > 0);
-  // Format as "X,X Mio." once above 1M, otherwise plain thousands
-  const formattedIncome =
-    displayIncome >= 1_000_000
-      ? `${(displayIncome / 1_000_000).toLocaleString("de", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} Mio.`
-      : displayIncome.toLocaleString("de");
+  const formattedIncome = formatEuroStat(displayIncome);
 
   useEffect(() => {
     if (!activePeriodId) return;
     setLoading(true);
-    Promise.all([
-      fetchData<SidejobsFile>(dataUrl("sidejobs.json", activePeriodId)),
-      fetchData<Politician[]>(dataUrl("politicians.json", activePeriodId)),
-    ])
-      .then(([sj, pols]) => {
+    setSjData(null);
+    setPoliticians([]);
+    fetchPeriodFiles<{
+      sidejobs: SidejobsFile;
+      politicians: Politician[];
+    }>(activePeriodId, {
+      sidejobs: "sidejobs.json",
+      politicians: "politicians.json",
+    })
+      .then(({ sidejobs, politicians }) => {
         setSjData({
-          ...sj,
-          jobs: sj.jobs.map((j) => ({ ...j, party: stripSoftHyphen(j.party) })),
+          ...sidejobs,
+          jobs: sidejobs.jobs.map((job) => ({
+            ...job,
+            party: stripSoftHyphen(job.party),
+          })),
         });
-        setPoliticians(pols);
+        setPoliticians(politicians);
         setLoading(false);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   }, [activePeriodId]);
 
-  const present = sjData
-    ? new Set(sjData.jobs.map((j) => j.party))
-    : new Set<string>();
   const parties = sjData
-    ? [
-        ...PARTY_ORDER.filter((p) => present.has(p)),
-        ...Array.from(present)
-          .filter((p) => !PARTY_ORDER.includes(p))
-          .sort(),
-      ]
+    ? sortPresentParties(sjData.jobs.map((job) => job.party))
     : [];
 
   return (

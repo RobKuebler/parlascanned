@@ -75,7 +75,6 @@ export function PollFilter({
     selectedIds,
     divergentPollIds,
     divergentPresentPollIds,
-    polls,
   ]);
 
   // When query is empty, show ALL unselected polls so the user can browse by scrolling.

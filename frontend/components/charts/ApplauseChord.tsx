@@ -211,7 +211,7 @@ export default function ApplauseChord({ data }: Props) {
         );
       })
       .on("mouseleave", () => tip.style("opacity", "0"));
-  }, [data, width]);
+  }, [containerRef, data, width]);
 
   useEffect(() => {
     draw();

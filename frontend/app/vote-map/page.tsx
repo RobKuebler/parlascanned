@@ -2,15 +2,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { usePeriod } from "@/lib/period-context";
 import {
-  fetchData,
-  dataUrl,
+  fetchPeriodFiles,
   stripSoftHyphen,
   EmbeddingsFile,
-  EmbeddingPoint,
   Politician,
   VoteRecord,
   Poll,
-  CohesionRecord,
 } from "@/lib/data";
 import { VoteMapScatter } from "@/components/charts/VoteMapScatter";
 import { VoteHeatmap } from "@/components/charts/VoteHeatmap";
@@ -30,72 +27,21 @@ import {
   CARD_PADDING,
 } from "@/lib/constants";
 import { PAGE_META } from "@/lib/page-meta";
+import {
+  computeCohesionRecords,
+  findDivergentPollIds,
+  normalizeSelection,
+} from "@/lib/vote-map";
 
 const META = PAGE_META.find((p) => p.href === "/vote-map")!;
-
-/** Computes per-party cohesion (mean distance to centroid) and centroid positions. */
-function computeCohesion(
-  points: EmbeddingPoint[],
-  politicians: Politician[],
-): CohesionRecord[] {
-  const polMap = new Map(politicians.map((p) => [p.politician_id, p]));
-  const partyPoints = new Map<string, { x: number; y: number }[]>();
-  for (const pt of points) {
-    const label = stripSoftHyphen(
-      polMap.get(pt.politician_id)?.party ?? "fraktionslos",
-    );
-    if (!partyPoints.has(label)) partyPoints.set(label, []);
-    partyPoints.get(label)!.push({ x: pt.x, y: pt.y });
-  }
-  const cohesion: CohesionRecord[] = [];
-  for (const [label, pts] of partyPoints) {
-    if (label === "fraktionslos" || pts.length < 2) continue;
-    const cx = pts.reduce((s, p) => s + p.x, 0) / pts.length;
-    const cy = pts.reduce((s, p) => s + p.y, 0) / pts.length;
-    const streuung =
-      pts.reduce(
-        (s, p) => s + Math.sqrt((p.x - cx) ** 2 + (p.y - cy) ** 2),
-        0,
-      ) / pts.length;
-    cohesion.push({ party: label, label, streuung });
-  }
-  return cohesion;
-}
-
-/**
- * Collapses individual politician selections into party pills when all members of a party
- * are selected. Returns the normalized state with redundant individual IDs removed.
- */
-function normalizeSelection(
-  polIds: number[],
-  parties: string[],
-  politicians: Politician[],
-): { polIds: number[]; parties: string[] } {
-  const partyMembers = new Map<string, number[]>();
-  for (const p of politicians) {
-    const party = stripSoftHyphen(p.party);
-    if (!partyMembers.has(party)) partyMembers.set(party, []);
-    partyMembers.get(party)!.push(p.politician_id);
-  }
-  const polIdSet = new Set(polIds);
-  const resultParties = [...parties];
-  let resultPolIds = [...polIds];
-  for (const [party, members] of partyMembers) {
-    if (resultParties.includes(party)) continue;
-    if (members.length > 1 && members.every((id) => polIdSet.has(id))) {
-      resultParties.push(party);
-      const memberSet = new Set(members);
-      resultPolIds = resultPolIds.filter((id) => !memberSet.has(id));
-    }
-  }
-  return { polIds: resultPolIds, parties: resultParties };
-}
 
 export default function VoteMapPage() {
   const { activePeriodId } = usePeriod();
   const [embeddings, setEmbeddings] = useState<EmbeddingsFile | null>(null);
   const [politicians, setPoliticians] = useState<Politician[]>([]);
-  const [cohesion, setCohesion] = useState<CohesionRecord[]>([]);
+  const [cohesion, setCohesion] = useState<
+    ReturnType<typeof computeCohesionRecords>
+  >([]);
   const [votes, setVotes] = useState<VoteRecord[] | null>(null);
   const [polls, setPolls] = useState<Poll[]>([]);
   const [selectedPolIds, setSelectedPolIds] = useState<number[]>([]);
@@ -115,44 +61,18 @@ export default function VoteMapPage() {
   // Polls where the selected politicians voted differently from each other.
   // Only computed when 2+ politicians are selected and vote data is loaded.
   const divergentPollIds = useMemo<number[] | undefined>(() => {
-    if (!votes || effectivePolIds.length < 2) return undefined;
-    // Build vote lookup: politician_id → poll_id → answer
-    const voteIndex = new Map<number, Map<number, string>>();
-    for (const v of votes) {
-      if (!voteIndex.has(v.politician_id))
-        voteIndex.set(v.politician_id, new Map());
-      voteIndex.get(v.politician_id)!.set(v.poll_id, v.answer);
-    }
-    return polls
-      .filter((p) => {
-        const answers = new Set<string>();
-        for (const polId of effectivePolIds) {
-          answers.add(voteIndex.get(polId)?.get(p.poll_id) ?? "no_show");
-        }
-        return answers.size > 1;
-      })
-      .map((p) => p.poll_id);
+    if (!votes) return undefined;
+    return findDivergentPollIds(votes, polls, effectivePolIds, {
+      ignoreNoShow: false,
+    });
   }, [votes, polls, effectivePolIds]);
 
   // Like divergentPollIds, but no_show is ignored — only actual votes (yes/no/abstain) are compared.
   const divergentPresentPollIds = useMemo<number[] | undefined>(() => {
-    if (!votes || effectivePolIds.length < 2) return undefined;
-    const voteIndex = new Map<number, Map<number, string>>();
-    for (const v of votes) {
-      if (!voteIndex.has(v.politician_id))
-        voteIndex.set(v.politician_id, new Map());
-      voteIndex.get(v.politician_id)!.set(v.poll_id, v.answer);
-    }
-    return polls
-      .filter((p) => {
-        const answers = new Set<string>();
-        for (const polId of effectivePolIds) {
-          const answer = voteIndex.get(polId)?.get(p.poll_id);
-          if (answer && answer !== "no_show") answers.add(answer);
-        }
-        return answers.size > 1;
-      })
-      .map((p) => p.poll_id);
+    if (!votes) return undefined;
+    return findDivergentPollIds(votes, polls, effectivePolIds, {
+      ignoreNoShow: true,
+    });
   }, [votes, polls, effectivePolIds]);
 
   const [loading, setLoading] = useState(true);
@@ -166,36 +86,53 @@ export default function VoteMapPage() {
   useEffect(() => {
     if (!activePeriodId) return;
     setLoading(true);
+    setEmbeddings(null);
+    setPoliticians([]);
+    setCohesion([]);
     setSelectedPolIds([]);
     setSelectedParties([]);
+    setSelectedPollIds([]);
     setVotes(null);
-    Promise.all([
-      fetchData<EmbeddingsFile>(dataUrl("embeddings.json", activePeriodId)),
-      fetchData<Politician[]>(dataUrl("politicians.json", activePeriodId)),
-    ])
-      .then(([emb, pols]) => {
-        setEmbeddings(emb);
-        setPoliticians(pols);
-        setCohesion(computeCohesion(emb.data, pols));
+    setPolls([]);
+    fetchPeriodFiles<{
+      embeddings: EmbeddingsFile;
+      politicians: Politician[];
+    }>(activePeriodId, {
+      embeddings: "embeddings.json",
+      politicians: "politicians.json",
+    })
+      .then(({ embeddings, politicians }) => {
+        setEmbeddings(embeddings);
+        setPoliticians(politicians);
+        setCohesion(computeCohesionRecords(embeddings.data, politicians));
         setLoading(false);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   }, [activePeriodId]);
 
   // Loads vote data if not yet loaded. No-op if already loaded or no period.
   const loadVotesIfNeeded = useCallback(() => {
     if (votes || !activePeriodId) return;
     setLoadingVotes(true);
-    Promise.all([
-      fetchData<VoteRecord[]>(dataUrl("votes.json", activePeriodId)),
-      fetchData<Poll[]>(dataUrl("polls.json", activePeriodId)),
-    ])
-      .then(([v, p]) => {
-        setVotes(v);
-        setPolls(p);
+    fetchPeriodFiles<{
+      votes: VoteRecord[];
+      polls: Poll[];
+    }>(activePeriodId, {
+      votes: "votes.json",
+      polls: "polls.json",
+    })
+      .then(({ votes, polls }) => {
+        setVotes(votes);
+        setPolls(polls);
         setLoadingVotes(false);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        setLoadingVotes(false);
+      });
   }, [votes, activePeriodId]);
 
   const handleSelection = useCallback(

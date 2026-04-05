@@ -27,7 +27,7 @@ it("renders rank when provided", () => {
 });
 
 it("does not render rank element when rank is undefined", () => {
-  const { container } = render(<HorizontalBarRow {...base} />);
+  render(<HorizontalBarRow {...base} />);
   // rank column is absent — only label, track, value divs present at top level
   expect(screen.queryByText(/^\d+$/)).toBeNull();
 });

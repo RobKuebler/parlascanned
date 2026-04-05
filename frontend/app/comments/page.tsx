@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { usePeriod } from "@/lib/period-context";
-import { fetchData, dataUrl, KommentareData } from "@/lib/data";
+import { fetchPeriodData, KommentareData } from "@/lib/data";
 import { CARD_SHADOW } from "@/lib/constants";
 import { PAGE_META } from "@/lib/page-meta";
 import { ChartSkeleton } from "@/components/ui/ChartSkeleton";
@@ -70,7 +70,7 @@ export default function CommentsPage() {
     if (!activePeriodId) return;
     setData(null);
     setError(false);
-    fetchData<KommentareData>(dataUrl("kommentare.json", activePeriodId))
+    fetchPeriodData<KommentareData>("kommentare.json", activePeriodId)
       .then(setData)
       .catch(() => setError(true));
   }, [activePeriodId]);

@@ -42,9 +42,10 @@ repos:
 
       - id: eslint
         name: eslint
-        entry: bash -c 'cd frontend && npx eslint --fix "${@#frontend/}"' --
+        entry: bash -c 'cd frontend && npx eslint --fix .'
         language: system
         files: ^frontend/.*\.(ts|tsx|js|jsx)$
+        pass_filenames: false
 
       - id: tsc
         name: tsc

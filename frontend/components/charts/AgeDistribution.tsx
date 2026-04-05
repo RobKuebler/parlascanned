@@ -161,32 +161,30 @@ export function AgeDistribution({ data, parties }: Props) {
     });
 
     // Draw violin paths and dots (will be updated on zoom)
-    partyData.forEach(
-      ({ party, records, dotCY, density, color, densityToPixel }) => {
-        dataG
-          .append("path")
-          .datum(density)
-          .attr("class", `violin violin-${party.replace(/\W/g, "_")}`)
-          .attr("fill", color)
-          .attr("fill-opacity", 0.15)
-          .attr("stroke", color)
-          .attr("stroke-width", 1.5)
-          .attr("stroke-opacity", 0.7)
-          .attr("stroke-linejoin", "round");
+    partyData.forEach(({ party, records, dotCY, density, color }) => {
+      dataG
+        .append("path")
+        .datum(density)
+        .attr("class", `violin violin-${party.replace(/\W/g, "_")}`)
+        .attr("fill", color)
+        .attr("fill-opacity", 0.15)
+        .attr("stroke", color)
+        .attr("stroke-width", 1.5)
+        .attr("stroke-opacity", 0.7)
+        .attr("stroke-linejoin", "round");
 
-        dataG
-          .selectAll<SVGCircleElement, AgeRecord>(
-            `.dot-${party.replace(/\W/g, "_")}`,
-          )
-          .data(records)
-          .join("circle")
-          .attr("class", `dot dot-${party.replace(/\W/g, "_")}`)
-          .attr("cy", (_, i) => dotCY[i])
-          .attr("r", 2.5)
-          .attr("fill", color)
-          .attr("opacity", 0.6);
-      },
-    );
+      dataG
+        .selectAll<SVGCircleElement, AgeRecord>(
+          `.dot-${party.replace(/\W/g, "_")}`,
+        )
+        .data(records)
+        .join("circle")
+        .attr("class", `dot dot-${party.replace(/\W/g, "_")}`)
+        .attr("cy", (_, i) => dotCY[i])
+        .attr("r", 2.5)
+        .attr("fill", color)
+        .attr("opacity", 0.6);
+    });
 
     // Redraws all x-dependent elements for a given (possibly zoomed) xScale
     function update(xS: d3.ScaleLinear<number, number>) {
@@ -269,7 +267,6 @@ export function AgeDistribution({ data, parties }: Props) {
       .call(zoom)
       .on("mousemove", (event: MouseEvent) => {
         const [mx, my] = d3.pointer(event);
-        const ageAtMouse = currentXS.invert(mx);
 
         const hoveredParty = parties.find((p) => {
           const bandY = yScale(p) ?? 0;
@@ -314,7 +311,7 @@ export function AgeDistribution({ data, parties }: Props) {
         );
       })
       .on("mouseleave", () => tooltip.style("opacity", "0"));
-  }, [data, parties, width]);
+  }, [containerRef, data, parties, width]);
 
   return (
     <div ref={containerRef} style={{ position: "relative" }}>

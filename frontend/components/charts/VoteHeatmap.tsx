@@ -278,7 +278,15 @@ export function VoteHeatmap({
           );
       })
       .on("mouseleave", () => tooltip.style("opacity", "0"));
-  }, [votes, polls, politicians, selectedPolIds, selectedPollIds, width]);
+  }, [
+    containerRef,
+    votes,
+    polls,
+    politicians,
+    selectedPolIds,
+    selectedPollIds,
+    width,
+  ]);
 
   void VOTE_NUMERIC; // imported for potential future use
 

@@ -431,7 +431,17 @@ export function VoteMapScatter({
     if (transformRef.current !== d3.zoomIdentity) {
       svg.call(zoom.transform, transformRef.current);
     }
-  }, [embeddings, politicians, width, height]);
+  }, [
+    embeddings,
+    politicians,
+    width,
+    height,
+    modeRef,
+    onChangeRef,
+    onClearAllRef,
+    onPartyToggleRef,
+    selectedIdsRef,
+  ]);
 
   // Mode effect: swaps interaction behaviors without redrawing
   useEffect(() => {

@@ -189,6 +189,28 @@ export function dataUrl(filename: string, periodId: number): string {
   return `/data/${periodId}/${filename}`;
 }
 
+/** Fetch one period-scoped JSON file from /data/{periodId}/. */
+export function fetchPeriodData<T>(
+  filename: string,
+  periodId: number,
+): Promise<T> {
+  return fetchData<T>(dataUrl(filename, periodId));
+}
+
+/** Fetch multiple period-scoped JSON files and return them keyed by request name. */
+export async function fetchPeriodFiles<T extends Record<string, unknown>>(
+  periodId: number,
+  files: { [K in keyof T]: string },
+): Promise<T> {
+  const entries = await Promise.all(
+    Object.entries(files).map(async ([key, filename]) => [
+      key,
+      await fetchPeriodData(filename, periodId),
+    ]),
+  );
+  return Object.fromEntries(entries) as T;
+}
+
 // ── Motions (Anträge & Anfragen) ─────────────────────────────────────────────
 
 export interface MotionAuthor {

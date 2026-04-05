@@ -1,3 +1,5 @@
+import { stripSoftHyphen } from "@/lib/data";
+
 // Party colors and order — mirrors pages/constants.py.
 // Soft-hyphen (\xad) is stripped; raw party names from the API use it.
 
@@ -39,6 +41,34 @@ export const GOVERNING_PARTIES: Record<number, string[]> = {
   21: ["CDU/CSU", "SPD"], // 21. BT: GroKo
 };
 
+const PARTY_SHORT_LABELS: Record<string, string> = {
+  "CDU/CSU": "CDU/CSU",
+  SPD: "SPD",
+  AfD: "AfD",
+  Grüne: "Grüne",
+  "Die Linke": "Linke",
+  "Die Linke.": "Linke",
+  BSW: "BSW",
+  FDP: "FDP",
+  fraktionslos: "fraktionslos",
+};
+
+/** Normalize any raw party label into the shared frontend label space. */
+export function normalizePartyName(party: string): string {
+  return stripSoftHyphen(party);
+}
+
+/** Resolve a party color from raw or normalized party labels. */
+export function getPartyColor(party: string): string {
+  return PARTY_COLORS[normalizePartyName(party)] ?? FALLBACK_COLOR;
+}
+
+/** Resolve a short display label from raw or normalized party labels. */
+export function getPartyShortLabel(party: string): string {
+  const normalized = normalizePartyName(party);
+  return PARTY_SHORT_LABELS[normalized] ?? normalized;
+}
+
 /**
  * Sort a list of party names by PARTY_ORDER (most seats first).
  * Unknown parties come before fraktionslos, sorted alphabetically.
@@ -55,6 +85,11 @@ export function sortParties(parties: string[]): string[] {
     // Both unknown → alphabetical
     return a.localeCompare(b);
   });
+}
+
+/** Sort the unique parties currently present in a dataset. */
+export function sortPresentParties(parties: Iterable<string>): string[] {
+  return sortParties(Array.from(new Set(parties)));
 }
 
 // ── Filter/dropdown styling tokens ──────────────────────────────────────────

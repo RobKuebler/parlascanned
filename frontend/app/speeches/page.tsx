@@ -2,8 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { usePeriod } from "@/lib/period-context";
 import {
-  fetchData,
-  dataUrl,
+  fetchPeriodFiles,
   stripSoftHyphen,
   WordFreqFile,
   SpeechStatsFile,
@@ -47,15 +46,18 @@ export default function SpeechesPage() {
     if (!activePeriodId) return;
     setLoading(true);
     setUnavailable(false);
-    Promise.all([
-      fetchData<WordFreqFile>(dataUrl("party_word_freq.json", activePeriodId)),
-      fetchData<SpeechStatsFile>(
-        dataUrl("party_speech_stats.json", activePeriodId),
-      ),
-    ])
-      .then(([wf, ss]) => {
-        setWordFreq(wf);
-        setSpeechStats(ss);
+    setWordFreq(null);
+    setSpeechStats(null);
+    fetchPeriodFiles<{
+      wordFreq: WordFreqFile;
+      speechStats: SpeechStatsFile;
+    }>(activePeriodId, {
+      wordFreq: "party_word_freq.json",
+      speechStats: "party_speech_stats.json",
+    })
+      .then(({ wordFreq, speechStats }) => {
+        setWordFreq(wordFreq);
+        setSpeechStats(speechStats);
         setLoading(false);
       })
       .catch(() => {
@@ -96,7 +98,7 @@ export default function SpeechesPage() {
 
   // Parties in canonical order, excluding fraktionslos
   const parties = sortParties(
-    Object.keys(normalizedWordFreq).filter((p) => p !== "fraktionslos"),
+    Object.keys(normalizedWordFreq).filter((party) => party !== "fraktionslos"),
   );
 
   // Pre-sliced word arrays per party — stable references so WordCloud memo works.

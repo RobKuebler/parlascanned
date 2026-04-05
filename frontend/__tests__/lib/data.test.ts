@@ -1,4 +1,10 @@
-import { stripSoftHyphen, dataUrl, fetchData } from "@/lib/data";
+import {
+  stripSoftHyphen,
+  dataUrl,
+  fetchData,
+  fetchPeriodData,
+  fetchPeriodFiles,
+} from "@/lib/data";
 
 describe("stripSoftHyphen", () => {
   it("removes soft-hyphen and normalizes GRÜNEN party name", () => {
@@ -67,5 +73,64 @@ describe("fetchData", () => {
   it("throws on network error", async () => {
     global.fetch = jest.fn().mockRejectedValue(new Error("Network error"));
     await expect(fetchData("/data/test.json")).rejects.toThrow("Network error");
+  });
+});
+
+describe("fetchPeriodData", () => {
+  const originalFetch = global.fetch;
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+
+  it("loads a period-scoped JSON file", async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ ok: true }),
+    });
+
+    await expect(
+      fetchPeriodData<{ ok: boolean }>("polls.json", 21),
+    ).resolves.toEqual({ ok: true });
+    expect(global.fetch).toHaveBeenCalledWith("/data/21/polls.json");
+  });
+});
+
+describe("fetchPeriodFiles", () => {
+  const originalFetch = global.fetch;
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+
+  it("loads multiple period files into an object keyed by request name", async () => {
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([{ politician_id: 1 }]),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([{ poll_id: 2 }]),
+      });
+
+    const result = await fetchPeriodFiles<{
+      politicians: { politician_id: number }[];
+      polls: { poll_id: number }[];
+    }>(21, {
+      politicians: "politicians.json",
+      polls: "polls.json",
+    });
+
+    expect(result).toEqual({
+      politicians: [{ politician_id: 1 }],
+      polls: [{ poll_id: 2 }],
+    });
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      1,
+      "/data/21/politicians.json",
+    );
+    expect(global.fetch).toHaveBeenNthCalledWith(2, "/data/21/polls.json");
   });
 });

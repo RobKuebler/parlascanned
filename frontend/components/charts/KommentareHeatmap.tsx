@@ -271,7 +271,7 @@ function HeatmapCanvas({
         .attr("stroke", "#e8e8e8")
         .attr("stroke-width", 1);
     }
-  }, [data, eventType, width]);
+  }, [containerRef, data, eventType, width]);
 
   useEffect(() => {
     draw();

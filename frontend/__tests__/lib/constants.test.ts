@@ -1,5 +1,9 @@
 import {
   sortParties,
+  sortPresentParties,
+  normalizePartyName,
+  getPartyColor,
+  getPartyShortLabel,
   truncateText,
   PARTY_COLORS,
   PARTY_ORDER,
@@ -44,6 +48,30 @@ describe("sortParties", () => {
     const input = ["FDP", "SPD"];
     sortParties(input);
     expect(input).toEqual(["FDP", "SPD"]);
+  });
+});
+
+describe("sortPresentParties", () => {
+  it("deduplicates and sorts parties in display order", () => {
+    expect(
+      sortPresentParties(["SPD", "Piraten", "SPD", "CDU/CSU", "fraktionslos"]),
+    ).toEqual(["CDU/CSU", "SPD", "Piraten", "fraktionslos"]);
+  });
+});
+
+describe("party helpers", () => {
+  it("normalizes raw party names", () => {
+    expect(normalizePartyName("BÜNDNIS 90/\u00adDIE GRÜNEN")).toBe("Grüne");
+  });
+
+  it("resolves colors for raw party names", () => {
+    expect(getPartyColor("BÜNDNIS 90/\u00adDIE GRÜNEN")).toBe(
+      PARTY_COLORS.Grüne,
+    );
+  });
+
+  it("resolves short labels for raw party names", () => {
+    expect(getPartyShortLabel("Die Linke")).toBe("Linke");
   });
 });
 

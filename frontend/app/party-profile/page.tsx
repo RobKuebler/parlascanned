@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { usePeriod } from "@/lib/period-context";
-import { fetchData, dataUrl, PartyProfileFile } from "@/lib/data";
+import { fetchPeriodData, PartyProfileFile, stripSoftHyphen } from "@/lib/data";
 import { AgeDistribution } from "@/components/charts/AgeDistribution";
 import { GenderChart } from "@/components/charts/GenderChart";
 import { DeviationHeatmap } from "@/components/charts/DeviationHeatmap";
@@ -15,7 +15,6 @@ import {
   CARD_SHADOW,
   CARD_PADDING,
 } from "@/lib/constants";
-import { stripSoftHyphen } from "@/lib/data";
 import { PAGE_META } from "@/lib/page-meta";
 
 const META = PAGE_META.find((p) => p.href === "/party-profile")!;
@@ -28,7 +27,8 @@ export default function PartyProfilePage() {
   useEffect(() => {
     if (!activePeriodId) return;
     setLoading(true);
-    fetchData<PartyProfileFile>(dataUrl("party_profile.json", activePeriodId))
+    setData(null);
+    fetchPeriodData<PartyProfileFile>("party_profile.json", activePeriodId)
       .then((d) => {
         const norm = stripSoftHyphen;
         setData({
@@ -51,7 +51,10 @@ export default function PartyProfilePage() {
         });
         setLoading(false);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   }, [activePeriodId]);
 
   const parties = data

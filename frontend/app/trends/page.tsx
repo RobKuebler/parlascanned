@@ -2,8 +2,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { usePeriod } from "@/lib/period-context";
 import {
-  fetchData,
-  dataUrl,
+  fetchPeriodData,
   KeywordTimelineFile,
   KeywordTimelinePartiesFile,
 } from "@/lib/data";
@@ -15,7 +14,12 @@ import { ChartSkeleton } from "@/components/ui/ChartSkeleton";
 import { Footer } from "@/components/ui/Footer";
 import { ToggleGroup } from "@/components/ui/ToggleGroup";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { CARD_CLASS, CARD_SHADOW } from "@/lib/constants";
+import {
+  CARD_CLASS,
+  CARD_SHADOW,
+  getPartyColor,
+  getPartyShortLabel,
+} from "@/lib/constants";
 import { PAGE_META } from "@/lib/page-meta";
 
 const META = PAGE_META.find((p) => p.href === "/trends")!;
@@ -31,29 +35,6 @@ const KEYWORD_COLORS = [
 ];
 
 const MAX_KEYWORDS = 6;
-
-// Official party colors — darkened where necessary for chart-line contrast on white
-const PARTY_COLORS: Record<string, string> = {
-  "CDU/CSU": "#1a1a1a",
-  SPD: "#E3000F",
-  AfD: "#009EE0",
-  "BÜNDNIS 90/\u00adDIE GRÜNEN": "#3a8522",
-  "Die Linke": "#BE3075",
-  BSW: "#E05800",
-  FDP: "#B89000",
-  fraktionslos: "#9A9790",
-};
-
-// Short display names for party pills
-const PARTY_SHORT: Record<string, string> = {
-  "CDU/CSU": "CDU/CSU",
-  SPD: "SPD",
-  AfD: "AfD",
-  "BÜNDNIS 90/\u00adDIE GRÜNEN": "Grüne",
-  "Die Linke": "Linke",
-  BSW: "BSW",
-  FDP: "FDP",
-};
 
 interface ActiveKeyword {
   keyword: string;
@@ -97,8 +78,9 @@ export default function ThemenTrendsPage() {
     setPartyData(null);
     setCompKeyword(null);
     setCompQuery("");
-    fetchData<KeywordTimelineFile>(
-      dataUrl("keyword_timeline.json", activePeriodId),
+    fetchPeriodData<KeywordTimelineFile>(
+      "keyword_timeline.json",
+      activePeriodId,
     )
       .then((d) => {
         setData(d);
@@ -114,8 +96,9 @@ export default function ThemenTrendsPage() {
   function ensurePartyData() {
     if (partyData || partyDataLoading || !activePeriodId) return;
     setPartyDataLoading(true);
-    fetchData<KeywordTimelinePartiesFile>(
-      dataUrl("keyword_timeline_parties.json", activePeriodId),
+    fetchPeriodData<KeywordTimelinePartiesFile>(
+      "keyword_timeline_parties.json",
+      activePeriodId,
     )
       .then((d) => {
         setPartyData(d);
@@ -224,8 +207,8 @@ export default function ThemenTrendsPage() {
   const compSeries: KeywordSeries[] = useMemo(() => {
     if (!partyData || !compKeyword) return [];
     return partyData.parties.map((party) => ({
-      keyword: PARTY_SHORT[party] ?? party,
-      color: PARTY_COLORS[party] ?? "#999",
+      keyword: getPartyShortLabel(party),
+      color: getPartyColor(party),
       counts: partyData.by_party[compKeyword]?.[party] ?? [],
     }));
   }, [partyData, compKeyword]);
@@ -241,8 +224,6 @@ export default function ThemenTrendsPage() {
     () => !compKeyword || !partyData || compKeyword in partyData.by_party,
     [partyData, compKeyword],
   );
-
-  const parties = partyData?.parties ?? [];
 
   return (
     <>

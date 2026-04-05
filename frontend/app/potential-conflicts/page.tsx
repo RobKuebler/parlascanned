@@ -1,9 +1,8 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { usePeriod } from "@/lib/period-context";
 import {
-  fetchData,
-  dataUrl,
+  fetchPeriodFiles,
   stripSoftHyphen,
   ConflictsFile,
   Politician,
@@ -16,41 +15,16 @@ import { ChartSkeleton } from "@/components/ui/ChartSkeleton";
 import { Footer } from "@/components/ui/Footer";
 import { PageHeader } from "@/components/ui/PageHeader";
 import {
-  PARTY_ORDER,
+  sortPresentParties,
   CARD_CLASS,
   CARD_SHADOW,
   CARD_PADDING,
 } from "@/lib/constants";
 import { PAGE_META } from "@/lib/page-meta";
+import { formatEuroStat } from "@/lib/format";
+import { useCountUp } from "@/hooks/useCountUp";
 
 const META = PAGE_META.find((p) => p.href === "/potential-conflicts")!;
-
-/** Animates a number from 0 to `target` over ~1.2 s using easeOutExpo. */
-function useCountUp(target: number, active: boolean) {
-  const [display, setDisplay] = useState(0);
-  const rafRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (!active || target === 0) return;
-    let cancelled = false;
-    const duration = 1200;
-    const start = performance.now();
-    const tick = (now: number) => {
-      if (cancelled) return;
-      const t = Math.min((now - start) / duration, 1);
-      const ease = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-      setDisplay(Math.round(ease * target));
-      if (t < 1) rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      cancelled = true;
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    };
-  }, [target, active]);
-
-  return display;
-}
 
 export default function AusschussePage() {
   const { activePeriodId } = usePeriod();
@@ -61,11 +35,16 @@ export default function AusschussePage() {
   useEffect(() => {
     if (!activePeriodId) return;
     setLoading(true);
-    Promise.all([
-      fetchData<ConflictsFile>(dataUrl("conflicts.json", activePeriodId)),
-      fetchData<Politician[]>(dataUrl("politicians.json", activePeriodId)),
-    ])
-      .then(([conflicts, pols]) => {
+    setData(null);
+    setPoliticians([]);
+    fetchPeriodFiles<{
+      conflicts: ConflictsFile;
+      politicians: Politician[];
+    }>(activePeriodId, {
+      conflicts: "conflicts.json",
+      politicians: "politicians.json",
+    })
+      .then(({ conflicts, politicians }) => {
         setData({
           ...conflicts,
           conflicts: conflicts.conflicts.map((c) => ({
@@ -73,33 +52,22 @@ export default function AusschussePage() {
             party: stripSoftHyphen(c.party),
           })),
         });
-        setPoliticians(pols);
+        setPoliticians(politicians);
         setLoading(false);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   }, [activePeriodId]);
 
   const totalIncome = data?.stats.total_income ?? 0;
   const displayIncome = useCountUp(totalIncome, !loading && totalIncome > 0);
-  const formattedIncome =
-    displayIncome >= 1_000_000
-      ? `${(displayIncome / 1_000_000).toLocaleString("de", {
-          minimumFractionDigits: 1,
-          maximumFractionDigits: 1,
-        })} Mio.`
-      : displayIncome.toLocaleString("de");
+  const formattedIncome = formatEuroStat(displayIncome);
 
   // Derive party list from conflicts in PARTY_ORDER
-  const present = data
-    ? new Set(data.conflicts.map((c) => c.party))
-    : new Set<string>();
   const parties = data
-    ? [
-        ...PARTY_ORDER.filter((p) => present.has(p)),
-        ...Array.from(present)
-          .filter((p) => !PARTY_ORDER.includes(p))
-          .sort(),
-      ]
+    ? sortPresentParties(data.conflicts.map((conflict) => conflict.party))
     : [];
 
   return (
