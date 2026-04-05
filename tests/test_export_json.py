@@ -400,13 +400,15 @@ def test_conflicts_shape(run_export):
     assert "affected_committees" in s
     # Pol 1 (Wirtschaft|Recht sidejob) is in Wirtschaftsausschuss → conflict
     assert s["affected_politicians"] >= 1
-    if data["conflicts"]:
-        entry = data["conflicts"][0]
-        assert "politician_id" in entry
-        assert "party" in entry
-        assert "committee_label" in entry
-        assert "matching_topics" in entry
-        assert "conflicted_income" in entry
+    assert len(data["conflicts"]) >= 1, (
+        "Expected at least one conflict from fixture data"
+    )
+    entry = data["conflicts"][0]
+    assert "politician_id" in entry
+    assert "party" in entry
+    assert "committee_label" in entry
+    assert "matching_topics" in entry
+    assert "conflicted_income" in entry
 
 
 def test_main_can_limit_export_to_one_period(tmp_path, monkeypatch):
