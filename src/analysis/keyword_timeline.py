@@ -28,7 +28,7 @@ def compute_keyword_timeline(
     df: pd.DataFrame,
     stopwords: set[str],
     min_count: int = 5,
-    top_n_words: int = 7500,
+    party_breakdown_top_n: int = 5000,
 ) -> dict:
     """Compute per-month term frequencies from a speeches DataFrame.
 
@@ -45,9 +45,10 @@ def compute_keyword_timeline(
     }
 
     Terms in stopwords or with fewer than min_count total mentions are excluded.
-    by_party only includes the top_n_words most frequent terms — rare terms
-    don't have enough per-party data to show meaningful trends, and keeping all
-    terms makes the file too large. Stopwords are always excluded.
+    by_party only covers the party_breakdown_top_n most frequent terms from that
+    filtered set — rare terms lack enough per-party data for meaningful trends,
+    and keeping all of them makes the file too large. Stopwords never appear here
+    because they are dropped during tokenization, not by this parameter.
     fraktionslos is excluded from party breakdown. Rows with datum=None are skipped.
     """
     df = df.dropna(subset=["datum", "text"]).copy()
@@ -95,10 +96,10 @@ def compute_keyword_timeline(
         term: counts for term, counts in term_counts.items() if sum(counts) >= min_count
     }
 
-    # Build per-party counts for the top_n_words most frequent non-stopword terms.
+    # Build per-party counts for the party_breakdown_top_n most frequent terms.
     # Ranking by total count across all months; if fewer terms exist, keep all.
     top_terms = set(
-        sorted(terms, key=lambda t: sum(terms[t]), reverse=True)[:top_n_words]
+        sorted(terms, key=lambda t: sum(terms[t]), reverse=True)[:party_breakdown_top_n]
     )
     by_party = {
         term: {party: list(party_term_counts[party][term]) for party in parties}
