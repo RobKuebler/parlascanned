@@ -10,6 +10,7 @@ import { Footer } from "@/components/ui/Footer";
 import { PageHeader } from "@/components/ui/PageHeader";
 import {
   sortParties,
+  NO_FACTION_LABEL,
   CARD_CLASS,
   CARD_SHADOW,
   CARD_PADDING,
@@ -53,7 +54,9 @@ export default function PartyProfilePage() {
       .catch(console.error);
   }, [activePeriodId]);
 
-  const parties = data ? sortParties(data.parties) : [];
+  const parties = data
+    ? sortParties(data.parties.filter((p) => p !== NO_FACTION_LABEL))
+    : [];
 
   return (
     <>

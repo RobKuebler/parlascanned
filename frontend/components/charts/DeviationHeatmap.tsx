@@ -5,6 +5,7 @@ import { useContainerWidth } from "@/hooks/useContainerWidth";
 import { DeviationPivot } from "@/lib/data";
 import {
   sortParties,
+  NO_FACTION_LABEL,
   PARTY_COLORS,
   FALLBACK_COLOR,
   CHART_FONT_FAMILY,
@@ -120,8 +121,10 @@ export function DeviationHeatmap({ pivot, height = 400 }: Props) {
     // Estimated px per character at 9.5px font (for desktop column sizing).
     const CHAR_W = 5.8;
 
-    // Re-order parties by seat count (PARTY_ORDER), fraktionslos always last.
-    const sortedParties = sortParties(pivot.parties);
+    // Re-order parties by seat count (PARTY_ORDER), excluding fraktionslos.
+    const sortedParties = sortParties(
+      pivot.parties.filter((p) => p !== NO_FACTION_LABEL),
+    );
     const colMap = sortedParties.map((p) => pivot.parties.indexOf(p));
     const sortedPivot: DeviationPivot = {
       categories: pivot.categories,

@@ -215,11 +215,25 @@ def compute_education_degree_pivot(
 ) -> tuple[pd.DataFrame, np.ndarray, np.ndarray, pd.DataFrame]:
     """Build degree-level pivot with %-values and deviation from Bundestag average.
 
+    Uses both the education text and field_title to detect doctorates — a "Dr."
+    title is a reliable signal of Promotion even if the education field omits it.
     'Keine Angabe' and 'Nicht erkennbar' are aggregated into an 'Unbekannt' row.
     """
+    # Prepend field_title so normalize_education_degree sees "Dr." as a Promotion
+    # signal even when the free-text education field doesn't mention it.
+    augmented = pols_df.assign(
+        education_for_degree=lambda df: df.apply(
+            lambda row: (
+                f"{row['field_title']} {row['education']}"
+                if isinstance(row["field_title"], str) and row["field_title"].strip()
+                else row["education"]
+            ),
+            axis=1,
+        )
+    )
     return _build_category_pivot(
-        pols_df,
-        "education",
+        augmented,
+        "education_for_degree",
         normalize_education_degree,
         "degree",
         party_labels_ordered,

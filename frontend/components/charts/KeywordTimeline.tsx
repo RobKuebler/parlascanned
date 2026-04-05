@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useId } from "react";
 import * as d3 from "d3";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
 import { positionTooltip, ChartTooltip } from "@/lib/chart-utils";
@@ -23,6 +23,37 @@ interface Props {
 const MARGIN = { top: 16, right: 24, bottom: 48, left: 48 };
 const HEIGHT = 320;
 
+// Renders the x-axis ticks + year sub-labels onto an existing axis group.
+// Called once on initial draw and again on every zoom event.
+function renderXAxis(
+  axisG: d3.Selection<SVGGElement, unknown, null, undefined>,
+  scale: d3.ScaleTime<number, number>,
+  tickEvery: d3.TimeInterval | null,
+  fmtMonth: (d: Date) => string,
+) {
+  axisG.call(
+    d3
+      .axisBottom(scale)
+      .ticks(tickEvery)
+      .tickFormat((d) => fmtMonth(d as Date)),
+  );
+  axisG.select(".domain").remove();
+  axisG.selectAll("text").style("font-size", "11px").attr("fill", "#9A9790");
+
+  // Remove stale year labels before re-adding so they don't stack on zoom.
+  axisG.selectAll(".year-label").remove();
+  axisG
+    .selectAll<SVGGElement, Date>(".tick")
+    .filter((d, i) => d.getMonth() === 0 || i === 0)
+    .append("text")
+    .attr("class", "year-label")
+    .attr("y", 30)
+    .attr("text-anchor", "middle")
+    .style("font-size", "10px")
+    .attr("fill", "#9A9790")
+    .text((d) => `'${String(d.getFullYear()).slice(2)}`);
+}
+
 /** D3 line chart rendering one line per active keyword over time. */
 export function KeywordTimeline({
   months,
@@ -34,6 +65,8 @@ export function KeywordTimeline({
   const { ref: containerRef, width } = useContainerWidth();
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
+  // Stable unique ID for the SVG clipPath so multiple chart instances don't collide.
+  const clipId = useId().replace(/:/g, "");
 
   useEffect(() => {
     if (
@@ -121,29 +154,8 @@ export function KeywordTimeline({
     const fmtMonth = (d: Date) =>
       isMobile ? String(d.getMonth() + 1) : DE_MONTHS[d.getMonth()];
 
-    const xAxisG = g
-      .append("g")
-      .attr("transform", `translate(0,${innerH})`)
-      .call(
-        d3
-          .axisBottom(xScale)
-          .ticks(tickEvery)
-          .tickFormat((d) => fmtMonth(d as Date)),
-      );
-
-    xAxisG.select(".domain").remove();
-    xAxisG.selectAll("text").style("font-size", "11px").attr("fill", "#9A9790");
-
-    // Year label below January ticks (and the first tick for immediate context)
-    xAxisG
-      .selectAll<SVGGElement, Date>(".tick")
-      .filter((d, i) => d.getMonth() === 0 || i === 0)
-      .append("text")
-      .attr("y", 30)
-      .attr("text-anchor", "middle")
-      .style("font-size", "10px")
-      .attr("fill", "#9A9790")
-      .text((d) => `'${String(d.getFullYear()).slice(2)}`);
+    const xAxisG = g.append("g").attr("transform", `translate(0,${innerH})`);
+    renderXAxis(xAxisG, xScale, tickEvery, fmtMonth);
 
     // Y axis
     g.append("g")
@@ -158,21 +170,34 @@ export function KeywordTimeline({
       .style("font-size", "11px")
       .attr("fill", "#9A9790");
 
-    // Lines — one per active keyword series
-    const line = d3
-      .line<number>()
-      .x((_, i) => xScale(dates[i]))
-      .y((v) => yScale(v))
-      .curve(d3.curveCatmullRom.alpha(0.5));
+    // Clip-path keeps lines inside the chart area during zoom/pan.
+    svg
+      .append("defs")
+      .append("clipPath")
+      .attr("id", clipId)
+      .append("rect")
+      .attr("width", innerW)
+      .attr("height", innerH);
+
+    // Lines — one per active keyword series.
+    // Each path gets a class so zoom can redraw them without a full re-render.
+    const makeLine = (xs: d3.ScaleTime<number, number>) =>
+      d3
+        .line<number>()
+        .x((_, i) => xs(dates[i]))
+        .y((v) => yScale(v))
+        .curve(d3.curveCatmullRom.alpha(0.5));
 
     for (const [si, s] of series.entries()) {
       const values = months.map((_, i) => val(s, i, si));
       g.append("path")
         .datum(values)
+        .attr("class", "series-line")
+        .attr("clip-path", `url(#${clipId})`)
         .attr("fill", "none")
         .attr("stroke", s.color)
         .attr("stroke-width", 2.5)
-        .attr("d", line);
+        .attr("d", makeLine(xScale));
     }
 
     // Crosshair + tooltip on hover
@@ -182,7 +207,8 @@ export function KeywordTimeline({
       .attr("width", innerW)
       .attr("height", innerH)
       .attr("fill", "none")
-      .attr("pointer-events", "all");
+      .attr("pointer-events", "all")
+      .style("cursor", "crosshair");
 
     const crosshair = g
       .append("line")
@@ -195,10 +221,14 @@ export function KeywordTimeline({
 
     const tooltip = d3.select(tooltipRef.current!);
 
+    // currentXScale is updated by the zoom handler so tooltip always uses
+    // the visible (zoomed) scale rather than the original.
+    let currentXScale = xScale;
+
     overlay
       .on("mousemove", (event: MouseEvent) => {
         const [mx] = d3.pointer(event);
-        const hoveredDate = xScale.invert(mx);
+        const hoveredDate = currentXScale.invert(mx);
         const idx = Math.min(bisect(dates, hoveredDate, 1), dates.length - 1);
         // Guard against idx === 0 to avoid reading dates[-1]
         let i: number;
@@ -213,8 +243,8 @@ export function KeywordTimeline({
         }
 
         crosshair
-          .attr("x1", xScale(dates[i]))
-          .attr("x2", xScale(dates[i]))
+          .attr("x1", currentXScale(dates[i]))
+          .attr("x2", currentXScale(dates[i]))
           .attr("opacity", 1);
 
         const rows = series
@@ -234,7 +264,42 @@ export function KeywordTimeline({
         crosshair.attr("opacity", 0);
         tooltip.style("opacity", "0");
       });
-  }, [months, totalWords, series, normalized, seriesWords, width]);
+
+    // X-axis zoom (scroll to zoom, drag to pan, double-click to reset).
+    // Only the x-axis is affected — y scale and y axis stay fixed.
+    const zoom = d3
+      .zoom<SVGSVGElement, unknown>()
+      .scaleExtent([1, 20])
+      .translateExtent([
+        [0, 0],
+        [innerW, innerH],
+      ])
+      .extent([
+        [0, 0],
+        [innerW, innerH],
+      ])
+      .on("zoom", (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
+        // Apply zoom only to x — rescaleY is intentionally omitted.
+        const xZoomed = event.transform.rescaleX(xScale);
+        currentXScale = xZoomed;
+
+        // Update line paths with the zoomed x scale.
+        g.selectAll<SVGPathElement, number[]>(".series-line").attr(
+          "d",
+          makeLine(xZoomed),
+        );
+
+        // Update x axis and year labels.
+        renderXAxis(xAxisG, xZoomed, tickEvery, fmtMonth);
+      });
+
+    svg.call(zoom);
+
+    // Double-click resets to the original view.
+    svg.on("dblclick.zoom", () => {
+      svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity);
+    });
+  }, [months, totalWords, series, normalized, seriesWords, width, clipId]);
 
   return (
     <div ref={containerRef} style={{ position: "relative" }}>

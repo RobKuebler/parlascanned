@@ -285,32 +285,36 @@ export default function VoteMapPage() {
 
       {/* Coalition banner */}
       {activePeriodId && GOVERNING_PARTIES[activePeriodId] && (
-        <div className="flex flex-wrap items-center gap-2 mb-5">
+        <div className="flex flex-col gap-2 mb-5 sm:flex-row sm:items-center">
           <span className="text-[11px] font-bold tracking-[0.12em] uppercase text-[#9A9790]">
             Regierungskoalition
           </span>
-          {GOVERNING_PARTIES[activePeriodId].map((party, i) => (
-            <span key={party} className="flex items-center gap-1.5">
-              {i > 0 && <span className="text-[#C8C5BF] text-[13px]">+</span>}
-              <span
-                className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-semibold border"
-                style={{
-                  background: `${PARTY_COLORS[party] ?? FALLBACK_COLOR}18`,
-                  borderColor: `${PARTY_COLORS[party] ?? FALLBACK_COLOR}55`,
-                  color:
-                    party === "CDU/CSU"
-                      ? "#1a1a1a"
-                      : (PARTY_COLORS[party] ?? FALLBACK_COLOR),
-                }}
-              >
+          <div className="flex items-center gap-1.5">
+            {GOVERNING_PARTIES[activePeriodId].map((party, i) => (
+              <span key={party} className="flex items-center gap-1.5">
+                {i > 0 && <span className="text-[#C8C5BF] text-[13px]">+</span>}
                 <span
-                  className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ background: PARTY_COLORS[party] ?? FALLBACK_COLOR }}
-                />
-                {party}
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-semibold border"
+                  style={{
+                    background: `${PARTY_COLORS[party] ?? FALLBACK_COLOR}18`,
+                    borderColor: `${PARTY_COLORS[party] ?? FALLBACK_COLOR}55`,
+                    color:
+                      party === "CDU/CSU"
+                        ? "#1a1a1a"
+                        : (PARTY_COLORS[party] ?? FALLBACK_COLOR),
+                  }}
+                >
+                  <span
+                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    style={{
+                      background: PARTY_COLORS[party] ?? FALLBACK_COLOR,
+                    }}
+                  />
+                  {party}
+                </span>
               </span>
-            </span>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 

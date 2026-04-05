@@ -1,8 +1,4 @@
 "use client";
-import { useRef, useEffect } from "react";
-import * as d3 from "d3";
-import { useContainerWidth } from "@/hooks/useContainerWidth";
-import { ChartTooltip, drawStackedVerticalBarChart } from "@/lib/chart-utils";
 import { COLOR_SECONDARY } from "@/lib/constants";
 
 interface SexRecord {
@@ -12,12 +8,8 @@ interface SexRecord {
   pct: number;
 }
 
-const GENDERS = ["Männlich", "Weiblich", "Divers"] as const;
-const GENDER_COLORS: Record<string, string> = {
-  Männlich: "#4C9BE8",
-  Weiblich: "#E87E9B",
-  Divers: "#9B59B6",
-};
+const MALE_COLOR = "#4E9A8F"; // teal — avoids stereotypical blue/pink pair
+const FEMALE_COLOR = "#E8973D"; // amber
 
 export function GenderChart({
   data,
@@ -26,53 +18,53 @@ export function GenderChart({
   data: SexRecord[];
   parties: string[];
 }) {
-  const { ref: containerRef, width } = useContainerWidth();
-  const svgRef = useRef<SVGSVGElement>(null);
-  const tooltipRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!width || !svgRef.current) return;
-
-    // Precompute total members per party for absolute counts in tooltip
-    const partyTotals = Object.fromEntries(
-      parties.map((party) => [
-        party,
-        data
-          .filter((r) => r.party_label === party)
-          .reduce((s, r) => s + r.count, 0),
-      ]),
-    );
-
-    drawStackedVerticalBarChart({
-      svgEl: svgRef.current,
-      width,
-      labels: parties,
-      series: GENDERS.map((gender) => ({
-        key: gender,
-        color: GENDER_COLORS[gender],
-        getValue: (party) =>
-          data.find((r) => r.party_label === party && r.geschlecht === gender)
-            ?.count ?? 0,
-      })),
-      tooltipHtml: (party, gender, pct, count) =>
-        `<b>${party}</b><br/>${count} von ${partyTotals[party] ?? 0} Abgeordneten sind ${gender.toLowerCase()} (${pct}%)`,
-      tooltip: d3.select(tooltipRef.current!),
-      container: containerRef.current!,
-    });
-  }, [data, parties, width]);
-
   return (
-    <div ref={containerRef} style={{ position: "relative" }}>
-      {/* overflow: visible so rotated axis labels are never clipped */}
-      <svg
-        ref={svgRef}
-        style={{ display: "block", width: "100%", overflow: "visible" }}
-      />
-      {/* Legend as HTML — always below the SVG, can never overlap axis labels */}
-      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 px-1">
-        {GENDERS.map((gender) => (
+    <div className="flex flex-col gap-3">
+      {parties.map((party) => {
+        const male = data.find(
+          (r) => r.party_label === party && r.geschlecht === "Männlich",
+        );
+        const female = data.find(
+          (r) => r.party_label === party && r.geschlecht === "Weiblich",
+        );
+        const malePct = Math.round(male?.pct ?? 0);
+        const femalePct = Math.round(female?.pct ?? 0);
+
+        return (
+          <div key={party} className="flex items-center gap-3">
+            {/* Party label */}
+            <span
+              className="text-[12px] font-medium shrink-0"
+              style={{ width: 72, color: COLOR_SECONDARY }}
+            >
+              {party}
+            </span>
+
+            {/* Split bar */}
+            <div className="flex-1 flex rounded-full overflow-hidden h-[10px]">
+              <div style={{ width: `${malePct}%`, background: MALE_COLOR }} />
+              <div style={{ flex: 1, background: FEMALE_COLOR }} />
+            </div>
+
+            {/* Percentage labels */}
+            <span
+              className="text-[11px] shrink-0"
+              style={{ width: 80, color: COLOR_SECONDARY }}
+            >
+              {malePct}% / {femalePct}%
+            </span>
+          </div>
+        );
+      })}
+
+      {/* Legend */}
+      <div className="flex gap-4 mt-1 px-1">
+        {[
+          { label: "Männlich", color: MALE_COLOR },
+          { label: "Weiblich", color: FEMALE_COLOR },
+        ].map(({ label, color }) => (
           <span
-            key={gender}
+            key={label}
             className="flex items-center gap-1 text-[11px]"
             style={{ color: COLOR_SECONDARY }}
           >
@@ -82,15 +74,14 @@ export function GenderChart({
                 width: 10,
                 height: 10,
                 borderRadius: 2,
-                background: GENDER_COLORS[gender],
+                background: color,
                 flexShrink: 0,
               }}
             />
-            {gender}
+            {label}
           </span>
         ))}
       </div>
-      <ChartTooltip tooltipRef={tooltipRef} />
     </div>
   );
 }
