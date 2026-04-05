@@ -132,14 +132,14 @@ export function TopTopicsChart({
     }
   }
 
-  // Top 10 topics by total income
+  // Top 15 topics by total income
   const topTopics = Array.from(topicMap.entries())
     .map(([topic, pm]) => ({
       topic,
       total: Array.from(pm.values()).reduce((a, b) => a + b, 0),
     }))
     .sort((a, b) => b.total - a.total)
-    .slice(0, 10)
+    .slice(0, 15)
     .map((x) => x.topic);
 
   const sections: GroupedBarSection[] = topTopics.map((topic) => ({
