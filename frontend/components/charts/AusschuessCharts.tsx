@@ -1,8 +1,10 @@
 "use client";
 
+import { useMemo } from "react";
 import { ConflictEntry, Politician } from "@/lib/data";
 import { PARTY_COLORS, FALLBACK_COLOR } from "@/lib/constants";
 import { formatEur } from "@/components/charts/GroupedPartyBars";
+import { PartyHeatmap } from "./PartyHeatmap";
 
 // ── ConflictRankedList ────────────────────────────────────────────────────────
 
@@ -237,128 +239,55 @@ interface HeatmapProps {
   parties: string[];
 }
 
-/** Topic × party income heatmap. Cells are colored by income relative to max. */
+/**
+ * Topic × party heatmap showing total conflicted income per cell.
+ * Colour intensity = income relative to maximum cell (sequential red scale).
+ * Wraps PartyHeatmap (mode="sequential").
+ */
 export function ConflictHeatmap({ conflicts, parties }: HeatmapProps) {
-  // Aggregate: topic → party → total conflicted income
-  const map = new Map<string, Map<string, number>>();
-  for (const c of conflicts) {
-    for (const topic of c.matching_topics) {
-      if (!map.has(topic)) map.set(topic, new Map());
-      const partyMap = map.get(topic)!;
-      partyMap.set(c.party, (partyMap.get(c.party) ?? 0) + c.conflicted_income);
+  const { rows, cols, data } = useMemo(() => {
+    // Aggregate: topic → party → total conflicted income
+    const map = new Map<string, Map<string, number>>();
+    for (const c of conflicts) {
+      for (const topic of c.matching_topics) {
+        if (!map.has(topic)) map.set(topic, new Map());
+        const pm = map.get(topic)!;
+        pm.set(c.party, (pm.get(c.party) ?? 0) + c.conflicted_income);
+      }
     }
-  }
 
-  // Sort topics by total income across all parties, descending
-  const topics = [...map.entries()]
-    .sort((a, b) => {
-      const sumA = [...a[1].values()].reduce((s, v) => s + v, 0);
-      const sumB = [...b[1].values()].reduce((s, v) => s + v, 0);
-      return sumB - sumA;
-    })
-    .map(([topic]) => topic);
+    // Sort topics by total income descending
+    const rows = [...map.entries()]
+      .sort((a, b) => {
+        const sumA = [...a[1].values()].reduce((s, v) => s + v, 0);
+        const sumB = [...b[1].values()].reduce((s, v) => s + v, 0);
+        return sumB - sumA;
+      })
+      .map(([topic]) => topic);
 
-  const maxCell = Math.max(
-    ...[...map.values()].flatMap((m) => [...m.values()]),
-    1,
-  );
+    // Only include parties that have at least one conflict
+    const cols = parties.filter((p) => [...map.values()].some((m) => m.has(p)));
 
-  // Interpolate white → red based on income intensity
-  function cellBg(income: number): string {
-    const t = income / maxCell;
-    const r = Math.round(255 - t * (255 - 192));
-    const g = Math.round(255 - t * (255 - 57));
-    const b = Math.round(255 - t * (255 - 43));
-    return `rgb(${r},${g},${b})`;
-  }
+    const data = rows.map((topic) =>
+      cols.map((party) => map.get(topic)?.get(party) ?? null),
+    );
 
-  // Only show parties that appear in at least one conflict
-  const activeParties = parties.filter((p) =>
-    [...map.values()].some((m) => m.has(p)),
-  );
+    return { rows, cols, data };
+  }, [conflicts, parties]);
 
   return (
-    <div style={{ overflowX: "auto" }}>
-      <table
-        style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}
-      >
-        <thead>
-          <tr>
-            <th
-              style={{
-                textAlign: "left",
-                padding: "4px 8px",
-                fontSize: 10,
-                fontWeight: 700,
-                color: "#9A9790",
-              }}
-            >
-              Themenfeld
-            </th>
-            {activeParties.map((p) => (
-              <th
-                key={p}
-                style={{
-                  padding: "4px 6px",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: p === "FDP" ? "#999" : (PARTY_COLORS[p] ?? "#333"),
-                  textAlign: "center",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {p}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {topics.map((topic, i) => (
-            <tr
-              key={topic}
-              style={{ background: i % 2 === 1 ? "#fafaf8" : "transparent" }}
-            >
-              <td
-                style={{
-                  padding: "5px 8px",
-                  fontWeight: 600,
-                  color: "#171613",
-                  whiteSpace: "nowrap",
-                  fontSize: 12,
-                }}
-              >
-                {topic}
-              </td>
-              {activeParties.map((party) => {
-                const income = map.get(topic)?.get(party);
-                return (
-                  <td
-                    key={party}
-                    style={{ padding: "3px 6px", textAlign: "center" }}
-                  >
-                    {income ? (
-                      <div
-                        style={{
-                          background: cellBg(income),
-                          borderRadius: 4,
-                          padding: "2px 6px",
-                          fontSize: 11,
-                          fontWeight: income > maxCell * 0.5 ? 700 : 400,
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {formatEur(income)}
-                      </div>
-                    ) : (
-                      <span style={{ color: "#ddd", fontSize: 11 }}>-</span>
-                    )}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <PartyHeatmap
+      rows={rows}
+      cols={cols}
+      data={data}
+      mode="sequential"
+      seqColorLow="#fff8f6"
+      seqColorHigh="#c0392b"
+      cellLabel={formatEur}
+      tooltipHtml={(row, col, val) =>
+        `<b>${col}</b><br/>${row}<br/>${formatEur(val)}`
+      }
+      height={Math.max(200, rows.length * 36 + 60)}
+    />
   );
 }
