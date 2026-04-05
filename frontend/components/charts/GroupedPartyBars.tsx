@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { PARTY_COLORS, FALLBACK_COLOR, sortParties } from "@/lib/constants";
 import { HorizontalBarRow } from "@/components/charts/HorizontalBarRow";
+import { ToggleGroup } from "@/components/ui/ToggleGroup";
 
 /** Format a number as EUR with K/M suffix. */
 export function formatEur(n: number): string {
@@ -111,31 +112,15 @@ export function GroupedPartyBars({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
       {allowGroupToggle && (
-        <div style={{ display: "flex", gap: 2, marginBottom: 12 }}>
-          {(["section", "party"] as const).map((mode) => {
-            const label = mode === "section" ? "Rubrik" : "Partei";
-            const active = groupBy === mode;
-            return (
-              <button
-                key={mode}
-                onClick={() => setGroupBy(mode)}
-                style={{
-                  padding: "4px 10px",
-                  minHeight: 28,
-                  fontSize: 12,
-                  fontWeight: active ? 700 : 400,
-                  color: active ? "#171613" : "#9A9790",
-                  background: active ? "#F0EEE9" : "transparent",
-                  border: "none",
-                  borderRadius: 6,
-                  cursor: "pointer",
-                  lineHeight: 1,
-                }}
-              >
-                {label}
-              </button>
-            );
-          })}
+        <div style={{ marginBottom: 12 }}>
+          <ToggleGroup
+            options={[
+              { value: "section", label: "Rubrik" },
+              { value: "party", label: "Partei" },
+            ]}
+            value={groupBy}
+            onChange={setGroupBy}
+          />
         </div>
       )}
       {renderSections.map((section) => {

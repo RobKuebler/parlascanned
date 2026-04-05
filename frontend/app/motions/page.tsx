@@ -13,6 +13,7 @@ import {
 } from "@/lib/data";
 import { WordCloud } from "@/components/charts/WordCloud";
 import { SpeakerBars } from "@/components/charts/SpeakerBars";
+import { ToggleGroup } from "@/components/ui/ToggleGroup";
 import {
   KeywordTimeline,
   KeywordSeries,
@@ -145,21 +146,12 @@ export default function MotionsPage() {
       <PageHeader {...META} />
 
       {/* Tab toggle */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {TABS.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className="px-4 py-1.5 rounded-full text-[13px] transition-colors"
-            style={{
-              background: activeTab === tab ? "#1E1B5E" : "#F0EEE9",
-              color: activeTab === tab ? "#fff" : "#9A9790",
-              fontWeight: activeTab === tab ? 600 : 400,
-            }}
-          >
-            {TAB_LABELS[tab]}
-          </button>
-        ))}
+      <div className="mb-6">
+        <ToggleGroup
+          options={TABS.map((t) => ({ value: t, label: TAB_LABELS[t] }))}
+          value={activeTab}
+          onChange={setActiveTab}
+        />
       </div>
 
       {unavailable ? (

@@ -13,6 +13,7 @@ import {
 } from "@/components/charts/KeywordTimeline";
 import { ChartSkeleton } from "@/components/ui/ChartSkeleton";
 import { Footer } from "@/components/ui/Footer";
+import { ToggleGroup } from "@/components/ui/ToggleGroup";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CARD_CLASS, CARD_SHADOW } from "@/lib/constants";
 import { PAGE_META } from "@/lib/page-meta";
@@ -255,6 +256,16 @@ export default function ThemenTrendsPage() {
         <ChartSkeleton height={360} />
       ) : (
         <div className="flex flex-col gap-5">
+          {/* Shared normalization toggle — applies to both charts */}
+          <ToggleGroup
+            options={[
+              { value: "per1000", label: "Pro 1.000 Wörter" },
+              { value: "absolute", label: "Absolut" },
+            ]}
+            value={normalized ? "per1000" : "absolute"}
+            onChange={(v) => setNormalized(v === "per1000")}
+          />
+
           {/* ── Chart A: Keyword-Suche mit Partei-Filter ── */}
           <div
             className={`${CARD_CLASS} p-5 md:p-6 flex flex-col gap-5`}
@@ -329,28 +340,6 @@ export default function ThemenTrendsPage() {
                   ))}
                 </div>
               )}
-            </div>
-
-            {/* Toggle absolute / normalized */}
-            <div className="flex justify-end gap-1">
-              {(["Pro 1.000 Wörter", "Absolut"] as const).map((label) => {
-                const isNorm = label === "Pro 1.000 Wörter";
-                const active = normalized === isNorm;
-                return (
-                  <button
-                    key={label}
-                    onClick={() => setNormalized(isNorm)}
-                    className="px-3 py-1 rounded-full text-[12px] transition-colors"
-                    style={{
-                      background: active ? "#1E1B5E" : "#F0EEE9",
-                      color: active ? "#fff" : "#9A9790",
-                      fontWeight: active ? 600 : 400,
-                    }}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
             </div>
 
             {/* Chart A or empty state */}
@@ -430,28 +419,6 @@ export default function ThemenTrendsPage() {
                   {compNotFound}
                 </p>
               )}
-            </div>
-
-            {/* Toggle absolute / normalized (shared state) */}
-            <div className="flex justify-end gap-1">
-              {(["Pro 1.000 Wörter", "Absolut"] as const).map((label) => {
-                const isNorm = label === "Pro 1.000 Wörter";
-                const active = normalized === isNorm;
-                return (
-                  <button
-                    key={label}
-                    onClick={() => setNormalized(isNorm)}
-                    className="px-3 py-1 rounded-full text-[12px] transition-colors"
-                    style={{
-                      background: active ? "#1E1B5E" : "#F0EEE9",
-                      color: active ? "#fff" : "#9A9790",
-                      fontWeight: active ? 600 : 400,
-                    }}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
             </div>
 
             {/* Chart B content */}

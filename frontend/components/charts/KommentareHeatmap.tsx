@@ -16,6 +16,7 @@ import {
   CHART_FONT_FAMILY,
 } from "@/lib/constants";
 import { ChartTooltip, positionTooltip } from "@/lib/chart-utils";
+import { ToggleGroup } from "@/components/ui/ToggleGroup";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
 import type { KommentareData } from "@/lib/data";
 
@@ -290,30 +291,12 @@ export default function KommentareHeatmap({ data }: Props) {
   return (
     <div>
       {/* Tabs */}
-      <div
-        style={{ display: "flex", gap: 4, marginBottom: 16, flexWrap: "wrap" }}
-      >
-        {EVENT_TABS.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            style={{
-              padding: "4px 12px",
-              borderRadius: 20,
-              border: "1.5px solid",
-              borderColor: activeTab === tab ? "#1E1B5E" : "#E3E0DA",
-              background: activeTab === tab ? "#1E1B5E" : "white",
-              color: activeTab === tab ? "white" : "#6B6760",
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: "pointer",
-              fontFamily: CHART_FONT_FAMILY,
-              transition: "all 0.15s",
-            }}
-          >
-            {EVENT_LABEL[tab]}
-          </button>
-        ))}
+      <div style={{ marginBottom: 16 }}>
+        <ToggleGroup
+          options={EVENT_TABS.map((t) => ({ value: t, label: EVENT_LABEL[t] }))}
+          value={activeTab}
+          onChange={setActiveTab}
+        />
       </div>
 
       {/* Axis legend */}
