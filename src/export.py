@@ -155,7 +155,14 @@ def export_period(
         return False
 
     pols_df = df_politicians.assign(
-        party_label=lambda df: df["party"].str.replace("\xad", "", regex=False)
+        party=lambda df: df["party"].str.replace(
+            "Die Linke.", "Die Linke", regex=False
+        ),
+        party_label=lambda df: (
+            df["party"]
+            .str.replace("Die Linke.", "Die Linke", regex=False)
+            .str.replace("\xad", "", regex=False)
+        ),
     )
 
     # ── politicians ───────────────────────────────────────────────────────────

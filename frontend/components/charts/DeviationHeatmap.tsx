@@ -25,19 +25,20 @@ export function DeviationHeatmap({ pivot, height = 400 }: Props) {
     );
     const colMap = sortedCols.map((p) => pivot.parties.indexOf(p));
 
-    const rows = pivot.categories;
-    const data = pivot.dev.map((row) => colMap.map((ci) => row[ci] ?? null));
+    const categoryIndices = pivot.categories
+      .map((cat, idx) => ({ cat, idx }))
+      .filter(({ cat }) => cat !== "Unbekannt");
+    const rows = categoryIndices.map(({ cat }) => cat);
+    const data = categoryIndices.map(({ idx }) =>
+      colMap.map((ci) => pivot.dev[idx][ci] ?? null),
+    );
     const partyTotals = colMap.map((ci) => pivot.party_totals[ci] ?? 0);
 
     // Compute colour domain from 95th percentile of absolute deviations,
-    // excluding "Unbekannt" rows and parties with fewer than 10 seats so
-    // statistically noisy cells don't distort the palette.
+    // excluding parties with fewer than 10 seats so statistically noisy
+    // cells don't distort the palette.
     const allDevs = data
-      .flatMap((row, catIdx) =>
-        pivot.categories[catIdx] === "Unbekannt"
-          ? []
-          : row.filter((_, pi) => partyTotals[pi] >= 10),
-      )
+      .flatMap((row) => row.filter((_, pi) => partyTotals[pi] >= 10))
       .filter((v): v is number => v !== null);
 
     const absDevs = allDevs.map(Math.abs).sort((a, b) => a - b);
