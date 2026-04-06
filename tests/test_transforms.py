@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from src.analysis.education_clusters import has_doctorate
 from src.analysis.transforms import (
     compute_age_df,
     compute_cohesion,
@@ -222,3 +223,38 @@ def test_title_counts_columns():
     df = make_pols_title([("SPD", "Dr.")])
     result = compute_title_counts(df)
     assert {"party_label", "titel", "count", "pct"} <= set(result.columns)
+
+
+# ─── has_doctorate ─────────────────────────────────────────────────────────────
+
+
+def test_has_doctorate_from_field_title():
+    assert has_doctorate({"field_title": "Dr.", "occupation": None, "education": None})
+
+
+def test_has_doctorate_from_occupation():
+    assert has_doctorate(
+        {"field_title": None, "occupation": "Promovierter Biologe", "education": None}
+    )
+
+
+def test_has_doctorate_from_education():
+    assert has_doctorate(
+        {"field_title": None, "occupation": None, "education": "Promotion in Physik"}
+    )
+
+
+def test_has_doctorate_false_when_no_signal():
+    assert not has_doctorate(
+        {"field_title": None, "occupation": "Jurist", "education": "Diplom"}
+    )
+
+
+def test_has_doctorate_false_for_empty_fields():
+    assert not has_doctorate({"field_title": "", "occupation": "", "education": ""})
+
+
+def test_has_doctorate_missing_keys():
+    """Row with only some keys — get() must not raise."""
+    assert has_doctorate({"field_title": "Dr."})
+    assert not has_doctorate({})

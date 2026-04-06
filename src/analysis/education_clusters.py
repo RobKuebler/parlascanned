@@ -409,3 +409,14 @@ def normalize_education_degree(edu: str | None) -> str:
     "Nicht erkennbar" if no degree keyword matches.
     """
     return match_rules(edu, _DEGREE_RULES, default="Nicht erkennbar")
+
+
+def has_doctorate(row) -> bool:
+    """Return True if any available field signals a doctorate.
+
+    Checks field_title, occupation, and education against the existing
+    doctorate keywords in _DEGREE_RULES by reusing normalize_education_degree.
+    """
+    fields = [row.get("field_title"), row.get("occupation"), row.get("education")]
+    combined = " ".join(f for f in fields if isinstance(f, str) and f.strip())
+    return normalize_education_degree(combined) == "Promotion"
