@@ -48,27 +48,28 @@ def fetch_periods_df() -> pd.DataFrame:
     for i, p in enumerate(legislatures):
         label = p["label"]
         computed = i + FIRST_BUNDESTAG_NUMBER
-        # Parse the period number from the label (e.g. "20. Wahlperiode (2021-2025)")
-        # rather than relying purely on the sorted index. If the API ever adds entries
-        # before WP16, the index-based fallback would silently produce wrong numbers.
+        # Parse the period number from the label.
+        # Two known formats from the abgeordnetenwatch API:
+        #   "20. Wahlperiode (2021-2025)"  → extract leading ordinal
+        #   "Bundestag 2021 - 2025"        → derive from start year (WP16 = 2005, +4/WP)
+        # Fall back to index if neither matches, warning only on a true mismatch.
         label_match = re.search(r"^(\d+)\.", label)
+        year_match = re.search(r"Bundestag\s+(\d{4})", label)
         if label_match:
             bundestag_number = int(label_match.group(1))
-            if bundestag_number != computed:
-                log.warning(
-                    "bundestag_number mismatch for %r: label implies %d, "
-                    "index implies %d. Using label.",
-                    label,
-                    bundestag_number,
-                    computed,
-                )
+        elif year_match:
+            start_year = int(year_match.group(1))
+            bundestag_number = (start_year - 2005) // 4 + FIRST_BUNDESTAG_NUMBER
         else:
-            log.warning(
-                "Could not parse period number from label %r; "
-                "using index-based fallback.",
-                label,
-            )
             bundestag_number = computed
+        if bundestag_number != computed:
+            log.warning(
+                "bundestag_number mismatch for %r: label implies %d, "
+                "index implies %d. Using label.",
+                label,
+                bundestag_number,
+                computed,
+            )
         rows.append(
             {
                 "period_id": p["id"],
