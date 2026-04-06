@@ -4,7 +4,11 @@ from datetime import UTC, date, datetime
 import numpy as np
 import pandas as pd
 
-from .education_clusters import normalize_education_degree, normalize_education_field
+from .education_clusters import (
+    has_doctorate,
+    normalize_education_degree,
+    normalize_education_field,
+)
 from .occupation_clusters import normalize_occupation
 
 
@@ -250,10 +254,8 @@ def compute_title_counts(pols_df: pd.DataFrame) -> pd.DataFrame:
     """
     return (
         pols_df.assign(
-            titel=lambda df: df["field_title"].apply(
-                lambda t: (
-                    "Mit Titel" if isinstance(t, str) and t.strip() else "Ohne Titel"
-                )
+            titel=lambda df: df.apply(
+                lambda row: "Mit Titel" if has_doctorate(row) else "Ohne Titel", axis=1
             )
         )
         .groupby(["party_label", "titel"])

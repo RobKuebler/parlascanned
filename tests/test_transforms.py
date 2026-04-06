@@ -194,11 +194,18 @@ def test_sex_counts_columns():
 
 
 def make_pols_title(rows: list[tuple]) -> pd.DataFrame:
-    return pd.DataFrame(rows, columns=["party_label", "field_title"])
+    return pd.DataFrame(
+        rows, columns=["party_label", "field_title", "occupation", "education"]
+    )
 
 
 def test_title_counts_mit_titel():
-    df = make_pols_title([("SPD", "Dr."), ("SPD", "Prof.")])
+    df = make_pols_title(
+        [
+            ("SPD", "Dr.", None, None),
+            ("SPD", None, "Promovierter Biologe", None),
+        ]
+    )
     result = compute_title_counts(df)
     mit = result[(result["party_label"] == "SPD") & (result["titel"] == "Mit Titel")]
     assert mit["count"].iloc[0] == 2
@@ -206,21 +213,29 @@ def test_title_counts_mit_titel():
 
 def test_title_counts_ohne_titel_for_null_and_empty():
     """None and empty string both count as 'Ohne Titel'."""
-    df = make_pols_title([("CDU", None), ("CDU", ""), ("CDU", "  ")])
+    df = make_pols_title(
+        [("CDU", None, None, None), ("CDU", "", None, None), ("CDU", "  ", None, None)]
+    )
     result = compute_title_counts(df)
     ohne = result[(result["party_label"] == "CDU") & (result["titel"] == "Ohne Titel")]
     assert ohne["count"].iloc[0] == 3
 
 
 def test_title_counts_percentages_sum_to_100():
-    df = make_pols_title([("SPD", "Dr."), ("SPD", None), ("SPD", None)])
+    df = make_pols_title(
+        [
+            ("SPD", "Dr.", None, None),
+            ("SPD", None, None, None),
+            ("SPD", None, None, None),
+        ]
+    )
     result = compute_title_counts(df)
     total_pct = result[result["party_label"] == "SPD"]["pct"].sum()
     assert total_pct == pytest.approx(100.0, abs=0.2)
 
 
 def test_title_counts_columns():
-    df = make_pols_title([("SPD", "Dr.")])
+    df = make_pols_title([("SPD", "Dr.", None, None)])
     result = compute_title_counts(df)
     assert {"party_label", "titel", "count", "pct"} <= set(result.columns)
 
