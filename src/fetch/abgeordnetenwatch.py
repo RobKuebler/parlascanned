@@ -51,25 +51,32 @@ def fetch_periods_df() -> pd.DataFrame:
         # Parse the period number from the label.
         # Two known formats from the abgeordnetenwatch API:
         #   "20. Wahlperiode (2021-2025)"  → extract leading ordinal
-        #   "Bundestag 2021 - 2025"        → derive from start year (WP16 = 2005, +4/WP)
-        # Fall back to index if neither matches, warning only on a true mismatch.
-        label_match = re.search(r"^(\d+)\.", label)
-        year_match = re.search(r"Bundestag\s+(\d{4})", label)
-        if label_match:
-            bundestag_number = int(label_match.group(1))
-        elif year_match:
-            start_year = int(year_match.group(1))
-            bundestag_number = (start_year - 2005) // 4 + FIRST_BUNDESTAG_NUMBER
-        else:
+        #   "Bundestag 2021 - 2025"        → no embedded ordinal; use index
+        # The list is sorted by start_date and WP16 is the first entry, so
+        # computed = i + FIRST_BUNDESTAG_NUMBER is always correct unless the
+        # API adds entries before WP16 (which would shift all indices).
+        # Never derive the number from start years — that breaks after Neuwahlen.
+        ordinal_match = re.search(r"^(\d+)\.", label)
+        year_only_format = bool(re.search(r"^Bundestag\s+\d{4}", label))
+        if ordinal_match:
+            bundestag_number = int(ordinal_match.group(1))
+            if bundestag_number != computed:
+                log.warning(
+                    "bundestag_number mismatch for %r: label implies %d, "
+                    "index implies %d. Using label.",
+                    label,
+                    bundestag_number,
+                    computed,
+                )
+        elif year_only_format:
+            # Recognised format without an ordinal — index is authoritative.
             bundestag_number = computed
-        if bundestag_number != computed:
+        else:
             log.warning(
-                "bundestag_number mismatch for %r: label implies %d, "
-                "index implies %d. Using label.",
+                "Unrecognised period label format %r; using index-based fallback.",
                 label,
-                bundestag_number,
-                computed,
             )
+            bundestag_number = computed
         rows.append(
             {
                 "period_id": p["id"],
