@@ -34,14 +34,14 @@ jobs:
         run: uv sync --frozen --group train
 
       - name: Cache plenary protocol XMLs
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: data/*/plenary_protocols/
           key: plenary-protocols-${{ github.run_id }}
           restore-keys: plenary-protocols-
 
       - name: Cache Drucksachen JSON
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: data/*/drucksachen_*.json
           key: drucksachen-${{ github.run_id }}

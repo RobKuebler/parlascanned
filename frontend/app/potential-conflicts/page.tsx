@@ -26,6 +26,105 @@ import { useCountUp } from "@/hooks/useCountUp";
 
 const META = PAGE_META.find((p) => p.href === "/potential-conflicts")!;
 
+function MethodologyNote() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div
+      className={`${CARD_CLASS} mt-5 overflow-hidden`}
+      style={{ boxShadow: CARD_SHADOW }}
+    >
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left"
+        aria-expanded={open}
+      >
+        <span className="font-bold text-[13px]" style={{ color: "#1E1B5E" }}>
+          Wie werden Interessenkonflikte erkannt?
+        </span>
+        <span
+          className="text-[18px] leading-none select-none"
+          style={{
+            color: "#9A9790",
+            transform: open ? "rotate(270deg)" : "rotate(90deg)",
+            transition: "transform 0.2s",
+            display: "inline-block",
+          }}
+          aria-hidden
+        >
+          ›
+        </span>
+      </button>
+
+      {open && (
+        <div
+          className="px-4 pb-4 flex flex-col gap-3"
+          style={{ borderTop: "1px solid #F0EFEB" }}
+        >
+          <p className="text-[12px] text-[#5A5856] pt-3 leading-relaxed">
+            Ein Interessenkonflikt wird erkannt, wenn ein Abgeordneter{" "}
+            <strong>Nebeneinkommen in einem Themenfeld</strong> erzielt{" "}
+            <em>und gleichzeitig</em> Mitglied eines{" "}
+            <strong>Ausschusses mit demselben Themenfeld</strong> ist. Die
+            Themenfelder stammen direkt aus der API von abgeordnetenwatch (Feld{" "}
+            <code className="text-[11px] bg-[#F5F4F0] px-1 rounded">
+              field_topics
+            </code>
+            ), das sowohl Nebentätigkeiten als auch Ausschüsse mit Schlagwörtern
+            versieht.
+          </p>
+
+          <div
+            className="rounded-xl p-3 text-[12px] leading-relaxed"
+            style={{ background: "#FDF8F0", color: "#5A5856" }}
+          >
+            <p className="font-semibold mb-1" style={{ color: "#B8600A" }}>
+              Einschränkungen
+            </p>
+            <ul className="list-disc list-inside flex flex-col gap-1.5">
+              <li>
+                <strong>
+                  Breite Themenfelder können zu Fehlzuordnungen führen.
+                </strong>{" "}
+                Schlagwörter wie &bdquo;Wirtschaft&ldquo; oder &bdquo;Staat und
+                Verwaltung&ldquo; sind sehr weit gefasst und können Treffer
+                erzeugen, die keinen echten Interessenkonflikt darstellen – z.
+                {"\u00a0"}B. ein Rechtsanwalt im Innenausschuss, der nichts mit
+                Innenrecht zu tun hat.
+              </li>
+              <li>
+                <strong>Keine Zeitraumüberschneidung prüfbar.</strong>{" "}
+                Ausschussmitgliedschaften enthalten in den Quelldaten keinen
+                Zeitraum. Ein Nebeneinkommen aus der ersten Jahreshälfte kann
+                daher rechnerisch mit einem Ausschussmandat aus der zweiten
+                Jahreshälfte zusammentreffen, ohne dass ein tatsächlicher
+                Überschneidungszeitraum existiert.
+              </li>
+              <li>
+                <strong>Einkommen wird pro Ausschuss ausgewiesen.</strong> Sitzt
+                ein Abgeordneter in mehreren betroffenen Ausschüssen, wird
+                dasselbe Einkommen mehrfach gezeigt – jede Zeile steht für ein
+                eigenständiges Mandat.
+              </li>
+              <li>
+                <strong>Nur Nebentätigkeiten mit Themenfeld-Angabe.</strong>{" "}
+                Tätigkeiten ohne abgeordnetenwatch-Themenfeld-Tag werden nicht
+                erfasst, auch wenn inhaltlich eine Überschneidung bestehen
+                könnte.
+              </li>
+            </ul>
+          </div>
+
+          <p className="text-[11px]" style={{ color: "#9A9790" }}>
+            Diese Seite zeigt <em>potenzielle</em> Interessenkonflikte auf Basis
+            öffentlich gemeldeter Daten. Sie ersetzt keine rechtliche oder
+            parlamentarische Bewertung.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AusschussePage() {
   const { activePeriodId } = usePeriod();
   const [data, setData] = useState<ConflictsFile | null>(null);
@@ -275,6 +374,9 @@ export default function AusschussePage() {
           Keine Interessenkonflikte für diese Wahlperiode gefunden.
         </p>
       ) : null}
+
+      {/* Methodology note */}
+      <MethodologyNote />
 
       <Footer />
     </>
