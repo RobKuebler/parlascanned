@@ -25,9 +25,6 @@ log = logging.getLogger(__name__)
 BASE_URL = "https://www.abgeordnetenwatch.de/api/v2"
 BUNDESTAG_PARLIAMENT_ID = 5
 PAGE_SIZE = 1000  # API supports up to 1000 results per page
-# The abgeordnetenwatch API only covers Bundestag history from 2005 onward;
-# the first legislature in the API is the 16th Bundestag (2005-2009).
-FIRST_BUNDESTAG_NUMBER = 16
 
 
 @functools.lru_cache(maxsize=1)
@@ -42,45 +39,31 @@ def fetch_periods_df() -> pd.DataFrame:
         "parliament-periods",
         params={"parliament": BUNDESTAG_PARLIAMENT_ID},
     )
-    legislatures = [p for p in raw if p["type"] == "legislature"]
-    legislatures.sort(key=lambda p: p["start_date_period"])
+    # Sort chronologically so unnumbered active periods always come last.
+    legislatures = sorted(
+        [p for p in raw if p["type"] == "legislature"],
+        key=lambda p: p["start_date_period"],
+    )
     rows = []
-    for i, p in enumerate(legislatures):
-        label = p["label"]
-        computed = i + FIRST_BUNDESTAG_NUMBER
-        # Parse the period number from the label.
-        # Two known formats from the abgeordnetenwatch API:
-        #   "20. Wahlperiode (2021-2025)"  → extract leading ordinal
-        #   "Bundestag 2021 - 2025"        → no embedded ordinal; use index
-        # The list is sorted by start_date and WP16 is the first entry, so
-        # computed = i + FIRST_BUNDESTAG_NUMBER is always correct unless the
-        # API adds entries before WP16 (which would shift all indices).
-        # Never derive the number from start years — that breaks after Neuwahlen.
-        ordinal_match = re.search(r"^(\d+)\.", label)
-        year_only_format = bool(re.search(r"^Bundestag\s+\d{4}", label))
-        if ordinal_match:
-            bundestag_number = int(ordinal_match.group(1))
-            if bundestag_number != computed:
-                log.warning(
-                    "bundestag_number mismatch for %r: label implies %d, "
-                    "index implies %d. Using label.",
-                    label,
-                    bundestag_number,
-                    computed,
-                )
-        elif year_only_format:
-            # Recognised format without an ordinal — index is authoritative.
-            bundestag_number = computed
+    for p in legislatures:
+        # The abgeordnetenwatch_url ends with the Bundestag number for past periods,
+        # e.g. "…/bundestag/20" → 20. The currently active period has no trailing
+        # number ("…/bundestag"), so derive it as the previous period's number + 1.
+        url_match = re.search(r"/(\d+)$", p.get("abgeordnetenwatch_url", ""))
+        if url_match:
+            bundestag_number = int(url_match.group(1))
+        elif rows:
+            bundestag_number = rows[-1]["bundestag_number"] + 1
         else:
             log.warning(
-                "Unrecognised period label format %r; using index-based fallback.",
-                label,
+                "Cannot determine Bundestag number for first period %r; skipping.",
+                p.get("label"),
             )
-            bundestag_number = computed
+            continue
         rows.append(
             {
                 "period_id": p["id"],
-                "label": label,
+                "label": p["label"],
                 "bundestag_number": bundestag_number,
                 "start_date": p["start_date_period"],
                 "end_date": p["end_date_period"],

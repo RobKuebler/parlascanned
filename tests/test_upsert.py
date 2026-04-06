@@ -12,11 +12,20 @@ from src.fetch.abgeordnetenwatch import BASE_URL, _parse_sidejob_dates
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 
 
-def _legislature(period_id, label, start, end):
+def _legislature(period_id, label, start, end, bundestag_number: int | None = None):
+    # Derive abgeordnetenwatch_url from bundestag_number when provided (mimics
+    # the real API response).  Without it the URL has no trailing number, which
+    # represents the currently active period.
+    url = (
+        f"https://www.abgeordnetenwatch.de/bundestag/{bundestag_number}"
+        if bundestag_number is not None
+        else "https://www.abgeordnetenwatch.de/bundestag"
+    )
     return {
         "id": period_id,
         "type": "legislature",
         "label": label,
+        "abgeordnetenwatch_url": url,
         "start_date_period": start,
         "end_date_period": end,
     }
@@ -230,11 +239,12 @@ def test_refresh_periods_filters_out_elections(requests_mock):
     _mock_periods(
         requests_mock,
         [
-            _legislature(111, "16. WP", "2000-01-01", "2099-12-31"),
+            _legislature(111, "Bundestag 2000 - 2099", "2000-01-01", "2099-12-31", 16),
             {
                 "id": 999,
                 "type": "election",
                 "label": "Wahl 2005",
+                "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/wahl-2005",
                 "start_date_period": "2005-09-18",
                 "end_date_period": "2005-09-18",
             },
@@ -247,13 +257,14 @@ def test_refresh_periods_filters_out_elections(requests_mock):
 
 
 def test_refresh_periods_bundestag_number_assigned_correctly(requests_mock):
-    """bundestag_number starts at FIRST_BUNDESTAG_NUMBER=16, increments chronologically."""
+    """bundestag_number is read from abgeordnetenwatch_url; active period uses previous+1."""
     _mock_periods(
         requests_mock,
         [
-            _legislature(111, "16. WP", "2005-10-18", "2009-10-27"),
-            _legislature(222, "17. WP", "2009-10-27", "2013-10-22"),
-            _legislature(333, "18. WP", "2013-10-22", "2099-12-31"),
+            _legislature(111, "Bundestag 2005 - 2009", "2005-10-18", "2009-10-27", 16),
+            _legislature(222, "Bundestag 2009 - 2013", "2009-10-27", "2013-10-22", 17),
+            # Active period: no number in URL → derived as 17+1=18
+            _legislature(333, "Bundestag 2013 - 2099", "2013-10-22", "2099-12-31"),
         ],
     )
 
@@ -264,18 +275,20 @@ def test_refresh_periods_bundestag_number_assigned_correctly(requests_mock):
 def test_refresh_periods_label_aktuell(requests_mock):
     """Label aus der API wird korrekt zurückgegeben."""
     _mock_periods(
-        requests_mock, [_legislature(111, "16. WP Neu", "2005-10-18", "2099-12-31")]
+        requests_mock,
+        [_legislature(111, "Bundestag 2005 - 2099", "2005-10-18", "2099-12-31", 16)],
     )
 
     df = src.fetch.abgeordnetenwatch.fetch_periods_df()
     assert len(df) == 1
-    assert df.iloc[0]["label"] == "16. WP Neu"
+    assert df.iloc[0]["label"] == "Bundestag 2005 - 2099"
 
 
 def test_refresh_periods_period_id_stays_integer(requests_mock):
     """period_id und bundestag_number müssen int64 bleiben."""
     _mock_periods(
-        requests_mock, [_legislature(111, "16. WP", "2005-10-18", "2099-12-31")]
+        requests_mock,
+        [_legislature(111, "Bundestag 2005 - 2009", "2005-10-18", "2099-12-31", 16)],
     )
 
     df = src.fetch.abgeordnetenwatch.fetch_periods_df()
@@ -496,7 +509,8 @@ def test_refresh_periods_null_end_date_does_not_crash(requests_mock):
             {
                 "id": 111,
                 "type": "legislature",
-                "label": "20. WP",
+                "label": "Bundestag 2021 - 2025",
+                "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20",
                 "start_date_period": "2021-10-26",
                 "end_date_period": None,  # ongoing — no end date yet
             }
@@ -504,7 +518,7 @@ def test_refresh_periods_null_end_date_does_not_crash(requests_mock):
     )
 
     period = src.fetch.abgeordnetenwatch.refresh_periods()
-    assert period == 20  # parsed from label "20. WP"
+    assert period == 20  # parsed from abgeordnetenwatch_url
 
 
 def test_refresh_periods_recess_falls_back_to_latest(requests_mock):
@@ -519,14 +533,16 @@ def test_refresh_periods_recess_falls_back_to_latest(requests_mock):
             {
                 "id": 111,
                 "type": "legislature",
-                "label": "19. WP",
+                "label": "Bundestag 2017 - 2021",
+                "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/19",
                 "start_date_period": "2017-10-24",
                 "end_date_period": "2021-10-25",  # fully in the past
             },
             {
                 "id": 222,
                 "type": "legislature",
-                "label": "20. WP",
+                "label": "Bundestag 2021 - 2025",
+                "abgeordnetenwatch_url": "https://www.abgeordnetenwatch.de/bundestag/20",
                 "start_date_period": "2021-10-26",
                 "end_date_period": "2025-10-28",  # also in the past — simulates recess
             },
