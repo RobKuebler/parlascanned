@@ -12,7 +12,7 @@ export const BUNDESTAG_SEATS: Record<number, PartySeats[]> = {
     { party: "SPD", seats: 120 },
     { party: "CDU/CSU", seats: 208 },
     { party: "AfD", seats: 150 },
-    { party: "fraktionslos", seats: 3 },
+    { party: "fraktionslos", seats: 3 }, // as of 2026-04-06 (changes throughout the period)
   ],
 };
 
