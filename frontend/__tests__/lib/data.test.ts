@@ -7,12 +7,24 @@ import {
 } from "@/lib/data";
 
 describe("stripSoftHyphen", () => {
-  it("removes soft-hyphen and normalizes GRÜNEN party name", () => {
-    expect(stripSoftHyphen("BÜNDNIS 90/\u00adDIE GRÜNEN")).toBe("Grüne");
-    expect(stripSoftHyphen("BÜNDNIS 90/DIE GRÜNEN")).toBe("Grüne");
+  it("strips soft-hyphen but keeps canonical GRÜNEN name", () => {
+    expect(stripSoftHyphen("BÜNDNIS 90/\u00adDIE GRÜNEN")).toBe(
+      "BÜNDNIS 90/DIE GRÜNEN",
+    );
+    expect(stripSoftHyphen("BÜNDNIS 90/DIE GRÜNEN")).toBe(
+      "BÜNDNIS 90/DIE GRÜNEN",
+    );
   });
-  it("leaves strings without soft-hyphen unchanged", () => {
+  it("normalizes Die Linke. to Die Linke", () => {
+    expect(stripSoftHyphen("Die Linke.")).toBe("Die Linke");
+  });
+  it("normalizes DIE LINKE to Die Linke", () => {
+    expect(stripSoftHyphen("DIE LINKE")).toBe("Die Linke");
+  });
+  it("leaves canonical names unchanged", () => {
     expect(stripSoftHyphen("SPD")).toBe("SPD");
+    expect(stripSoftHyphen("Die Linke")).toBe("Die Linke");
+    expect(stripSoftHyphen("CDU/CSU")).toBe("CDU/CSU");
   });
   it("handles empty string", () => {
     expect(stripSoftHyphen("")).toBe("");
