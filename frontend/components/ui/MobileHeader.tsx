@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { PeriodSelector } from "./PeriodSelector";
 import { Logo } from "./Logo";
+import { BundestagSeats } from "./BundestagSeats";
 import { NAV_ITEMS } from "@/lib/nav-items";
 
 /** Fixed top header for mobile — shows logo, period selector, and hamburger menu. Hidden on md+. */
@@ -107,6 +108,12 @@ export function MobileHeader() {
               </Link>
             );
           })}
+        </div>
+
+        {/* Seat distribution widget */}
+        <div className="mx-4 mt-3 mb-2 h-px bg-white/10" />
+        <div className="px-4 pb-4">
+          <BundestagSeats />
         </div>
       </nav>
     </>
