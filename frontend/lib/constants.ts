@@ -16,6 +16,13 @@ export const PARTY_COLORS: Record<string, string> = {
 
 export const FALLBACK_COLOR = "#888888";
 
+// Display-safe accent colors for party pills — used for text and border only.
+// Some party colors (e.g. FDP yellow) are unreadable on light backgrounds.
+// The small dot in each pill still uses the original PARTY_COLORS for brand recognition.
+export const PARTY_PILL_ACCENT_COLORS: Partial<Record<string, string>> = {
+  FDP: "#7A5F00", // dark amber (~5.2:1 on white) — legible while staying in FDP's yellow family
+};
+
 // Preferred display order (most seats first).
 export const PARTY_ORDER = [
   "CDU/CSU",

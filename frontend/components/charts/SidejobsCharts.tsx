@@ -2,11 +2,8 @@
 import { PARTY_COLORS, FALLBACK_COLOR, sortParties } from "@/lib/constants";
 import { SidejobRecord, stripSoftHyphen } from "@/lib/data";
 import { HorizontalBarRow } from "@/components/charts/HorizontalBarRow";
-import {
-  GroupedPartyBars,
-  GroupedBarSection,
-  formatEur,
-} from "@/components/charts/GroupedPartyBars";
+import { formatEur } from "@/components/charts/GroupedPartyBars";
+import { PartyHeatmap } from "@/components/charts/PartyHeatmap";
 
 // ── Chart 1: Sidejobs per party ───────────────────────────────────────────────
 
@@ -54,8 +51,8 @@ export function IncomeByPartyChart({
 }
 
 // ── Chart 2: Income by category ───────────────────────────────────────────────
-// Category as section header, one bar per party below.
-// Bottom "Gesamt" section sums all categories per party.
+// Heatmap: rows = categories sorted by total income, cols = parties.
+// Log colour scale so mid-range categories stay visible.
 
 export function IncomeByCategoryChart({
   jobs,
@@ -83,35 +80,39 @@ export function IncomeByCategoryChart({
     .sort((a, b) => b.total - a.total)
     .map((x) => x.cat);
 
-  // Totals per party across all categories (for Gesamt section)
-  const totalByParty: Record<string, number> = {};
-  for (const [, pm] of catMap)
-    for (const [party, income] of pm)
-      totalByParty[party] = (totalByParty[party] ?? 0) + income;
+  const sortedParties = sortParties(parties);
 
-  const sections: GroupedBarSection[] = [
-    ...sortedCats.map((cat) => ({
-      label: cat,
-      partyValues: Object.fromEntries(catMap.get(cat)!),
-    })),
-    {
-      label: "Gesamt alle Kategorien",
-      partyValues: totalByParty,
-      variant: "total" as const,
-    },
-  ];
+  const data = sortedCats.map((cat) => {
+    const pm = catMap.get(cat)!;
+    return sortedParties.map((party) => pm.get(party) ?? null);
+  });
+
+  const cellLabel = (v: number) => {
+    if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`;
+    if (v >= 1_000) return `${Math.round(v / 1_000)}k`;
+    return `${Math.round(v)}`;
+  };
 
   return (
-    <GroupedPartyBars
-      sections={sections}
-      parties={sortParties(parties)}
-      allowGroupToggle
+    <PartyHeatmap
+      rows={sortedCats}
+      cols={sortedParties}
+      data={data}
+      mode="sequential"
+      seqScale="log"
+      cellLabel={cellLabel}
+      tooltipHtml={(row, col, val) =>
+        `<b>${col}</b><br/>${row}<br/>${formatEur(val)}`
+      }
+      rowHeight={28}
     />
   );
 }
 
 // ── Chart 3: Top topics ───────────────────────────────────────────────────────
-// Topic as section header, one bar per party below.
+// Heatmap: rows = top 15 topics by total income, cols = parties.
+// Colour uses quantile ranking so right-skewed income distributions don't
+// wash out mid-range cells.
 
 export function TopTopicsChart({
   jobs,
@@ -132,7 +133,7 @@ export function TopTopicsChart({
     }
   }
 
-  // Top 15 topics by total income
+  // Top 15 topics by total income across all parties
   const topTopics = Array.from(topicMap.entries())
     .map(([topic, pm]) => ({
       topic,
@@ -142,16 +143,33 @@ export function TopTopicsChart({
     .slice(0, 15)
     .map((x) => x.topic);
 
-  const sections: GroupedBarSection[] = topTopics.map((topic) => ({
-    label: topic,
-    partyValues: Object.fromEntries(topicMap.get(topic)!),
-  }));
+  const sortedParties = sortParties(parties);
+
+  const data = topTopics.map((topic) => {
+    const pm = topicMap.get(topic)!;
+    // null = no income from this topic for this party (cell left blank)
+    return sortedParties.map((party) => pm.get(party) ?? null);
+  });
+
+  // Abbreviated label for inside the cell (shown only when wide enough)
+  const cellLabel = (v: number) => {
+    if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`;
+    if (v >= 1_000) return `${Math.round(v / 1_000)}k`;
+    return `${Math.round(v)}`;
+  };
 
   return (
-    <GroupedPartyBars
-      sections={sections}
-      parties={sortParties(parties)}
-      allowGroupToggle
+    <PartyHeatmap
+      rows={topTopics}
+      cols={sortedParties}
+      data={data}
+      mode="sequential"
+      seqScale="log"
+      cellLabel={cellLabel}
+      tooltipHtml={(row, col, val) =>
+        `<b>${col}</b><br/>${row}<br/>${formatEur(val)}`
+      }
+      rowHeight={28}
     />
   );
 }
@@ -213,15 +231,27 @@ export function TopEarnersChart({
 }
 
 // ── Chart 5: Sidejob coverage per party ──────────────────────────────────────
-// Rubric as section header, one bar per party below.
+// 100% stacked horizontal bar. Each party is one bar with three segments:
+//   full party colour  = Nebenverdienst ≥ 1.000 €/Monat
+//   party colour @60%  = Nebentätigkeit ohne Einkommensangabe
+//   light grey         = Kein Nebenjob
+// Parties sorted by "income" share descending.
 
-const COVERAGE_LABELS = {
-  income: "Nebenverdienst ≥ 1.000 €/Monat",
-  no_amount: "Nebentätigkeit ohne Einkommensangabe",
-  none: "Kein Nebenjob",
-} as const;
+const LEGEND_ITEMS = [
+  { label: "Nebenverdienst ≥ 1.000 €/Monat", style: "full" },
+  { label: "Ohne Einkommensangabe", style: "faded" },
+  { label: "Kein Nebenjob", style: "none" },
+] as const;
 
-type CoverageKey = keyof typeof COVERAGE_LABELS;
+// Swatch colours used only in the legend (party-neutral).
+const LEGEND_DEMO_COLOR = "#6B7280";
+
+type CoverageSegment = {
+  income: number;
+  no_amount: number;
+  none: number;
+  total: number;
+};
 
 export function SidejobCoverageByPartyChart({
   jobs,
@@ -237,8 +267,7 @@ export function SidejobCoverageByPartyChart({
     if (j.income_level !== null) withIncome.add(j.politician_id);
   }
 
-  type Counts = Record<CoverageKey, number> & { total: number };
-  const byParty = new Map<string, Counts>();
+  const byParty = new Map<string, CoverageSegment>();
   for (const pol of politicians) {
     const party = stripSoftHyphen(pol.party);
     if (party === "fraktionslos") continue;
@@ -251,31 +280,158 @@ export function SidejobCoverageByPartyChart({
     else c.none++;
   }
 
-  const parties = sortParties(Array.from(byParty.keys()));
-  const keys: CoverageKey[] = ["income", "no_amount", "none"];
-
-  const sections: GroupedBarSection[] = keys.map((key) => ({
-    label: COVERAGE_LABELS[key],
-    partyValues: Object.fromEntries(
-      parties.map((party) => {
-        const counts = byParty.get(party)!;
-        const pct =
-          counts.total > 0 ? Math.round((counts[key] / counts.total) * 100) : 0;
-        return [party, pct];
-      }),
-    ),
-    max: 100,
-    formatValue: (v) => `${v}%`,
-    barColor: (party) =>
-      key === "none"
-        ? "#D0CEC8"
-        : key === "no_amount"
-          ? (PARTY_COLORS[party] ?? FALLBACK_COLOR) + "99"
-          : (PARTY_COLORS[party] ?? FALLBACK_COLOR),
-    valueWidth: 36,
-  }));
+  // Sort parties by income share descending so the main metric drives the ranking.
+  const parties = Array.from(byParty.keys()).sort((a, b) => {
+    const ca = byParty.get(a)!,
+      cb = byParty.get(b)!;
+    return (
+      cb.income / Math.max(cb.total, 1) - ca.income / Math.max(ca.total, 1)
+    );
+  });
 
   return (
-    <GroupedPartyBars sections={sections} parties={parties} allowGroupToggle />
+    <div>
+      {/* Legend */}
+      <div
+        style={{
+          display: "flex",
+          gap: "6px 18px",
+          marginBottom: 14,
+          flexWrap: "wrap",
+        }}
+      >
+        {LEGEND_ITEMS.map(({ label, style }) => {
+          const bg =
+            style === "full"
+              ? LEGEND_DEMO_COLOR
+              : style === "faded"
+                ? LEGEND_DEMO_COLOR + "99"
+                : "#D0CEC8";
+          return (
+            <span
+              key={label}
+              style={{ display: "inline-flex", alignItems: "center", gap: 5 }}
+            >
+              <span
+                style={{
+                  width: 11,
+                  height: 11,
+                  borderRadius: 2,
+                  background: bg,
+                  flexShrink: 0,
+                  display: "inline-block",
+                }}
+              />
+              <span style={{ fontSize: 11, color: "#9A9790" }}>{label}</span>
+            </span>
+          );
+        })}
+      </div>
+
+      {/* Bars */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {parties.map((party) => {
+          const c = byParty.get(party)!;
+          const total = Math.max(c.total, 1);
+          const incomePct = (c.income / total) * 100;
+          const noAmountPct = (c.no_amount / total) * 100;
+          const nonePct = (c.none / total) * 100;
+          const partyColor = PARTY_COLORS[party] ?? FALLBACK_COLOR;
+
+          return (
+            <div
+              key={party}
+              style={{ display: "flex", alignItems: "center", gap: 8 }}
+            >
+              <span
+                style={{
+                  width: 72,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  textAlign: "right",
+                  flexShrink: 0,
+                  color: "#555",
+                }}
+              >
+                {party}
+              </span>
+              <div
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  height: 24,
+                  borderRadius: 4,
+                  overflow: "hidden",
+                }}
+              >
+                <CoverageSegment
+                  pct={incomePct}
+                  bg={partyColor}
+                  textColor="#fff"
+                  title={`Nebenverdienst: ${c.income} von ${c.total} (${Math.round(incomePct)}%)`}
+                />
+                <CoverageSegment
+                  pct={noAmountPct}
+                  bg={partyColor + "99"}
+                  textColor="#fff"
+                  title={`Ohne Einkommensangabe: ${c.no_amount} von ${c.total} (${Math.round(noAmountPct)}%)`}
+                />
+                {/* "none" takes remaining space to avoid sub-pixel rounding gaps */}
+                <CoverageSegment
+                  pct={nonePct}
+                  bg="#D0CEC8"
+                  textColor="#888"
+                  title={`Kein Nebenjob: ${c.none} von ${c.total} (${Math.round(nonePct)}%)`}
+                  flex1
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/** One coloured segment inside a stacked bar. */
+function CoverageSegment({
+  pct,
+  bg,
+  textColor,
+  title,
+  flex1 = false,
+}: {
+  pct: number;
+  bg: string;
+  textColor: string;
+  title: string;
+  flex1?: boolean;
+}) {
+  if (pct <= 0 && !flex1) return null;
+  return (
+    <div
+      style={{
+        ...(flex1 ? { flex: 1 } : { width: `${pct}%` }),
+        background: bg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        overflow: "hidden",
+      }}
+      title={title}
+    >
+      {pct >= 10 && (
+        <span
+          style={{
+            fontSize: 9,
+            fontWeight: 700,
+            color: textColor,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {Math.round(pct)}%
+        </span>
+      )}
+    </div>
   );
 }

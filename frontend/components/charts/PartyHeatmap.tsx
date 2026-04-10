@@ -66,9 +66,19 @@ export interface PartyHeatmapProps {
   /**
    * Sequential mode — percentile used to cap the colour domain so a single
    * outlier cell doesn't wash out all others. Values above the cap get the
-   * max colour. Default: 0.95.
+   * max colour. Default: 0.95. Only used when seqScale is "linear".
    */
   seqQuantile?: number;
+
+  /**
+   * Sequential mode — how values are mapped to colours.
+   * "linear":   linear scale capped at seqQuantile percentile (default).
+   * "quantile": rank-based; colour reflects percentile position.
+   *             Makes ~half of all cells dark by definition.
+   * "log":      logarithmic mapping. Most cells stay light; only true outliers
+   *             go dark. Best for right-skewed distributions like income.
+   */
+  seqScale?: "linear" | "quantile" | "log";
 
   /**
    * Optional text rendered inside each non-empty cell.
@@ -82,7 +92,13 @@ export interface PartyHeatmapProps {
    */
   tooltipHtml?: (row: string, col: string, value: number) => string;
 
-  /** Hint height used to derive per-row height. Default 400. */
+  /**
+   * Fixed height for every data row in px. When set, the SVG grows with the
+   * number of rows and `height` is ignored. Prefer this over `height`.
+   */
+  rowHeight?: number;
+
+  /** Hint height used to derive per-row height. Default 400. Ignored when rowHeight is set. */
   height?: number;
 }
 
@@ -95,8 +111,10 @@ export function PartyHeatmap({
   seqColorLow = SEQ_DEFAULT_LOW,
   seqColorHigh = SEQ_DEFAULT_HIGH,
   seqQuantile = 0.95,
+  seqScale = "linear",
   cellLabel,
   tooltipHtml,
+  rowHeight,
   height = 400,
 }: PartyHeatmapProps) {
   const { ref: containerRef, width } = useContainerWidth();
@@ -124,11 +142,14 @@ export function PartyHeatmap({
     const colW = Math.max(minColW, Math.floor((width - ML - MR) / cols.length));
     const iW = colW * cols.length;
 
-    // Row height: derived from hint height, clamped to [22, 48] px.
-    const ROW_H = Math.min(
-      48,
-      Math.max(22, Math.floor((height - HEADER_H) / rows.length)),
-    );
+    // Row height: fixed when rowHeight is provided; otherwise derived from the
+    // hint height and clamped to [22, 48] px.
+    const ROW_H = rowHeight
+      ? rowHeight
+      : Math.min(
+          48,
+          Math.max(22, Math.floor((height - HEADER_H) / rows.length)),
+        );
     const bodyHeight = ROW_H * rows.length;
     const totalH = HEADER_H + bodyHeight;
 
@@ -153,6 +174,28 @@ export function PartyHeatmap({
         .range([DIVERGING_LOW, DIVERGING_MID, DIVERGING_HIGH])
         .clamp(true);
       colorFn = scale;
+    } else if (seqScale === "quantile") {
+      // Rank-based mapping: colour reflects percentile position, not raw value.
+      // Prevents a handful of large outliers from washing out the rest of the scale.
+      const sorted = [...allValues].sort((a, b) => a - b);
+      const interpolator = d3.interpolateRgb(seqColorLow, seqColorHigh);
+      colorFn = (v: number) => {
+        if (sorted.length <= 1) return interpolator(0);
+        const rank = d3.bisectLeft(sorted, v) / (sorted.length - 1);
+        return interpolator(Math.min(rank, 1));
+      };
+    } else if (seqScale === "log") {
+      // Log mapping: compresses the high end so only true outliers go dark.
+      // Most cells stay light; differences at the low end are visible.
+      const minVal = Math.max(1, Math.min(...allValues));
+      const maxVal = Math.max(...allValues, 2);
+      const logMin = Math.log(minVal);
+      const logMax = Math.log(maxVal);
+      const interpolator = d3.interpolateRgb(seqColorLow, seqColorHigh);
+      colorFn = (v: number) => {
+        const t = (Math.log(Math.max(v, minVal)) - logMin) / (logMax - logMin);
+        return interpolator(Math.min(Math.max(t, 0), 1));
+      };
     } else {
       const sorted = [...allValues].sort((a, b) => a - b);
       const q = seqQuantile ?? 0.95;
@@ -326,8 +369,10 @@ export function PartyHeatmap({
     seqColorLow,
     seqColorHigh,
     seqQuantile,
+    seqScale,
     cellLabel,
     tooltipHtml,
+    rowHeight,
     height,
     width,
     containerRef,

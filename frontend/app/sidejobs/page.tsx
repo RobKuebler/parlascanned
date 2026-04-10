@@ -278,9 +278,9 @@ export default function SidejobsPage() {
             </h2>
             <p className="text-[12px] text-[#9A9790] mb-4">
               Aufteilung der Nebeneinkünfte nach den offiziellen Kategorien der
-              Bundestagsverwaltung. Die Balken sind nach Fraktionszugehörigkeit
-              eingefärbt, sodass erkennbar ist, welche Partei in welchem Bereich
-              besonders aktiv ist.
+              Bundestagsverwaltung. Dunklere Felder stehen für höhere Einnahmen
+              — die Farbskala ist logarithmisch, damit auch mittlere Beträge
+              sichtbar bleiben.
             </p>
             <IncomeByCategoryChart jobs={sjData.jobs} parties={parties} />
           </section>
@@ -297,9 +297,11 @@ export default function SidejobsPage() {
             </h2>
             <p className="text-[12px] text-[#9A9790] mb-4">
               Die 15 Themenfelder mit dem höchsten ausgewiesenen
-              Gesamteinkommen. Die Kategorisierung basiert auf KI-gestützter
-              Analyse der Tätigkeitsbeschreibungen. Da ein Job mehreren
-              Themenfeldern zugeordnet sein kann, überschneiden sich die Summen.
+              Gesamteinkommen. Dunklere Felder stehen für höhere Einnahmen — die
+              Farbskala ist logarithmisch, damit auch mittlere Beträge sichtbar
+              bleiben. Die Kategorisierung basiert auf KI-gestützter Analyse der
+              Tätigkeitsbeschreibungen. Da ein Job mehreren Themenfeldern
+              zugeordnet sein kann, überschneiden sich die Summen.
             </p>
             <TopTopicsChart jobs={sjData.jobs} parties={parties} />
           </section>

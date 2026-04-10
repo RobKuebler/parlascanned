@@ -177,11 +177,6 @@ export function SummaryBars({ data }: { data: KommentareData }) {
   ];
 
   return (
-    <GroupedPartyBars
-      sections={sections}
-      parties={parties}
-      barHeight={8}
-      allowGroupToggle
-    />
+    <GroupedPartyBars sections={sections} parties={parties} barHeight={8} />
   );
 }

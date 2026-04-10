@@ -20,6 +20,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import {
   GOVERNING_PARTIES,
   PARTY_COLORS,
+  PARTY_PILL_ACCENT_COLORS,
   FALLBACK_COLOR,
   VOTE_META,
   CARD_CLASS,
@@ -234,11 +235,11 @@ export default function VoteMapPage() {
                   className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-semibold border"
                   style={{
                     background: `${PARTY_COLORS[party] ?? FALLBACK_COLOR}18`,
-                    borderColor: `${PARTY_COLORS[party] ?? FALLBACK_COLOR}55`,
+                    borderColor: `${PARTY_PILL_ACCENT_COLORS[party] ?? PARTY_COLORS[party] ?? FALLBACK_COLOR}55`,
                     color:
-                      party === "CDU/CSU"
-                        ? "#1a1a1a"
-                        : (PARTY_COLORS[party] ?? FALLBACK_COLOR),
+                      PARTY_PILL_ACCENT_COLORS[party] ??
+                      PARTY_COLORS[party] ??
+                      FALLBACK_COLOR,
                   }}
                 >
                   <span
