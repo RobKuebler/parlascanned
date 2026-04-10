@@ -41,3 +41,9 @@ it("renders nothing when period is null", () => {
   const { container } = withPeriod(null, <BundestagSeats />);
   expect(container.firstChild).toBeNull();
 });
+
+it("does not show fraktionslos in the legend", () => {
+  withPeriod(21, <BundestagSeats />);
+  // fraktionslos has 3 seats — "3" must not appear in the legend
+  expect(screen.queryByText("3")).not.toBeInTheDocument();
+});
