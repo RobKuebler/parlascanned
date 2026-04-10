@@ -498,6 +498,37 @@ def test_export_party_word_freq_normalizes_gruenen_soft_hyphen(tmp_path, monkeyp
     assert "BÜNDNIS 90/DIE GRÜNEN" in data
 
 
+def test_export_party_speech_stats_normalizes_linke_dot(tmp_path, monkeypatch):
+    """Die Linke. in fraktion column must be renamed to Die Linke in party_speech_stats.json."""
+    period = 20
+    (tmp_path / "data" / str(period)).mkdir(parents=True)
+    (tmp_path / "out" / str(period)).mkdir(parents=True)
+
+    csv_path = tmp_path / "data" / str(period) / "party_speech_stats.csv"
+    csv_path.write_text(
+        "fraktion,redner_id,vorname,nachname,anzahl_reden,wortanzahl_gesamt\n"
+        "Die Linke.,42,Jan,Müller,10,5000\n"
+        "SPD,99,Anna,Schmidt,15,7000\n",
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr("src.export.DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr("src.export.OUTPUT_DIR", tmp_path / "out")
+
+    from src.export import export_party_speech_stats
+
+    export_party_speech_stats(period)
+
+    records = json.loads(
+        (tmp_path / "out" / str(period) / "party_speech_stats.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    fraktionen = {r["fraktion"] for r in records}
+    assert "Die Linke." not in fraktionen
+    assert "Die Linke" in fraktionen
+
+
 def test_main_can_limit_export_to_one_period(tmp_path, monkeypatch):
     import src.export as ej
 

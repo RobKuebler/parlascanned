@@ -313,6 +313,7 @@ def export_party_speech_stats(period: int) -> None:
     Output: frontend/public/data/{period}/party_speech_stats.json
     Format: [{fraktion, redner_id, vorname, nachname, anzahl_reden,
     wortanzahl_gesamt}, ...]
+    Fraktion variants (e.g. "Die Linke.") are renamed to canonical names.
     """
     path = DATA_DIR / str(period) / "party_speech_stats.csv"
     if not path.exists():
@@ -321,7 +322,7 @@ def export_party_speech_stats(period: int) -> None:
             period,
         )
         return
-    df = pd.read_csv(path)
+    df = _canonicalize_fraktion(pd.read_csv(path))
     _write(
         _period_output_dir(period) / "party_speech_stats.json",
         df.to_dict(orient="records"),
