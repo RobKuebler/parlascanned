@@ -411,6 +411,93 @@ def test_conflicts_shape(run_export):
     assert "conflicted_income" in entry
 
 
+def test_export_party_word_freq_normalizes_linke_dot(tmp_path, monkeypatch):
+    """Die Linke. rows must be renamed to Die Linke in party_word_freq.json."""
+    period = 20
+    (tmp_path / "data" / str(period)).mkdir(parents=True)
+    (tmp_path / "out" / str(period)).mkdir(parents=True)
+
+    csv_path = tmp_path / "data" / str(period) / "party_word_freq.csv"
+    csv_path.write_text(
+        "fraktion,wort,tfidf,rang\nDie Linke.,sozial,0.4,1\nSPD,arbeit,0.6,1\n",
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr("src.export.DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr("src.export.OUTPUT_DIR", tmp_path / "out")
+
+    from src.export import export_party_word_freq
+
+    export_party_word_freq(period)
+
+    data = json.loads(
+        (tmp_path / "out" / str(period) / "party_word_freq.json").read_text()
+    )
+    assert "Die Linke." not in data
+    assert "Die Linke" in data
+    assert data["Die Linke"][0]["wort"] == "sozial"
+
+
+def test_export_party_word_freq_merges_linke_variants(tmp_path, monkeypatch):
+    """When Die Linke and Die Linke. both appear, rows are merged; duplicates keep highest tfidf."""
+    period = 20
+    (tmp_path / "data" / str(period)).mkdir(parents=True)
+    (tmp_path / "out" / str(period)).mkdir(parents=True)
+
+    csv_path = tmp_path / "data" / str(period) / "party_word_freq.csv"
+    csv_path.write_text(
+        "fraktion,wort,tfidf,rang\n"
+        "Die Linke,migration,0.5,1\n"
+        "Die Linke.,migration,0.3,1\n"
+        "Die Linke.,sozial,0.4,1\n",
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr("src.export.DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr("src.export.OUTPUT_DIR", tmp_path / "out")
+
+    from src.export import export_party_word_freq
+
+    export_party_word_freq(period)
+
+    data = json.loads(
+        (tmp_path / "out" / str(period) / "party_word_freq.json").read_text()
+    )
+    assert set(data.keys()) == {"Die Linke"}
+    words = {w["wort"] for w in data["Die Linke"]}
+    assert words == {"migration", "sozial"}
+    migration_entry = next(w for w in data["Die Linke"] if w["wort"] == "migration")
+    assert migration_entry["tfidf"] == pytest.approx(0.5)
+
+
+def test_export_party_word_freq_normalizes_gruenen_soft_hyphen(tmp_path, monkeypatch):
+    """BÜNDNIS 90 with soft-hyphen must be normalized to the version without."""
+    period = 20
+    (tmp_path / "data" / str(period)).mkdir(parents=True)
+    (tmp_path / "out" / str(period)).mkdir(parents=True)
+
+    csv_path = tmp_path / "data" / str(period) / "party_word_freq.csv"
+    csv_path.write_text(
+        "fraktion,wort,tfidf,rang\nBÜNDNIS 90/\xadDIE GRÜNEN,klima,0.7,1\n",
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr("src.export.DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr("src.export.OUTPUT_DIR", tmp_path / "out")
+
+    from src.export import export_party_word_freq
+
+    export_party_word_freq(period)
+
+    data = json.loads(
+        (tmp_path / "out" / str(period) / "party_word_freq.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert "BÜNDNIS 90/\xadDIE GRÜNEN" not in data
+    assert "BÜNDNIS 90/DIE GRÜNEN" in data
+
+
 def test_main_can_limit_export_to_one_period(tmp_path, monkeypatch):
     import src.export as ej
 

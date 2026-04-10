@@ -32,6 +32,39 @@ from .paths import DATA_DIR, FRONTEND_DATA_DIR, OUTPUTS_DIR
 
 log = logging.getLogger(__name__)
 
+# Maps all known fraktion name variants to canonical forms.
+# Applied in speech exports before grouping so JSON keys are always canonical.
+FRAKTION_CANONICAL_MAP: dict[str, str] = {
+    "Die Linke.": "Die Linke",
+    "DIE LINKE": "Die Linke",
+    "BÜNDNIS 90/\xadDIE GRÜNEN": "BÜNDNIS 90/DIE GRÜNEN",
+}
+
+
+def _canonicalize_fraktion(df: pd.DataFrame) -> pd.DataFrame:
+    """Rename fraktion column variants to canonical names and deduplicate.
+
+    Applies FRAKTION_CANONICAL_MAP to the 'fraktion' column. When a 'tfidf'
+    column is present, also deduplicates all (fraktion, wort) pairs across the
+    entire DataFrame by keeping the row with the highest tfidf. This covers the
+    case where two variant names for the same party (e.g. 'Die Linke' and
+    'Die Linke.') both appear in the same CSV — after renaming they would
+    produce duplicate keys. Note: the dedup applies unconditionally to all
+    parties, so the input CSV must not contain intentional duplicate
+    (fraktion, wort) rows with distinct meaning.
+    For CSVs without a 'tfidf' column the rename is applied without deduplication.
+    """
+    df = df.copy()
+    df["fraktion"] = df["fraktion"].replace(FRAKTION_CANONICAL_MAP)
+    if "tfidf" in df.columns:
+        df = (
+            df.sort_values("tfidf", ascending=False)
+            .drop_duplicates(subset=["fraktion", "wort"])
+            .reset_index(drop=True)
+        )
+    return df
+
+
 OUTPUT_DIR = FRONTEND_DATA_DIR
 
 
@@ -258,6 +291,7 @@ def export_party_word_freq(period: int) -> None:
 
     Output: frontend/public/data/{period}/party_word_freq.json
     Format: {fraktion: [{wort, tfidf, rang}, ...], ...}
+    Fraktion variants (e.g. "Die Linke.") are merged into canonical names.
     """
     path = DATA_DIR / str(period) / "party_word_freq.csv"
     if not path.exists():
@@ -266,7 +300,7 @@ def export_party_word_freq(period: int) -> None:
             period,
         )
         return
-    df = pd.read_csv(path)
+    df = _canonicalize_fraktion(pd.read_csv(path))
     result = {}
     for fraktion, group in df.groupby("fraktion"):
         result[fraktion] = group[["wort", "tfidf", "rang"]].to_dict(orient="records")
