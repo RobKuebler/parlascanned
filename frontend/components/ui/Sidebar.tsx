@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PeriodSelector } from "./PeriodSelector";
 import { Logo } from "./Logo";
+import { BundestagSeats } from "./BundestagSeats";
 import { NAV_ITEMS } from "@/lib/nav-items";
 
 export function Sidebar() {
@@ -55,6 +56,12 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {/* Seat distribution widget */}
+      <div className="mx-auto w-10 h-px bg-white/10 mb-[10px]" />
+      <div className="px-[10px] pb-[14px]">
+        <BundestagSeats />
+      </div>
     </aside>
   );
 }
