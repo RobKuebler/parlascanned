@@ -1,18 +1,48 @@
-import { stripSoftHyphen } from "@/lib/data";
+// Party colors, order, and alias mapping — single source of truth.
+// All derived constants (PARTY_COLORS, PARTY_ORDER, etc.) are built from PARTY_REGISTRY.
 
-// Party colors and order — mirrors pages/constants.py.
-// Soft-hyphen (\xad) is stripped; raw party names from the API use it.
+interface PartyDef {
+  canonical: string; // internal key — used in PARTY_COLORS, PARTY_ORDER, etc.
+  label: string; // short display name (e.g. "Grüne", "Linke")
+  color: string; // hex
+  aliases?: string[]; // raw API strings that should resolve to this party
+}
 
-export const PARTY_COLORS: Record<string, string> = {
-  "CDU/CSU": "#2a2a2a",
-  SPD: "#E3000F",
-  AfD: "#009EE0",
-  "BÜNDNIS 90/DIE GRÜNEN": "#46962B",
-  "Die Linke": "#FF69B4",
-  BSW: "#722EA5",
-  FDP: "#FFED00",
-  fraktionslos: "#888888",
-};
+// One entry per party. Array order determines PARTY_ORDER.
+const PARTY_REGISTRY: PartyDef[] = [
+  { canonical: "CDU/CSU", label: "CDU/CSU", color: "#2a2a2a" },
+  { canonical: "SPD", label: "SPD", color: "#E3000F" },
+  { canonical: "AfD", label: "AfD", color: "#009EE0" },
+  {
+    canonical: "BÜNDNIS 90/DIE GRÜNEN",
+    label: "Grüne",
+    color: "#46962B",
+    aliases: ["Grüne", "BÜNDNIS 90/\u00adDIE GRÜNEN"],
+  },
+  {
+    canonical: "Die Linke",
+    label: "Linke",
+    color: "#FF69B4",
+    aliases: ["Die Linke.", "DIE LINKE"],
+  },
+  { canonical: "BSW", label: "BSW", color: "#722EA5" },
+  { canonical: "FDP", label: "FDP", color: "#FFED00" },
+  { canonical: "fraktionslos", label: "fraktionslos", color: "#888888" },
+];
+
+// Build alias lookup: every alias and canonical maps to its canonical name.
+const _ALIAS_MAP: Record<string, string> = {};
+for (const p of PARTY_REGISTRY) {
+  _ALIAS_MAP[p.canonical] = p.canonical;
+  for (const alias of p.aliases ?? []) {
+    _ALIAS_MAP[alias] = p.canonical;
+  }
+}
+
+// Derived exports — same names and shapes as before, zero breaking changes for callers.
+export const PARTY_COLORS: Record<string, string> = Object.fromEntries(
+  PARTY_REGISTRY.map((p) => [p.canonical, p.color]),
+);
 
 export const FALLBACK_COLOR = "#888888";
 
@@ -23,17 +53,8 @@ export const PARTY_PILL_ACCENT_COLORS: Partial<Record<string, string>> = {
   FDP: "#7A5F00", // dark amber (~5.2:1 on white) — legible while staying in FDP's yellow family
 };
 
-// Preferred display order (most seats first).
-export const PARTY_ORDER = [
-  "CDU/CSU",
-  "SPD",
-  "AfD",
-  "BÜNDNIS 90/DIE GRÜNEN",
-  "Die Linke",
-  "BSW",
-  "FDP",
-  "fraktionslos",
-];
+// Preferred display order (most seats first), derived from PARTY_REGISTRY array order.
+export const PARTY_ORDER: string[] = PARTY_REGISTRY.map((p) => p.canonical);
 
 // Party whose fill is so dark it needs a white outline on the scatter plot.
 export const DARK_FILL_PARTY = "CDU/CSU";
@@ -46,20 +67,16 @@ export const GOVERNING_PARTIES: Record<number, string[]> = {
   21: ["CDU/CSU", "SPD"], // 21. BT: GroKo
 };
 
-const PARTY_SHORT_LABELS: Record<string, string> = {
-  "CDU/CSU": "CDU/CSU",
-  SPD: "SPD",
-  AfD: "AfD",
-  "BÜNDNIS 90/DIE GRÜNEN": "Grüne",
-  "Die Linke": "Linke",
-  BSW: "BSW",
-  FDP: "FDP",
-  fraktionslos: "fraktionslos",
-};
+const _SHORT_LABELS: Record<string, string> = Object.fromEntries(
+  PARTY_REGISTRY.map((p) => [p.canonical, p.label]),
+);
 
-/** Normalize any raw party label to its canonical name (not a display label — use getPartyShortLabel() for display). */
+/** Normalize any raw party label to its canonical name (not a display label — use getPartyShortLabel() for display).
+ * Strips soft-hyphens and resolves known aliases (e.g. "Grüne" → "BÜNDNIS 90/DIE GRÜNEN").
+ */
 export function normalizePartyName(party: string): string {
-  return stripSoftHyphen(party);
+  const stripped = party.replace(/\u00ad/g, "");
+  return _ALIAS_MAP[stripped] ?? stripped;
 }
 
 /** Resolve a party color from raw or normalized party labels. */
@@ -69,8 +86,8 @@ export function getPartyColor(party: string): string {
 
 /** Resolve a short display label from raw or normalized party labels. */
 export function getPartyShortLabel(party: string): string {
-  const normalized = normalizePartyName(party);
-  return PARTY_SHORT_LABELS[normalized] ?? normalized;
+  const canonical = normalizePartyName(party);
+  return _SHORT_LABELS[canonical] ?? canonical;
 }
 
 /**

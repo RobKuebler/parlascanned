@@ -29,6 +29,9 @@ describe("stripSoftHyphen", () => {
   it("handles empty string", () => {
     expect(stripSoftHyphen("")).toBe("");
   });
+  it("normalizes Grüne shorthand to canonical Grünen name", () => {
+    expect(stripSoftHyphen("Grüne")).toBe("BÜNDNIS 90/DIE GRÜNEN");
+  });
 });
 
 describe("dataUrl", () => {

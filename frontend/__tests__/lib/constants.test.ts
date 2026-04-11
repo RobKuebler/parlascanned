@@ -102,6 +102,26 @@ describe("constant integrity", () => {
     }
   });
 
+  it("every alias resolves to a color (not the fallback)", () => {
+    // The cases that historically returned gray
+    expect(getPartyColor("Grüne")).toBe(PARTY_COLORS["BÜNDNIS 90/DIE GRÜNEN"]);
+    expect(getPartyColor("Die Linke.")).toBe(PARTY_COLORS["Die Linke"]);
+    expect(getPartyColor("DIE LINKE")).toBe(PARTY_COLORS["Die Linke"]);
+    expect(getPartyColor("BÜNDNIS 90/\u00adDIE GRÜNEN")).toBe(
+      PARTY_COLORS["BÜNDNIS 90/DIE GRÜNEN"],
+    );
+    // Canonical names all have a defined entry (not a fallthrough)
+    for (const party of PARTY_ORDER) {
+      expect(PARTY_COLORS[party]).toBeDefined();
+    }
+  });
+
+  it("getPartyShortLabel returns short labels for aliases", () => {
+    expect(getPartyShortLabel("Grüne")).toBe("Grüne");
+    expect(getPartyShortLabel("BÜNDNIS 90/DIE GRÜNEN")).toBe("Grüne");
+    expect(getPartyShortLabel("Die Linke.")).toBe("Linke");
+  });
+
   it("FALLBACK_COLOR is a valid hex color", () => {
     expect(FALLBACK_COLOR).toMatch(/^#[0-9a-fA-F]{6}$/);
   });
