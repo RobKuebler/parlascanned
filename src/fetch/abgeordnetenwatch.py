@@ -6,13 +6,16 @@ written to disk; no storage side-effects unless explicitly documented.
 
 Exception: fetch_votes() writes to disk — it appends vote rows to votes.csv
 incrementally so that interrupted runs can resume without re-fetching.
+Exception: refresh_sidejobs() writes to disk — it maintains sidejobs_raw.json
+as a persistent cache so only newly changed records are fetched on each run.
 """
 
 import csv
 import functools
+import json
 import logging
 import re
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pandas as pd
@@ -101,13 +104,25 @@ SESSION = get_session()
 
 
 def fetch_all_v2(endpoint: str, params: dict | None = None) -> list:
-    """Fetch all pages from a paginated API endpoint."""
+    """Fetch all pages from a paginated API endpoint.
+
+    Pagination notes (verified against live API):
+    - range_end is a PAGE SIZE, not an end index. range_start=4, range_end=8
+      returns records at positions 4-11 (overlaps with range_start=0, range_end=8).
+    - range_end > 1000 silently falls back to 100, breaking pagination — always
+      use PAGE_SIZE=1000 exactly.
+    - Results are returned in descending ID order (newest first).
+
+    Filter notes:
+    - Bare param (e.g. data_change_date=2026-04-09) is exact-match only.
+    - Bracket operators work: id[gt], id[gte], data_change_date[gte], etc.
+      e.g. data_change_date[gte]=2026-04-01 returns all records changed on or
+      after that date. Records with data_change_date=None are excluded.
+    """
     params = dict(params or {})  # copy to avoid mutating the caller's dict
     all_data = []
     range_start = 0
     while True:
-        # range_end is the page size (not an absolute end position);
-        # values > 1000 silently fall back to 100, breaking pagination.
         params.update({"range_start": range_start, "range_end": PAGE_SIZE})
         response = SESSION.get(f"{BASE_URL}/{endpoint}", params=params, timeout=15)
         response.raise_for_status()
@@ -454,20 +469,84 @@ def _parse_sidejob_dates(extra: str | None) -> tuple[str | None, str | None]:
     return _parse_date(text), None
 
 
-def refresh_sidejobs(
-    period: int, mandate_to_politician: dict[int, int]
-) -> pd.DataFrame:
-    """Fetch all sidejobs, filter to this period's mandates, and return as DataFrame.
+def _fetch_and_merge_sidejobs(existing_by_id: dict[int, dict]) -> None:
+    """Fetch new/updated sidejob records from the API and merge into existing_by_id.
 
-    The sidejobs API has no parliament_period filter, so we fetch everything
-    and keep only entries whose mandate ID belongs to this period. This ensures
-    each period's data contains only sidejobs disclosed under that legislature.
+    Full fetch when the cache is empty; otherwise two targeted requests:
+      1. id[gt]=max_cached_id for new records (IDs are sequential).
+      2. data_change_date[gte]=yesterday for post-creation edits.
+    Mutates existing_by_id in place.
     """
-    log.info("Fetching sidejobs...")
-    raw = fetch_all_v2("sidejobs")
+    if not existing_by_id:
+        log.info("No cache found, fetching all sidejobs...")
+        raw = fetch_all_v2("sidejobs")
+        log.info("Fetched %d sidejob record(s) from API.", len(raw))
+        for sj in raw:
+            existing_by_id[sj["id"]] = sj
+        return
+
+    today = datetime.now(tz=UTC).date()
+
+    # New records: IDs are sequential, so anything above our cached max is new.
+    max_cached_id = max(existing_by_id)
+    log.info("Fetching new sidejobs (id[gt]=%d)...", max_cached_id)
+    new_records = fetch_all_v2("sidejobs", params={"id[gt]": max_cached_id})
+    log.info("Found %d new sidejob(s).", len(new_records))
+
+    # Updated records: use data_change_date[gte] (range operator, verified).
+    # 1-day buffer so a record edited late yesterday is not missed.
+    since = (today - timedelta(days=1)).isoformat()
+    updated = fetch_all_v2("sidejobs", params={"data_change_date[gte]": since})
+    if updated:
+        log.info("Found %d updated sidejob(s) since %s.", len(updated), since)
+
+    for sj in new_records + updated:
+        existing_by_id[sj["id"]] = sj
+
+
+def refresh_sidejobs(
+    period: int, mandate_to_politician: dict[int, int], data_dir: Path
+) -> pd.DataFrame:
+    """Fetch sidejobs for this period, using a disk cache to avoid full re-fetches.
+
+    Stores raw API records in data/{period}/sidejobs_raw.json (committed to git,
+    like drucksachen). The sidejobs API has no parliament_period filter, so we
+    always fetch across all periods and filter by mandate ID.
+
+    On first run: fetches all sidejobs (~18 pages), saves them.
+    On subsequent runs: two targeted requests replace the full fetch:
+      1. id[gt]=max_cached_id  — new records (IDs are sequential; new disclosures
+         always get higher IDs than existing ones).
+      2. data_change_date[gte]=yesterday — edited existing records. The bare
+         data_change_date param is exact-match only; the [gte] bracket operator
+         works as a range. Records with data_change_date=None (never edited after
+         creation) are excluded by this filter — hence the separate id[gt] pass.
+    Typically reduces from ~18 pages (~18k records) to 2 small requests per day.
+    """
+    cache_path = data_dir / "sidejobs_raw.json"
+
+    # Load existing cache.
+    existing_by_id: dict[int, dict] = {}
+    if cache_path.exists():
+        stored = json.loads(cache_path.read_text(encoding="utf-8"))
+        existing_by_id = {sj["id"]: sj for sj in stored.get("data", [])}
+        log.info("Loaded %d cached sidejobs.", len(existing_by_id))
+
+    _fetch_and_merge_sidejobs(existing_by_id)
+
+    # Persist updated cache to disk (committed to git via `git add data/`).
+    today_str = datetime.now(tz=UTC).date().isoformat()
+    cache_path.write_text(
+        json.dumps(
+            {"fetched_until": today_str, "data": list(existing_by_id.values())},
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    log.info("Saved %d sidejobs to cache.", len(existing_by_id))
 
     rows = []
-    for sj in raw:
+    for sj in existing_by_id.values():
         politician_id = None
         for mandate in sj.get("mandates") or []:
             pid = mandate_to_politician.get(mandate.get("id"))

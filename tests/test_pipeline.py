@@ -99,7 +99,7 @@ def env(tmp_path, monkeypatch):
         "topics",
     ]
     monkeypatch.setattr(
-        pl, "refresh_sidejobs", lambda p, m: pd.DataFrame(columns=_sidejob_cols)
+        pl, "refresh_sidejobs", lambda p, m, d: pd.DataFrame(columns=_sidejob_cols)
     )
     monkeypatch.setattr(pl, "find_polls_missing_votes", lambda ids, path: [])
     monkeypatch.setattr(pl, "_train", lambda *_a, **_k: None)

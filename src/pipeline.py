@@ -155,7 +155,7 @@ def main(argv: list[str] | None = None) -> None:
     # ── fetch ──────────────────────────────────────────────────────────────────
     df_polls = refresh_polls(period)
     df_politicians, mandate_to_politician = refresh_politicians(period)
-    df_sidejobs = refresh_sidejobs(period, mandate_to_politician)
+    df_sidejobs = refresh_sidejobs(period, mandate_to_politician, period_dir)
     df_committees, df_memberships = fetch_committees(period, mandate_to_politician)
 
     votes_path = period_dir / "votes.csv"

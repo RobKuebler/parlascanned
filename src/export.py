@@ -417,7 +417,10 @@ def export_motions(period: int) -> None:
         cached: list[dict] = []
         since: str | None = None
         if cache_path.exists():
-            cached = json.loads(cache_path.read_text(encoding="utf-8"))
+            raw = json.loads(cache_path.read_text(encoding="utf-8"))
+            # f.herausgeber=BT leaks BR records from the API; filter on load so
+            # any previously cached BR records are silently dropped.
+            cached = [d for d in raw if d.get("herausgeber") == "BT"]
             dates = [d["datum"] for d in cached if d.get("datum")]
             if dates:
                 since = max(dates)

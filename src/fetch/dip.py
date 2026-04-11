@@ -73,9 +73,21 @@ def _curl_get(url: str, params: dict) -> dict:
 def fetch_dip_all(endpoint: str, params: dict | None = None) -> list:
     """Fetch all records from a DIP endpoint using cursor pagination.
 
-    Reads DIP_API_KEY from the environment. Stops when a page returns
-    fewer than DIP_PAGE_SIZE documents or when the response omits the
-    cursor field.
+    Reads DIP_API_KEY from the environment.
+
+    Pagination notes (verified against live API):
+    - The API always returns a cursor, even on the final empty page. Termination
+      therefore always happens via len(docs) < DIP_PAGE_SIZE, not via a missing
+      cursor. The `if not cursor: break` guard is a safety net for API changes.
+    - The API returns a 0-document empty page as the last page rather than
+      stopping at the last non-empty page — so one extra request is always made.
+
+    Filter notes:
+    - f.herausgeber (e.g. "BT") is unreliable: non-target records (e.g. "BR")
+      leak through on both the plenarprotokoll and drucksache endpoints. Callers
+      that need strict filtering must post-filter on doc["herausgeber"] themselves.
+    - f.datum.von uses >= semantics (confirmed): records with datum on or after
+      the given ISO date string are returned.
     """
     api_key = os.environ.get("DIP_API_KEY")
     if not api_key:

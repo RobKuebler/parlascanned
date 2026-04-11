@@ -299,7 +299,7 @@ def test_refresh_periods_period_id_stays_integer(requests_mock):
 # ─── refresh_sidejobs: date parsing from label ─────────────────────────────────
 
 
-def test_refresh_sidejobs_dates_parsed_from_label_parentheses(requests_mock):
+def test_refresh_sidejobs_dates_parsed_from_label_parentheses(requests_mock, tmp_path):
     """ASSUMPTION: date info is always in job_title_extra.
     REALITY: many sidejobs have job_title_extra=null but embed dates in the label,
     e.g. 'Mitglied des Aufsichtsrates (ab 01.01.2024)' or '... (bis Juni 2023)'.
@@ -325,7 +325,7 @@ def test_refresh_sidejobs_dates_parsed_from_label_parentheses(requests_mock):
         f"{BASE_URL}/sidejobs", json={"data": [sj_start, sj_end, sj_range]}
     )
 
-    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
+    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1}, tmp_path)
 
     assert df.iloc[0]["date_start"] == "2023-06-01"
     assert pd.isna(df.iloc[0]["date_end"])
@@ -338,30 +338,30 @@ def test_refresh_sidejobs_dates_parsed_from_label_parentheses(requests_mock):
 # ─── refresh_sidejobs: edge cases ──────────────────────────────────────────────
 
 
-def test_refresh_sidejobs_null_organization_no_crash(requests_mock):
+def test_refresh_sidejobs_null_organization_no_crash(requests_mock, tmp_path):
     """sidejob_organization=null: must not crash, organization column is NaN."""
     requests_mock.get(
         f"{BASE_URL}/sidejobs", json={"data": [{**_sidejob(1, [100], org_label=None)}]}
     )
 
-    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
+    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1}, tmp_path)
 
     assert len(df) == 1
     assert pd.isna(df.iloc[0]["organization"])
 
 
-def test_refresh_sidejobs_null_mandates_list_skipped(requests_mock):
+def test_refresh_sidejobs_null_mandates_list_skipped(requests_mock, tmp_path):
     """Sidejob with mandates=null is silently skipped (not included in output)."""
     sj = _sidejob(1, [])  # start with empty mandates
     sj["mandates"] = None  # override to null
     requests_mock.get(f"{BASE_URL}/sidejobs", json={"data": [sj]})
 
-    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
+    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1}, tmp_path)
 
     assert len(df) == 0
 
 
-def test_refresh_sidejobs_only_keeps_this_period(requests_mock):
+def test_refresh_sidejobs_only_keeps_this_period(requests_mock, tmp_path):
     """Sidejobs from other periods (mandate IDs not in this period) are filtered out."""
     requests_mock.get(
         f"{BASE_URL}/sidejobs",
@@ -373,24 +373,24 @@ def test_refresh_sidejobs_only_keeps_this_period(requests_mock):
         },
     )
 
-    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
+    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1}, tmp_path)
 
     assert len(df) == 1
     assert df.iloc[0]["job_title"] == "Job 1"
 
 
-def test_refresh_sidejobs_null_field_topics_no_crash(requests_mock):
+def test_refresh_sidejobs_null_field_topics_no_crash(requests_mock, tmp_path):
     """field_topics=null must not crash; topics column is empty string."""
     sj = _sidejob(1, [100])
     sj["field_topics"] = None
     requests_mock.get(f"{BASE_URL}/sidejobs", json={"data": [sj]})
 
-    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
+    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1}, tmp_path)
 
     assert len(df) == 1
 
 
-def test_refresh_sidejobs_mandate_without_id_key_skipped(requests_mock):
+def test_refresh_sidejobs_mandate_without_id_key_skipped(requests_mock, tmp_path):
     """ASSUMPTION: mandate objects always have an 'id' key.
     REALITY: mandate_to_politician.get(mandate['id']) raises KeyError if 'id' is absent.
     """
@@ -398,7 +398,7 @@ def test_refresh_sidejobs_mandate_without_id_key_skipped(requests_mock):
     sj["mandates"] = [{"label": "no-id-key"}]  # mandate without 'id'
     requests_mock.get(f"{BASE_URL}/sidejobs", json={"data": [sj]})
 
-    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1})
+    df = src.fetch.abgeordnetenwatch.refresh_sidejobs(20, {100: 1}, tmp_path)
 
     assert len(df) == 0  # should be silently skipped, not crash
 

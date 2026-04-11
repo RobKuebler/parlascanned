@@ -57,6 +57,7 @@ def fetch_protocol_xmls(period: int, out_dir: Path) -> int:
 
     downloaded = 0
     for doc in docs:
+        # f.herausgeber=BT leaks BR records from the API (verified: 11/80 in WP21).
         if doc.get("herausgeber") != "BT":
             continue
         fundstelle = doc.get("fundstelle") or {}

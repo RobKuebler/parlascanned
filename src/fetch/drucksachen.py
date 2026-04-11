@@ -13,6 +13,9 @@ def fetch_drucksachen(period: int, typ: str, since: str | None = None) -> list[d
     typ must be one of DRUCKSACHE_TYPEN.
     If since is given (ISO date string, e.g. "2024-11-01"), only records
     with datum >= since are fetched — used for incremental cache updates.
+
+    Note: f.herausgeber=BT is passed to the API but leaks non-BT records
+    (verified: ~29% of Antrag results are BR). Post-filtering here is necessary.
     """
     params: dict = {
         "f.drucksachetyp": typ,
@@ -21,4 +24,6 @@ def fetch_drucksachen(period: int, typ: str, since: str | None = None) -> list[d
     }
     if since:
         params["f.datum.von"] = since
-    return fetch_dip_all("drucksache", params)
+    docs = fetch_dip_all("drucksache", params)
+    # Post-filter: the f.herausgeber API filter is unreliable (see fetch_dip_all).
+    return [d for d in docs if d.get("herausgeber") == "BT"]
