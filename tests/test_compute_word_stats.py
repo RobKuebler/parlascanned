@@ -276,8 +276,10 @@ def test_speech_stats_spalten_korrekt():
 # ---------------------------------------------------------------------------
 
 
-def test_fetch_word_stats_schreibt_csvs(tmp_path, monkeypatch):
-    """fetch_word_stats parst XMLs und schreibt beide Output-CSVs."""
+def test_fetch_word_stats_schreibt_jsons(tmp_path, monkeypatch):
+    """fetch_word_stats parst XMLs und schreibt beide Output-JSONs direkt ins Frontend."""
+    import json
+
     speeches = pd.DataFrame(
         [
             {
@@ -303,14 +305,20 @@ def test_fetch_word_stats_schreibt_csvs(tmp_path, monkeypatch):
         ]
     )
     monkeypatch.setattr(cws, "parse_alle_sitzungen", lambda out_dir: speeches)
+    monkeypatch.setattr(cws, "FRONTEND_DATA_DIR", tmp_path.parent)
 
     cws.fetch_word_stats(tmp_path, top_n=5)
 
-    wf = pd.read_csv(tmp_path / "party_word_freq.csv")
-    ss = pd.read_csv(tmp_path / "party_speech_stats.csv")
+    wf = json.loads((tmp_path / "party_word_freq.json").read_text())
+    ss = json.loads((tmp_path / "party_speech_stats.json").read_text())
 
-    assert set(wf.columns) == {"fraktion", "wort", "tfidf", "rang"}
-    assert set(ss.columns) == {
+    assert isinstance(wf, dict)
+    assert set(wf.keys()) == {"SPD", "AfD"}
+    assert {"wort", "tfidf", "rang"}.issubset(wf["SPD"][0].keys())
+    assert len(wf["SPD"]) == 5  # top_n=5 Wörter pro Partei
+    assert isinstance(ss, list)
+    assert len(ss) == 2  # 1 Redner pro Partei
+    required = {
         "fraktion",
         "redner_id",
         "vorname",
@@ -318,11 +326,12 @@ def test_fetch_word_stats_schreibt_csvs(tmp_path, monkeypatch):
         "anzahl_reden",
         "wortanzahl_gesamt",
     }
-    assert len(wf) == 10  # 5 Woerter x 2 Parteien
-    assert len(ss) == 2  # 1 Redner pro Partei
+    assert required.issubset(ss[0].keys())
 
 
 def test_fetch_word_stats_recovers_role_only_speaker_party(tmp_path, monkeypatch):
+    import json
+
     speeches = pd.DataFrame(
         [
             {
@@ -352,14 +361,15 @@ def test_fetch_word_stats_recovers_role_only_speaker_party(tmp_path, monkeypatch
     politicians = pd.DataFrame([{"name": "Nina Warken", "party": "CDU/CSU"}])
     monkeypatch.setattr(cws, "parse_alle_sitzungen", lambda out_dir: speeches)
     monkeypatch.setattr(cws, "_load_politician_metadata", lambda out_dir: politicians)
+    monkeypatch.setattr(cws, "FRONTEND_DATA_DIR", tmp_path.parent)
 
     cws.fetch_word_stats(tmp_path, top_n=3)
 
-    stats = pd.read_csv(tmp_path / "party_speech_stats.csv")
+    stats = json.loads((tmp_path / "party_speech_stats.json").read_text())
 
-    nina = stats[stats["redner_id"] == "R1"].iloc[0]
+    nina = next(r for r in stats if r["redner_id"] == "R1")
     assert nina["fraktion"] == "CDU/CSU"
-    assert set(stats["fraktion"]) == {"CDU/CSU", "SPD"}
+    assert {r["fraktion"] for r in stats} == {"CDU/CSU", "SPD"}
 
 
 # ---------------------------------------------------------------------------
@@ -441,3 +451,94 @@ def test_lemmatize_tokens_leere_liste(monkeypatch):
     """Leere Token-Liste gibt leere Liste zurück ohne HanTa aufzurufen."""
     monkeypatch.undo()
     assert cws._lemmatize_tokens([]) == []
+
+
+# ---------------------------------------------------------------------------
+# _canonicalize_fraktion + fetch_word_stats canonicalization
+# ---------------------------------------------------------------------------
+
+
+def _make_speeches(fraktion: str) -> pd.DataFrame:
+    """Return a minimal speeches DataFrame for one Fraktion."""
+    return pd.DataFrame(
+        [
+            {
+                "sitzungsnummer": 1,
+                "rede_id": "1",
+                "redner_id": "R1",
+                "vorname": "Max",
+                "nachname": "M",
+                "fraktion": fraktion,
+                "wortanzahl": 4,
+                "text": "sozial arbeit reform zukunft",
+            }
+        ]
+    )
+
+
+def test_canonicalize_fraktion_renames_linke_dot():
+    """'Die Linke.' wird zu 'Die Linke' umbenannt."""
+    import pandas as pd
+
+    df = pd.DataFrame(
+        [{"fraktion": "Die Linke.", "wort": "sozial", "tfidf": 0.4, "rang": 1}]
+    )
+    result = cws._canonicalize_fraktion(df)
+    assert list(result["fraktion"]) == ["Die Linke"]
+
+
+def test_canonicalize_fraktion_merges_linke_variants():
+    """'Die Linke.' und 'Die Linke' werden zusammengeführt; Duplikate behalten höchstes tfidf."""
+    import pandas as pd
+
+    df = pd.DataFrame(
+        [
+            {"fraktion": "Die Linke", "wort": "migration", "tfidf": 0.5, "rang": 1},
+            {"fraktion": "Die Linke.", "wort": "migration", "tfidf": 0.3, "rang": 1},
+            {"fraktion": "Die Linke.", "wort": "sozial", "tfidf": 0.4, "rang": 2},
+        ]
+    )
+    result = cws._canonicalize_fraktion(df)
+    assert set(result["fraktion"]) == {"Die Linke"}
+    assert set(result["wort"]) == {"migration", "sozial"}
+    migration = result[result["wort"] == "migration"].iloc[0]
+    assert migration["tfidf"] == pytest.approx(0.5)
+
+
+def test_canonicalize_fraktion_normalizes_gruenen_soft_hyphen():
+    """Soft-Hyphen in BÜNDNIS 90 wird entfernt."""
+    import pandas as pd
+
+    df = pd.DataFrame(
+        [
+            {
+                "fraktion": "BÜNDNIS 90/\xadDIE GRÜNEN",
+                "wort": "klima",
+                "tfidf": 0.7,
+                "rang": 1,
+            }
+        ]
+    )
+    result = cws._canonicalize_fraktion(df)
+    assert list(result["fraktion"]) == ["BÜNDNIS 90/DIE GRÜNEN"]
+
+
+def test_fetch_word_stats_normalizes_linke_dot_in_json(tmp_path, monkeypatch):
+    """fetch_word_stats schreibt 'Die Linke' (nicht 'Die Linke.') in die JSON."""
+    import json
+
+    monkeypatch.setattr(
+        cws, "parse_alle_sitzungen", lambda out_dir: _make_speeches("Die Linke.")
+    )
+    monkeypatch.setattr(cws, "FRONTEND_DATA_DIR", tmp_path.parent)
+
+    cws.fetch_word_stats(tmp_path, top_n=5)
+
+    wf = json.loads((tmp_path / "party_word_freq.json").read_text())
+    ss = json.loads((tmp_path / "party_speech_stats.json").read_text())
+
+    assert "Die Linke." not in wf
+    assert "Die Linke" in wf
+    fraktionen = {r["fraktion"] for r in ss}
+    assert "Die Linke." not in fraktionen
+    assert "Die Linke" in fraktionen

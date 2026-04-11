@@ -1,8 +1,9 @@
 """Compute TF-IDF word statistics and speech stats from plenary protocol XMLs.
 
-Parses data/{period}/plenary_protocols/*.xml directly and produces two CSVs:
-  - party_word_freq.csv: top-N TF-IDF words per Fraktion
-  - party_speech_stats.csv: speech count + word count per MdB
+Parses data/{period}/plenary_protocols/*.xml directly and writes two JSON files
+directly to the frontend:
+  - frontend/public/data/{period}/party_word_freq.json
+  - frontend/public/data/{period}/party_speech_stats.json
 
 Usage:
     uv run python -m src.analysis.word_stats --period 20
@@ -20,6 +21,7 @@ from typing import TYPE_CHECKING
 import pandas as pd
 
 from ..cli import add_period_argument, build_parser, configure_logging
+from ..export_utils import write_json
 from ..fetch.abgeordnetenwatch import refresh_periods
 from ..parse.protocols import parse_alle_sitzungen, recover_parties_from_metadata
 from ..paths import DATA_DIR, FRONTEND_DATA_DIR
@@ -338,6 +340,32 @@ def _with_umlaut_variants(words: set[str]) -> set[str]:
 # umlaut encoding (common in older texts) are still filtered out.
 _STOPWORDS = _with_umlaut_variants(_STOPWORDS)
 
+# Maps all known fraktion name variants to canonical forms.
+# Applied before grouping so JSON keys are always canonical.
+FRAKTION_CANONICAL_MAP: dict[str, str] = {
+    "Die Linke.": "Die Linke",
+    "DIE LINKE": "Die Linke",
+    "BÜNDNIS 90/\xadDIE GRÜNEN": "BÜNDNIS 90/DIE GRÜNEN",
+}
+
+
+def _canonicalize_fraktion(df: pd.DataFrame) -> pd.DataFrame:
+    """Rename fraktion column variants to canonical names and deduplicate.
+
+    When a 'tfidf' column is present, duplicate (fraktion, wort) pairs that
+    arise after renaming are resolved by keeping the row with the highest tfidf.
+    """
+    df = df.copy()
+    df["fraktion"] = df["fraktion"].replace(FRAKTION_CANONICAL_MAP)
+    if "tfidf" in df.columns:
+        df = (
+            df.sort_values("tfidf", ascending=False)
+            .drop_duplicates(subset=["fraktion", "wort"])
+            .reset_index(drop=True)
+        )
+    return df
+
+
 _WORD_FREQ_COLS = ["fraktion", "wort", "tfidf", "rang"]
 _SPEECH_STATS_COLS = [
     "fraktion",
@@ -561,7 +589,11 @@ def _load_politician_metadata(out_dir: Path) -> pd.DataFrame:
 
 
 def fetch_word_stats(out_dir: Path, top_n: int = 100) -> None:
-    """Parse XMLs and write party_word_freq.csv + party_speech_stats.csv."""
+    """Parse XMLs and write party_word_freq.json + party_speech_stats.json to frontend.
+
+    Writes directly to frontend/public/data/{period}/ — no intermediate CSV step.
+    Fraktion name variants (e.g. 'Die Linke.') are canonicalized before output.
+    """
     df = parse_alle_sitzungen(out_dir)
     politicians_df = _load_politician_metadata(out_dir)
     before_recovery = int(df["fraktion"].eq("fraktionslos").sum())
@@ -577,15 +609,25 @@ def fetch_word_stats(out_dir: Path, top_n: int = 100) -> None:
         .apply(lambda texts: " ".join(texts.dropna()))
         .to_dict()
     )
-    word_freq_df = compute_tfidf(party_texts, stopwords=_STOPWORDS, top_n=top_n)
-    word_freq_path = Path(out_dir) / "party_word_freq.csv"
-    word_freq_df.to_csv(word_freq_path, index=False)
-    log.info("party_word_freq.csv: %d entries", len(word_freq_df))
+    word_freq_df = _canonicalize_fraktion(
+        compute_tfidf(party_texts, stopwords=_STOPWORDS, top_n=top_n)
+    )
+    frontend_out = FRONTEND_DATA_DIR / out_dir.name
+    result: dict[str, list] = {}
+    for fraktion, group in word_freq_df.groupby("fraktion"):
+        result[str(fraktion)] = group[["wort", "tfidf", "rang"]].to_dict(
+            orient="records"
+        )
+    write_json(frontend_out / "party_word_freq.json", result, log=log)
+    log.info("party_word_freq.json: %d entries", len(word_freq_df))
 
-    speech_stats_df = compute_speech_stats(df)
-    stats_path = Path(out_dir) / "party_speech_stats.csv"
-    speech_stats_df.to_csv(stats_path, index=False)
-    log.info("party_speech_stats.csv: %d MPs", len(speech_stats_df))
+    speech_stats_df = _canonicalize_fraktion(compute_speech_stats(df))
+    write_json(
+        frontend_out / "party_speech_stats.json",
+        speech_stats_df.to_dict(orient="records"),
+        log=log,
+    )
+    log.info("party_speech_stats.json: %d MPs", len(speech_stats_df))
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:

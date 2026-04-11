@@ -288,107 +288,6 @@ def test_party_profile_shape(run_export):
         assert len(pivot["pct"][0]) == len(pivot["parties"])
 
 
-# ---------------------------------------------------------------------------
-# CSV fixtures for speech export tests
-# ---------------------------------------------------------------------------
-
-_WORD_FREQ_CSV = textwrap.dedent("""\
-    fraktion,wort,tfidf,rang
-    SPD,arbeit,0.000612,1
-    SPD,sozial,0.000450,2
-    SPD,rente,0.000380,3
-    AfD,grenze,0.000700,1
-    AfD,migration,0.000600,2
-    AfD,sicherheit,0.000500,3
-""")
-
-_SPEECH_STATS_CSV = textwrap.dedent("""\
-    fraktion,redner_id,vorname,nachname,anzahl_reden,wortanzahl_gesamt
-    SPD,1001,Olaf,Scholz,84,94320
-    SPD,1002,Rolf,Mützenich,60,71100
-    AfD,2001,Alice,Weidel,50,55000
-""")
-
-
-@pytest.fixture
-def speech_export(tmp_path, monkeypatch):
-    """Set up tmp dirs with speech CSV fixtures and run the two export functions."""
-    import src.export as ej
-
-    period_dir = tmp_path / str(WAHLPERIODE)
-    period_dir.mkdir(parents=True)
-    (period_dir / "party_word_freq.csv").write_text(_WORD_FREQ_CSV, encoding="utf-8")
-    (period_dir / "party_speech_stats.csv").write_text(
-        _SPEECH_STATS_CSV, encoding="utf-8"
-    )
-
-    out_dir = tmp_path / "out"
-    out_dir.mkdir()
-    monkeypatch.setattr(ej, "DATA_DIR", tmp_path)
-    monkeypatch.setattr(ej, "OUTPUT_DIR", out_dir)
-
-    ej.export_party_word_freq(WAHLPERIODE)
-    ej.export_party_speech_stats(WAHLPERIODE)
-    return out_dir
-
-
-def _load_speech(out_dir, filename):
-    return json.loads((out_dir / str(WAHLPERIODE) / filename).read_text())
-
-
-def test_word_freq_structure(speech_export):
-    data = _load_speech(speech_export, "party_word_freq.json")
-    assert isinstance(data, dict)
-    assert set(data.keys()) == {"SPD", "AfD"}
-    spd = data["SPD"]
-    assert isinstance(spd, list)
-    assert len(spd) == 3
-    assert {"wort", "tfidf", "rang"}.issubset(spd[0].keys())
-    assert spd[0]["wort"] == "arbeit"
-    assert spd[0]["rang"] == 1
-
-
-def test_word_freq_missing_csv_does_not_raise(tmp_path, monkeypatch):
-    import src.export as ej
-
-    out_dir = tmp_path / "out"
-    out_dir.mkdir()
-    monkeypatch.setattr(ej, "DATA_DIR", tmp_path)
-    monkeypatch.setattr(ej, "OUTPUT_DIR", out_dir)
-    # no CSV present — should log warning, not raise
-    ej.export_party_word_freq(WAHLPERIODE)
-    assert not (out_dir / str(WAHLPERIODE) / "party_word_freq.json").exists()
-
-
-def test_speech_stats_structure(speech_export):
-    data = _load_speech(speech_export, "party_speech_stats.json")
-    assert isinstance(data, list)
-    assert len(data) == 3
-    required = {
-        "fraktion",
-        "redner_id",
-        "vorname",
-        "nachname",
-        "anzahl_reden",
-        "wortanzahl_gesamt",
-    }
-    assert required.issubset(data[0].keys())
-    # sorted by wortanzahl_gesamt desc within fraktion (as produced by compute_speech_stats)
-    spd_rows = [r for r in data if r["fraktion"] == "SPD"]
-    assert spd_rows[0]["nachname"] == "Scholz"
-
-
-def test_speech_stats_missing_csv_does_not_raise(tmp_path, monkeypatch):
-    import src.export as ej
-
-    out_dir = tmp_path / "out"
-    out_dir.mkdir()
-    monkeypatch.setattr(ej, "DATA_DIR", tmp_path)
-    monkeypatch.setattr(ej, "OUTPUT_DIR", out_dir)
-    ej.export_party_speech_stats(WAHLPERIODE)
-    assert not (out_dir / str(WAHLPERIODE) / "party_speech_stats.json").exists()
-
-
 def test_conflicts_shape(run_export):
     data = _load(run_export, "conflicts.json")
     assert "stats" in data
@@ -411,125 +310,8 @@ def test_conflicts_shape(run_export):
     assert "conflicted_income" in entry
 
 
-def test_export_party_word_freq_normalizes_linke_dot(tmp_path, monkeypatch):
-    """Die Linke. rows must be renamed to Die Linke in party_word_freq.json."""
-    period = 20
-    (tmp_path / "data" / str(period)).mkdir(parents=True)
-    (tmp_path / "out" / str(period)).mkdir(parents=True)
-
-    csv_path = tmp_path / "data" / str(period) / "party_word_freq.csv"
-    csv_path.write_text(
-        "fraktion,wort,tfidf,rang\nDie Linke.,sozial,0.4,1\nSPD,arbeit,0.6,1\n",
-        encoding="utf-8",
-    )
-
-    monkeypatch.setattr("src.export.DATA_DIR", tmp_path / "data")
-    monkeypatch.setattr("src.export.OUTPUT_DIR", tmp_path / "out")
-
-    from src.export import export_party_word_freq
-
-    export_party_word_freq(period)
-
-    data = json.loads(
-        (tmp_path / "out" / str(period) / "party_word_freq.json").read_text()
-    )
-    assert "Die Linke." not in data
-    assert "Die Linke" in data
-    assert data["Die Linke"][0]["wort"] == "sozial"
-
-
-def test_export_party_word_freq_merges_linke_variants(tmp_path, monkeypatch):
-    """When Die Linke and Die Linke. both appear, rows are merged; duplicates keep highest tfidf."""
-    period = 20
-    (tmp_path / "data" / str(period)).mkdir(parents=True)
-    (tmp_path / "out" / str(period)).mkdir(parents=True)
-
-    csv_path = tmp_path / "data" / str(period) / "party_word_freq.csv"
-    csv_path.write_text(
-        "fraktion,wort,tfidf,rang\n"
-        "Die Linke,migration,0.5,1\n"
-        "Die Linke.,migration,0.3,1\n"
-        "Die Linke.,sozial,0.4,1\n",
-        encoding="utf-8",
-    )
-
-    monkeypatch.setattr("src.export.DATA_DIR", tmp_path / "data")
-    monkeypatch.setattr("src.export.OUTPUT_DIR", tmp_path / "out")
-
-    from src.export import export_party_word_freq
-
-    export_party_word_freq(period)
-
-    data = json.loads(
-        (tmp_path / "out" / str(period) / "party_word_freq.json").read_text()
-    )
-    assert set(data.keys()) == {"Die Linke"}
-    words = {w["wort"] for w in data["Die Linke"]}
-    assert words == {"migration", "sozial"}
-    migration_entry = next(w for w in data["Die Linke"] if w["wort"] == "migration")
-    assert migration_entry["tfidf"] == pytest.approx(0.5)
-
-
-def test_export_party_word_freq_normalizes_gruenen_soft_hyphen(tmp_path, monkeypatch):
-    """BÜNDNIS 90 with soft-hyphen must be normalized to the version without."""
-    period = 20
-    (tmp_path / "data" / str(period)).mkdir(parents=True)
-    (tmp_path / "out" / str(period)).mkdir(parents=True)
-
-    csv_path = tmp_path / "data" / str(period) / "party_word_freq.csv"
-    csv_path.write_text(
-        "fraktion,wort,tfidf,rang\nBÜNDNIS 90/\xadDIE GRÜNEN,klima,0.7,1\n",
-        encoding="utf-8",
-    )
-
-    monkeypatch.setattr("src.export.DATA_DIR", tmp_path / "data")
-    monkeypatch.setattr("src.export.OUTPUT_DIR", tmp_path / "out")
-
-    from src.export import export_party_word_freq
-
-    export_party_word_freq(period)
-
-    data = json.loads(
-        (tmp_path / "out" / str(period) / "party_word_freq.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    assert "BÜNDNIS 90/\xadDIE GRÜNEN" not in data
-    assert "BÜNDNIS 90/DIE GRÜNEN" in data
-
-
-def test_export_party_speech_stats_normalizes_linke_dot(tmp_path, monkeypatch):
-    """Die Linke. in fraktion column must be renamed to Die Linke in party_speech_stats.json."""
-    period = 20
-    (tmp_path / "data" / str(period)).mkdir(parents=True)
-    (tmp_path / "out" / str(period)).mkdir(parents=True)
-
-    csv_path = tmp_path / "data" / str(period) / "party_speech_stats.csv"
-    csv_path.write_text(
-        "fraktion,redner_id,vorname,nachname,anzahl_reden,wortanzahl_gesamt\n"
-        "Die Linke.,42,Jan,Müller,10,5000\n"
-        "SPD,99,Anna,Schmidt,15,7000\n",
-        encoding="utf-8",
-    )
-
-    monkeypatch.setattr("src.export.DATA_DIR", tmp_path / "data")
-    monkeypatch.setattr("src.export.OUTPUT_DIR", tmp_path / "out")
-
-    from src.export import export_party_speech_stats
-
-    export_party_speech_stats(period)
-
-    records = json.loads(
-        (tmp_path / "out" / str(period) / "party_speech_stats.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    fraktionen = {r["fraktion"] for r in records}
-    assert "Die Linke." not in fraktionen
-    assert "Die Linke" in fraktionen
-
-
-def test_main_can_limit_export_to_one_period(tmp_path, monkeypatch):
+def test_main_writes_periods_json_for_all_exportable_periods(tmp_path, monkeypatch):
+    """export.main() writes periods.json listing all periods that have votes.csv."""
     import src.export as ej
 
     data_dir = tmp_path / "data"
@@ -550,22 +332,12 @@ def test_main_can_limit_export_to_one_period(tmp_path, monkeypatch):
         period_dir = data_dir / str(period)
         period_dir.mkdir(parents=True, exist_ok=True)
         (period_dir / "votes.csv").write_text(_VOTES_CSV, encoding="utf-8")
-        (period_dir / "party_word_freq.csv").write_text(
-            _WORD_FREQ_CSV, encoding="utf-8"
-        )
-        (period_dir / "party_speech_stats.csv").write_text(
-            _SPEECH_STATS_CSV, encoding="utf-8"
-        )
 
     monkeypatch.setattr(ej, "DATA_DIR", data_dir)
     monkeypatch.setattr(ej, "OUTPUTS_DIR", outputs_dir)
     monkeypatch.setattr(ej, "OUTPUT_DIR", out_dir)
 
     ej.main(["--period", "21"])
-
-    # Only WP 21 should get its word_freq exported; WP 20 is skipped by --period filter
-    assert not (out_dir / "20" / "party_word_freq.json").exists()
-    assert (out_dir / "21" / "party_word_freq.json").exists()
 
     periods = json.loads((out_dir / "periods.json").read_text(encoding="utf-8"))
     assert {row["wahlperiode"] for row in periods} == {20, 21}

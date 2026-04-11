@@ -21,8 +21,6 @@ from .cli import (
 from .export import (
     OUTPUT_DIR,
     export_motions,
-    export_party_speech_stats,
-    export_party_word_freq,
     export_period,
     export_periods,
 )
@@ -79,8 +77,6 @@ def _export_period_or_check(
             df_memberships=df_memberships,
         )
         if exported:
-            export_party_word_freq(p)
-            export_party_speech_stats(p)
             export_motions(p)
         return exported
     # Non-current period: include if all output files already exist.
