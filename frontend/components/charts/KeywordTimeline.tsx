@@ -101,7 +101,7 @@ export function KeywordTimeline({
     );
     const yScale = d3
       .scaleLinear()
-      .domain([0, d3.max(allVals) ?? 1])
+      .domain([0, (d3.max(allVals) ?? 1) * 1.1])
       .nice()
       .range([innerH, 0]);
 
@@ -169,6 +169,18 @@ export function KeywordTimeline({
       .selectAll("text")
       .style("font-size", "11px")
       .attr("fill", "#7872a8");
+
+    // Y-axis unit label — shown only in normalized mode, placed horizontally
+    // above the axis top to avoid rotated text (per design convention)
+    if (normalized) {
+      g.append("text")
+        .attr("x", 0)
+        .attr("y", -4)
+        .attr("text-anchor", "start")
+        .attr("fill", "#7872a8")
+        .style("font-size", "10px")
+        .text("pro 1.000 Wörter");
+    }
 
     // Clip-path keeps lines inside the chart area during zoom/pan.
     svg

@@ -245,6 +245,15 @@ export function AgeDistribution({ data, parties }: Props) {
     let currentXS = xScaleBase;
     update(xScaleBase);
 
+    // X-axis label — added once outside update() so it isn't redrawn on every zoom event
+    g.append("text")
+      .attr("x", iW / 2)
+      .attr("y", iH + M.bottom - 6)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#7872a8")
+      .style("font-size", "11px")
+      .text("Alter (Jahre)");
+
     // Zoom (x-only)
     const zoom = d3
       .zoom<SVGRectElement, unknown>()
