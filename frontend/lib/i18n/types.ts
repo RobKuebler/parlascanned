@@ -49,6 +49,25 @@ export type Translations = {
     poll_filter_divergent_present: string;
     poll_filter_divergent_present_title: string;
     politician_search_placeholder: string;
+    scatter_pan_hint: string;
+    scatter_rect_label: string;
+    scatter_rect_hint: string;
+    scatter_lasso_label: string;
+    scatter_lasso_hint: string;
+    scatter_click_hint: string;
+    politician_search_clear: string;
+    /** Template: {party} */
+    politician_search_remove_party: string;
+    /** Template: {name} */
+    politician_search_remove_pol: string;
+    /** Template: {count} */
+    politician_search_results: string;
+    politician_search_no_results: string;
+    /** Template: {topic} */
+    poll_filter_remove_topic: string;
+    /** Template: {count} */
+    poll_filter_results: string;
+    poll_filter_no_results: string;
   };
   motions: {
     tab_motion: string;
@@ -75,6 +94,8 @@ export type Translations = {
     no_data: string;
     close: string;
     top_words: string;
+    speech_share_title: string;
+    speech_share_subtitle: string;
   };
   comments: {
     summary_title: string;
@@ -86,8 +107,15 @@ export type Translations = {
     error: string;
     interjection_label: string;
     applause_label: string;
-    type_labels: Record<"Lachen" | "Heiterkeit" | "Widerspruch", string>;
+    type_labels: Record<"Beifall" | "Zwischenruf" | "Lachen" | "Heiterkeit" | "Widerspruch", string>;
     rare_reactions_label: string;
+    heatmap_row_hint: string;
+    heatmap_col_hint: string;
+    heatmap_tooltip_all: string;
+    chord_claps_for: string;
+    chord_receives: string;
+    chord_self_applause: string;
+    chord_self_claps: string;
   };
   party_profile: {
     age_title: string;
@@ -100,6 +128,11 @@ export type Translations = {
     education_field_subtitle: string;
     education_degree_title: string;
     education_degree_subtitle: string;
+    gender_male: string;
+    gender_female: string;
+    age_axis_label: string;
+    /** Template: {age} */
+    age_tooltip_years: string;
   };
   trends: {
     toggle_per_1000: string;
@@ -117,6 +150,7 @@ export type Translations = {
     show_hint: string;
     hide_hint: string;
     remove_keyword_label: string;
+    y_axis_per_1000: string;
   };
   sidejobs: {
     hero_total_label: string;
@@ -155,6 +189,7 @@ export type Translations = {
     methodology_l3: string;
     methodology_l4: string;
     methodology_footer: string;
+    sidejob_area_label: string;
   };
   ui: {
     menu_open: string;

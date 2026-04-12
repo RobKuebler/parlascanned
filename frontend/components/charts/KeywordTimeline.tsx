@@ -3,6 +3,7 @@ import { useRef, useEffect, useId } from "react";
 import * as d3 from "d3";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
 import { positionTooltip, ChartTooltip } from "@/lib/chart-utils";
+import { useLanguage } from "@/lib/language-context";
 
 export interface KeywordSeries {
   keyword: string;
@@ -67,6 +68,7 @@ export function KeywordTimeline({
   const tooltipRef = useRef<HTMLDivElement>(null);
   // Stable unique ID for the SVG clipPath so multiple chart instances don't collide.
   const clipId = useId().replace(/:/g, "");
+  const { language, t } = useLanguage();
 
   useEffect(() => {
     if (
@@ -135,24 +137,14 @@ export function KeywordTimeline({
       months.length > 24 || (isMobile && months.length > 12)
         ? d3.timeMonth.every(3)
         : d3.timeMonth.every(1);
-    const DE_MONTHS = [
-      "Jan",
-      "Feb",
-      "Mär",
-      "Apr",
-      "Mai",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Okt",
-      "Nov",
-      "Dez",
-    ];
+    // Locale-aware month abbreviations — re-computed when language changes.
+    const MONTHS = Array.from({ length: 12 }, (_, i) =>
+      new Intl.DateTimeFormat(language === "de" ? "de-DE" : "en-US", { month: "short" }).format(new Date(2024, i, 1))
+    );
     // Month label: first letter on mobile, 3-letter abbreviation on desktop.
     // Year appears as a second line only at year boundaries (January + first tick).
     const fmtMonth = (d: Date) =>
-      isMobile ? String(d.getMonth() + 1) : DE_MONTHS[d.getMonth()];
+      isMobile ? String(d.getMonth() + 1) : MONTHS[d.getMonth()];
 
     const xAxisG = g.append("g").attr("transform", `translate(0,${innerH})`);
     renderXAxis(xAxisG, xScale, tickEvery, fmtMonth);
@@ -179,7 +171,7 @@ export function KeywordTimeline({
         .attr("text-anchor", "start")
         .attr("fill", "#7872a8")
         .style("font-size", "10px")
-        .text("pro 1.000 Wörter");
+        .text(t.trends.y_axis_per_1000);
     }
 
     // Clip-path keeps lines inside the chart area during zoom/pan.
@@ -313,11 +305,13 @@ export function KeywordTimeline({
     });
   }, [
     containerRef,
+    language,
     months,
     totalWords,
     series,
     normalized,
     seriesWords,
+    t,
     width,
     clipId,
   ]);

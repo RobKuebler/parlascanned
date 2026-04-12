@@ -101,7 +101,7 @@ export function PoliticianSearch({
               e.currentTarget.style.color = COLOR_SECONDARY;
             }}
           >
-            Auswahl aufheben
+            {t.vote_map.politician_search_clear}
           </button>
         )}
       </div>
@@ -117,7 +117,7 @@ export function PoliticianSearch({
               key={party}
               label={getPartyShortLabel(party)}
               onRemove={() => onPartyRemove?.(party)}
-              removeLabel={`Entferne ${party}`}
+              removeLabel={t.vote_map.politician_search_remove_party.replace("{party}", party)}
               dotColor={getPartyColor(party)}
             />
           ))}
@@ -134,7 +134,7 @@ export function PoliticianSearch({
                 onRemove={() =>
                   onSelectionChange(selected.filter((x) => x !== id))
                 }
-                removeLabel={`Entferne ${pol.name}`}
+                removeLabel={t.vote_map.politician_search_remove_pol.replace("{name}", pol.name)}
                 dotColor={getPartyColor(party)}
                 suffix={
                   <span style={{ color: "#666", fontSize: 11 }}>
@@ -181,7 +181,7 @@ export function PoliticianSearch({
                 pointerEvents: "none",
               }}
             >
-              {results.length} Abgeordnete
+              {t.vote_map.politician_search_results.replace("{count}", String(results.length))}
             </li>
           )}
 
@@ -193,7 +193,7 @@ export function PoliticianSearch({
                 fontSize: 13,
               }}
             >
-              Keine Ergebnisse
+              {t.vote_map.politician_search_no_results}
             </li>
           ) : (
             results.map((pol, i) => {

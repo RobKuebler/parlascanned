@@ -1,5 +1,6 @@
 "use client";
 import { COLOR_SECONDARY, getPartyShortLabel } from "@/lib/constants";
+import { useTranslation } from "@/lib/language-context";
 
 interface SexRecord {
   party_label: string;
@@ -18,6 +19,7 @@ export function GenderChart({
   data: SexRecord[];
   parties: string[];
 }) {
+  const t = useTranslation();
   return (
     <div className="flex flex-col gap-3">
       {parties.map((party) => {
@@ -60,8 +62,8 @@ export function GenderChart({
       {/* Legend */}
       <div className="flex gap-4 mt-1 px-1">
         {[
-          { label: "Männlich", color: MALE_COLOR },
-          { label: "Weiblich", color: FEMALE_COLOR },
+          { label: t.party_profile.gender_male, color: MALE_COLOR },
+          { label: t.party_profile.gender_female, color: FEMALE_COLOR },
         ].map(({ label, color }) => (
           <span
             key={label}

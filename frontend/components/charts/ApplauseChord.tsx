@@ -18,6 +18,7 @@ import {
 import { ChartTooltip, positionTooltip } from "@/lib/chart-utils";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
 import type { KommentareData } from "@/lib/data";
+import { useTranslation } from "@/lib/language-context";
 
 interface Props {
   data: KommentareData;
@@ -41,6 +42,7 @@ export default function ApplauseChord({ data }: Props) {
   const { ref: containerRef, width } = useContainerWidth();
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const t = useTranslation();
 
   const draw = useCallback(() => {
     const svg = svgRef.current;
@@ -128,7 +130,7 @@ export default function ApplauseChord({ data }: Props) {
           container,
           px,
           py,
-          `<strong>${getPartyShortLabel(party)}</strong><br>klatscht bei anderen: ${fmt(given - matrix[d.index][d.index])}<br>bekommt Beifall: ${fmt(received - matrix[d.index][d.index])}<br><span style="color:#aaa">davon Eigenbeifall: ${fmt(matrix[d.index][d.index])}</span>`,
+          `<strong>${getPartyShortLabel(party)}</strong><br>${t.comments.chord_claps_for}${fmt(given - matrix[d.index][d.index])}<br>${t.comments.chord_receives}${fmt(received - matrix[d.index][d.index])}<br><span style="color:#aaa">${t.comments.chord_self_applause}${fmt(matrix[d.index][d.index])}</span>`,
         );
       })
       .on("mouseleave", () => {
@@ -206,12 +208,12 @@ export default function ApplauseChord({ data }: Props) {
           px,
           py,
           src === tgt
-            ? `<strong>${src}</strong> klatscht bei eigenen Reden: ${fmt(fwd)}`
+            ? `<strong>${src}</strong> ${t.comments.chord_self_claps}${fmt(fwd)}`
             : `<strong>${src} ↔ ${tgt}</strong><br>${src} bei ${tgt}-Reden: ${fmt(fwd)}<br>${tgt} bei ${src}-Reden: ${fmt(rev)}`,
         );
       })
       .on("mouseleave", () => tip.style("opacity", "0"));
-  }, [containerRef, data, width]);
+  }, [containerRef, data, t, width]);
 
   useEffect(() => {
     draw();

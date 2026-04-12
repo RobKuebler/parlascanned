@@ -8,6 +8,7 @@ import {
   styleAxisText,
   positionTooltip,
 } from "@/lib/chart-utils";
+import { useLanguage } from "@/lib/language-context";
 
 interface AgeRecord {
   name: string;
@@ -41,6 +42,7 @@ export function AgeDistribution({ data, parties }: Props) {
   const { ref: containerRef, width } = useContainerWidth();
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const { language, t } = useLanguage();
 
   useEffect(() => {
     if (!width || !svgRef.current) return;
@@ -252,7 +254,7 @@ export function AgeDistribution({ data, parties }: Props) {
       .attr("text-anchor", "middle")
       .attr("fill", "#7872a8")
       .style("font-size", "11px")
-      .text("Alter (Jahre)");
+      .text(t.party_profile.age_axis_label);
 
     // Zoom (x-only)
     const zoom = d3
@@ -321,11 +323,11 @@ export function AgeDistribution({ data, parties }: Props) {
           containerRef.current!,
           px,
           py,
-          `<b>${nearest.name}</b><br/>${getPartyShortLabel(nearest.party)} · ${nearest.age} Jahre`,
+          `<b>${nearest.name}</b><br/>${getPartyShortLabel(nearest.party)} · ${t.party_profile.age_tooltip_years.replace("{age}", String(nearest.age))}`,
         );
       })
       .on("mouseleave", () => tooltip.style("opacity", "0"));
-  }, [containerRef, data, parties, width]);
+  }, [containerRef, data, language, parties, t, width]);
 
   return (
     <div ref={containerRef} style={{ position: "relative" }}>

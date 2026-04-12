@@ -102,6 +102,20 @@ export const en: Translations = {
     poll_filter_divergent_present_title:
       "Votes with differing choices (excl. absent)",
     politician_search_placeholder: "Search MPs…",
+    scatter_pan_hint: "Pan & Zoom",
+    scatter_rect_label: "Rectangle",
+    scatter_rect_hint: "Rectangle Selection",
+    scatter_lasso_label: "Lasso",
+    scatter_lasso_hint: "Lasso Selection",
+    scatter_click_hint: "– Click to select",
+    politician_search_clear: "Clear selection",
+    politician_search_remove_party: "Remove {party}",
+    politician_search_remove_pol: "Remove {name}",
+    politician_search_results: "{count} MPs",
+    politician_search_no_results: "No results",
+    poll_filter_remove_topic: "Remove {topic}",
+    poll_filter_results: "{count} Votes",
+    poll_filter_no_results: "No results",
   },
   motions: {
     tab_motion: "Motions",
@@ -128,6 +142,8 @@ export const en: Translations = {
     no_data: "No speech data available for this legislative period.",
     close: "Close",
     top_words: "Top {count} terms",
+    speech_share_title: "Speech Shares",
+    speech_share_subtitle: "Total word count per parliamentary group in this legislative period.",
   },
   comments: {
     summary_title: "Overview",
@@ -141,11 +157,20 @@ export const en: Translations = {
     interjection_label: "Interjections",
     applause_label: "Applause",
     type_labels: {
+      Beifall: "Applause",
+      Zwischenruf: "Interjection",
       Lachen: "Laughter",
-      Heiterkeit: "Amusement",
+      Heiterkeit: "Hilarity",
       Widerspruch: "Objection",
     },
     rare_reactions_label: "Rarer Reactions",
+    heatmap_row_hint: "↓ Row = acting party",
+    heatmap_col_hint: "→ Column = speaker's party",
+    heatmap_tooltip_all: "% of all",
+    chord_claps_for: "applauds others: ",
+    chord_receives: "receives applause: ",
+    chord_self_applause: "of which self-applause: ",
+    chord_self_claps: "applauds own speeches: ",
   },
   party_profile: {
     age_title: "Age Distribution",
@@ -163,6 +188,10 @@ export const en: Translations = {
     education_degree_title: "Degree Level",
     education_degree_subtitle:
       "Highest educational qualification of MPs per parliamentary group, compared to the Bundestag average. Data from Abgeordnetenwatch at time of first registration.",
+    gender_male: "Male",
+    gender_female: "Female",
+    age_axis_label: "Age (years)",
+    age_tooltip_years: "{age} years",
   },
   trends: {
     toggle_per_1000: "Per 1,000 words",
@@ -182,6 +211,7 @@ export const en: Translations = {
     show_hint: "Show {label}",
     hide_hint: "Hide {label}",
     remove_keyword_label: "Remove {keyword}",
+    y_axis_per_1000: "per 1,000 words",
   },
   sidejobs: {
     hero_total_label: "Total side income",
@@ -233,6 +263,7 @@ export const en: Translations = {
       "Only side activities with a topic tag are included. Activities without an Abgeordnetenwatch topic tag are not captured, even if a substantive overlap exists.",
     methodology_footer:
       "This page surfaces potential conflicts of interest based on publicly disclosed data. It does not replace a legal or parliamentary assessment.",
+    sidejob_area_label: "Side activity in:",
   },
   ui: {
     menu_open: "Open menu",

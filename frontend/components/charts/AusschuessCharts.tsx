@@ -5,6 +5,7 @@ import { ConflictEntry, Politician } from "@/lib/data";
 import { getPartyColor, getPartyShortLabel } from "@/lib/constants";
 import { formatEur } from "@/components/charts/GroupedPartyBars";
 import { PartyHeatmap } from "./PartyHeatmap";
+import { useTranslation } from "@/lib/language-context";
 
 // ── ConflictRankedList ────────────────────────────────────────────────────────
 
@@ -19,6 +20,7 @@ export function ConflictRankedList({
   conflicts,
   politicians,
 }: RankedListProps) {
+  const t = useTranslation();
   const polMap = new Map(politicians.map((p) => [p.politician_id, p.name]));
 
   // Merge all committee rows per politician: sum income, collect committees
@@ -174,11 +176,11 @@ export function ConflictRankedList({
                             flexShrink: 0,
                           }}
                         >
-                          Nebentätigkeit in:
+                          {t.potential_conflicts.sidejob_area_label}
                         </span>
-                        {c.topics.map((t) => (
+                        {c.topics.map((topic) => (
                           <span
-                            key={t}
+                            key={topic}
                             style={{
                               background: "#f0effe",
                               color: "#5a51a8",
@@ -188,7 +190,7 @@ export function ConflictRankedList({
                               fontWeight: 600,
                             }}
                           >
-                            {t}
+                            {topic}
                           </span>
                         ))}
                       </div>

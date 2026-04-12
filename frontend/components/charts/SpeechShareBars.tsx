@@ -8,6 +8,7 @@ import {
 } from "@/lib/constants";
 import { stripSoftHyphen } from "@/lib/data";
 import { HorizontalBarRow } from "@/components/charts/HorizontalBarRow";
+import { useTranslation } from "@/lib/language-context";
 
 interface Props {
   speechStats: SpeechStatsFile;
@@ -21,6 +22,7 @@ function formatWords(n: number): string {
 
 /** Horizontal bar chart showing total words per party — summary for the speeches page. */
 export function SpeechShareBars({ speechStats }: Props) {
+  const t = useTranslation();
   const totals: Record<string, number> = {};
   for (const s of speechStats) {
     const party = stripSoftHyphen(s.fraktion);
@@ -40,10 +42,10 @@ export function SpeechShareBars({ speechStats }: Props) {
         className="font-extrabold text-[15px] mb-1"
         style={{ color: "#1E1B5E" }}
       >
-        Redeanteile
+        {t.speeches.speech_share_title}
       </h2>
       <p className="text-[12px] text-[#7872a8] mb-4">
-        Gesamtzahl der Wörter pro Fraktion in dieser Legislaturperiode.
+        {t.speeches.speech_share_subtitle}
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {sorted.map((party) => (

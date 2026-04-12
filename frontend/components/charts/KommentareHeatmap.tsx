@@ -19,6 +19,7 @@ import { ChartTooltip, positionTooltip } from "@/lib/chart-utils";
 import { ToggleGroup } from "@/components/ui/ToggleGroup";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
 import type { KommentareData } from "@/lib/data";
+import { useTranslation } from "@/lib/language-context";
 
 interface Props {
   data: KommentareData;
@@ -32,14 +33,6 @@ const EVENT_TABS = [
   "Widerspruch",
 ] as const;
 type EventTab = (typeof EVENT_TABS)[number];
-
-const EVENT_LABEL: Record<EventTab, string> = {
-  Beifall: "Beifall",
-  Zwischenruf: "Zwischenrufe",
-  Lachen: "Lachen",
-  Heiterkeit: "Heiterkeit",
-  Widerspruch: "Widerspruch",
-};
 
 // Sequential color scale: light to deep navy (Blues — standard for count data)
 const COLOR_LOW = "#f0f5ff";
@@ -62,9 +55,11 @@ function fmtCompact(n: number): string {
 function HeatmapCanvas({
   data,
   eventType,
+  t,
 }: {
   data: KommentareData;
   eventType: EventTab;
+  t: ReturnType<typeof useTranslation>;
 }) {
   const { ref: containerRef, width } = useContainerWidth();
   const svgRef = useRef<SVGSVGElement>(null);
@@ -232,7 +227,7 @@ function HeatmapCanvas({
               container,
               px,
               py,
-              `<strong>${getPartyShortLabel(parties[i])}</strong> → <strong>${getPartyShortLabel(parties[j])}</strong><br>${fmt(val)} (${pct}% aller ${getPartyShortLabel(parties[i])}-${EVENT_LABEL[eventType]})`,
+              `<strong>${getPartyShortLabel(parties[i])}</strong> → <strong>${getPartyShortLabel(parties[j])}</strong><br>${fmt(val)} (${pct}${t.comments.heatmap_tooltip_all} ${getPartyShortLabel(parties[i])}-${t.comments.type_labels[eventType]})`,
             );
           })
           .on("mouseleave", () => tip.style("opacity", "0"));
@@ -277,7 +272,7 @@ function HeatmapCanvas({
         .attr("stroke", "#e8e8e8")
         .attr("stroke-width", 1);
     }
-  }, [containerRef, data, eventType, width]);
+  }, [containerRef, data, eventType, t, width]);
 
   useEffect(() => {
     draw();
@@ -293,13 +288,14 @@ function HeatmapCanvas({
 
 export default function KommentareHeatmap({ data }: Props) {
   const [activeTab, setActiveTab] = useState<EventTab>("Beifall");
+  const t = useTranslation();
 
   return (
     <div>
       {/* Tabs */}
       <div style={{ marginBottom: 16 }}>
         <ToggleGroup
-          options={EVENT_TABS.map((t) => ({ value: t, label: EVENT_LABEL[t] }))}
+          options={EVENT_TABS.map((tab) => ({ value: tab, label: t.comments.type_labels[tab] }))}
           value={activeTab}
           onChange={setActiveTab}
         />
@@ -316,11 +312,11 @@ export default function KommentareHeatmap({ data }: Props) {
           fontFamily: CHART_FONT_FAMILY,
         }}
       >
-        <span>↓ Zeile = handelnde Partei</span>
-        <span>→ Spalte = Redner-Partei</span>
+        <span>{t.comments.heatmap_row_hint}</span>
+        <span>{t.comments.heatmap_col_hint}</span>
       </div>
 
-      <HeatmapCanvas data={data} eventType={activeTab} />
+      <HeatmapCanvas data={data} eventType={activeTab} t={t} />
     </div>
   );
 }

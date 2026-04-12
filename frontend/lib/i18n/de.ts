@@ -103,6 +103,20 @@ export const de: Translations = {
     poll_filter_divergent_present_title:
       "Abstimmungen mit unterschiedlichen Stimmen (ohne Abwesend)",
     politician_search_placeholder: "Politiker suchen…",
+    scatter_pan_hint: "Verschieben & Zoomen",
+    scatter_rect_label: "Rechteck",
+    scatter_rect_hint: "Rechteck-Auswahl",
+    scatter_lasso_label: "Lasso",
+    scatter_lasso_hint: "Freihand-Auswahl",
+    scatter_click_hint: "– Klicken zum Auswählen",
+    politician_search_clear: "Auswahl aufheben",
+    politician_search_remove_party: "Entferne {party}",
+    politician_search_remove_pol: "Entferne {name}",
+    politician_search_results: "{count} Abgeordnete",
+    politician_search_no_results: "Keine Ergebnisse",
+    poll_filter_remove_topic: "Entferne {topic}",
+    poll_filter_results: "{count} Abstimmungen",
+    poll_filter_no_results: "Keine Ergebnisse",
   },
   motions: {
     tab_motion: "Anträge",
@@ -131,6 +145,8 @@ export const de: Translations = {
     no_data: "Für diese Wahlperiode sind noch keine Rededaten verfügbar.",
     close: "Schließen",
     top_words: "Top {count} Begriffe",
+    speech_share_title: "Redeanteile",
+    speech_share_subtitle: "Gesamtzahl der Wörter pro Fraktion in dieser Legislaturperiode.",
   },
   comments: {
     summary_title: "Gesamtübersicht",
@@ -144,11 +160,20 @@ export const de: Translations = {
     interjection_label: "Zwischenrufe",
     applause_label: "Beifall",
     type_labels: {
+      Beifall: "Beifall",
+      Zwischenruf: "Zwischenruf",
       Lachen: "Lachen",
       Heiterkeit: "Heiterkeit",
       Widerspruch: "Widerspruch",
     },
     rare_reactions_label: "Seltenere Reaktionen",
+    heatmap_row_hint: "↓ Zeile = handelnde Partei",
+    heatmap_col_hint: "→ Spalte = Redner-Partei",
+    heatmap_tooltip_all: "% aller",
+    chord_claps_for: "klatscht bei anderen: ",
+    chord_receives: "bekommt Beifall: ",
+    chord_self_applause: "davon Eigenbeifall: ",
+    chord_self_claps: "klatscht bei eigenen Reden: ",
   },
   party_profile: {
     age_title: "Altersverteilung",
@@ -166,6 +191,10 @@ export const de: Translations = {
     education_degree_title: "Abschlussniveau",
     education_degree_subtitle:
       "Höchster Bildungsabschluss der Abgeordneten je Fraktion im Vergleich zum Bundestag-Durchschnitt. Die Angaben stammen aus der Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei Ersterfassung.",
+    gender_male: "Männlich",
+    gender_female: "Weiblich",
+    age_axis_label: "Alter (Jahre)",
+    age_tooltip_years: "{age} Jahre",
   },
   trends: {
     toggle_per_1000: "Pro 1.000 Wörter",
@@ -184,6 +213,7 @@ export const de: Translations = {
     show_hint: "{label} einblenden",
     hide_hint: "{label} ausblenden",
     remove_keyword_label: "{keyword} entfernen",
+    y_axis_per_1000: "pro 1.000 Wörter",
   },
   sidejobs: {
     hero_total_label: "Gesamtes Nebeneinkommen",
@@ -237,6 +267,7 @@ export const de: Translations = {
       "Nur Nebentätigkeiten mit Themenfeld-Angabe. Tätigkeiten ohne abgeordnetenwatch-Themenfeld-Tag werden nicht erfasst, auch wenn inhaltlich eine Überschneidung bestehen könnte.",
     methodology_footer:
       "Diese Seite zeigt potenzielle Interessenkonflikte auf Basis öffentlich gemeldeter Daten. Sie ersetzt keine rechtliche oder parlamentarische Bewertung.",
+    sidejob_area_label: "Nebentätigkeit in:",
   },
   ui: {
     menu_open: "Menü öffnen",

@@ -147,7 +147,7 @@ export function PollFilter({
               key={id}
               label={truncate(poll.topic, 40)}
               onRemove={() => onChange(effectiveIds.filter((x) => x !== id))}
-              removeLabel={`Entferne ${poll.topic}`}
+              removeLabel={t.vote_map.poll_filter_remove_topic.replace("{topic}", poll.topic)}
               title={poll.topic}
             />
           );
@@ -188,7 +188,7 @@ export function PollFilter({
                 pointerEvents: "none",
               }}
             >
-              {results.length} Abstimmungen
+              {t.vote_map.poll_filter_results.replace("{count}", String(results.length))}
             </li>
           )}
 
@@ -200,7 +200,7 @@ export function PollFilter({
                 fontSize: 13,
               }}
             >
-              Keine Ergebnisse
+              {t.vote_map.poll_filter_no_results}
             </li>
           ) : (
             results.map((poll, i) => (

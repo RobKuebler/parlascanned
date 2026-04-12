@@ -10,6 +10,7 @@ import {
 } from "@/lib/constants";
 import { positionTooltip } from "@/lib/chart-utils";
 import { useLatestRef } from "@/hooks/useLatestRef";
+import { useTranslation } from "@/lib/language-context";
 
 type Mode = "pan" | "rect" | "lasso";
 
@@ -41,6 +42,7 @@ export function VoteMapScatter({
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const [mode, setMode] = useState<Mode>("pan");
+  const t = useTranslation();
 
   // Stable refs so D3 event handlers always see latest React values
   const selectedIdsRef = useLatestRef(selectedIds);
@@ -284,7 +286,7 @@ export function VoteMapScatter({
             containerRef.current!,
             px,
             py,
-            `<b>${getPartyShortLabel(party)}</b> – Klicken zum Auswählen`,
+            `<b>${getPartyShortLabel(party)}</b> ${t.vote_map.scatter_click_hint}`,
           );
         })
         .on("mouseleave", () =>
@@ -491,7 +493,7 @@ export function VoteMapScatter({
     {
       m: "pan",
       label: "Pan",
-      hint: "Verschieben & Zoomen",
+      hint: t.vote_map.scatter_pan_hint,
       icon: (
         <svg
           width="14"
@@ -509,8 +511,8 @@ export function VoteMapScatter({
     },
     {
       m: "rect",
-      label: "Rechteck",
-      hint: "Rechteck-Auswahl",
+      label: t.vote_map.scatter_rect_label,
+      hint: t.vote_map.scatter_rect_hint,
       icon: (
         <svg
           width="14"
@@ -535,8 +537,8 @@ export function VoteMapScatter({
     },
     {
       m: "lasso",
-      label: "Lasso",
-      hint: "Freihand-Auswahl",
+      label: t.vote_map.scatter_lasso_label,
+      hint: t.vote_map.scatter_lasso_hint,
       icon: (
         <svg
           width="14"
