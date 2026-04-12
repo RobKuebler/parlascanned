@@ -31,19 +31,21 @@ import {
   getPartyShortLabel,
 } from "@/lib/constants";
 import { PAGE_META } from "@/lib/page-meta";
+import { useTranslation, useLanguage } from "@/lib/language-context";
 
 const META = PAGE_META.find((p) => p.href === "/motions")!;
 
 const TABS = ["Antrag", "Kleine Anfrage", "Große Anfrage"] as const;
 type Tab = (typeof TABS)[number];
 
-const TAB_LABELS: Record<Tab, string> = {
-  Antrag: "Anträge",
-  "Kleine Anfrage": "Kleine Anfragen",
-  "Große Anfrage": "Große Anfragen",
-};
-
 export default function MotionsPage() {
+  const t = useTranslation();
+  const { language } = useLanguage();
+  const TAB_LABELS: Record<Tab, string> = {
+    Antrag: t.motions.tab_motion,
+    "Kleine Anfrage": t.motions.tab_small_inquiry,
+    "Große Anfrage": t.motions.tab_large_inquiry,
+  };
   const { activePeriodId } = usePeriod();
   const [stats, setStats] = useState<MotionsStatsFile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -143,7 +145,7 @@ export default function MotionsPage() {
 
   return (
     <>
-      <PageHeader {...META} />
+      <PageHeader color={META.color} {...t.pages.motions} />
 
       {/* Tab toggle */}
       <div className="mb-6">
@@ -156,7 +158,7 @@ export default function MotionsPage() {
 
       {unavailable ? (
         <p className="text-[14px]" style={{ color: "#7872a8" }}>
-          Für diese Wahlperiode sind noch keine Drucksachen-Daten verfügbar.
+          {t.motions.no_data}
         </p>
       ) : loading || !stats || !typData ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -172,8 +174,8 @@ export default function MotionsPage() {
                 party: stripSoftHyphen(i.party),
                 count: i.count,
               }))}
-              label="Anzahl pro Fraktion"
-              sublabel={`Eingereichte ${TAB_LABELS[activeTab]} in dieser Legislaturperiode.`}
+              label={t.motions.count_label}
+              sublabel={t.motions.count_sublabel.replace("{tab}", TAB_LABELS[activeTab])}
             />
 
             <section
@@ -184,10 +186,10 @@ export default function MotionsPage() {
                 className="font-extrabold text-[15px] mb-1"
                 style={{ color: "#1E1B5E" }}
               >
-                Einreichungen pro Monat
+                {t.motions.timeline_title}
               </h2>
               <p className="text-[12px] mb-4" style={{ color: "#7872a8" }}>
-                Wann wurden besonders viele {TAB_LABELS[activeTab]} eingereicht?
+                {t.motions.timeline_subtitle.replace("{tab}", TAB_LABELS[activeTab])}
               </p>
               {typData.timeline.months.length > 0 ? (
                 <KeywordTimeline
@@ -198,7 +200,7 @@ export default function MotionsPage() {
                 />
               ) : (
                 <p className="text-[13px]" style={{ color: "#7872a8" }}>
-                  Keine Zeitdaten verfügbar.
+                  {t.motions.no_time_data}
                 </p>
               )}
             </section>
@@ -250,7 +252,7 @@ export default function MotionsPage() {
                       className="text-[12px] tabular-nums shrink-0"
                       style={{ color: "#7872a8" }}
                     >
-                      {count.toLocaleString("de")}
+                      {count.toLocaleString(language)}
                     </span>
                   </div>
 
@@ -266,7 +268,7 @@ export default function MotionsPage() {
                         className="text-[11px] font-bold tracking-[0.08em] uppercase mb-1"
                         style={{ color: "#7872a8" }}
                       >
-                        Aktivste Einreicher
+                        {t.motions.top_authors}
                       </p>
                       <SpeakerBars speakers={speakers} partyColor={color} />
                     </div>
@@ -285,35 +287,32 @@ export default function MotionsPage() {
               className="font-extrabold text-[15px] mb-1"
               style={{ color: "#1E1B5E" }}
             >
-              Themen-Suche
+              {t.motions.search_title}
             </h2>
             <p className="text-[12px] mb-4" style={{ color: "#7872a8" }}>
-              Welche Fraktion hat diesen Begriff wie oft in{" "}
-              {TAB_LABELS[activeTab]}-Titeln verwendet?
+              {t.motions.search_subtitle.replace("{tab}", TAB_LABELS[activeTab])}
             </p>
             <input
               type="text"
               value={query}
               onChange={(e) => handleQueryChange(e.target.value)}
-              placeholder={`Begriff suchen, z.B. migration, klima …`}
+              placeholder={t.motions.search_placeholder}
               className="w-full border border-[#dddaf0] rounded-lg px-4 py-2 text-[14px] outline-none focus:border-[#4C46D9] mb-4"
               style={{ color: "#171613" }}
             />
             {titlesLoading && (
               <p className="text-[13px]" style={{ color: "#7872a8" }}>
-                Daten werden geladen…
+                {t.motions.search_loading}
               </p>
             )}
             {searchResults && searchResults.length > 0 && (
               <>
                 <MotionCountBars
                   items={searchResults}
-                  label={`Treffer für „${query}"`}
-                  sublabel={`${searchResults
-                    .reduce((s, i) => s + i.count, 0)
-                    .toLocaleString(
-                      "de",
-                    )} ${TAB_LABELS[activeTab]} enthalten diesen Begriff.`}
+                  label={`${t.motions.hits_for} „${query}"`}
+                  sublabel={t.motions.hits_sublabel
+                    .replace("{count}", searchResults.reduce((s, i) => s + i.count, 0).toLocaleString(language))
+                    .replace("{tab}", TAB_LABELS[activeTab])}
                 />
 
                 {/* Title list grouped by party */}
@@ -337,7 +336,7 @@ export default function MotionsPage() {
                             className="text-[12px] tabular-nums"
                             style={{ color: "#7872a8" }}
                           >
-                            {count.toLocaleString("de")}
+                            {count.toLocaleString(language)}
                           </span>
                         </div>
                         <ul className="pl-3">
@@ -363,15 +362,13 @@ export default function MotionsPage() {
                 </div>
               </>
             )}
-            {searchResults &&
-              searchResults.length === 0 &&
-              query.trim() &&
-              !titlesLoading && (
-                <p className="text-[13px]" style={{ color: "#7872a8" }}>
-                  Keine {TAB_LABELS[activeTab]} mit &bdquo;{query}&ldquo;
-                  gefunden.
-                </p>
-              )}
+            {searchResults && searchResults.length === 0 && query.trim() && !titlesLoading && (
+              <p className="text-[13px]" style={{ color: "#7872a8" }}>
+                {t.motions.no_results
+                  .replace("{tab}", TAB_LABELS[activeTab])
+                  .replace("{query}", query)}
+              </p>
+            )}
           </div>
         </>
       )}
