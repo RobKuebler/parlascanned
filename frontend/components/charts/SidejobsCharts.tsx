@@ -108,7 +108,6 @@ export function IncomeByCategoryChart({
       tooltipHtml={(row, col, val) =>
         `<b>${col}</b><br/>${row}<br/>${formatEur(val)}`
       }
-      rowHeight={28}
     />
   );
 }
@@ -173,7 +172,6 @@ export function TopTopicsChart({
       tooltipHtml={(row, col, val) =>
         `<b>${col}</b><br/>${row}<br/>${formatEur(val)}`
       }
-      rowHeight={28}
     />
   );
 }

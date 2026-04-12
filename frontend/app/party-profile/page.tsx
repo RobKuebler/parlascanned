@@ -131,7 +131,7 @@ export default function PartyProfilePage() {
               insbesondere Abgeordnete, die als Berufsbezeichnung schlicht
               &bdquo;Abgeordneter&ldquo; angegeben haben.
             </p>
-            <DeviationHeatmap pivot={data.occupation} height={500} />
+            <DeviationHeatmap pivot={data.occupation} />
           </section>
 
           <section
@@ -152,7 +152,7 @@ export default function PartyProfilePage() {
               Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei
               Ersterfassung.
             </p>
-            <DeviationHeatmap pivot={data.education_field} height={400} />
+            <DeviationHeatmap pivot={data.education_field} />
           </section>
 
           <section
@@ -171,7 +171,7 @@ export default function PartyProfilePage() {
               Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei
               Ersterfassung.
             </p>
-            <DeviationHeatmap pivot={data.education_degree} height={250} />
+            <DeviationHeatmap pivot={data.education_degree} />
           </section>
         </div>
       )}

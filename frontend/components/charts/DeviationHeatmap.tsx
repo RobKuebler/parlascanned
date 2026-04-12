@@ -14,10 +14,9 @@ import { PartyHeatmap } from "./PartyHeatmap";
 
 interface Props {
   pivot: DeviationPivot;
-  height?: number;
 }
 
-export function DeviationHeatmap({ pivot, height = 400 }: Props) {
+export function DeviationHeatmap({ pivot }: Props) {
   const { rows, cols, data, divergingMax } = useMemo(() => {
     // Re-order parties by seat count (PARTY_ORDER), drop fraktionslos.
     const sortedCols = sortParties(
@@ -84,7 +83,6 @@ export function DeviationHeatmap({ pivot, height = 400 }: Props) {
       divergingMax={divergingMax}
       cellLabel={(v) => `${v > 0 ? "+" : ""}${v.toFixed(0)}`}
       tooltipHtml={tooltipHtml}
-      height={height}
     />
   );
 }

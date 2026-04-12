@@ -87,16 +87,9 @@ export interface PartyHeatmapProps {
    * Receives the row label, column (party) label, and cell value.
    */
   tooltipHtml?: (row: string, col: string, value: number) => string;
-
-  /**
-   * Fixed height for every data row in px. When set, the SVG grows with the
-   * number of rows and `height` is ignored. Prefer this over `height`.
-   */
-  rowHeight?: number;
-
-  /** Hint height used to derive per-row height. Default 400. Ignored when rowHeight is set. */
-  height?: number;
 }
+
+const ROW_H = 28; // fixed row height for all heatmaps — single source of truth
 
 export function PartyHeatmap({
   rows,
@@ -108,8 +101,6 @@ export function PartyHeatmap({
   seqScale = "linear",
   cellLabel,
   tooltipHtml,
-  rowHeight,
-  height = 400,
 }: PartyHeatmapProps) {
   const { ref: containerRef, width } = useContainerWidth();
   const svgRef = useRef<SVGSVGElement>(null);
@@ -137,14 +128,6 @@ export function PartyHeatmap({
     const colW = Math.max(minColW, Math.floor((width - ML - MR) / cols.length));
     const iW = colW * cols.length;
 
-    // Row height: fixed when rowHeight is provided; otherwise derived from the
-    // hint height and clamped to [22, 48] px.
-    const ROW_H = rowHeight
-      ? rowHeight
-      : Math.min(
-          48,
-          Math.max(22, Math.floor((height - HEADER_H) / rows.length)),
-        );
     const bodyHeight = ROW_H * rows.length;
     const totalH = HEADER_H + bodyHeight;
 
@@ -374,8 +357,6 @@ export function PartyHeatmap({
     seqScale,
     cellLabel,
     tooltipHtml,
-    rowHeight,
-    height,
     width,
     containerRef,
   ]);

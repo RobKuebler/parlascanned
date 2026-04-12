@@ -281,7 +281,6 @@ export function ConflictHeatmap({ conflicts, parties }: HeatmapProps) {
       cols={cols}
       data={data}
       mode="sequential"
-      rowHeight={28}
       cellLabel={formatEur}
       tooltipHtml={(row, col, val) =>
         `<b>${col}</b><br/>${row}<br/>${formatEur(val)}`
