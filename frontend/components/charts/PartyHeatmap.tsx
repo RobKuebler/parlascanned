@@ -30,8 +30,8 @@ import {
 const DIVERGING_LOW = "#d73027";
 const DIVERGING_MID = "#f7f7f7";
 const DIVERGING_HIGH = "#4575b4";
-const SEQ_DEFAULT_LOW = "#fff8f6";
-const SEQ_DEFAULT_HIGH = "#7f3a1a";
+const SEQ_DEFAULT_LOW = "#f0f5ff";
+const SEQ_DEFAULT_HIGH = "#0f2d5c";
 
 const MIN_COL_W = 44;
 const CHAR_W = 5.8; // estimated px per character at 9.5px font
@@ -417,7 +417,7 @@ export function PartyHeatmap({
                   flexShrink: 0,
                 }}
               />
-              <span style={{ fontSize: 11, color: "#9A9790" }}>{name}</span>
+              <span style={{ fontSize: 11, color: "#7872a8" }}>{name}</span>
             </span>
           ))}
         </div>
