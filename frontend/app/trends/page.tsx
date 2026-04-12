@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useMemo, useRef } from "react";
+import { useTranslation, useLanguage } from "@/lib/language-context";
 import { usePeriod } from "@/lib/period-context";
 import {
   fetchPeriodData,
@@ -42,6 +43,8 @@ interface ActiveKeyword {
 }
 
 export default function ThemenTrendsPage() {
+  const t = useTranslation();
+  const { language } = useLanguage();
   const { activePeriodId } = usePeriod();
   const [data, setData] = useState<KeywordTimelineFile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -156,9 +159,7 @@ export default function ThemenTrendsPage() {
       return;
     }
     if (!(normalized in data.terms)) {
-      setNotFoundMsg(
-        `„${normalized}" kommt nicht häufig genug vor oder ist nicht im Index.`,
-      );
+      setNotFoundMsg(t.trends.not_found.replace("{term}", normalized));
       setSuggestions([]);
       return;
     }
@@ -179,9 +180,7 @@ export default function ThemenTrendsPage() {
     const normalized = term.trim().toLowerCase();
     if (!normalized || !data) return;
     if (!(normalized in data.terms)) {
-      setCompNotFound(
-        `„${normalized}" kommt nicht häufig genug vor oder ist nicht im Index.`,
-      );
+      setCompNotFound(t.trends.not_found.replace("{term}", normalized));
       setCompSuggestions([]);
       return;
     }
@@ -227,11 +226,11 @@ export default function ThemenTrendsPage() {
 
   return (
     <>
-      <PageHeader {...META} />
+      <PageHeader color={META.color} {...t.pages.trends} />
 
       {unavailable ? (
         <p className="text-[14px]" style={{ color: "#7872a8" }}>
-          Für diese Wahlperiode sind noch keine Verlaufsdaten verfügbar.
+          {t.trends.no_data}
         </p>
       ) : loading ? (
         <ChartSkeleton height={360} />
@@ -240,8 +239,8 @@ export default function ThemenTrendsPage() {
           {/* Shared normalization toggle — applies to both charts */}
           <ToggleGroup
             options={[
-              { value: "per1000", label: "Pro 1.000 Wörter" },
-              { value: "absolute", label: "Absolut" },
+              { value: "per1000", label: t.trends.toggle_per_1000 },
+              { value: "absolute", label: t.trends.toggle_absolute },
             ]}
             value={normalized ? "per1000" : "absolute"}
             onChange={(v) => setNormalized(v === "per1000")}
@@ -266,7 +265,7 @@ export default function ThemenTrendsPage() {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") addKeyword(query);
                   }}
-                  placeholder="Begriff suchen, z.B. migration, ukraine …"
+                  placeholder={activeKeywords.length >= MAX_KEYWORDS ? "" : t.trends.search_placeholder_a}
                   className="w-full border border-[#dddaf0] rounded-lg px-4 py-2 text-[14px] outline-none focus:border-[#2980B9]"
                   style={{ color: "#171613" }}
                   disabled={activeKeywords.length >= MAX_KEYWORDS}
@@ -329,7 +328,7 @@ export default function ThemenTrendsPage() {
                 className="text-[14px] text-center py-16"
                 style={{ color: "#7872a8" }}
               >
-                Gib einen Begriff ein um seinen Verlauf im Plenum zu sehen.
+                {t.trends.empty_a}
               </p>
             ) : (
               <KeywordTimeline
@@ -351,10 +350,10 @@ export default function ThemenTrendsPage() {
                 className="text-[15px] font-semibold"
                 style={{ color: "#171613" }}
               >
-                Begriff nach Partei
+                {t.trends.party_comparison_title}
               </h2>
               <p className="text-[13px]" style={{ color: "#7872a8" }}>
-                Wie oft sprechen die Fraktionen einen Begriff an?
+                {t.trends.party_comparison_subtitle}
               </p>
             </div>
 
@@ -373,7 +372,7 @@ export default function ThemenTrendsPage() {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") addCompKeyword(compQuery);
                   }}
-                  placeholder="Begriff wählen, z.B. klimaschutz …"
+                  placeholder={t.trends.search_placeholder_b}
                   className="w-full border border-[#dddaf0] rounded-lg px-4 py-2 text-[14px] outline-none focus:border-[#2980B9]"
                   style={{ color: "#171613" }}
                 />
@@ -410,21 +409,21 @@ export default function ThemenTrendsPage() {
                 className="text-[14px] text-center py-16"
                 style={{ color: "#7872a8" }}
               >
-                Wähle einen Begriff um den Partei-Vergleich zu sehen.
+                {t.trends.empty_b}
               </p>
             ) : !compHasPartyData ? (
               <p
                 className="text-[14px] text-center py-12"
                 style={{ color: "#7872a8" }}
               >
-                Zu selten verwendet — kein Parteivergleich verfügbar.
+                {t.trends.too_rare}
               </p>
             ) : compSeries.length === 0 ? (
               <p
                 className="text-[14px] text-center py-12"
                 style={{ color: "#7872a8" }}
               >
-                Keine Partei-Daten verfügbar.
+                {t.trends.no_party_data}
               </p>
             ) : (
               <>
@@ -446,10 +445,9 @@ export default function ThemenTrendsPage() {
                         className="flex items-center gap-1.5 text-[12px] transition-opacity"
                         style={{ opacity: hidden ? 0.35 : 1 }}
                         aria-pressed={!hidden}
-                        title={
-                          hidden
-                            ? `${s.keyword} einblenden`
-                            : `${s.keyword} ausblenden`
+                        title={hidden
+                          ? t.trends.show_hint.replace("{label}", s.keyword)
+                          : t.trends.hide_hint.replace("{label}", s.keyword)
                         }
                       >
                         <span
