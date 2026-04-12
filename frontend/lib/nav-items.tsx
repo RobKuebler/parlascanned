@@ -5,9 +5,11 @@
  * Order: Legislative process → Parties & Analysis → Transparency
  */
 
+import type { NavKey } from "@/lib/i18n/types";
+
 export interface NavItem {
   href: string;
-  label: string;
+  key: NavKey;
   icon: (active: boolean, size?: number) => React.ReactElement;
 }
 
@@ -15,7 +17,7 @@ export const NAV_ITEMS: NavItem[] = [
   // --- Legislative process ---
   {
     href: "/vote-map",
-    label: "Abstimmungen",
+    key: "vote_map",
     icon: (active, size = 24) => (
       <svg
         width={size}
@@ -34,7 +36,7 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/motions",
-    label: "Initiativen",
+    key: "motions",
     icon: (active, size = 24) => (
       <svg
         width={size}
@@ -56,7 +58,7 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/speeches",
-    label: "Plenardebatten",
+    key: "speeches",
     icon: (active, size = 24) => (
       <svg
         width={size}
@@ -74,7 +76,7 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/comments",
-    label: "Plenardynamik",
+    key: "comments",
     icon: (active, size = 24) => (
       <svg
         width={size}
@@ -95,7 +97,7 @@ export const NAV_ITEMS: NavItem[] = [
   // --- Parties & Analysis ---
   {
     href: "/party-profile",
-    label: "Parteiprofil",
+    key: "party_profile",
     icon: (active, size = 24) => (
       <svg
         width={size}
@@ -116,7 +118,7 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/trends",
-    label: "Trends",
+    key: "trends",
     icon: (active, size = 24) => (
       <svg
         width={size}
@@ -135,7 +137,7 @@ export const NAV_ITEMS: NavItem[] = [
   // --- Transparency ---
   {
     href: "/sidejobs",
-    label: "Nebeneinkünfte",
+    key: "sidejobs",
     icon: (active, size = 24) => (
       <svg
         width={size}
@@ -155,7 +157,7 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/potential-conflicts",
-    label: "Konflikte",
+    key: "potential_conflicts",
     icon: (active, size = 24) => (
       <svg
         width={size}

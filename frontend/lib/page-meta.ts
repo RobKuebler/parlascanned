@@ -4,14 +4,13 @@
  * Always edit here — never inline the same data in a page file.
  */
 
+import type { PageKey } from "@/lib/i18n/types";
+
 export interface PageMeta {
   href: string;
   /** Accent color — drives PageHeader border and dashboard icon background. */
   color: string;
-  /** Eyebrow label shown above the title. */
-  label: string;
-  title: string;
-  description: string;
+  key: PageKey;
   /** If true, the dashboard card spans both columns on md+. */
   wide?: boolean;
 }
@@ -22,67 +21,43 @@ export const PAGE_META: PageMeta[] = [
   {
     href: "/vote-map",
     color: "#4C46D9",
-    label: "Abstimmungsverhalten",
-    title: "Wer stimmt mit wem?",
-    description:
-      "Jeder Punkt ist ein Abgeordneter. Wer oft gleich abstimmt, landet nah beieinander, egal welcher Fraktion er angehört. So entstehen Muster, die Fraktionsgrenzen überschreiten.",
+    key: "vote_map",
   },
   {
     href: "/motions",
     color: "#1d4ed8",
-    label: "Parlamentarische Initiative",
-    title: "Wer fordert was?",
-    description:
-      "Anträge und Anfragen der Fraktionen im Vergleich — nach Themen, Volumen und aktivsten Einreichern.",
+    key: "motions",
   },
   {
     href: "/speeches",
     color: "#0d7456",
-    label: "Wortanalyse",
-    title: "Wer redet worüber?",
-    description:
-      "Welche Begriffe fallen bei einer Partei besonders häufig? Wordclouds zeigen die typische Sprache jeder Fraktion, dazu die redeaktivsten Abgeordneten im Vergleich.",
+    key: "speeches",
   },
   {
     href: "/comments",
     color: "#7c3aed",
-    label: "Plenardynamik",
-    title: "Wer reagiert auf wen?",
-    description:
-      "Zwischenrufe, Lachen, Applaus: Jede Reaktion im Bundestag wird protokolliert. Diese Analyse zeigt, welche Partei wie oft und bei wessen Reden reagiert.",
+    key: "comments",
   },
   // --- Parties & Analysis ---
   {
     href: "/party-profile",
     color: "#0284c7",
-    label: "Demografie",
-    title: "Wer sitzt im Bundestag?",
-    description:
-      "Altersstruktur, Geschlechterverteilung, Berufsfelder und Bildungshintergrund im Vergleich: So unterscheiden sich die Fraktionen voneinander und vom Gesamtparlament.",
+    key: "party_profile",
   },
   {
     href: "/trends",
     color: "#0f766e",
-    label: "Zeitverlauf",
-    title: "Wann wurde welches Thema heiß?",
-    description:
-      "Verfolge, wie oft ein Begriff in Plenardebatten erwähnt wurde, und erkenne, wann ein Thema plötzlich an Fahrt aufnahm.",
+    key: "trends",
   },
   // --- Transparency ---
   {
     href: "/sidejobs",
     color: "#b45309",
-    label: "Transparenz",
-    title: "Wer verdient noch dazu?",
-    description:
-      "Abgeordnete müssen bezahlte Nebentätigkeiten ab 1.000 € monatlich öffentlich melden. Diese Auswertung zeigt, in welchen Parteien, Branchen und Themenfeldern solche Einkünfte besonders verbreitet sind.",
+    key: "sidejobs",
   },
   {
     href: "/potential-conflicts",
     color: "#be123c",
-    label: "Interessenkonflikt",
-    title: "Wer verdient im eigenen Ausschuss?",
-    description:
-      "Abgeordnete, die in einem parlamentarischen Ausschuss sitzen und gleichzeitig in demselben Themenfeld Geld verdienen — eine Analyse möglicher Interessenkonflikte.",
+    key: "potential_conflicts",
   },
 ];
