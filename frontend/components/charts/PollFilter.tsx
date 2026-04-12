@@ -1,6 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import { Poll } from "@/lib/data";
+import { useTranslation } from "@/lib/language-context";
 import {
   COLOR_SECONDARY,
   FILTER_ACCENT as ACCENT,
@@ -34,6 +35,7 @@ export function PollFilter({
   divergentPollIds,
   divergentPresentPollIds,
 }: Props) {
+  const t = useTranslation();
   const {
     query,
     isOpen,
@@ -99,7 +101,7 @@ export function PollFilter({
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onFocus={open}
-          placeholder="Abstimmungen suchen…"
+          placeholder={t.vote_map.poll_search_placeholder}
         />
       </div>
 
@@ -107,29 +109,29 @@ export function PollFilter({
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
         {/* Filter preset chips */}
         <FilterChip
-          label="Alle"
+          label={t.vote_map.poll_filter_all}
           count={polls.length}
           active={false}
           onClick={() => onChange([])}
         />
         {divergentPollIds !== undefined && (
           <FilterChip
-            label="Unterschiedlich"
+            label={t.vote_map.poll_filter_divergent}
             count={divergentPollIds.length}
             active={divergentActive}
             onClick={() => onChange(divergentPollIds)}
             disabled={divergentPollIds.length === 0}
-            title="Abstimmungen mit unterschiedlichen Stimmen (inkl. Abwesend)"
+            title={t.vote_map.poll_filter_divergent_title}
           />
         )}
         {divergentPresentPollIds !== undefined && (
           <FilterChip
-            label="Unterschiedlich, ohne Fehlen"
+            label={t.vote_map.poll_filter_divergent_present}
             count={divergentPresentPollIds.length}
             active={divergentPresentActive}
             onClick={() => onChange(divergentPresentPollIds)}
             disabled={divergentPresentPollIds.length === 0}
-            title="Abstimmungen mit unterschiedlichen Stimmen (ohne Abwesend)"
+            title={t.vote_map.poll_filter_divergent_present_title}
           />
         )}
         {/* Separator */}

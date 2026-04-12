@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { usePeriod } from "@/lib/period-context";
+import { useTranslation } from "@/lib/language-context";
 import {
   fetchPeriodFiles,
   stripSoftHyphen,
@@ -38,6 +39,7 @@ const META = PAGE_META.find((p) => p.href === "/vote-map")!;
 
 export default function VoteMapPage() {
   const { activePeriodId } = usePeriod();
+  const t = useTranslation();
   const [embeddings, setEmbeddings] = useState<EmbeddingsFile | null>(null);
   const [politicians, setPoliticians] = useState<Politician[]>([]);
   const [cohesion, setCohesion] = useState<
@@ -219,13 +221,13 @@ export default function VoteMapPage() {
 
   return (
     <>
-      <PageHeader {...META} />
+      <PageHeader color={META.color} {...t.pages.vote_map} />
 
       {/* Coalition banner */}
       {activePeriodId && GOVERNING_PARTIES[activePeriodId] && (
         <div className="flex flex-col gap-2 mb-5 sm:flex-row sm:items-center">
           <span className="text-[11px] font-bold tracking-[0.12em] uppercase text-[#7872a8]">
-            Regierungskoalition
+            {t.vote_map.coalition_label}
           </span>
           <div className="flex items-center gap-1.5">
             {GOVERNING_PARTIES[activePeriodId].map((party, i) => (
@@ -263,12 +265,10 @@ export default function VoteMapPage() {
           className="font-extrabold text-[15px] mb-1"
           style={{ color: "#1E1B5E" }}
         >
-          Abstimmungslandkarte
+          {t.vote_map.map_title}
         </h2>
         <p className="text-[12px] text-[#7872a8] mb-4">
-          Klicken Sie auf einzelne Punkte oder ziehen Sie eine Auswahl, um das
-          Abstimmungsverhalten der betreffenden Abgeordneten im Detail zu
-          analysieren. Fraktionsnamen im Diagramm sind ebenfalls anklickbar.
+          {t.vote_map.map_subtitle}
         </p>
         {loading ? (
           <ChartSkeleton height={chartHeight} />
@@ -294,12 +294,10 @@ export default function VoteMapPage() {
           className="font-extrabold text-[15px] mb-1"
           style={{ color: "#1E1B5E" }}
         >
-          Abstimmungsverhalten
+          {t.vote_map.heatmap_title}
         </h2>
         <p className="text-[12px] text-[#7872a8] mb-4">
-          Die Heatmap zeigt, wie die ausgewählten Abgeordneten bei einzelnen
-          Abstimmungen votiert haben. Wählen Sie zunächst Abgeordnete aus der
-          Karte oder über die Suche aus.
+          {t.vote_map.heatmap_subtitle}
         </p>
 
         {!loading && (
@@ -319,7 +317,7 @@ export default function VoteMapPage() {
 
         {!effectivePolIds.length ? (
           <p className="text-[13px] text-center py-10 text-[#7872a8]">
-            Abgeordnete auswählen, um ihre Abstimmungen zu sehen
+            {t.vote_map.heatmap_empty}
           </p>
         ) : loadingVotes ? (
           <ChartSkeleton height={300} />
@@ -347,7 +345,7 @@ export default function VoteMapPage() {
                       background: VOTE_META[k].color,
                     }}
                   />
-                  {{ yes: "Ja", no: "Nein", abstain: "Enthalten" }[k]}
+                  {{ yes: t.vote_map.vote_yes, no: t.vote_map.vote_no, abstain: t.vote_map.vote_abstain }[k]}
                 </span>
               ))}
             </div>
@@ -371,12 +369,10 @@ export default function VoteMapPage() {
           className="font-extrabold text-[15px] mb-1"
           style={{ color: "#1E1B5E" }}
         >
-          Fraktionsdisziplin
+          {t.vote_map.cohesion_title}
         </h2>
         <p className="text-[12px] text-[#7872a8] mb-4">
-          Mittlerer euklidischer Abstand jedes Abgeordneten zum Schwerpunkt
-          seiner Fraktion. Ein kurzer Balken bedeutet geschlossenes
-          Abstimmungsverhalten.
+          {t.vote_map.cohesion_subtitle}
         </p>
         {loading ? (
           <ChartSkeleton height={250} />

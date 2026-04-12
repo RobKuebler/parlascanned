@@ -1,6 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import { Politician, stripSoftHyphen } from "@/lib/data";
+import { useTranslation } from "@/lib/language-context";
 import {
   COLOR_SECONDARY,
   getPartyColor,
@@ -32,6 +33,7 @@ export function PoliticianSearch({
   onPartyRemove,
   onClearAll,
 }: Props) {
+  const t = useTranslation();
   const {
     query,
     isOpen,
@@ -73,7 +75,7 @@ export function PoliticianSearch({
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onFocus={open}
-          placeholder="Politiker suchen…"
+          placeholder={t.vote_map.politician_search_placeholder}
         />
 
         {(selected.length > 0 || selectedParties.length > 0) && (
