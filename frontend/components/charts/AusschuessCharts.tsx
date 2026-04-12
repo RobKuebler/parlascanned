@@ -286,6 +286,7 @@ interface HeatmapProps {
  * Wraps PartyHeatmap (mode="sequential").
  */
 export function ConflictHeatmap({ conflicts, parties }: HeatmapProps) {
+  const t = useTranslation();
   const { rows, cols, data } = useMemo(() => {
     // Aggregate: topic → party → total conflicted income
     const map = new Map<string, Map<string, number>>();
@@ -324,8 +325,9 @@ export function ConflictHeatmap({ conflicts, parties }: HeatmapProps) {
       mode="sequential"
       cellLabel={formatEur}
       tooltipHtml={(row, col, val) =>
-        `<b>${col}</b><br/>${row}<br/>${formatEur(val)}`
+        `<b>${col}</b><br/>${t.potential_conflicts.topic_labels[row] ?? row}<br/>${formatEur(val)}`
       }
+      rowLabel={(topic) => t.potential_conflicts.topic_labels[topic] ?? topic}
     />
   );
 }

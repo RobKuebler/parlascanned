@@ -73,6 +73,12 @@ export interface PartyHeatmapProps {
    * Receives the row label, column (party) label, and cell value.
    */
   tooltipHtml?: (row: string, col: string, value: number) => string;
+
+  /**
+   * Optional function to translate row (y-axis) labels for display.
+   * The raw row string (data key) is still used internally; only the display changes.
+   */
+  rowLabel?: (row: string) => string;
 }
 
 const ROW_H = 28; // fixed row height for all heatmaps — single source of truth
@@ -85,6 +91,7 @@ export function PartyHeatmap({
   seqScale = "log",
   cellLabel,
   tooltipHtml,
+  rowLabel,
 }: PartyHeatmapProps) {
   const { ref: containerRef, width } = useContainerWidth();
   const svgRef = useRef<SVGSVGElement>(null);
@@ -259,7 +266,7 @@ export function PartyHeatmap({
     svg
       .append("g")
       .attr("transform", `translate(${ML}, ${HEADER_H})`)
-      .call(d3.axisLeft(yScale).tickSize(0))
+      .call(d3.axisLeft(yScale).tickSize(0).tickFormat((d) => rowLabel ? rowLabel(String(d)) : String(d)))
       .call((ax) => ax.select(".domain").remove())
       .call(styleAxisText)
       .call((ax) =>
@@ -348,6 +355,7 @@ export function PartyHeatmap({
     seqScale,
     cellLabel,
     tooltipHtml,
+    rowLabel,
     width,
     containerRef,
   ]);

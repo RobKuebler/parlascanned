@@ -133,6 +133,12 @@ export type Translations = {
     age_axis_label: string;
     /** Template: {age} */
     age_tooltip_years: string;
+    occupation_labels: Record<string, string>;
+    education_field_labels: Record<string, string>;
+    education_degree_labels: Record<string, string>;
+    heatmap_of: string;
+    heatmap_mps: string;
+    heatmap_deviation: string;
   };
   trends: {
     toggle_per_1000: string;
@@ -190,6 +196,7 @@ export type Translations = {
     methodology_l4: string;
     methodology_footer: string;
     sidejob_area_label: string;
+    topic_labels: Record<string, string>;
   };
   ui: {
     menu_open: string;

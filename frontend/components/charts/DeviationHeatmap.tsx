@@ -11,12 +11,15 @@ import { useMemo } from "react";
 import { DeviationPivot } from "@/lib/data";
 import { sortParties, NO_FACTION_LABEL } from "@/lib/constants";
 import { PartyHeatmap } from "./PartyHeatmap";
+import { useTranslation } from "@/lib/language-context";
 
 interface Props {
   pivot: DeviationPivot;
+  rowLabel?: (row: string) => string;
 }
 
-export function DeviationHeatmap({ pivot }: Props) {
+export function DeviationHeatmap({ pivot, rowLabel }: Props) {
+  const t = useTranslation();
   const { rows, cols, data } = useMemo(() => {
     // Re-order parties by seat count (PARTY_ORDER), drop fraktionslos.
     const sortedCols = sortParties(
@@ -52,12 +55,12 @@ export function DeviationHeatmap({ pivot }: Props) {
       const pct = pctData[rowIdx]?.[colIdx];
       const total = partyTotals[colIdx] ?? 0;
       return (
-        `<b>${col}</b><br/>${row}<br/>` +
-        `${count} von ${total} Abgeordneten (${pct?.toFixed(1) ?? "?"}%)<br/>` +
-        `Abweichung: ${value > 0 ? "+" : ""}${value.toFixed(1)} pp`
+        `<b>${col}</b><br/>${rowLabel ? rowLabel(row) : row}<br/>` +
+        `${count} ${t.party_profile.heatmap_of} ${total} ${t.party_profile.heatmap_mps} (${pct?.toFixed(1) ?? "?"}%)<br/>` +
+        `${t.party_profile.heatmap_deviation} ${value > 0 ? "+" : ""}${value.toFixed(1)} pp`
       );
     };
-  }, [pivot, sortedCols]);
+  }, [pivot, sortedCols, rowLabel, t]);
 
   return (
     <PartyHeatmap
@@ -67,6 +70,7 @@ export function DeviationHeatmap({ pivot }: Props) {
       mode="deviation"
       cellLabel={(v) => `${v > 0 ? "+" : ""}${v.toFixed(0)}`}
       tooltipHtml={tooltipHtml}
+      rowLabel={rowLabel}
     />
   );
 }

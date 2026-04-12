@@ -120,7 +120,10 @@ export default function PartyProfilePage() {
             <p className="text-[12px] text-[#7872a8] mb-4">
               {t.party_profile.occupation_subtitle}
             </p>
-            <DeviationHeatmap pivot={data.occupation} />
+            <DeviationHeatmap
+              pivot={data.occupation}
+              rowLabel={(cat) => t.party_profile.occupation_labels[cat] ?? cat}
+            />
           </section>
 
           <section
@@ -136,7 +139,10 @@ export default function PartyProfilePage() {
             <p className="text-[12px] text-[#7872a8] mb-4">
               {t.party_profile.education_field_subtitle}
             </p>
-            <DeviationHeatmap pivot={data.education_field} />
+            <DeviationHeatmap
+              pivot={data.education_field}
+              rowLabel={(cat) => t.party_profile.education_field_labels[cat] ?? cat}
+            />
           </section>
 
           <section
@@ -152,7 +158,10 @@ export default function PartyProfilePage() {
             <p className="text-[12px] text-[#7872a8] mb-4">
               {t.party_profile.education_degree_subtitle}
             </p>
-            <DeviationHeatmap pivot={data.education_degree} />
+            <DeviationHeatmap
+              pivot={data.education_degree}
+              rowLabel={(cat) => t.party_profile.education_degree_labels[cat] ?? cat}
+            />
           </section>
         </div>
       )}
