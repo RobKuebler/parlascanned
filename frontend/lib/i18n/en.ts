@@ -145,6 +145,7 @@ export const en: Translations = {
       Heiterkeit: "Amusement",
       Widerspruch: "Objection",
     },
+    rare_reactions_label: "Rarer Reactions",
   },
   party_profile: {
     age_title: "Age Distribution",

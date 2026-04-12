@@ -148,6 +148,7 @@ export const de: Translations = {
       Heiterkeit: "Heiterkeit",
       Widerspruch: "Widerspruch",
     },
+    rare_reactions_label: "Seltenere Reaktionen",
   },
   party_profile: {
     age_title: "Altersverteilung",

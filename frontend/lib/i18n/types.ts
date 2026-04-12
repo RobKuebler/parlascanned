@@ -87,6 +87,7 @@ export type Translations = {
     interjection_label: string;
     applause_label: string;
     type_labels: Record<"Lachen" | "Heiterkeit" | "Widerspruch", string>;
+    rare_reactions_label: string;
   };
   party_profile: {
     age_title: string;

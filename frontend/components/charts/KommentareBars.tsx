@@ -45,7 +45,7 @@ export function SummarySmall({ data }: { data: KommentareData }) {
           fontFamily: CHART_FONT_FAMILY,
         }}
       >
-        Seltenere Reaktionen
+        {t.comments.rare_reactions_label}
       </p>
 
       {/* Column headers */}
