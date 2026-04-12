@@ -6,11 +6,13 @@ import { PeriodSelector } from "./PeriodSelector";
 import { Logo } from "./Logo";
 import { BundestagSeats } from "./BundestagSeats";
 import { NAV_ITEMS } from "@/lib/nav-items";
+import { useLanguage } from "@/lib/language-context";
 
 /** Fixed top header for mobile — shows logo, period selector, and hamburger menu. Hidden on md+. */
 export function MobileHeader() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname().replace(/\/$/, "") || "/";
+  const { t, language, setLanguage } = useLanguage();
 
   return (
     <>
@@ -37,7 +39,7 @@ export function MobileHeader() {
           <button
             onClick={() => setOpen(true)}
             className="w-9 h-9 flex flex-col items-center justify-center gap-[5px] shrink-0 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
-            aria-label="Menü öffnen"
+            aria-label={t.ui.menu_open}
           >
             <span className="block w-[18px] h-[2px] bg-white rounded-full" />
             <span className="block w-[18px] h-[2px] bg-white rounded-full" />
@@ -66,12 +68,12 @@ export function MobileHeader() {
         {/* Drawer header */}
         <div className="flex items-center justify-between px-4 h-[68px] shrink-0">
           <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-white/40">
-            Navigation
+            {t.ui.nav_label}
           </span>
           <button
             onClick={() => setOpen(false)}
             className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
-            aria-label="Menü schließen"
+            aria-label={t.ui.menu_close}
           >
             <svg
               width="16"
@@ -89,9 +91,28 @@ export function MobileHeader() {
 
         <div className="h-px bg-white/10 mx-4 mb-2" />
 
+        {/* Language toggle */}
+        <div className="px-4 mb-3">
+          <div className="flex gap-1">
+            {(["de", "en"] as const).map((lang) => (
+              <button
+                key={lang}
+                onClick={() => setLanguage(lang)}
+                className={`flex-1 py-1.5 rounded-md text-[12px] font-bold uppercase transition-colors duration-150 ${
+                  language === lang
+                    ? "bg-white text-[#1E1B5E]"
+                    : "text-white/40 hover:text-white/70"
+                }`}
+              >
+                {lang}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Nav items */}
         <div className="flex flex-col gap-0.5 px-3 overflow-y-auto">
-          {NAV_ITEMS.map(({ href, label, icon }) => {
+          {NAV_ITEMS.map(({ href, key, icon }) => {
             const active = pathname === href;
             return (
               <Link
@@ -106,7 +127,7 @@ export function MobileHeader() {
               >
                 <span className="shrink-0 text-white">{icon(active, 22)}</span>
                 <span className="text-[15px] font-bold text-white">
-                  {label}
+                  {t.nav[key]}
                 </span>
               </Link>
             );
