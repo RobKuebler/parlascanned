@@ -16,10 +16,12 @@ import {
   CARD_PADDING,
 } from "@/lib/constants";
 import { PAGE_META } from "@/lib/page-meta";
+import { useTranslation } from "@/lib/language-context";
 
 const META = PAGE_META.find((p) => p.href === "/party-profile")!;
 
 export default function PartyProfilePage() {
+  const t = useTranslation();
   const { activePeriodId } = usePeriod();
   const [data, setData] = useState<PartyProfileFile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,7 +65,7 @@ export default function PartyProfilePage() {
 
   return (
     <>
-      <PageHeader {...META} />
+      <PageHeader color={META.color} {...t.pages.party_profile} />
 
       {loading || !data ? (
         <div className="flex flex-col gap-5">
@@ -81,14 +83,10 @@ export default function PartyProfilePage() {
               className="font-extrabold text-[15px] mb-1"
               style={{ color: "#1E1B5E" }}
             >
-              Altersverteilung
+              {t.party_profile.age_title}
             </h2>
             <p className="text-[12px] text-[#7872a8] mb-4">
-              Jeder Punkt entspricht einem Abgeordneten. Punkte gleichen Alters
-              sind vertikal gestapelt — je mehr Punkte auf einer Position, desto
-              mehr Abgeordnete haben exakt dieses Alter. Die Kurve darüber zeigt
-              die Altersverteilung als Dichteschätzung. Das Alter bezieht sich
-              auf den Beginn der Legislaturperiode.
+              {t.party_profile.age_subtitle}
             </p>
             <AgeDistribution data={data.age} parties={parties} />
           </section>
@@ -101,11 +99,10 @@ export default function PartyProfilePage() {
               className="font-extrabold text-[15px] mb-1"
               style={{ color: "#1E1B5E" }}
             >
-              Geschlecht
+              {t.party_profile.gender_title}
             </h2>
             <p className="text-[12px] text-[#7872a8] mb-4">
-              Geschlechterverteilung je Fraktion als prozentualer Anteil der
-              Gesamtmitglieder.
+              {t.party_profile.gender_subtitle}
             </p>
             <GenderChart data={data.sex} parties={parties} />
           </section>
@@ -118,18 +115,10 @@ export default function PartyProfilePage() {
               className="font-extrabold text-[15px] mb-1"
               style={{ color: "#1E1B5E" }}
             >
-              Berufe
+              {t.party_profile.occupation_title}
             </h2>
             <p className="text-[12px] text-[#7872a8] mb-4">
-              Die Heatmap zeigt, wie stark ein Beruf in einer Fraktion über-
-              oder unterrepräsentiert ist — gemessen als Abweichung vom
-              Bundestag-Durchschnitt in Prozentpunkten. Blau steht für
-              überproportional viele Abgeordnete mit diesem Beruf, rot für
-              entsprechend wenige. Die Berufsangaben stammen aus der
-              Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei
-              Ersterfassung. Unter &bdquo;Sonstige Berufe&ldquo; fallen
-              insbesondere Abgeordnete, die als Berufsbezeichnung schlicht
-              &bdquo;Abgeordneter&ldquo; angegeben haben.
+              {t.party_profile.occupation_subtitle}
             </p>
             <DeviationHeatmap pivot={data.occupation} />
           </section>
@@ -142,15 +131,10 @@ export default function PartyProfilePage() {
               className="font-extrabold text-[15px] mb-1"
               style={{ color: "#1E1B5E" }}
             >
-              Ausbildung / Studienrichtung
+              {t.party_profile.education_field_title}
             </h2>
             <p className="text-[12px] text-[#7872a8] mb-4">
-              Studienrichtungen und Ausbildungsbereiche der Abgeordneten im
-              Fraktionsvergleich. Blau bedeutet überproportional häufig
-              vertreten, rot unterproportional — jeweils gemessen am
-              Bundestag-Durchschnitt. Die Angaben stammen aus der
-              Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei
-              Ersterfassung.
+              {t.party_profile.education_field_subtitle}
             </p>
             <DeviationHeatmap pivot={data.education_field} />
           </section>
@@ -163,13 +147,10 @@ export default function PartyProfilePage() {
               className="font-extrabold text-[15px] mb-1"
               style={{ color: "#1E1B5E" }}
             >
-              Abschlussniveau
+              {t.party_profile.education_degree_title}
             </h2>
             <p className="text-[12px] text-[#7872a8] mb-4">
-              Höchster Bildungsabschluss der Abgeordneten je Fraktion im
-              Vergleich zum Bundestag-Durchschnitt. Die Angaben stammen aus der
-              Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei
-              Ersterfassung.
+              {t.party_profile.education_degree_subtitle}
             </p>
             <DeviationHeatmap pivot={data.education_degree} />
           </section>
