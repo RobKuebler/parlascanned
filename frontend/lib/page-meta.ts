@@ -27,7 +27,7 @@ export const PAGE_META: PageMeta[] = [
   },
   {
     href: "/party-profile",
-    color: "#16A085",
+    color: "#0284c7",
     label: "Demografie",
     title: "Wer sitzt im Bundestag?",
     description:
@@ -35,7 +35,7 @@ export const PAGE_META: PageMeta[] = [
   },
   {
     href: "/sidejobs",
-    color: "#E67E22",
+    color: "#b45309",
     label: "Transparenz",
     title: "Wer verdient noch dazu?",
     description:
@@ -43,7 +43,7 @@ export const PAGE_META: PageMeta[] = [
   },
   {
     href: "/potential-conflicts",
-    color: "#C0392B",
+    color: "#be123c",
     label: "Interessenkonflikt",
     title: "Wer verdient im eigenen Ausschuss?",
     description:
@@ -51,7 +51,7 @@ export const PAGE_META: PageMeta[] = [
   },
   {
     href: "/comments",
-    color: "#E74C3C",
+    color: "#7c3aed",
     label: "Plenardynamik",
     title: "Wer reagiert auf wen?",
     description:
@@ -59,7 +59,7 @@ export const PAGE_META: PageMeta[] = [
   },
   {
     href: "/speeches",
-    color: "#9B59B6",
+    color: "#0d7456",
     label: "Wortanalyse",
     title: "Wer redet worüber?",
     description:
@@ -67,7 +67,7 @@ export const PAGE_META: PageMeta[] = [
   },
   {
     href: "/trends",
-    color: "#4A5C8C",
+    color: "#0f766e",
     label: "Zeitverlauf",
     title: "Wann wurde welches Thema heiß?",
     description:
@@ -75,7 +75,7 @@ export const PAGE_META: PageMeta[] = [
   },
   {
     href: "/motions",
-    color: "#2563EB",
+    color: "#1d4ed8",
     label: "Parlamentarische Initiative",
     title: "Wer fordert was?",
     description:
