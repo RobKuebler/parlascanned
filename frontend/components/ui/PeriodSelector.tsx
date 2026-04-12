@@ -1,5 +1,6 @@
 "use client";
 import { usePeriod } from "@/lib/period-context";
+import { useTranslation } from "@/lib/language-context";
 import { useEffect, useRef, useState } from "react";
 
 interface PeriodSelectorProps {
@@ -32,6 +33,8 @@ export function PeriodSelector({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [open]);
 
+  const t = useTranslation();
+
   if (periods.length <= 1) return null;
 
   const isSidebar = variant === "sidebar";
@@ -55,7 +58,7 @@ export function PeriodSelector({
             isSidebar ? "text-white/40" : "text-[#1E1B5E]/50"
           }`}
         >
-          Bundestag
+          {t.common.period_label}
         </p>
       )}
 
@@ -63,7 +66,7 @@ export function PeriodSelector({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label="Wahlperiode auswählen"
+        aria-label={t.common.period_aria}
         aria-expanded={open}
         className={`w-full flex items-center justify-between gap-2 rounded-lg px-3 py-2 outline-none transition-colors duration-150 ${
           isSidebar

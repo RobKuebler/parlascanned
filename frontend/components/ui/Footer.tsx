@@ -1,12 +1,16 @@
+"use client";
+import { useTranslation } from "@/lib/language-context";
+
 const Dot = () => <span className="text-gray-300 select-none">·</span>;
 
 export function Footer() {
+  const t = useTranslation();
   return (
     <footer className="mt-16 border-t border-gray-100">
       <div className="py-7 flex flex-col items-center gap-2 text-xs text-gray-400">
         <div className="flex flex-wrap justify-center items-center gap-x-3 gap-y-1">
           <span>
-            von{" "}
+            {t.ui.footer_by}{" "}
             <a
               href="https://robkuebler.github.io"
               className="text-gray-500 hover:text-gray-800 transition-colors duration-150"
@@ -31,7 +35,7 @@ export function Footer() {
           </a>
         </div>
         <div className="flex flex-wrap justify-center items-center gap-x-2 gap-y-1">
-          <span>Daten:</span>
+          <span>{t.ui.footer_data}</span>
           <a
             href="https://www.abgeordnetenwatch.de"
             className="hover:text-gray-700 transition-colors duration-150"
