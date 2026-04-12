@@ -13,12 +13,18 @@ export function Sidebar() {
     rawPathname !== "/" ? rawPathname.replace(/\/$/, "") : rawPathname;
   return (
     <aside className="hidden md:flex flex-col w-[180px] shrink-0 h-screen sticky top-0 bg-[#1E1B5E]">
-      {/* Logo */}
-      <div className="flex justify-center pt-[14px] pb-[10px]">
-        <div className="w-9 h-9 bg-[#4C46D9] rounded-[9px] flex items-center justify-center">
-          <Logo size={22} />
+      {/* Logo + wordmark — links to start page */}
+      <Link
+        href="/"
+        className="flex items-center gap-2.5 px-3 pt-[14px] pb-[10px] hover:opacity-80 transition-opacity duration-150"
+      >
+        <div className="w-8 h-8 bg-[#4C46D9] rounded-[9px] flex items-center justify-center shrink-0">
+          <Logo size={20} />
         </div>
-      </div>
+        <span className="text-[13px] font-black tracking-tight text-white truncate">
+          Parlascanned
+        </span>
+      </Link>
 
       {/* Period selector */}
       <div className="px-[10px] mb-[14px]">

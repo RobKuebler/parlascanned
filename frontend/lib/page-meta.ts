@@ -16,7 +16,9 @@ export interface PageMeta {
   wide?: boolean;
 }
 
+// Order mirrors NAV_ITEMS: Legislative process → Parties & Analysis → Transparency
 export const PAGE_META: PageMeta[] = [
+  // --- Legislative process ---
   {
     href: "/vote-map",
     color: "#4C46D9",
@@ -26,6 +28,31 @@ export const PAGE_META: PageMeta[] = [
       "Jeder Punkt ist ein Abgeordneter. Wer oft gleich abstimmt, landet nah beieinander, egal welcher Fraktion er angehört. So entstehen Muster, die Fraktionsgrenzen überschreiten.",
   },
   {
+    href: "/motions",
+    color: "#1d4ed8",
+    label: "Parlamentarische Initiative",
+    title: "Wer fordert was?",
+    description:
+      "Anträge und Anfragen der Fraktionen im Vergleich — nach Themen, Volumen und aktivsten Einreichern.",
+  },
+  {
+    href: "/speeches",
+    color: "#0d7456",
+    label: "Wortanalyse",
+    title: "Wer redet worüber?",
+    description:
+      "Welche Begriffe fallen bei einer Partei besonders häufig? Wordclouds zeigen die typische Sprache jeder Fraktion, dazu die redeaktivsten Abgeordneten im Vergleich.",
+  },
+  {
+    href: "/comments",
+    color: "#7c3aed",
+    label: "Plenardynamik",
+    title: "Wer reagiert auf wen?",
+    description:
+      "Zwischenrufe, Lachen, Applaus: Jede Reaktion im Bundestag wird protokolliert. Diese Analyse zeigt, welche Partei wie oft und bei wessen Reden reagiert.",
+  },
+  // --- Parties & Analysis ---
+  {
     href: "/party-profile",
     color: "#0284c7",
     label: "Demografie",
@@ -33,6 +60,15 @@ export const PAGE_META: PageMeta[] = [
     description:
       "Altersstruktur, Geschlechterverteilung, Berufsfelder und Bildungshintergrund im Vergleich: So unterscheiden sich die Fraktionen voneinander und vom Gesamtparlament.",
   },
+  {
+    href: "/trends",
+    color: "#0f766e",
+    label: "Zeitverlauf",
+    title: "Wann wurde welches Thema heiß?",
+    description:
+      "Verfolge, wie oft ein Begriff in Plenardebatten erwähnt wurde, und erkenne, wann ein Thema plötzlich an Fahrt aufnahm.",
+  },
+  // --- Transparency ---
   {
     href: "/sidejobs",
     color: "#b45309",
@@ -48,37 +84,5 @@ export const PAGE_META: PageMeta[] = [
     title: "Wer verdient im eigenen Ausschuss?",
     description:
       "Abgeordnete, die in einem parlamentarischen Ausschuss sitzen und gleichzeitig in demselben Themenfeld Geld verdienen — eine Analyse möglicher Interessenkonflikte.",
-  },
-  {
-    href: "/comments",
-    color: "#7c3aed",
-    label: "Plenardynamik",
-    title: "Wer reagiert auf wen?",
-    description:
-      "Zwischenrufe, Lachen, Applaus: Jede Reaktion im Bundestag wird protokolliert. Diese Analyse zeigt, welche Partei wie oft und bei wessen Reden reagiert.",
-  },
-  {
-    href: "/speeches",
-    color: "#0d7456",
-    label: "Wortanalyse",
-    title: "Wer redet worüber?",
-    description:
-      "Welche Begriffe fallen bei einer Partei besonders häufig? Wordclouds zeigen die typische Sprache jeder Fraktion, dazu die redeaktivsten Abgeordneten im Vergleich.",
-  },
-  {
-    href: "/trends",
-    color: "#0f766e",
-    label: "Zeitverlauf",
-    title: "Wann wurde welches Thema heiß?",
-    description:
-      "Verfolge, wie oft ein Begriff in Plenardebatten erwähnt wurde, und erkenne, wann ein Thema plötzlich an Fahrt aufnahm.",
-  },
-  {
-    href: "/motions",
-    color: "#1d4ed8",
-    label: "Parlamentarische Initiative",
-    title: "Wer fordert was?",
-    description:
-      "Anträge und Anfragen der Fraktionen im Vergleich — nach Themen, Volumen und aktivsten Einreichern.",
   },
 ];
