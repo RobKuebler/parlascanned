@@ -41,9 +41,9 @@ const EVENT_LABEL: Record<EventTab, string> = {
   Widerspruch: "Widerspruch",
 };
 
-// Sequential color scale: very light to saturated red-brown (neutral, not politically charged)
-const COLOR_LOW = "#f7f0eb";
-const COLOR_HIGH = "#7f3a1a";
+// Sequential color scale: light to deep navy (Blues — standard for count data)
+const COLOR_LOW = "#f0f5ff";
+const COLOR_HIGH = "#0f2d5c";
 
 function partyColor(party: string): string {
   return getPartyColor(party);
