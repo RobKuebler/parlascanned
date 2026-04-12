@@ -93,7 +93,7 @@ export default function Home() {
       )}
 
       {/* Stat strip */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#E3E0DA] rounded-xl overflow-hidden mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#dddaf0] rounded-xl overflow-hidden mb-6">
         {[
           { value: stats?.politicians, label: "Abgeordnete" },
           { value: stats?.parties, label: "Fraktionen" },

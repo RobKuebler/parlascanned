@@ -128,7 +128,7 @@ export function truncateText(s: string, maxLen: number): string {
 // ── Design tokens ────────────────────────────────────────────────────────────
 
 // Shared card style — use on every main content card for visual consistency
-export const CARD_CLASS = "bg-white rounded-xl border border-[#E3E0DA]";
+export const CARD_CLASS = "bg-white rounded-xl border border-[#dddaf0]";
 // Standard content-card padding (mobile → desktop)
 export const CARD_PADDING = "p-5 md:p-6";
 // Standard content-card drop shadow — spread as style={{ boxShadow: CARD_SHADOW }}
@@ -144,7 +144,7 @@ export const CARD_SHADOW = "0 1px 4px rgba(0,0,0,0.05)";
 // stat   22px  statistic numbers
 // page   28px  page headings (PageHeader h1)
 
-export const COLOR_SECONDARY = "#6B6760";
+export const COLOR_SECONDARY = "#5a556b";
 export const COLOR_BODY = "#171613";
 
 // Chart font — used by all D3 charts for axis labels and legends
