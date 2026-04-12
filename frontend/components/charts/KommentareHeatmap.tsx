@@ -312,7 +312,7 @@ export default function KommentareHeatmap({ data }: Props) {
           gap: 16,
           marginBottom: 8,
           fontSize: 11,
-          color: "#9A9790",
+          color: "#7872a8",
           fontFamily: CHART_FONT_FAMILY,
         }}
       >

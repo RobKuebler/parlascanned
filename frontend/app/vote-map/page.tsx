@@ -224,7 +224,7 @@ export default function VoteMapPage() {
       {/* Coalition banner */}
       {activePeriodId && GOVERNING_PARTIES[activePeriodId] && (
         <div className="flex flex-col gap-2 mb-5 sm:flex-row sm:items-center">
-          <span className="text-[11px] font-bold tracking-[0.12em] uppercase text-[#9A9790]">
+          <span className="text-[11px] font-bold tracking-[0.12em] uppercase text-[#7872a8]">
             Regierungskoalition
           </span>
           <div className="flex items-center gap-1.5">
@@ -265,7 +265,7 @@ export default function VoteMapPage() {
         >
           Abstimmungslandkarte
         </h2>
-        <p className="text-[12px] text-[#9A9790] mb-4">
+        <p className="text-[12px] text-[#7872a8] mb-4">
           Klicken Sie auf einzelne Punkte oder ziehen Sie eine Auswahl, um das
           Abstimmungsverhalten der betreffenden Abgeordneten im Detail zu
           analysieren. Fraktionsnamen im Diagramm sind ebenfalls anklickbar.
@@ -296,7 +296,7 @@ export default function VoteMapPage() {
         >
           Abstimmungsverhalten
         </h2>
-        <p className="text-[12px] text-[#9A9790] mb-4">
+        <p className="text-[12px] text-[#7872a8] mb-4">
           Die Heatmap zeigt, wie die ausgewählten Abgeordneten bei einzelnen
           Abstimmungen votiert haben. Wählen Sie zunächst Abgeordnete aus der
           Karte oder über die Suche aus.
@@ -318,7 +318,7 @@ export default function VoteMapPage() {
         )}
 
         {!effectivePolIds.length ? (
-          <p className="text-[13px] text-center py-10 text-[#9A9790]">
+          <p className="text-[13px] text-center py-10 text-[#7872a8]">
             Abgeordnete auswählen, um ihre Abstimmungen zu sehen
           </p>
         ) : loadingVotes ? (
@@ -339,7 +339,7 @@ export default function VoteMapPage() {
               {(["yes", "no", "abstain"] as const).map((k) => (
                 <span
                   key={k}
-                  className="flex items-center gap-1.5 text-[#6B6760]"
+                  className="flex items-center gap-1.5 text-[#5a556b]"
                 >
                   <span
                     className="w-3 h-3 rounded-sm inline-block flex-shrink-0"
@@ -373,7 +373,7 @@ export default function VoteMapPage() {
         >
           Fraktionsdisziplin
         </h2>
-        <p className="text-[12px] text-[#9A9790] mb-4">
+        <p className="text-[12px] text-[#7872a8] mb-4">
           Mittlerer euklidischer Abstand jedes Abgeordneten zum Schwerpunkt
           seiner Fraktion. Ein kurzer Balken bedeutet geschlossenes
           Abstimmungsverhalten.

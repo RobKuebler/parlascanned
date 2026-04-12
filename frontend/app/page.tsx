@@ -86,7 +86,7 @@ export default function Home() {
       {activePeriod && (
         <p
           className="text-[11px] font-bold tracking-[0.14em] uppercase mb-2"
-          style={{ color: "#9A9790" }}
+          style={{ color: "#7872a8" }}
         >
           {activePeriod.wahlperiode}. Legislaturperiode
         </p>
@@ -124,7 +124,7 @@ export default function Home() {
             </span>
             <span
               className="text-[11px] font-semibold uppercase tracking-[0.08em]"
-              style={{ color: "#9A9790" }}
+              style={{ color: "#7872a8" }}
             >
               {label}
             </span>
@@ -170,7 +170,7 @@ export default function Home() {
 
               <p
                 className="text-[13px] leading-relaxed flex-1"
-                style={{ color: "#6B6760" }}
+                style={{ color: "#5a556b" }}
               >
                 {description}
               </p>

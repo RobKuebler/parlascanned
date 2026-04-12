@@ -44,7 +44,7 @@ function MethodologyNote() {
         <span
           className="text-[18px] leading-none select-none"
           style={{
-            color: "#9A9790",
+            color: "#7872a8",
             transform: open ? "rotate(270deg)" : "rotate(90deg)",
             transition: "transform 0.2s",
             display: "inline-block",
@@ -114,7 +114,7 @@ function MethodologyNote() {
             </ul>
           </div>
 
-          <p className="text-[11px]" style={{ color: "#9A9790" }}>
+          <p className="text-[11px]" style={{ color: "#7872a8" }}>
             Diese Seite zeigt <em>potenzielle</em> Interessenkonflikte auf Basis
             öffentlich gemeldeter Daten. Sie ersetzt keine rechtliche oder
             parlamentarische Bewertung.
@@ -337,7 +337,7 @@ export default function AusschussePage() {
             >
               Top-Konflikte nach Abgeordneten
             </h2>
-            <p className="text-[12px] text-[#9A9790] mb-4">
+            <p className="text-[12px] text-[#7872a8] mb-4">
               Abgeordnete mit Nebeneinkommen in einem Themenfeld, das ihr
               Ausschuss verantwortet. Sitzt ein Abgeordneter in mehreren
               betroffenen Ausschüssen, wird das Einkommen mehrfach gezählt, weil
@@ -361,7 +361,7 @@ export default function AusschussePage() {
             >
               Konflikte nach Thema & Fraktion
             </h2>
-            <p className="text-[12px] text-[#9A9790] mb-4">
+            <p className="text-[12px] text-[#7872a8] mb-4">
               Summiertes Nebeneinkommen je Themenfeld und Fraktion, bei dem eine
               Ausschuss-Überschneidung besteht. Intensivere Färbung bedeutet
               höheres konfliktiertes Einkommen.
@@ -370,7 +370,7 @@ export default function AusschussePage() {
           </section>
         </div>
       ) : !loading ? (
-        <p className="text-[13px] text-[#9A9790] text-center py-10">
+        <p className="text-[13px] text-[#7872a8] text-center py-10">
           Keine Interessenkonflikte für diese Wahlperiode gefunden.
         </p>
       ) : null}

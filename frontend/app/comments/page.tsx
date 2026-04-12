@@ -29,7 +29,7 @@ function Section({
       style={{
         background: "white",
         borderRadius: "0.75rem",
-        border: "1px solid #E3E0DA",
+        border: "1px solid #dddaf0",
         padding: "20px 20px 24px",
         boxShadow: CARD_SHADOW,
         ...(flex ? { flex, minWidth: 0 } : { marginBottom: 16 }),
@@ -49,7 +49,7 @@ function Section({
         <p
           style={{
             fontSize: "var(--t-small)",
-            color: "#9A9790",
+            color: "#7872a8",
             marginBottom: 16,
           }}
         >

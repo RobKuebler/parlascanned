@@ -326,7 +326,7 @@ export function SidejobCoverageByPartyChart({
                   display: "inline-block",
                 }}
               />
-              <span style={{ fontSize: 11, color: "#9A9790" }}>{label}</span>
+              <span style={{ fontSize: 11, color: "#7872a8" }}>{label}</span>
             </span>
           );
         })}

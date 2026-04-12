@@ -109,7 +109,7 @@ export function PeriodSelector({
           className={`absolute z-50 mt-1 rounded-xl overflow-hidden ${
             isSidebar
               ? "left-0 min-w-[140px] bg-[#16134A] border border-white/[0.15] shadow-xl shadow-black/40"
-              : "left-0 right-0 bg-white border border-[#E3E0DA] shadow-lg"
+              : "left-0 right-0 bg-white border border-[#dddaf0] shadow-lg"
           }`}
         >
           {periods.map((p) => {

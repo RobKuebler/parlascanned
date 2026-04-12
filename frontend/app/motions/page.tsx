@@ -155,7 +155,7 @@ export default function MotionsPage() {
       </div>
 
       {unavailable ? (
-        <p className="text-[14px]" style={{ color: "#9A9790" }}>
+        <p className="text-[14px]" style={{ color: "#7872a8" }}>
           Für diese Wahlperiode sind noch keine Drucksachen-Daten verfügbar.
         </p>
       ) : loading || !stats || !typData ? (
@@ -186,7 +186,7 @@ export default function MotionsPage() {
               >
                 Einreichungen pro Monat
               </h2>
-              <p className="text-[12px] mb-4" style={{ color: "#9A9790" }}>
+              <p className="text-[12px] mb-4" style={{ color: "#7872a8" }}>
                 Wann wurden besonders viele {TAB_LABELS[activeTab]} eingereicht?
               </p>
               {typData.timeline.months.length > 0 ? (
@@ -197,7 +197,7 @@ export default function MotionsPage() {
                   normalized={false}
                 />
               ) : (
-                <p className="text-[13px]" style={{ color: "#9A9790" }}>
+                <p className="text-[13px]" style={{ color: "#7872a8" }}>
                   Keine Zeitdaten verfügbar.
                 </p>
               )}
@@ -248,7 +248,7 @@ export default function MotionsPage() {
                     </div>
                     <span
                       className="text-[12px] tabular-nums shrink-0"
-                      style={{ color: "#9A9790" }}
+                      style={{ color: "#7872a8" }}
                     >
                       {count.toLocaleString("de")}
                     </span>
@@ -264,7 +264,7 @@ export default function MotionsPage() {
                     <div>
                       <p
                         className="text-[11px] font-bold tracking-[0.08em] uppercase mb-1"
-                        style={{ color: "#9A9790" }}
+                        style={{ color: "#7872a8" }}
                       >
                         Aktivste Einreicher
                       </p>
@@ -287,7 +287,7 @@ export default function MotionsPage() {
             >
               Themen-Suche
             </h2>
-            <p className="text-[12px] mb-4" style={{ color: "#9A9790" }}>
+            <p className="text-[12px] mb-4" style={{ color: "#7872a8" }}>
               Welche Fraktion hat diesen Begriff wie oft in{" "}
               {TAB_LABELS[activeTab]}-Titeln verwendet?
             </p>
@@ -296,11 +296,11 @@ export default function MotionsPage() {
               value={query}
               onChange={(e) => handleQueryChange(e.target.value)}
               placeholder={`Begriff suchen, z.B. migration, klima …`}
-              className="w-full border border-[#E3E0DA] rounded-lg px-4 py-2 text-[14px] outline-none focus:border-[#4C46D9] mb-4"
+              className="w-full border border-[#dddaf0] rounded-lg px-4 py-2 text-[14px] outline-none focus:border-[#4C46D9] mb-4"
               style={{ color: "#171613" }}
             />
             {titlesLoading && (
-              <p className="text-[13px]" style={{ color: "#9A9790" }}>
+              <p className="text-[13px]" style={{ color: "#7872a8" }}>
                 Daten werden geladen…
               </p>
             )}
@@ -335,7 +335,7 @@ export default function MotionsPage() {
                           </span>
                           <span
                             className="text-[12px] tabular-nums"
-                            style={{ color: "#9A9790" }}
+                            style={{ color: "#7872a8" }}
                           >
                             {count.toLocaleString("de")}
                           </span>
@@ -367,7 +367,7 @@ export default function MotionsPage() {
               searchResults.length === 0 &&
               query.trim() &&
               !titlesLoading && (
-                <p className="text-[13px]" style={{ color: "#9A9790" }}>
+                <p className="text-[13px]" style={{ color: "#7872a8" }}>
                   Keine {TAB_LABELS[activeTab]} mit &bdquo;{query}&ldquo;
                   gefunden.
                 </p>

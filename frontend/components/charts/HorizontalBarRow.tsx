@@ -94,7 +94,7 @@ export function HorizontalBarRow({
             width: 16,
             textAlign: "right",
             flexShrink: 0,
-            color: "#9A9790",
+            color: "#7872a8",
             fontVariantNumeric: "tabular-nums",
           }}
         >
@@ -168,7 +168,7 @@ export function HorizontalBarRow({
           width: valueWidth,
           textAlign: "right",
           flexShrink: 0,
-          color: "#9A9790",
+          color: "#7872a8",
           fontVariantNumeric: "tabular-nums",
         }}
       >

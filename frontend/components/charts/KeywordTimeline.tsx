@@ -38,7 +38,7 @@ function renderXAxis(
       .tickFormat((d) => fmtMonth(d as Date)),
   );
   axisG.select(".domain").remove();
-  axisG.selectAll("text").style("font-size", "11px").attr("fill", "#9A9790");
+  axisG.selectAll("text").style("font-size", "11px").attr("fill", "#7872a8");
 
   // Remove stale year labels before re-adding so they don't stack on zoom.
   axisG.selectAll(".year-label").remove();
@@ -50,7 +50,7 @@ function renderXAxis(
     .attr("y", 30)
     .attr("text-anchor", "middle")
     .style("font-size", "10px")
-    .attr("fill", "#9A9790")
+    .attr("fill", "#7872a8")
     .text((d) => `'${String(d.getFullYear()).slice(2)}`);
 }
 
@@ -168,7 +168,7 @@ export function KeywordTimeline({
       .call((ax) => ax.select(".domain").remove())
       .selectAll("text")
       .style("font-size", "11px")
-      .attr("fill", "#9A9790");
+      .attr("fill", "#7872a8");
 
     // Clip-path keeps lines inside the chart area during zoom/pan.
     svg
@@ -214,7 +214,7 @@ export function KeywordTimeline({
       .append("line")
       .attr("y1", 0)
       .attr("y2", innerH)
-      .attr("stroke", "#9A9790")
+      .attr("stroke", "#7872a8")
       .attr("stroke-width", 1)
       .attr("stroke-dasharray", "4,2")
       .attr("opacity", 0);
@@ -255,7 +255,7 @@ export function KeywordTimeline({
               }</b>`,
           )
           .join("<br/>");
-        const html = `<span style="font-size:11px;color:#9A9790">${months[i]}</span><br/>${rows}`;
+        const html = `<span style="font-size:11px;color:#7872a8">${months[i]}</span><br/>${rows}`;
 
         const [cx, cy] = d3.pointer(event, containerRef.current!);
         positionTooltip(tooltip, containerRef.current!, cx, cy, html);

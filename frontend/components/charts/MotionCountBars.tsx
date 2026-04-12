@@ -29,7 +29,7 @@ export function MotionCountBars({ items, label, sublabel }: Props) {
       >
         {label}
       </h2>
-      <p className="text-[12px] mb-4" style={{ color: "#9A9790" }}>
+      <p className="text-[12px] mb-4" style={{ color: "#7872a8" }}>
         {sublabel}
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

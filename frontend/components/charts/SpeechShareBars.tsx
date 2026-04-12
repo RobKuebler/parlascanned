@@ -42,7 +42,7 @@ export function SpeechShareBars({ speechStats }: Props) {
       >
         Redeanteile
       </h2>
-      <p className="text-[12px] text-[#9A9790] mb-4">
+      <p className="text-[12px] text-[#7872a8] mb-4">
         Gesamtzahl der Wörter pro Fraktion in dieser Legislaturperiode.
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

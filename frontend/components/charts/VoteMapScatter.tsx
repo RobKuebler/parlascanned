@@ -560,7 +560,7 @@ export function VoteMapScatter({
   return (
     <div>
       <div className="flex items-center gap-2 mb-3">
-        <div className="flex items-center bg-[#F4F3F0] rounded-lg p-0.5 border border-[#E3E0DA]">
+        <div className="flex items-center bg-[#F4F3F0] rounded-lg p-0.5 border border-[#dddaf0]">
           {BUTTONS.map(({ m, label, icon, hint }) => (
             <button
               key={m}
@@ -568,8 +568,8 @@ export function VoteMapScatter({
               title={hint}
               className={`${m !== "pan" ? "hidden sm:flex" : "flex"} items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 cursor-pointer ${
                 mode === m
-                  ? "bg-white text-[#2347C8] shadow-sm border border-[#E3E0DA]"
-                  : "text-[#6B6760] hover:text-[#171613]"
+                  ? "bg-white text-[#2347C8] shadow-sm border border-[#dddaf0]"
+                  : "text-[#5a556b] hover:text-[#171613]"
               }`}
             >
               {icon}

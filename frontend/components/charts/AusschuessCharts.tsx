@@ -92,7 +92,7 @@ export function ConflictRankedList({
             <span
               style={{
                 fontSize: 11,
-                color: "#9A9790",
+                color: "#7872a8",
                 width: 18,
                 flexShrink: 0,
                 paddingTop: 2,
@@ -146,9 +146,9 @@ export function ConflictRankedList({
                 {r.committees.map((c) => (
                   <div
                     key={c.label}
-                    style={{ fontSize: 11, color: "#9A9790", lineHeight: 1.4 }}
+                    style={{ fontSize: 11, color: "#7872a8", lineHeight: 1.4 }}
                   >
-                    <span style={{ fontWeight: 600, color: "#6B6760" }}>
+                    <span style={{ fontWeight: 600, color: "#5a556b" }}>
                       {c.label}
                     </span>
                     {c.topics.length > 0 && (

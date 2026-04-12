@@ -19,8 +19,8 @@ export function ToggleGroup<T extends string>({
             className="px-4 py-1.5 rounded-full text-[12px] transition-colors cursor-pointer"
             style={{
               background: active ? "#1E1B5E" : "#fff",
-              border: active ? "1px solid #1E1B5E" : "1px solid #E3E0DA",
-              color: active ? "#fff" : "#9A9790",
+              border: active ? "1px solid #1E1B5E" : "1px solid #dddaf0",
+              color: active ? "#fff" : "#7872a8",
               fontWeight: active ? 600 : 400,
             }}
           >

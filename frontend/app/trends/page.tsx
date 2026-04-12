@@ -230,7 +230,7 @@ export default function ThemenTrendsPage() {
       <PageHeader {...META} />
 
       {unavailable ? (
-        <p className="text-[14px]" style={{ color: "#9A9790" }}>
+        <p className="text-[14px]" style={{ color: "#7872a8" }}>
           Für diese Wahlperiode sind noch keine Verlaufsdaten verfügbar.
         </p>
       ) : loading ? (
@@ -267,13 +267,13 @@ export default function ThemenTrendsPage() {
                     if (e.key === "Enter") addKeyword(query);
                   }}
                   placeholder="Begriff suchen, z.B. migration, ukraine …"
-                  className="w-full border border-[#E3E0DA] rounded-lg px-4 py-2 text-[14px] outline-none focus:border-[#2980B9]"
+                  className="w-full border border-[#dddaf0] rounded-lg px-4 py-2 text-[14px] outline-none focus:border-[#2980B9]"
                   style={{ color: "#171613" }}
                   disabled={activeKeywords.length >= MAX_KEYWORDS}
                 />
                 {suggestions.length > 0 && (
                   <ul
-                    className="absolute z-10 bg-white border border-[#E3E0DA] rounded-lg mt-1 w-full overflow-hidden"
+                    className="absolute z-10 bg-white border border-[#dddaf0] rounded-lg mt-1 w-full overflow-hidden"
                     style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
                   >
                     {suggestions.map((s) => (
@@ -291,7 +291,7 @@ export default function ThemenTrendsPage() {
               </div>
 
               {notFoundMsg && (
-                <p className="text-[12px]" style={{ color: "#9A9790" }}>
+                <p className="text-[12px]" style={{ color: "#7872a8" }}>
                   {notFoundMsg}
                 </p>
               )}
@@ -327,7 +327,7 @@ export default function ThemenTrendsPage() {
             {series.length === 0 ? (
               <p
                 className="text-[14px] text-center py-16"
-                style={{ color: "#9A9790" }}
+                style={{ color: "#7872a8" }}
               >
                 Gib einen Begriff ein um seinen Verlauf im Plenum zu sehen.
               </p>
@@ -353,7 +353,7 @@ export default function ThemenTrendsPage() {
               >
                 Begriff nach Partei
               </h2>
-              <p className="text-[13px]" style={{ color: "#9A9790" }}>
+              <p className="text-[13px]" style={{ color: "#7872a8" }}>
                 Wie oft sprechen die Fraktionen einen Begriff an?
               </p>
             </div>
@@ -374,12 +374,12 @@ export default function ThemenTrendsPage() {
                     if (e.key === "Enter") addCompKeyword(compQuery);
                   }}
                   placeholder="Begriff wählen, z.B. klimaschutz …"
-                  className="w-full border border-[#E3E0DA] rounded-lg px-4 py-2 text-[14px] outline-none focus:border-[#2980B9]"
+                  className="w-full border border-[#dddaf0] rounded-lg px-4 py-2 text-[14px] outline-none focus:border-[#2980B9]"
                   style={{ color: "#171613" }}
                 />
                 {compSuggestions.length > 0 && (
                   <ul
-                    className="absolute z-10 bg-white border border-[#E3E0DA] rounded-lg mt-1 w-full overflow-hidden"
+                    className="absolute z-10 bg-white border border-[#dddaf0] rounded-lg mt-1 w-full overflow-hidden"
                     style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
                   >
                     {compSuggestions.map((s) => (
@@ -396,7 +396,7 @@ export default function ThemenTrendsPage() {
                 )}
               </div>
               {compNotFound && (
-                <p className="text-[12px]" style={{ color: "#9A9790" }}>
+                <p className="text-[12px]" style={{ color: "#7872a8" }}>
                   {compNotFound}
                 </p>
               )}
@@ -408,21 +408,21 @@ export default function ThemenTrendsPage() {
             ) : !compKeyword ? (
               <p
                 className="text-[14px] text-center py-16"
-                style={{ color: "#9A9790" }}
+                style={{ color: "#7872a8" }}
               >
                 Wähle einen Begriff um den Partei-Vergleich zu sehen.
               </p>
             ) : !compHasPartyData ? (
               <p
                 className="text-[14px] text-center py-12"
-                style={{ color: "#9A9790" }}
+                style={{ color: "#7872a8" }}
               >
                 Zu selten verwendet — kein Parteivergleich verfügbar.
               </p>
             ) : compSeries.length === 0 ? (
               <p
                 className="text-[14px] text-center py-12"
-                style={{ color: "#9A9790" }}
+                style={{ color: "#7872a8" }}
               >
                 Keine Partei-Daten verfügbar.
               </p>
@@ -458,10 +458,10 @@ export default function ThemenTrendsPage() {
                             width: 14,
                             height: 3,
                             borderRadius: 2,
-                            background: hidden ? "#9A9790" : s.color,
+                            background: hidden ? "#7872a8" : s.color,
                           }}
                         />
-                        <span style={{ color: hidden ? "#9A9790" : "#171613" }}>
+                        <span style={{ color: hidden ? "#7872a8" : "#171613" }}>
                           {s.keyword}
                         </span>
                       </button>

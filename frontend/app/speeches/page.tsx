@@ -119,7 +119,7 @@ export default function SpeechesPage() {
 
       <div className="mt-8">
         {unavailable ? (
-          <p className="text-[14px]" style={{ color: "#9A9790" }}>
+          <p className="text-[14px]" style={{ color: "#7872a8" }}>
             Für diese Wahlperiode sind noch keine Rededaten verfügbar.
           </p>
         ) : loading || !wordFreq || !speechStats ? (
@@ -157,7 +157,7 @@ export default function SpeechesPage() {
                     </div>
                     <span
                       className="text-[12px] tabular-nums shrink-0"
-                      style={{ color: "#9A9790" }}
+                      style={{ color: "#7872a8" }}
                     >
                       {total.toLocaleString("de")} Wörter
                     </span>
@@ -176,7 +176,7 @@ export default function SpeechesPage() {
                   <div>
                     <p
                       className="text-[11px] font-bold tracking-[0.08em] uppercase mb-1"
-                      style={{ color: "#9A9790" }}
+                      style={{ color: "#7872a8" }}
                     >
                       Redner nach Wortanzahl
                     </p>
@@ -228,7 +228,7 @@ export default function SpeechesPage() {
                     </span>
                     <span
                       className="text-[12px] ml-1"
-                      style={{ color: "#9A9790" }}
+                      style={{ color: "#7872a8" }}
                     >
                       Top {allWords.length} Begriffe
                     </span>
@@ -236,7 +236,7 @@ export default function SpeechesPage() {
                   <button
                     onClick={() => setExpandedParty(null)}
                     className="text-[20px] leading-none"
-                    style={{ color: "#9A9790", lineHeight: 1 }}
+                    style={{ color: "#7872a8", lineHeight: 1 }}
                     aria-label="Schließen"
                   >
                     ×

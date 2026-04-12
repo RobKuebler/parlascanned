@@ -83,7 +83,7 @@ export default function PartyProfilePage() {
             >
               Altersverteilung
             </h2>
-            <p className="text-[12px] text-[#9A9790] mb-4">
+            <p className="text-[12px] text-[#7872a8] mb-4">
               Jeder Punkt entspricht einem Abgeordneten. Punkte gleichen Alters
               sind vertikal gestapelt — je mehr Punkte auf einer Position, desto
               mehr Abgeordnete haben exakt dieses Alter. Die Kurve darüber zeigt
@@ -103,7 +103,7 @@ export default function PartyProfilePage() {
             >
               Geschlecht
             </h2>
-            <p className="text-[12px] text-[#9A9790] mb-4">
+            <p className="text-[12px] text-[#7872a8] mb-4">
               Geschlechterverteilung je Fraktion als prozentualer Anteil der
               Gesamtmitglieder.
             </p>
@@ -120,7 +120,7 @@ export default function PartyProfilePage() {
             >
               Berufe
             </h2>
-            <p className="text-[12px] text-[#9A9790] mb-4">
+            <p className="text-[12px] text-[#7872a8] mb-4">
               Die Heatmap zeigt, wie stark ein Beruf in einer Fraktion über-
               oder unterrepräsentiert ist — gemessen als Abweichung vom
               Bundestag-Durchschnitt in Prozentpunkten. Blau steht für
@@ -144,7 +144,7 @@ export default function PartyProfilePage() {
             >
               Ausbildung / Studienrichtung
             </h2>
-            <p className="text-[12px] text-[#9A9790] mb-4">
+            <p className="text-[12px] text-[#7872a8] mb-4">
               Studienrichtungen und Ausbildungsbereiche der Abgeordneten im
               Fraktionsvergleich. Blau bedeutet überproportional häufig
               vertreten, rot unterproportional — jeweils gemessen am
@@ -165,7 +165,7 @@ export default function PartyProfilePage() {
             >
               Abschlussniveau
             </h2>
-            <p className="text-[12px] text-[#9A9790] mb-4">
+            <p className="text-[12px] text-[#7872a8] mb-4">
               Höchster Bildungsabschluss der Abgeordneten je Fraktion im
               Vergleich zum Bundestag-Durchschnitt. Die Angaben stammen aus der
               Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei

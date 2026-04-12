@@ -253,7 +253,7 @@ export default function SidejobsPage() {
             >
               Abgeordnete mit Nebenverdienst
             </h2>
-            <p className="text-[12px] text-[#9A9790] mb-4">
+            <p className="text-[12px] text-[#7872a8] mb-4">
               Anteil der Abgeordneten je Fraktion, die mindestens eine
               meldepflichtige Nebentätigkeit ausüben. Als Nebenverdienst gilt
               ein gemeldetes Einkommen ab 1.000 € monatlich (§ 44a AbgG, Stufe
@@ -276,7 +276,7 @@ export default function SidejobsPage() {
             >
               Einkommen nach Kategorie
             </h2>
-            <p className="text-[12px] text-[#9A9790] mb-4">
+            <p className="text-[12px] text-[#7872a8] mb-4">
               Aufteilung der Nebeneinkünfte nach den offiziellen Kategorien der
               Bundestagsverwaltung. Dunklere Felder stehen für höhere Einnahmen
               — die Farbskala ist logarithmisch, damit auch mittlere Beträge
@@ -295,7 +295,7 @@ export default function SidejobsPage() {
             >
               Themenfelder der Nebentätigkeiten
             </h2>
-            <p className="text-[12px] text-[#9A9790] mb-4">
+            <p className="text-[12px] text-[#7872a8] mb-4">
               Die 15 Themenfelder mit dem höchsten ausgewiesenen
               Gesamteinkommen. Dunklere Felder stehen für höhere Einnahmen — die
               Farbskala ist logarithmisch, damit auch mittlere Beträge sichtbar
@@ -316,7 +316,7 @@ export default function SidejobsPage() {
             >
               Top-Verdiener
             </h2>
-            <p className="text-[12px] text-[#9A9790] mb-4">
+            <p className="text-[12px] text-[#7872a8] mb-4">
               Die Abgeordneten mit dem höchsten hochgerechneten Nebeneinkommen
               in der gewählten Legislaturperiode.
             </p>
