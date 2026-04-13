@@ -49,6 +49,13 @@ describe("sortParties", () => {
     sortParties(input);
     expect(input).toEqual(["FDP", "SPD"]);
   });
+
+  it("sorts alias party names in canonical order", () => {
+    // "Grüne" is an alias for "BÜNDNIS 90/DIE GRÜNEN" (index 3 in PARTY_ORDER)
+    // and should sort between AfD (index 2) and Die Linke (index 4)
+    const input = ["Die Linke", "Grüne", "AfD"];
+    expect(sortParties(input)).toEqual(["AfD", "Grüne", "Die Linke"]);
+  });
 });
 
 describe("sortPresentParties", () => {

@@ -96,8 +96,10 @@ export function getPartyShortLabel(party: string): string {
  */
 export function sortParties(parties: string[]): string[] {
   return [...parties].sort((a, b) => {
-    const ai = PARTY_ORDER.indexOf(a);
-    const bi = PARTY_ORDER.indexOf(b);
+    // Normalize aliases (e.g. "Grüne" → "BÜNDNIS 90/DIE GRÜNEN") before
+    // looking up position so alias-keyed datasets sort in the canonical order.
+    const ai = PARTY_ORDER.indexOf(normalizePartyName(a));
+    const bi = PARTY_ORDER.indexOf(normalizePartyName(b));
     // Both known → use PARTY_ORDER index
     if (ai !== -1 && bi !== -1) return ai - bi;
     // Only one known → known comes first, unless it's fraktionslos

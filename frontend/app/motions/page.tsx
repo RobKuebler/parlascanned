@@ -109,6 +109,17 @@ export default function MotionsPage() {
     );
   }, [typData]);
 
+  // Pre-sliced word arrays — stable references so WordCloud memo works and
+  // layouts don't restart on every parent render (same pattern as speeches page).
+  const wordSlices = useMemo<Record<string, WordFreqEntry[]>>(() => {
+    if (!typData) return {};
+    const result: Record<string, WordFreqEntry[]> = {};
+    for (const party of Object.keys(typData.word_freq)) {
+      result[party] = typData.word_freq[party].slice(0, 30);
+    }
+    return result;
+  }, [typData]);
+
   // Timeline series — one line per party
   const timelineSeries = useMemo<KeywordSeries[]>(() => {
     if (!typData?.timeline?.series) return [];
@@ -175,7 +186,10 @@ export default function MotionsPage() {
                 count: i.count,
               }))}
               label={t.motions.count_label}
-              sublabel={t.motions.count_sublabel.replace("{tab}", TAB_LABELS[activeTab])}
+              sublabel={t.motions.count_sublabel.replace(
+                "{tab}",
+                TAB_LABELS[activeTab],
+              )}
             />
 
             <section
@@ -189,7 +203,10 @@ export default function MotionsPage() {
                 {t.motions.timeline_title}
               </h2>
               <p className="text-[12px] mb-4" style={{ color: "#7872a8" }}>
-                {t.motions.timeline_subtitle.replace("{tab}", TAB_LABELS[activeTab])}
+                {t.motions.timeline_subtitle.replace(
+                  "{tab}",
+                  TAB_LABELS[activeTab],
+                )}
               </p>
               {typData.timeline.months.length > 0 ? (
                 <KeywordTimeline
@@ -208,11 +225,9 @@ export default function MotionsPage() {
 
           {/* Row 2: party cards (word cloud + top authors) */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
-            {parties.map((party) => {
+            {parties.map((party, i) => {
               const color = getPartyColor(party);
-              const words: WordFreqEntry[] = (
-                typData.word_freq[party] ?? []
-              ).slice(0, 30);
+              const words: WordFreqEntry[] = wordSlices[party] ?? [];
               // Reshape to SpeakerRecord[] — wortanzahl_gesamt carries anzahl for bar widths
               const speakers: SpeakerRecord[] = (
                 typData.top_authors[party] ?? []
@@ -258,7 +273,12 @@ export default function MotionsPage() {
 
                   {/* Word cloud from titles */}
                   {words.length > 0 && (
-                    <WordCloud words={words} color={color} height={180} />
+                    <WordCloud
+                      words={words}
+                      color={color}
+                      height={180}
+                      startDelay={i * 180}
+                    />
                   )}
 
                   {/* Top authors */}
@@ -290,7 +310,10 @@ export default function MotionsPage() {
               {t.motions.search_title}
             </h2>
             <p className="text-[12px] mb-4" style={{ color: "#7872a8" }}>
-              {t.motions.search_subtitle.replace("{tab}", TAB_LABELS[activeTab])}
+              {t.motions.search_subtitle.replace(
+                "{tab}",
+                TAB_LABELS[activeTab],
+              )}
             </p>
             <input
               type="text"
@@ -311,7 +334,12 @@ export default function MotionsPage() {
                   items={searchResults}
                   label={`${t.motions.hits_for} „${query}"`}
                   sublabel={t.motions.hits_sublabel
-                    .replace("{count}", searchResults.reduce((s, i) => s + i.count, 0).toLocaleString(language))
+                    .replace(
+                      "{count}",
+                      searchResults
+                        .reduce((s, i) => s + i.count, 0)
+                        .toLocaleString(language),
+                    )
                     .replace("{tab}", TAB_LABELS[activeTab])}
                 />
 
@@ -362,13 +390,16 @@ export default function MotionsPage() {
                 </div>
               </>
             )}
-            {searchResults && searchResults.length === 0 && query.trim() && !titlesLoading && (
-              <p className="text-[13px]" style={{ color: "#7872a8" }}>
-                {t.motions.no_results
-                  .replace("{tab}", TAB_LABELS[activeTab])
-                  .replace("{query}", query)}
-              </p>
-            )}
+            {searchResults &&
+              searchResults.length === 0 &&
+              query.trim() &&
+              !titlesLoading && (
+                <p className="text-[13px]" style={{ color: "#7872a8" }}>
+                  {t.motions.no_results
+                    .replace("{tab}", TAB_LABELS[activeTab])
+                    .replace("{query}", query)}
+                </p>
+              )}
           </div>
         </>
       )}
