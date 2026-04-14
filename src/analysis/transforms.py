@@ -277,6 +277,13 @@ def compute_active_months(
     Uses created_ts as a fallback start date when date_start is missing.
     For retroactive disclosures (created after period_end), created_ts is
     uninformative, so we assume the job was active for the full period.
+
+    Conservatism note: when date_start is absent and created_ts is used as
+    fallback, the result may be lower than abgeordnetenwatch's own income_total
+    field, which back-dates recurring jobs to the start of the legislature
+    regardless of when they were actually disclosed. This affects party-official
+    roles (e.g. Parteivorsitzender) that were disclosed mid-term but likely
+    started at parliament start.
     """
     today = datetime.now(tz=UTC).date()
     if date_start_str:
@@ -302,6 +309,20 @@ def compute_effective_income(
     interval=1 → monthly income, interval=2 → annual income. Other intervals
     are returned as-is. interval is read as float64 (pandas coerces int columns
     with NaN to float), so we cast to int before comparing.
+
+    Real-data distribution (18,551 records, period 20+21 cache):
+      interval=null  94.5 % — annual "Einkommen im Jahr XXXX" declarations;
+                              income is the total for that year, returned as-is.
+      interval=1      4.1 % — monthly rate; prorated as income * active_months.
+      interval=2      1.4 % — annual rate; prorated as income * active_months/12.
+      interval=0      0.0 % — documented as "one-time" in the API spec but never
+                              observed in practice; falls through to the as-is path.
+
+    income_level is NOT used for the calculation. It encodes which income-range
+    bracket the raw per-period income falls into (0 = 1-1k EUR ... 10 = 250k+ EUR),
+    corresponding to the undivided income value, NOT the prorated annual total.
+    For example, a monthly earner with income=€6,250 has income_level=2
+    (3,500-7,000 EUR), not the bracket that matches 75,000 EUR annualised.
     """
     raw_interval = row.get("interval")
     try:

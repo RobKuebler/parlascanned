@@ -522,6 +522,29 @@ def refresh_sidejobs(
          works as a range. Records with data_change_date=None (never edited after
          creation) are excluded by this filter — hence the separate id[gt] pass.
     Typically reduces from ~18 pages (~18k records) to 2 small requests per day.
+
+    income_total (raw API field, intentionally NOT stored in the returned DataFrame):
+    For recurring jobs abgeordnetenwatch publishes a snapshot cumulative total
+    in the form {'date': 'YYYY-MM-DD', 'value': '<euros>'}. It is computed as
+    income * months_from_legislature_start_to_snapshot, not a per-year figure.
+    We do not store it because we compute our own period-specific prorated income
+    via compute_effective_income; the two will differ for jobs disclosed mid-term.
+
+    Retroactive declarations: politicians may file or amend income declarations
+    years after the fact. For example, Ophelia Nick's second 2022 income entry
+    (€417,463) was created on 2024-10-30, two years after the income year. This
+    means our cumulative totals can exceed figures in news articles that were
+    published before the late filings appeared. The incremental fetch strategy
+    (id[gt] + data_change_date[gte]) ensures these retroactive records are
+    picked up on the next run.
+
+    Data-quality note on very large income values: the Bundestag disclosure rules
+    require farmers and business owners to report gross business revenues, not
+    personal profit. Albert Stegemann's multi-million euro entries from
+    Kooperative Milchverwertung e.G. are agricultural cooperative turnover that
+    flows through his farm — confirmed by his own public statement. Top-line
+    figures for similar "Beteiligung" and "Vertragspartner" entries may therefore
+    overstate personal income.
     """
     cache_path = data_dir / "sidejobs_raw.json"
 
