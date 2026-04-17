@@ -15,49 +15,29 @@ export interface PageMeta {
   wide?: boolean;
 }
 
+// One accent color per section group — not per page.
+// Legislative: brand purple-blue (procedural authority)
+// Parties & Analysis: teal (analytical/comparative)
+// Transparency: amber (investigative scrutiny)
+const C_LEGISLATIVE = "#4C46D9";
+const C_ANALYSIS = "#0f766e";
+const C_TRANSPARENCY = "#b45309";
+
 // Order mirrors NAV_ITEMS: Legislative process → Parties & Analysis → Transparency
 export const PAGE_META: PageMeta[] = [
   // --- Legislative process ---
-  {
-    href: "/vote-map",
-    color: "#4C46D9",
-    key: "vote_map",
-  },
-  {
-    href: "/motions",
-    color: "#1d4ed8",
-    key: "motions",
-  },
-  {
-    href: "/speeches",
-    color: "#0d7456",
-    key: "speeches",
-  },
-  {
-    href: "/comments",
-    color: "#7c3aed",
-    key: "comments",
-  },
+  { href: "/vote-map", color: C_LEGISLATIVE, key: "vote_map" },
+  { href: "/motions", color: C_LEGISLATIVE, key: "motions" },
+  { href: "/speeches", color: C_LEGISLATIVE, key: "speeches" },
+  { href: "/comments", color: C_ANALYSIS, key: "comments" },
   // --- Parties & Analysis ---
-  {
-    href: "/party-profile",
-    color: "#0284c7",
-    key: "party_profile",
-  },
-  {
-    href: "/trends",
-    color: "#0f766e",
-    key: "trends",
-  },
+  { href: "/party-profile", color: C_ANALYSIS, key: "party_profile" },
+  { href: "/trends", color: C_ANALYSIS, key: "trends" },
   // --- Transparency ---
-  {
-    href: "/sidejobs",
-    color: "#b45309",
-    key: "sidejobs",
-  },
+  { href: "/sidejobs", color: C_TRANSPARENCY, key: "sidejobs" },
   {
     href: "/potential-conflicts",
-    color: "#be123c",
+    color: C_TRANSPARENCY,
     key: "potential_conflicts",
   },
 ];

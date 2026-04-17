@@ -5,7 +5,7 @@ import Link from "next/link";
 import { PeriodSelector } from "./PeriodSelector";
 import { Logo } from "./Logo";
 import { BundestagSeats } from "./BundestagSeats";
-import { NAV_ITEMS } from "@/lib/nav-items";
+import { NAV_GROUPS } from "@/lib/nav-items";
 import { useLanguage } from "@/lib/language-context";
 
 /** Fixed top header for mobile — shows logo, period selector, and hamburger menu. Hidden on md+. */
@@ -111,25 +111,54 @@ export function MobileHeader() {
         </div>
 
         {/* Nav items */}
-        <div className="flex flex-col gap-0.5 px-3 overflow-y-auto">
-          {NAV_ITEMS.map(({ href, key, icon }) => {
-            const active = pathname === href;
+        <div className="flex flex-col px-3 overflow-y-auto">
+          {NAV_GROUPS.map((group, gi) => {
+            const groupLabel =
+              language === "en" ? group.label.en : group.label.de;
             return (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setOpen(false)}
-                className={`flex items-center gap-3 rounded-lg px-3 py-3 transition-all duration-150 ${
-                  active
-                    ? "bg-[#4C46D9]"
-                    : "opacity-55 hover:opacity-90 hover:bg-white/5"
-                }`}
-              >
-                <span className="shrink-0 text-white">{icon(active, 22)}</span>
-                <span className="text-[15px] font-bold text-white">
-                  {t.nav[key]}
-                </span>
-              </Link>
+              <div key={groupLabel}>
+                {gi > 0 && (
+                  <div
+                    className="mx-1 my-2.5"
+                    style={{ height: 1, background: "rgba(255,255,255,0.08)" }}
+                  />
+                )}
+                <p
+                  className="px-3 mb-1 font-extrabold tracking-[0.20em] uppercase"
+                  style={{
+                    fontSize: 10,
+                    color: group.color,
+                    opacity: 0.8,
+                    marginTop: gi === 0 ? 0 : 2,
+                  }}
+                >
+                  {groupLabel}
+                </p>
+                <div className="flex flex-col gap-0.5">
+                  {group.items.map(({ href, key, icon }) => {
+                    const active = pathname === href;
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        onClick={() => setOpen(false)}
+                        className={`flex items-center gap-3 rounded-lg px-3 py-3 transition-all duration-150 ${
+                          active
+                            ? "bg-[#4C46D9]"
+                            : "opacity-55 hover:opacity-90 hover:bg-white/5"
+                        }`}
+                      >
+                        <span className="shrink-0 text-white">
+                          {icon(active, 22)}
+                        </span>
+                        <span className="text-[15px] font-bold text-white">
+                          {t.nav[key]}
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })}
         </div>

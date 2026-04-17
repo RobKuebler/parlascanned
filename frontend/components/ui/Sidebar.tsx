@@ -5,7 +5,7 @@ import { useLanguage } from "@/lib/language-context";
 import { PeriodSelector } from "./PeriodSelector";
 import { Logo } from "./Logo";
 import { BundestagSeats } from "./BundestagSeats";
-import { NAV_ITEMS } from "@/lib/nav-items";
+import { NAV_GROUPS } from "@/lib/nav-items";
 
 export function Sidebar() {
   const rawPathname = usePathname();
@@ -33,8 +33,78 @@ export function Sidebar() {
         <PeriodSelector variant="sidebar" />
       </div>
 
-      {/* Language toggle */}
-      <div className="px-[10px] mb-[14px]">
+      {/* Seat distribution — contextualizes the selected period */}
+      <div
+        className="mx-[10px] mb-[10px] pt-[10px]"
+        style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
+      >
+        <BundestagSeats />
+      </div>
+
+      {/* Divider */}
+      <div className="mx-auto w-10 h-px bg-white/10 mb-[10px]" />
+
+      {/* Nav */}
+      <nav className="flex flex-col px-2 flex-1 overflow-y-auto scrollbar-nav">
+        {NAV_GROUPS.map((group, gi) => {
+          const groupLabel =
+            language === "en" ? group.label.en : group.label.de;
+          return (
+            <div key={groupLabel}>
+              {gi > 0 && (
+                <div
+                  className="mx-1 my-2"
+                  style={{ height: 1, background: "rgba(255,255,255,0.08)" }}
+                />
+              )}
+              <p
+                className="px-3 mb-1 font-extrabold tracking-[0.20em] uppercase"
+                style={{
+                  fontSize: 9,
+                  color: group.color,
+                  opacity: 0.7,
+                  marginTop: gi === 0 ? 0 : 2,
+                }}
+              >
+                {groupLabel}
+              </p>
+              <div className="flex flex-col gap-0.5">
+                {group.items.map(({ href, key, icon }) => {
+                  const active = pathname === href;
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 outline-none focus:outline-none transition-all duration-150 ${
+                        active
+                          ? "bg-[#4C46D9]"
+                          : "opacity-55 hover:opacity-90 hover:bg-white/5"
+                      }`}
+                    >
+                      <span
+                        className={`shrink-0 ${active ? "text-white" : "text-[#A8A5E0]"}`}
+                      >
+                        {icon(active, 20)}
+                      </span>
+                      <span
+                        className={`text-[13px] font-bold truncate ${active ? "text-white" : "text-[#A8A5E0]"}`}
+                      >
+                        {t.nav[key]}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </nav>
+
+      {/* Language toggle — a preference, lives at the bottom */}
+      <div
+        className="px-[10px] pt-[10px] pb-[14px]"
+        style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
+      >
         <div className="flex gap-1">
           {(["de", "en"] as const).map((lang) => (
             <button
@@ -42,52 +112,14 @@ export function Sidebar() {
               onClick={() => setLanguage(lang)}
               className={`flex-1 py-1 rounded-md text-[11px] font-bold uppercase transition-colors duration-150 ${
                 language === lang
-                  ? "bg-white text-[#1E1B5E]"
-                  : "text-white/40 hover:text-white/70"
+                  ? "bg-white/15 text-white"
+                  : "text-white/25 hover:text-white/50"
               }`}
             >
               {lang}
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Divider */}
-      <div className="mx-auto w-10 h-px bg-white/10 mb-[10px]" />
-
-      {/* Nav */}
-      <nav className="flex flex-col gap-0.5 px-2 flex-1 overflow-y-auto">
-        {NAV_ITEMS.map(({ href, key, icon }) => {
-          const active = pathname === href;
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 outline-none focus:outline-none transition-all duration-150 ${
-                active
-                  ? "bg-[#4C46D9]"
-                  : "opacity-55 hover:opacity-90 hover:bg-white/5"
-              }`}
-            >
-              <span
-                className={`shrink-0 ${active ? "text-white" : "text-[#A8A5E0]"}`}
-              >
-                {icon(active, 20)}
-              </span>
-              <span
-                className={`text-[13px] font-bold truncate ${active ? "text-white" : "text-[#A8A5E0]"}`}
-              >
-                {t.nav[key]}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Seat distribution widget */}
-      <div className="mx-auto w-10 h-px bg-white/10 mb-[10px]" />
-      <div className="px-[10px] pb-[14px]">
-        <BundestagSeats />
       </div>
     </aside>
   );

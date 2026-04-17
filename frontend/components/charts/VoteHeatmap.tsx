@@ -9,6 +9,7 @@ import {
   PARTY_ORDER,
   getPartyColor,
   getPartyShortLabel,
+  CHART_FONT_FAMILY,
 } from "@/lib/constants";
 import {
   ChartTooltip,
@@ -181,9 +182,9 @@ export function VoteHeatmap({
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .attr("fill", textColor)
-        .attr("font-size", "10px")
+        .attr("font-size", "11px")
         .attr("font-weight", "600")
-        .attr("font-family", "sans-serif")
+        .attr("font-family", CHART_FONT_FAMILY)
         .text(getPartyShortLabel(group.party));
     }
 
@@ -200,8 +201,8 @@ export function VoteHeatmap({
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .attr("fill", "#374151")
-        .attr("font-size", "10px")
-        .attr("font-family", "sans-serif")
+        .attr("font-size", "11px")
+        .attr("font-family", CHART_FONT_FAMILY)
         .text(label);
     }
 

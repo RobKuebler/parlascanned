@@ -93,13 +93,13 @@ export function BundestagSeats() {
   return (
     <div className="px-[2px]">
       {/* Eyebrow */}
-      <p className="text-[8px] font-bold tracking-[0.12em] uppercase text-white/30 text-center mb-[5px]">
+      <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-white/30 text-center mb-[5px]">
         {t.ui.seat_distribution.replace("{total}", String(total))}
       </p>
 
       {/* Hemicycle SVG */}
       <svg
-        viewBox="0 0 500 268"
+        viewBox="0 58 500 210"
         width="100%"
         aria-label={t.ui.seat_distribution_aria}
       >
@@ -133,10 +133,10 @@ export function BundestagSeats() {
                 className="w-[6px] h-[6px] rounded-full shrink-0"
                 style={{ background: dotColor(p.party) }}
               />
-              <span className="text-[8px] font-medium text-white/65 leading-none">
+              <span className="text-[9px] font-medium text-white/65 leading-none">
                 {partyLabel(p.party)}
               </span>
-              <span className="text-[8px] font-bold text-white/35 leading-none">
+              <span className="text-[9px] font-bold text-white/35 leading-none">
                 {p.seats}
               </span>
             </div>

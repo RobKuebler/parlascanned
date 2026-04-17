@@ -4,6 +4,7 @@ import * as d3 from "d3";
 import cloud from "d3-cloud";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
 import { WordFreqEntry } from "@/lib/data";
+import { CHART_FONT_FAMILY } from "@/lib/constants";
 
 interface Props {
   words: WordFreqEntry[];
@@ -71,7 +72,7 @@ export const WordCloud = memo(function WordCloud({
       .padding(3)
       .rotate(0)
       .random(mulberry32(42))
-      .font("Plus Jakarta Sans")
+      .font("Libre Franklin")
       .fontSize((d) => d.size ?? 11)
       .on("end", draw);
 
@@ -92,7 +93,7 @@ export const WordCloud = memo(function WordCloud({
         .data(placed)
         .join("text")
         .style("font-size", (d) => `${d.size}px`)
-        .style("font-family", "Plus Jakarta Sans, sans-serif")
+        .style("font-family", CHART_FONT_FAMILY)
         // Use heavier weight for larger words to increase visual hierarchy.
         .style("font-weight", (d) => ((d.size ?? 0) > 22 ? "800" : "600"))
         .style("fill", (d) => {

@@ -1,19 +1,29 @@
 "use client";
 import { useTranslation } from "@/lib/language-context";
 
-const Dot = () => <span className="text-gray-300 select-none">·</span>;
+const Dot = () => (
+  <span className="select-none" style={{ color: "#dddaf0" }}>
+    ·
+  </span>
+);
 
 export function Footer() {
   const t = useTranslation();
   return (
-    <footer className="mt-16 border-t border-gray-100">
-      <div className="py-7 flex flex-col items-center gap-2 text-xs text-gray-400">
+    <footer className="mt-16" style={{ borderTop: "1px solid #dddaf0" }}>
+      <div
+        className="py-7 flex flex-col items-center gap-2"
+        style={{ fontSize: 11, color: "#a09ab8" }}
+      >
         <div className="flex flex-wrap justify-center items-center gap-x-3 gap-y-1">
           <span>
             {t.ui.footer_by}{" "}
             <a
               href="https://robkuebler.github.io"
-              className="text-gray-500 hover:text-gray-800 transition-colors duration-150"
+              className="transition-colors duration-150"
+              style={{ color: "#7872a8" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#1E1B5E")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#7872a8")}
             >
               Robert Kübler
             </a>
@@ -21,7 +31,10 @@ export function Footer() {
           <Dot />
           <a
             href="https://github.com/RobKuebler/parlascanned"
-            className="flex items-center gap-1 hover:text-gray-700 transition-colors duration-150"
+            className="flex items-center gap-1 transition-colors duration-150"
+            style={{ color: "#a09ab8" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#1E1B5E")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#a09ab8")}
           >
             <svg
               viewBox="0 0 24 24"
@@ -38,14 +51,22 @@ export function Footer() {
           <span>{t.ui.footer_data}</span>
           <a
             href="https://www.abgeordnetenwatch.de"
-            className="hover:text-gray-700 transition-colors duration-150"
+            className="transition-colors duration-150"
+            style={{ color: "#a09ab8" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#1E1B5E")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#a09ab8")}
           >
             abgeordnetenwatch.de
           </a>
-          <span className="text-gray-300 select-none">&amp;</span>
+          <span className="select-none" style={{ color: "#dddaf0" }}>
+            &amp;
+          </span>
           <a
             href="https://dip.bundestag.de"
-            className="hover:text-gray-700 transition-colors duration-150"
+            className="transition-colors duration-150"
+            style={{ color: "#a09ab8" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#1E1B5E")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#a09ab8")}
           >
             DIP Bundestag
           </a>

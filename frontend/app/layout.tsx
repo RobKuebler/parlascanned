@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Libre_Franklin } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/ui/Sidebar";
 import { MobileHeader } from "@/components/ui/MobileHeader";
@@ -8,7 +8,7 @@ import { LanguageProvider } from "@/lib/language-context";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-const plusJakarta = Plus_Jakarta_Sans({
+const libreFranklin = Libre_Franklin({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
   display: "swap",
@@ -32,7 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="de">
-      <body className={`${plusJakarta.className} text-[#171613]`}>
+      <body className={`${libreFranklin.className} text-[#171613]`}>
         <LanguageProvider>
           <PeriodProvider>
             <div className="flex min-h-screen">

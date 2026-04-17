@@ -98,6 +98,25 @@ body {
   animation: fadeIn 0.25s ease-out both 220ms;
 }
 
+/* ── Sidebar scrollbar — dark navy palette, thin and unobtrusive ─────────── */
+.scrollbar-nav {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+.scrollbar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+}
+.scrollbar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
 /* ── Mobile safe-area bottom padding (above gesture handle bar) ───────────── */
 @media (max-width: 767px) {
   .mobile-safe-pb {
