@@ -44,13 +44,18 @@ export function HorizontalBarRow({
   const [isTruncated, setIsTruncated] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
-  // Measure truncation after render — re-runs when label text or labelWidth prop changes.
+  // Measure truncation after render and on resize (label may reflow).
   useEffect(() => {
-    if (labelRef.current) {
-      setIsTruncated(
-        labelRef.current.scrollWidth > labelRef.current.offsetWidth,
-      );
+    function measure() {
+      if (labelRef.current) {
+        setIsTruncated(
+          labelRef.current.scrollWidth > labelRef.current.offsetWidth,
+        );
+      }
     }
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
   }, [label, labelWidth]);
 
   // Clear any pending auto-hide timeout on unmount
