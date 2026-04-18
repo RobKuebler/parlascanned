@@ -62,7 +62,7 @@ function MethodologyNote() {
           className="px-4 pb-4 flex flex-col gap-3"
           style={{ borderTop: "1px solid #F0EFEB" }}
         >
-          <p className="text-[12px] text-[#5a556b] pt-3 leading-relaxed">
+          <p className="text-[12px] text-[#5a556b] pt-3 leading-relaxed max-w-prose">
             {t.potential_conflicts.methodology_p1}
           </p>
 
@@ -303,7 +303,7 @@ export default function AusschussePage() {
             >
               {t.potential_conflicts.ranked_title}
             </h2>
-            <p className="text-[12px] text-[#524d8a] mb-4">
+            <p className="text-[12px] text-[#524d8a] mb-4 max-w-prose">
               {t.potential_conflicts.ranked_subtitle}
             </p>
             <ConflictRankedList
@@ -323,7 +323,7 @@ export default function AusschussePage() {
             >
               {t.potential_conflicts.heatmap_title}
             </h2>
-            <p className="text-[12px] text-[#524d8a] mb-4">
+            <p className="text-[12px] text-[#524d8a] mb-4 max-w-prose">
               {t.potential_conflicts.heatmap_subtitle}
             </p>
             <ConflictHeatmap conflicts={data.conflicts} parties={parties} />

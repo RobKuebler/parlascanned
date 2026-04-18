@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useTranslation } from "@/lib/language-context";
 
 const Dot = () => (
@@ -32,6 +32,7 @@ export function Footer() {
           <Dot />
           <a
             href="https://github.com/RobKuebler/parlascanned"
+            aria-label="Parlascanned Quellcode auf GitHub"
             className="flex items-center gap-1 transition-colors duration-150 hover:text-[var(--color-navy)]"
             style={{ color: "var(--color-muted)" }}
           >
@@ -50,6 +51,7 @@ export function Footer() {
           <span>{t.ui.footer_data}</span>
           <a
             href="https://www.abgeordnetenwatch.de"
+            aria-label="Abgeordnetenwatch - Datenquelle für Abgeordnetendaten"
             className="transition-colors duration-150 hover:text-[var(--color-navy)]"
             style={{ color: "var(--color-muted)" }}
           >
@@ -63,6 +65,7 @@ export function Footer() {
           </span>
           <a
             href="https://dip.bundestag.de"
+            aria-label="DIP Bundestag - Datenquelle für Drucksachen und Plenarprotokolle"
             className="transition-colors duration-150 hover:text-[var(--color-navy)]"
             style={{ color: "var(--color-muted)" }}
           >

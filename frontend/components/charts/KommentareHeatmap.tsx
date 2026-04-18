@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 /**
- * KommentareHeatmap — interactive heatmap for cross-party event data.
+ * KommentareHeatmap - interactive heatmap for cross-party event data.
  *
  * Rows = acting party (who does the action).
  * Cols = speaker party (during whose speech).
@@ -34,7 +34,7 @@ const EVENT_TABS = [
 ] as const;
 type EventTab = (typeof EVENT_TABS)[number];
 
-// Sequential color scale: light to deep navy (Blues — standard for count data)
+// Sequential color scale: light to deep navy (Blues - standard for count data)
 const COLOR_LOW = "#f0f5ff";
 const COLOR_HIGH = "#0f2d5c";
 
@@ -107,7 +107,7 @@ function HeatmapCanvas({
       interpolateRgb(COLOR_LOW, COLOR_HIGH),
     ).domain([0, maxVal]);
 
-    // ── Column headers (speaker party) — colored blocks with white text ────
+    // ── Column headers (speaker party) - colored blocks with white text ────
     parties.forEach((party, j) => {
       const x = LABEL_W + j * cellW;
       const bw = cellW - 2;
@@ -155,7 +155,7 @@ function HeatmapCanvas({
       }
     });
 
-    // ── Row labels (acting party) — colored blocks with white text ─────────
+    // ── Row labels (acting party) - colored blocks with white text ─────────
     parties.forEach((party, i) => {
       const y = LABEL_H + i * cellH;
       const bh = cellH - 2;
@@ -232,7 +232,7 @@ function HeatmapCanvas({
           })
           .on("mouseleave", () => tip.style("opacity", "0"));
 
-        // Cell value label — show on all cells >= minimum size
+        // Cell value label - show on all cells >= minimum size
         if (val > 0) {
           const isSmall = cellW < 34;
           const textColor =

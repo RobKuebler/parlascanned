@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useMemo } from "react";
 import { Politician, stripSoftHyphen } from "@/lib/data";
 import { useTranslation } from "@/lib/language-context";
@@ -63,7 +63,7 @@ export function PoliticianSearch({
   function selectPolitician(id: number) {
     onSelectionChange([...selected, id]);
     clearQuery();
-    // isOpen intentionally not set to false — dropdown stays open for continued multiselect
+    // isOpen intentionally not set to false - dropdown stays open for continued multiselect
   }
 
   return (
@@ -106,7 +106,7 @@ export function PoliticianSearch({
         )}
       </div>
 
-      {/* Chips — below the search bar */}
+      {/* Chips - below the search bar */}
       {(selected.length > 0 || selectedParties.length > 0) && (
         <div
           style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}
@@ -117,7 +117,10 @@ export function PoliticianSearch({
               key={party}
               label={getPartyShortLabel(party)}
               onRemove={() => onPartyRemove?.(party)}
-              removeLabel={t.vote_map.politician_search_remove_party.replace("{party}", party)}
+              removeLabel={t.vote_map.politician_search_remove_party.replace(
+                "{party}",
+                party,
+              )}
               dotColor={getPartyColor(party)}
             />
           ))}
@@ -134,7 +137,10 @@ export function PoliticianSearch({
                 onRemove={() =>
                   onSelectionChange(selected.filter((x) => x !== id))
                 }
-                removeLabel={t.vote_map.politician_search_remove_pol.replace("{name}", pol.name)}
+                removeLabel={t.vote_map.politician_search_remove_pol.replace(
+                  "{name}",
+                  pol.name,
+                )}
                 dotColor={getPartyColor(party)}
                 suffix={
                   <span style={{ color: "#666", fontSize: 11 }}>
@@ -181,7 +187,10 @@ export function PoliticianSearch({
                 pointerEvents: "none",
               }}
             >
-              {t.vote_map.politician_search_results.replace("{count}", String(results.length))}
+              {t.vote_map.politician_search_results.replace(
+                "{count}",
+                String(results.length),
+              )}
             </li>
           )}
 

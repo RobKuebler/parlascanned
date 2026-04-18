@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { COLOR_SECONDARY, getPartyShortLabel } from "@/lib/constants";
 import { useTranslation } from "@/lib/language-context";
 
@@ -9,7 +9,7 @@ interface SexRecord {
   pct: number;
 }
 
-const MALE_COLOR = "#4E9A8F"; // teal — avoids stereotypical blue/pink pair
+const MALE_COLOR = "#4E9A8F"; // teal - avoids stereotypical blue/pink pair
 const FEMALE_COLOR = "#E8973D"; // amber
 
 export function GenderChart({

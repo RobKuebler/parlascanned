@@ -1,8 +1,8 @@
-/**
+﻿/**
  * Central nav item config shared by Sidebar and MobileHeader drawer.
  * Icons accept (active, size) so both nav components use the exact same paths.
  *
- * NAV_GROUPS is the primary export — groups with label, color, and items.
+ * NAV_GROUPS is the primary export - groups with label, color, and items.
  * NAV_ITEMS is a flat backwards-compatible export for components that don't need grouping.
  */
 
@@ -197,5 +197,5 @@ export const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
-// Flat list — backwards compatible for components that don't need group metadata
+// Flat list - backwards compatible for components that don't need group metadata
 export const NAV_ITEMS: NavItem[] = NAV_GROUPS.flatMap((g) => g.items);

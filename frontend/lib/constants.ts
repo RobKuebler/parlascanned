@@ -1,8 +1,8 @@
-// Party colors, order, and alias mapping — single source of truth.
+﻿// Party colors, order, and alias mapping - single source of truth.
 // All derived constants (PARTY_COLORS, PARTY_ORDER, etc.) are built from PARTY_REGISTRY.
 
 interface PartyDef {
-  canonical: string; // internal key — used in PARTY_COLORS, PARTY_ORDER, etc.
+  canonical: string; // internal key - used in PARTY_COLORS, PARTY_ORDER, etc.
   label: string; // short display name (e.g. "Grüne", "Linke")
   color: string; // hex
   aliases?: string[]; // raw API strings that should resolve to this party
@@ -39,18 +39,18 @@ for (const p of PARTY_REGISTRY) {
   }
 }
 
-// Derived exports — same names and shapes as before, zero breaking changes for callers.
+// Derived exports - same names and shapes as before, zero breaking changes for callers.
 export const PARTY_COLORS: Record<string, string> = Object.fromEntries(
   PARTY_REGISTRY.map((p) => [p.canonical, p.color]),
 );
 
 export const FALLBACK_COLOR = "#888888";
 
-// Display-safe accent colors for party pills — used for text and border only.
+// Display-safe accent colors for party pills - used for text and border only.
 // Some party colors (e.g. FDP yellow) are unreadable on light backgrounds.
 // The small dot in each pill still uses the original PARTY_COLORS for brand recognition.
 export const PARTY_PILL_ACCENT_COLORS: Partial<Record<string, string>> = {
-  FDP: "#7A5F00", // dark amber (~5.2:1 on white) — legible while staying in FDP's yellow family
+  FDP: "#7A5F00", // dark amber (~5.2:1 on white) - legible while staying in FDP's yellow family
 };
 
 // Preferred display order (most seats first), derived from PARTY_REGISTRY array order.
@@ -71,7 +71,7 @@ const _SHORT_LABELS: Record<string, string> = Object.fromEntries(
   PARTY_REGISTRY.map((p) => [p.canonical, p.label]),
 );
 
-/** Normalize any raw party label to its canonical name (not a display label — use getPartyShortLabel() for display).
+/** Normalize any raw party label to its canonical name (not a display label - use getPartyShortLabel() for display).
  * Strips soft-hyphens and resolves known aliases (e.g. "Grüne" → "BÜNDNIS 90/DIE GRÜNEN").
  */
 export function normalizePartyName(party: string): string {
@@ -129,11 +129,11 @@ export function truncateText(s: string, maxLen: number): string {
 
 // ── Design tokens ────────────────────────────────────────────────────────────
 
-// Shared card style — use on every main content card for visual consistency
+// Shared card style - use on every main content card for visual consistency
 export const CARD_CLASS = "bg-white rounded-xl border border-[#dddaf0]";
 // Standard content-card padding (mobile → desktop)
 export const CARD_PADDING = "p-5 md:p-6";
-// Standard content-card drop shadow — spread as style={{ boxShadow: CARD_SHADOW }}
+// Standard content-card drop shadow - spread as style={{ boxShadow: CARD_SHADOW }}
 export const CARD_SHADOW = "0 1px 4px rgba(0,0,0,0.05)";
 
 // ── Typography scale ─────────────────────────────────────────────────────────
@@ -149,11 +149,11 @@ export const CARD_SHADOW = "0 1px 4px rgba(0,0,0,0.05)";
 export const COLOR_SECONDARY = "#5a556b";
 export const COLOR_BODY = "#171613";
 
-// Chart font — used by all D3 charts for axis labels and legends
+// Chart font - used by all D3 charts for axis labels and legends
 export const CHART_FONT_FAMILY = '"Libre Franklin", sans-serif';
 export const MARKER_OUTLINE = "rgba(255,255,255,0.4)";
 
-// Chart axis / label layout constants — shared across all D3 charts
+// Chart axis / label layout constants - shared across all D3 charts
 export const CHART_AXIS_FONT_SIZE = "11px";
 // Band width (px) below which vertical bar-chart x-labels rotate to avoid overlap
 export const CHART_ROTATION_THRESHOLD = 42;

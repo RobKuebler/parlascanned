@@ -1,4 +1,4 @@
-// TypeScript interfaces matching the JSON schemas in the spec.
+﻿// TypeScript interfaces matching the JSON schemas in the spec.
 // All field names match the CSV column names exactly (as documented in the spec).
 
 export interface Period {
@@ -10,7 +10,7 @@ export interface Period {
 export interface Politician {
   politician_id: number;
   name: string;
-  party: string; // raw, may contain soft-hyphen — strip with stripSoftHyphen()
+  party: string; // raw, may contain soft-hyphen - strip with stripSoftHyphen()
   sex: string | null;
   year_of_birth: number | null;
   occupation: string | null;
@@ -108,7 +108,7 @@ export interface WordFreqEntry {
   rang: number;
 }
 
-/** party_word_freq.json (under /data/{period}/) — keys are raw fraktion names (may contain soft-hyphen) */
+/** party_word_freq.json (under /data/{period}/) - keys are raw fraktion names (may contain soft-hyphen) */
 export type WordFreqFile = Record<string, WordFreqEntry[]>;
 
 export interface SpeakerRecord {
@@ -120,21 +120,21 @@ export interface SpeakerRecord {
   wortanzahl_gesamt: number;
 }
 
-/** party_speech_stats.json (under /data/{period}/) — flat array sorted by fraktion then wortanzahl_gesamt desc */
+/** party_speech_stats.json (under /data/{period}/) - flat array sorted by fraktion then wortanzahl_gesamt desc */
 export type SpeechStatsFile = SpeakerRecord[];
 
 export interface KeywordTimelineFile {
   meta: {
     /** ISO month strings: ["2021-10", "2021-11", ...] */
     months: string[];
-    /** Total word count per month — parallel to months array */
+    /** Total word count per month - parallel to months array */
     total_words_per_month: number[];
   };
   /** term → counts array parallel to meta.months */
   terms: Record<string, number[]>;
 }
 
-/** keyword_timeline_parties.json — lazy-loaded when party features are used */
+/** keyword_timeline_parties.json - lazy-loaded when party features are used */
 export interface KeywordTimelinePartiesFile {
   /** Parties present in the period, ordered by PARTY_ORDER, excluding fraktionslos */
   parties: string[];
@@ -151,14 +151,14 @@ import { normalizePartyName } from "@/lib/constants";
 /** Normalize a raw party name from JSON to its canonical form.
  * Delegates to normalizePartyName in constants.ts (single source of truth).
  * Removes soft-hyphens and maps known aliases (e.g. "Die Linke.", "Grüne").
- * Returns the canonical name — NOT a display label.
+ * Returns the canonical name - NOT a display label.
  * Use getPartyShortLabel() for display output.
  */
 export function stripSoftHyphen(s: string): string {
   return normalizePartyName(s);
 }
 
-/** kommentare.json — applause, interjections, laughter cross-party data */
+/** kommentare.json - applause, interjections, laughter cross-party data */
 export interface KommentareData {
   /** Party names in display order, matching PARTY_COLORS keys */
   parties: string[];
@@ -230,13 +230,13 @@ export interface MotionsTypData {
     months: string[];
     series: { party: string; counts: number[] }[];
   };
-  /** party → [{wort, tfidf, rang}] — same format as WordFreqFile values */
+  /** party → [{wort, tfidf, rang}] - same format as WordFreqFile values */
   word_freq: Record<string, WordFreqEntry[]>;
   /** party → top authors sorted by anzahl desc */
   top_authors: Record<string, MotionAuthor[]>;
 }
 
-/** motions_stats.json — keyed by Drucksache type: "Antrag" | "Kleine Anfrage" | "Große Anfrage" */
+/** motions_stats.json - keyed by Drucksache type: "Antrag" | "Kleine Anfrage" | "Große Anfrage" */
 export type MotionsStatsFile = Record<string, MotionsTypData>;
 
 export interface MotionTitle {
@@ -246,5 +246,5 @@ export interface MotionTitle {
   titel: string;
 }
 
-/** motions_titles.json — lazy-loaded only when keyword search is used */
+/** motions_titles.json - lazy-loaded only when keyword search is used */
 export type MotionsTitlesFile = MotionTitle[];

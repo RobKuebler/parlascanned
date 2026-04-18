@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "@/lib/language-context";
 import { usePeriod } from "@/lib/period-context";
@@ -25,14 +25,15 @@ import { PAGE_META } from "@/lib/page-meta";
 
 const META = PAGE_META.find((p) => p.href === "/trends")!;
 
-// Fixed color palette for active keyword chips (max 6 simultaneous keywords)
+// Fixed color palette for active keyword chips (max 6 simultaneous keywords).
+// All colors verified ≥4.5:1 contrast on white AND on their own 12%-opacity chip background.
 const KEYWORD_COLORS = [
-  "#E67E22",
-  "#2980B9",
-  "#27AE60",
-  "#8E44AD",
-  "#C0392B",
-  "#16A085",
+  "#954800", // dark amber-orange - was #E67E22 (2.8:1, failed WCAG AA)
+  "#1A5C8C", // deep ocean-blue - was #2980B9 (4.3:1, borderline fail)
+  "#156034", // forest green - was #27AE60 (2.8:1, failed WCAG AA)
+  "#8E44AD", // violet (unchanged, 5.7:1)
+  "#C0392B", // crimson (unchanged, 5.4:1)
+  "#0E7360", // dark teal - was #16A085 (3.1:1, failed WCAG AA)
 ];
 
 const MAX_KEYWORDS = 6;
@@ -94,7 +95,7 @@ export default function ThemenTrendsPage() {
       });
   }, [activePeriodId]);
 
-  // Lazy-load party data — called on first party interaction
+  // Lazy-load party data - called on first party interaction
   function ensurePartyData() {
     if (partyData || partyDataLoading || !activePeriodId) return;
     setPartyDataLoading(true);
@@ -239,7 +240,7 @@ export default function ThemenTrendsPage() {
         <ChartSkeleton height={360} />
       ) : (
         <div className="flex flex-col gap-5">
-          {/* Shared normalization toggle — applies to both charts */}
+          {/* Shared normalization toggle - applies to both charts */}
           <ToggleGroup
             options={[
               { value: "per1000", label: t.trends.toggle_per_1000 },
@@ -437,7 +438,7 @@ export default function ThemenTrendsPage() {
               </p>
             ) : (
               <>
-                {/* Party color legend — click to show/hide */}
+                {/* Party color legend - click to show/hide */}
                 <div className="flex flex-wrap gap-x-3 gap-y-1.5">
                   {compSeries.map((s) => {
                     const hidden = hiddenParties.has(s.keyword);

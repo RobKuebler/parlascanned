@@ -1,4 +1,4 @@
-import type { Translations } from "./types";
+﻿import type { Translations } from "./types";
 
 export const de: Translations = {
   nav: {
@@ -22,7 +22,7 @@ export const de: Translations = {
       label: "Parlamentarische Initiative",
       title: "Wer fordert was?",
       description:
-        "Anträge und Anfragen der Fraktionen im Vergleich — nach Themen, Volumen und aktivsten Einreichern.",
+        "Anträge und Anfragen der Fraktionen im Vergleich - nach Themen, Volumen und aktivsten Einreichern.",
     },
     speeches: {
       label: "Wortanalyse",
@@ -58,7 +58,7 @@ export const de: Translations = {
       label: "Interessenkonflikt",
       title: "Wer verdient im eigenen Ausschuss?",
       description:
-        "Abgeordnete, die in einem parlamentarischen Ausschuss sitzen und gleichzeitig in demselben Themenfeld Geld verdienen — eine Analyse möglicher Interessenkonflikte.",
+        "Abgeordnete, die in einem parlamentarischen Ausschuss sitzen und gleichzeitig in demselben Themenfeld Geld verdienen - eine Analyse möglicher Interessenkonflikte.",
     },
   },
   home: {
@@ -78,6 +78,8 @@ export const de: Translations = {
     no_data: "Keine Daten verfügbar.",
     period_label: "Bundestag",
     period_aria: "Wahlperiode auswählen",
+    error_load: "Daten konnten nicht geladen werden.",
+    retry: "Erneut versuchen",
     topic_labels: {
       "Arbeit und Beschäftigung": "Arbeit und Beschäftigung",
       "Außenpolitik und internationale Beziehungen":
@@ -160,8 +162,13 @@ export const de: Translations = {
   },
   motions: {
     tab_motion: "Anträge",
+    tab_motion_desc: "Formelle Beschlussanträge einer Fraktion ans Plenum",
     tab_small_inquiry: "Kleine Anfragen",
+    tab_small_inquiry_desc:
+      "Schriftliche Fragen einer Abgeordnetengruppe an die Bundesregierung",
     tab_large_inquiry: "Große Anfragen",
+    tab_large_inquiry_desc:
+      "Umfangreiche Anfragen, die eine ausführliche schriftliche Regierungsantwort erfordern",
     count_label: "Anzahl pro Fraktion",
     count_sublabel: "Eingereichte {tab} in dieser Legislaturperiode.",
     timeline_title: "Einreichungen pro Monat",
@@ -178,6 +185,8 @@ export const de: Translations = {
     hits_for: "Treffer für",
     hits_sublabel: "{count} {tab} enthalten diesen Begriff.",
     no_results: 'Keine {tab} mit "{query}" gefunden.',
+    wordcloud_legend:
+      "Wortgröße = relative Häufigkeit in {tab}-Titeln (TF-IDF-gewichtet)",
   },
   speeches: {
     speakers_header: "Redner nach Wortanzahl",
@@ -188,6 +197,8 @@ export const de: Translations = {
     speech_share_title: "Redeanteile",
     speech_share_subtitle:
       "Gesamtzahl der Wörter pro Fraktion in dieser Legislaturperiode.",
+    wordcloud_legend:
+      "Wortgröße = relative Häufigkeit im Plenum dieser Fraktion (TF-IDF-gewichtet)",
   },
   comments: {
     summary_title: "Gesamtübersicht",
@@ -219,16 +230,16 @@ export const de: Translations = {
   party_profile: {
     age_title: "Altersverteilung",
     age_subtitle:
-      "Jeder Punkt entspricht einem Abgeordneten. Punkte gleichen Alters sind vertikal gestapelt — je mehr Punkte auf einer Position, desto mehr Abgeordnete haben exakt dieses Alter. Die Kurve darüber zeigt die Altersverteilung als Dichteschätzung. Das Alter bezieht sich auf den Beginn der Legislaturperiode.",
+      "Jeder Punkt entspricht einem Abgeordneten. Punkte gleichen Alters sind vertikal gestapelt - je mehr Punkte auf einer Position, desto mehr Abgeordnete haben exakt dieses Alter. Die Kurve darüber zeigt die Altersverteilung als Dichteschätzung. Das Alter bezieht sich auf den Beginn der Legislaturperiode.",
     gender_title: "Geschlecht",
     gender_subtitle:
       "Geschlechterverteilung je Fraktion als prozentualer Anteil der Gesamtmitglieder.",
     occupation_title: "Berufe",
     occupation_subtitle:
-      'Die Heatmap zeigt, wie stark ein Beruf in einer Fraktion über- oder unterrepräsentiert ist — gemessen als Abweichung vom Bundestag-Durchschnitt in Prozentpunkten. Blau steht für überproportional viele Abgeordnete mit diesem Beruf, rot für entsprechend wenige. Die Berufsangaben stammen aus der Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei Ersterfassung. Unter "Sonstige Berufe" fallen insbesondere Abgeordnete, die als Berufsbezeichnung schlicht "Abgeordneter" angegeben haben.',
+      'Die Heatmap zeigt, wie stark ein Beruf in einer Fraktion über- oder unterrepräsentiert ist - gemessen als Abweichung vom Bundestag-Durchschnitt in Prozentpunkten. Blau steht für überproportional viele Abgeordnete mit diesem Beruf, rot für entsprechend wenige. Die Berufsangaben stammen aus der Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei Ersterfassung. Unter "Sonstige Berufe" fallen insbesondere Abgeordnete, die als Berufsbezeichnung schlicht "Abgeordneter" angegeben haben.',
     education_field_title: "Ausbildung / Studienrichtung",
     education_field_subtitle:
-      "Studienrichtungen und Ausbildungsbereiche der Abgeordneten im Fraktionsvergleich. Blau bedeutet überproportional häufig vertreten, rot unterproportional — jeweils gemessen am Bundestag-Durchschnitt. Die Angaben stammen aus der Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei Ersterfassung.",
+      "Studienrichtungen und Ausbildungsbereiche der Abgeordneten im Fraktionsvergleich. Blau bedeutet überproportional häufig vertreten, rot unterproportional - jeweils gemessen am Bundestag-Durchschnitt. Die Angaben stammen aus der Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei Ersterfassung.",
     education_degree_title: "Abschlussniveau",
     education_degree_subtitle:
       "Höchster Bildungsabschluss der Abgeordneten je Fraktion im Vergleich zum Bundestag-Durchschnitt. Die Angaben stammen aus der Abgeordnetenwatch-Datenbank und entsprechen dem Stand bei Ersterfassung.",
@@ -308,7 +319,7 @@ export const de: Translations = {
     search_placeholder_b: "Begriff wählen, z.B. klimaschutz …",
     empty_a: "Gib einen Begriff ein um seinen Verlauf im Plenum zu sehen.",
     empty_b: "Wähle einen Begriff um den Partei-Vergleich zu sehen.",
-    too_rare: "Zu selten verwendet — kein Parteivergleich verfügbar.",
+    too_rare: "Zu selten verwendet - kein Parteivergleich verfügbar.",
     no_party_data: "Keine Partei-Daten verfügbar.",
     no_data: "Für diese Wahlperiode sind noch keine Verlaufsdaten verfügbar.",
     not_found: '"{term}" kommt nicht häufig genug vor oder ist nicht im Index.',
@@ -329,10 +340,10 @@ export const de: Translations = {
       "Anteil der Abgeordneten je Fraktion, die mindestens eine meldepflichtige Nebentätigkeit ausüben. Als Nebenverdienst gilt ein gemeldetes Einkommen ab 1.000 € monatlich (§ 44a AbgG, Stufe 1). Abgeordnete mit gemeldeter Tätigkeit ohne Einkommensangabe werden gesondert ausgewiesen.",
     income_category_title: "Einkommen nach Kategorie",
     income_category_subtitle:
-      "Aufteilung der Nebeneinkünfte nach den offiziellen Kategorien der Bundestagsverwaltung. Dunklere Felder stehen für höhere Einnahmen — die Farbskala ist logarithmisch, damit auch mittlere Beträge sichtbar bleiben.",
+      "Aufteilung der Nebeneinkünfte nach den offiziellen Kategorien der Bundestagsverwaltung. Dunklere Felder stehen für höhere Einnahmen - die Farbskala ist logarithmisch, damit auch mittlere Beträge sichtbar bleiben.",
     topics_title: "Themenfelder der Nebentätigkeiten",
     topics_subtitle:
-      "Die 15 Themenfelder mit dem höchsten ausgewiesenen Gesamteinkommen. Dunklere Felder stehen für höhere Einnahmen — die Farbskala ist logarithmisch, damit auch mittlere Beträge sichtbar bleiben. Die Kategorisierung basiert auf KI-gestützter Analyse der Tätigkeitsbeschreibungen. Da ein Job mehreren Themenfeldern zugeordnet sein kann, überschneiden sich die Summen.",
+      "Die 15 Themenfelder mit dem höchsten ausgewiesenen Gesamteinkommen. Dunklere Felder stehen für höhere Einnahmen - die Farbskala ist logarithmisch, damit auch mittlere Beträge sichtbar bleiben. Die Kategorisierung basiert auf KI-gestützter Analyse der Tätigkeitsbeschreibungen. Da ein Job mehreren Themenfeldern zugeordnet sein kann, überschneiden sich die Summen.",
     top_earners_title: "Top-Verdiener",
     top_earners_subtitle:
       "Die Abgeordneten mit dem höchsten hochgerechneten Nebeneinkommen in der gewählten Legislaturperiode.",

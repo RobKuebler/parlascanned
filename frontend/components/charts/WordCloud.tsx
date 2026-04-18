@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useRef, useEffect, memo } from "react";
 import { max, scaleLinear, color as d3Color, select, type RGBColor } from "d3";
 import cloud from "d3-cloud";
@@ -11,7 +11,7 @@ interface Props {
   color: string;
   height?: number;
   onClick?: () => void;
-  // Delay in ms before the layout starts — stagger multiple clouds to avoid
+  // Delay in ms before the layout starts - stagger multiple clouds to avoid
   // event-loop contention from concurrent d3-cloud setTimeout steps.
   startDelay?: number;
 }
@@ -39,7 +39,7 @@ function mulberry32(seed: number) {
 }
 
 // Wrapped in memo: onClick changes reference on every parent render (expandedParty
-// state), but is not a layout dependency — skip re-renders when only it changes.
+// state), but is not a layout dependency - skip re-renders when only it changes.
 export const WordCloud = memo(function WordCloud({
   words,
   color,
@@ -106,7 +106,7 @@ export const WordCloud = memo(function WordCloud({
           (d) => `translate(${d.x ?? 0},${d.y ?? 0})rotate(${d.rotate ?? 0})`,
         )
         .text((d) => d.text ?? "")
-        // CSS animation runs on the compositor thread — stays smooth even when
+        // CSS animation runs on the compositor thread - stays smooth even when
         // the main thread is busy processing other cloud layouts.
         .style(
           "animation",

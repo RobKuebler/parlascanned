@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import { de } from "./i18n/de";
 import { en } from "./i18n/en";
@@ -18,7 +18,7 @@ const LanguageContext = createContext<LanguageContextValue>({
   t: de,
 });
 
-/** Auto-detects browser language on mount. No persistence — re-detects on each visit. */
+/** Auto-detects browser language on mount. No persistence - re-detects on each visit. */
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>("de");
 

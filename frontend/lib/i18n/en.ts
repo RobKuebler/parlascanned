@@ -1,4 +1,4 @@
-import type { Translations } from "./types";
+﻿import type { Translations } from "./types";
 
 export const en: Translations = {
   nav: {
@@ -34,7 +34,7 @@ export const en: Translations = {
       label: "Plenary Dynamics",
       title: "Who reacts to whom?",
       description:
-        "Interjections, laughter, applause — every reaction in the Bundestag is recorded in the official transcript. This analysis shows which party reacts how often, and to whose speeches. Zwischenrufe (interjections) are a formal and lively part of German parliamentary tradition.",
+        "Interjections, laughter, applause - every reaction in the Bundestag is recorded in the official transcript. This analysis shows which party reacts how often, and to whose speeches. Zwischenrufe (interjections) are a formal and lively part of German parliamentary tradition.",
     },
     party_profile: {
       label: "Demographics",
@@ -58,13 +58,13 @@ export const en: Translations = {
       label: "Conflicts of Interest",
       title: "Who earns in their own committee?",
       description:
-        "MPs who sit on a parliamentary Ausschuss (committee) and simultaneously earn income in the same topic area — an analysis of potential conflicts of interest. Each Ausschuss oversees a specific policy domain, making overlap with side income a notable transparency concern.",
+        "MPs who sit on a parliamentary Ausschuss (committee) and simultaneously earn income in the same topic area - an analysis of potential conflicts of interest. Each Ausschuss oversees a specific policy domain, making overlap with side income a notable transparency concern.",
     },
   },
   home: {
     eyebrow: "Bundestag · AI Analysis",
     subtitle:
-      "Parlascanned makes the work of the German Bundestag — Germany's federal parliament — transparent. How similarly do MPs vote? How do the parliamentary groups differ demographically? And who earns money on the side?",
+      "Parlascanned makes the work of the German Bundestag - Germany's federal parliament - transparent. How similarly do MPs vote? How do the parliamentary groups differ demographically? And who earns money on the side?",
     cta: "Open",
     stats: {
       politicians: "MPs",
@@ -78,6 +78,8 @@ export const en: Translations = {
     no_data: "No data available.",
     period_label: "Bundestag",
     period_aria: "Select legislative period",
+    error_load: "Data could not be loaded.",
+    retry: "Try again",
     topic_labels: {
       "Arbeit und Beschäftigung": "Labour & Employment",
       "Außenpolitik und internationale Beziehungen":
@@ -157,8 +159,14 @@ export const en: Translations = {
   },
   motions: {
     tab_motion: "Motions",
+    tab_motion_desc:
+      "Formal proposals by a parliamentary group put to a plenary vote",
     tab_small_inquiry: "Minor Enquiries",
+    tab_small_inquiry_desc:
+      "Written questions from a group of MPs directed at the Federal Government",
     tab_large_inquiry: "Major Enquiries",
+    tab_large_inquiry_desc:
+      "Extensive inquiries requiring a detailed written response from the government",
     count_label: "Count by group",
     count_sublabel: "{tab} submitted in this legislative period.",
     timeline_title: "Submissions per month",
@@ -173,6 +181,8 @@ export const en: Translations = {
     hits_for: "Matches for",
     hits_sublabel: "{count} {tab} contain this term.",
     no_results: 'No {tab} found containing "{query}".',
+    wordcloud_legend:
+      "Word size = relative frequency in {tab} titles (TF-IDF-weighted)",
   },
   speeches: {
     speakers_header: "Speakers by word count",
@@ -183,6 +193,8 @@ export const en: Translations = {
     speech_share_title: "Speech Shares",
     speech_share_subtitle:
       "Total word count per parliamentary group in this legislative period.",
+    wordcloud_legend:
+      "Word size = relative frequency in this group's plenary speeches (TF-IDF-weighted)",
   },
   comments: {
     summary_title: "Overview",
@@ -214,7 +226,7 @@ export const en: Translations = {
   party_profile: {
     age_title: "Age Distribution",
     age_subtitle:
-      "Each dot represents one MP. Dots of the same age are stacked vertically — the more dots at a position, the more MPs share that exact age. The curve above is a density estimate. Age is measured at the start of the legislative period.",
+      "Each dot represents one MP. Dots of the same age are stacked vertically - the more dots at a position, the more MPs share that exact age. The curve above is a density estimate. Age is measured at the start of the legislative period.",
     gender_title: "Gender",
     gender_subtitle:
       "Gender distribution per parliamentary group as a share of total members.",
@@ -303,7 +315,7 @@ export const en: Translations = {
     search_placeholder_b: "Select term, e.g. climate …",
     empty_a: "Enter a term to see its trend in plenary debates.",
     empty_b: "Select a term to see the party comparison.",
-    too_rare: "Used too rarely — no party comparison available.",
+    too_rare: "Used too rarely - no party comparison available.",
     no_party_data: "No party data available.",
     no_data: "No trend data available for this legislative period.",
     not_found:
@@ -324,10 +336,10 @@ export const en: Translations = {
       "Share of MPs per parliamentary group who hold at least one notifiable side activity. Side income is defined as a declared income of at least €1,000 per month (§ 44a AbgG, level 1). MPs with a declared activity but no amount given are shown separately.",
     income_category_title: "Income by category",
     income_category_subtitle:
-      "Breakdown of side income by the Bundestag administration's official categories. Darker cells mean higher income — the colour scale is logarithmic so mid-range amounts remain visible.",
+      "Breakdown of side income by the Bundestag administration's official categories. Darker cells mean higher income - the colour scale is logarithmic so mid-range amounts remain visible.",
     topics_title: "Topic areas of side activities",
     topics_subtitle:
-      "The 15 topic areas with the highest declared total income. Darker cells mean higher income — the colour scale is logarithmic. Categorisation is based on AI analysis of activity descriptions. Since a single job can span multiple topic areas, totals may overlap.",
+      "The 15 topic areas with the highest declared total income. Darker cells mean higher income - the colour scale is logarithmic. Categorisation is based on AI analysis of activity descriptions. Since a single job can span multiple topic areas, totals may overlap.",
     top_earners_title: "Top earners",
     top_earners_subtitle:
       "The MPs with the highest projected side income in the selected legislative period.",
@@ -356,7 +368,7 @@ export const en: Translations = {
     hero_committees_label: "Committees affected",
     ranked_title: "Top conflicts by MP",
     ranked_subtitle:
-      "MPs with side income in a topic area overseen by their committee. If an MP sits on multiple affected committees, the income is counted multiple times — each mandate constitutes an independent conflict of interest. Sorted by total amount.",
+      "MPs with side income in a topic area overseen by their committee. If an MP sits on multiple affected committees, the income is counted multiple times - each mandate constitutes an independent conflict of interest. Sorted by total amount.",
     heatmap_title: "Conflicts by topic & party",
     heatmap_subtitle:
       "Aggregated side income per topic area and party where a committee overlap exists. Darker colour means higher conflicted income.",
@@ -366,11 +378,11 @@ export const en: Translations = {
       "A conflict of interest is identified when an MP earns side income in a topic area and simultaneously sits on a committee responsible for that same topic area. Topic tags come directly from the Abgeordnetenwatch API (field_topics), which labels both side activities and committees with keywords.",
     methodology_limitations_title: "Limitations",
     methodology_l1:
-      'Broad topic tags can lead to false matches. Tags like "Economy" or "State and Administration" are very wide-ranging and may produce hits that do not represent a genuine conflict of interest — e.g. a lawyer on the Interior Affairs committee with no connection to interior law.',
+      'Broad topic tags can lead to false matches. Tags like "Economy" or "State and Administration" are very wide-ranging and may produce hits that do not represent a genuine conflict of interest - e.g. a lawyer on the Interior Affairs committee with no connection to interior law.',
     methodology_l2:
       "No time-overlap verification is possible. Committee memberships in the source data carry no date range. Side income from the first half of a year can therefore appear alongside a committee seat from the second half, without any actual overlap.",
     methodology_l3:
-      "Income is shown per committee. If an MP sits on multiple affected committees, the same income appears multiple times — each row represents an independent mandate.",
+      "Income is shown per committee. If an MP sits on multiple affected committees, the same income appears multiple times - each row represents an independent mandate.",
     methodology_l4:
       "Only side activities with a topic tag are included. Activities without an Abgeordnetenwatch topic tag are not captured, even if a substantive overlap exists.",
     methodology_footer:

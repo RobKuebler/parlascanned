@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { usePeriod } from "@/lib/period-context";
 import { useTranslation } from "@/lib/language-context";
 import { useEffect, useRef, useState } from "react";
@@ -18,7 +18,7 @@ export function PeriodSelector({
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Close on outside click — must be before early return (Rules of Hooks)
+  // Close on outside click - must be before early return (Rules of Hooks)
   useEffect(() => {
     if (!open) return;
     function handleClick(e: MouseEvent) {
@@ -81,7 +81,7 @@ export function PeriodSelector({
         >
           {activeYears}
         </span>
-        {/* Chevron — rotates when open */}
+        {/* Chevron - rotates when open */}
         <svg
           width="11"
           height="11"
@@ -97,7 +97,7 @@ export function PeriodSelector({
         </svg>
       </button>
 
-      {/* Backdrop — mobile only: dims content below header when dropdown is open */}
+      {/* Backdrop - mobile only: dims content below header when dropdown is open */}
       {open && !isSidebar && (
         <div
           className="md:hidden fixed top-[68px] inset-x-0 bottom-0 z-[49] bg-black/20"

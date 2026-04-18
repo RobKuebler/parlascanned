@@ -1,4 +1,4 @@
-import { SpeechStatsFile } from "@/lib/data";
+﻿import { SpeechStatsFile } from "@/lib/data";
 import {
   CARD_CLASS,
   CARD_SHADOW,
@@ -20,7 +20,7 @@ function formatWords(n: number): string {
   return String(n);
 }
 
-/** Horizontal bar chart showing total words per party — summary for the speeches page. */
+/** Horizontal bar chart showing total words per party - summary for the speeches page. */
 export function SpeechShareBars({ speechStats }: Props) {
   const t = useTranslation();
   const totals: Record<string, number> = {};

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { piazzolla } from "@/lib/fonts";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ import type { PageKey } from "@/lib/i18n/types";
 
 type SectionGroup = { label: string; keys: PageKey[] };
 
-// Editorial section groupings — mirrors nav structure
+// Editorial section groupings - mirrors nav structure
 const SECTION_GROUPS: Record<"de" | "en", SectionGroup[]> = {
   de: [
     { label: "Gesetzgebung", keys: ["vote_map", "motions", "speeches"] },
@@ -128,7 +128,7 @@ export default function Home() {
           )}
         </div>
 
-        {/* Wordmark — editorial serif */}
+        {/* Wordmark - editorial serif */}
         <h1
           className={`${piazzolla.className} font-bold italic leading-none tracking-tight mb-4`}
           style={{
@@ -196,7 +196,7 @@ export default function Home() {
       <div className="flex flex-col gap-10 stagger">
         {numberedSections.map(({ label, items }) => (
           <section key={label}>
-            {/* Section header — editorial ruling line */}
+            {/* Section header - editorial ruling line */}
             <div className="flex items-center gap-3 mb-5">
               <span
                 className="text-[9px] font-extrabold tracking-[0.25em] uppercase shrink-0"
@@ -213,7 +213,7 @@ export default function Home() {
               />
             </div>
 
-            {/* Card grid — first card per section is a lead (full-width, larger title). */}
+            {/* Card grid - first card per section is a lead (full-width, larger title). */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {items.map(
                 ({ href, color, key, itemIndex }, sectionItemIndex) => {
@@ -230,7 +230,7 @@ export default function Home() {
                         boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
                       }}
                     >
-                      {/* Decorative issue number — large, light opacity */}
+                      {/* Decorative issue number - large, light opacity */}
                       <span
                         aria-hidden="true"
                         className="absolute pointer-events-none select-none font-black"

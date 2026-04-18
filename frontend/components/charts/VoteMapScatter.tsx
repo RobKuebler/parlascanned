@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useRef, useEffect, useState } from "react";
 import {
   select,
@@ -33,9 +33,9 @@ interface Props {
   politicians: Politician[];
   selectedIds: number[];
   onSelectionChange: (ids: number[]) => void;
-  /** Called when a party centroid is clicked — toggles the party selection. */
+  /** Called when a party centroid is clicked - toggles the party selection. */
   onPartyToggle?: (party: string) => void;
-  /** Called when the background is clicked — should clear all selections. */
+  /** Called when the background is clicked - should clear all selections. */
   onClearAll?: () => void;
   height?: number;
 }
@@ -74,7 +74,7 @@ export function VoteMapScatter({
   const brushGRef = useRef<SVGGElement | null>(null);
   const allPointsRef = useRef<EmbeddingPoint[]>([]);
 
-  // Width measurement — also resets selection mode to pan on mobile
+  // Width measurement - also resets selection mode to pan on mobile
   useEffect(() => {
     if (!containerRef.current) return;
     const handleResize = (w: number) => {
@@ -123,7 +123,7 @@ export function VoteMapScatter({
       .attr("width", iW)
       .attr("height", iH);
 
-    // Slightly padded clip for centroid labels — allows labels at the edge to
+    // Slightly padded clip for centroid labels - allows labels at the edge to
     // bleed LABEL_PAD px beyond the chart boundary without leaking onto the UI.
     defs
       .append("clipPath")
@@ -134,14 +134,14 @@ export function VoteMapScatter({
       .attr("width", iW + LABEL_PAD * 2)
       .attr("height", iH + LABEL_PAD * 2);
 
-    // Content group — zoom transform is applied here; clip-path keeps dots inside chart
+    // Content group - zoom transform is applied here; clip-path keeps dots inside chart
     const contentG = svg
       .append("g")
       .attr("class", "scatter-content")
       .attr("transform", `translate(${M.left},${M.top})`)
       .attr("clip-path", "url(#scatter-clip)");
 
-    // Label layer — uses padded clip so edge labels aren't cropped, but labels
+    // Label layer - uses padded clip so edge labels aren't cropped, but labels
     // can't bleed onto surrounding UI when zoomed/panned far
     const labelsG = svg
       .append("g")
@@ -254,7 +254,7 @@ export function VoteMapScatter({
       const halfLabelW = (party.length * 6.5) / 2;
       const edgeAnchor =
         sx <= halfLabelW ? "start" : sx >= iW - halfLabelW ? "end" : "middle";
-      // Party label — position is updated on zoom so it stays 16px above the diamond
+      // Party label - position is updated on zoom so it stays 16px above the diamond
       labelsG
         .append("text")
         .attr("class", "centroid-label")

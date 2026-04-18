@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useRef, useEffect } from "react";
 import {
   select,
@@ -258,7 +258,7 @@ export function AgeDistribution({ data, parties }: Props) {
     let currentXS = xScaleBase;
     update(xScaleBase);
 
-    // X-axis label — added once outside update() so it isn't redrawn on every zoom event
+    // X-axis label - added once outside update() so it isn't redrawn on every zoom event
     g.append("text")
       .attr("class", "axis-label")
       .attr("x", iW / 2)
@@ -340,7 +340,7 @@ export function AgeDistribution({ data, parties }: Props) {
       .on("mouseleave", () => tooltip.style("opacity", "0"));
   }, [containerRef, data, parties, t, width]);
 
-  // Update only the axis label text when language changes — avoids full chart rebuild.
+  // Update only the axis label text when language changes - avoids full chart rebuild.
   useEffect(() => {
     if (!svgRef.current) return;
     select(svgRef.current)

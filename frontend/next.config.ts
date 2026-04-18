@@ -1,7 +1,7 @@
-import type { NextConfig } from "next";
+﻿import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "export", // generates static HTML/CSS/JS — no server needed
+  output: "export", // generates static HTML/CSS/JS - no server needed
   trailingSlash: true,
   allowedDevOrigins: ["127.0.0.1"],
 };

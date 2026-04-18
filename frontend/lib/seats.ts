@@ -1,5 +1,5 @@
-// Hardcoded Bundestag seat distribution per wahlperiode.
-// Parties listed in political L→R order — this determines angular position in the hemicycle.
+﻿// Hardcoded Bundestag seat distribution per wahlperiode.
+// Parties listed in political L→R order - this determines angular position in the hemicycle.
 export interface PartySeats {
   party: string;
   seats: number;

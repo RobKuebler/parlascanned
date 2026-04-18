@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import {
   GroupedPartyBars,
@@ -12,7 +12,7 @@ const sections: GroupedBarSection[] = [
 ];
 const parties = ["SPD", "CDU"];
 
-describe("GroupedPartyBars — rubrik-first (default)", () => {
+describe("GroupedPartyBars - rubrik-first (default)", () => {
   it("renders section headers", () => {
     render(<GroupedPartyBars sections={sections} parties={parties} />);
     expect(screen.getByText("Rubrik A")).toBeInTheDocument();
@@ -26,7 +26,7 @@ describe("GroupedPartyBars — rubrik-first (default)", () => {
   });
 });
 
-describe("GroupedPartyBars — toggle UI", () => {
+describe("GroupedPartyBars - toggle UI", () => {
   it("does not render toggle when allowGroupToggle is false", () => {
     render(<GroupedPartyBars sections={sections} parties={parties} />);
     expect(screen.queryByText("Partei")).toBeNull();
@@ -45,7 +45,7 @@ describe("GroupedPartyBars — toggle UI", () => {
   });
 });
 
-describe("GroupedPartyBars — partei-first view", () => {
+describe("GroupedPartyBars - partei-first view", () => {
   function renderToggled() {
     render(
       <GroupedPartyBars
@@ -61,7 +61,7 @@ describe("GroupedPartyBars — partei-first view", () => {
 
   it("renders party names as section headers after toggle", () => {
     renderToggled();
-    // In partei-first mode, each party is a section header — appears exactly once
+    // In partei-first mode, each party is a section header - appears exactly once
     expect(screen.getAllByText("SPD")).toHaveLength(1);
     expect(screen.getAllByText("CDU")).toHaveLength(1);
   });

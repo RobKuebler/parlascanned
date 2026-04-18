@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo } from "react";
 import { ConflictEntry, Politician } from "@/lib/data";
@@ -56,7 +56,7 @@ export function ConflictRankedList({
   );
 
   // Compute a display cap: when the top value dwarfs the second, cap the bar
-  // axis so smaller bars stay readable. The break is marked visually — the
+  // axis so smaller bars stay readable. The break is marked visually - the
   // value label always shows the real (uncapped) amount.
   const sorted = rows.map((r) => r.totalIncome).sort((a, b) => b - a);
   const second = sorted[1] ?? sorted[0] ?? 1;
@@ -158,7 +158,7 @@ export function ConflictRankedList({
                       {t.potential_conflicts.committee_labels[c.label] ??
                         c.label}
                     </div>
-                    {/* Sidejob area tags — what the conflict is actually about */}
+                    {/* Sidejob area tags - what the conflict is actually about */}
                     {c.topics.length > 0 && (
                       <div
                         style={{
@@ -200,7 +200,7 @@ export function ConflictRankedList({
                 ))}
               </div>
 
-              {/* Income bar — truncated bars show a break marker (≈) */}
+              {/* Income bar - truncated bars show a break marker (≈) */}
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <div
                   style={{

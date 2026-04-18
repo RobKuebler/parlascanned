@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { usePeriod } from "@/lib/period-context";
 import { useTranslation } from "@/lib/language-context";
@@ -70,7 +70,7 @@ export default function VoteMapPage() {
     });
   }, [votes, polls, effectivePolIds]);
 
-  // Like divergentPollIds, but no_show is ignored — only actual votes (yes/no/abstain) are compared.
+  // Like divergentPollIds, but no_show is ignored - only actual votes (yes/no/abstain) are compared.
   const divergentPresentPollIds = useMemo<number[] | undefined>(() => {
     if (!votes) return undefined;
     return findDivergentPollIds(votes, polls, effectivePolIds, {
@@ -79,8 +79,10 @@ export default function VoteMapPage() {
   }, [votes, polls, effectivePolIds]);
 
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const [loadingVotes, setLoadingVotes] = useState(false);
-  // Chart height — start at 350 (mobile-safe default) and update after mount to avoid SSR/client mismatch
+  // Chart height - start at 350 (mobile-safe default) and update after mount to avoid SSR/client mismatch
   const [chartHeight, setChartHeight] = useState(350);
   useEffect(() => {
     setChartHeight(window.innerWidth < 768 ? 350 : 600);
@@ -89,6 +91,7 @@ export default function VoteMapPage() {
   useEffect(() => {
     if (!activePeriodId) return;
     setLoading(true);
+    setLoadError(false);
     setEmbeddings(null);
     setPoliticians([]);
     setCohesion([]);
@@ -110,11 +113,11 @@ export default function VoteMapPage() {
         setCohesion(computeCohesionRecords(embeddings.data, politicians));
         setLoading(false);
       })
-      .catch((error) => {
-        console.error(error);
+      .catch(() => {
+        setLoadError(true);
         setLoading(false);
       });
-  }, [activePeriodId]);
+  }, [activePeriodId, retryCount]);
 
   // Loads vote data if not yet loaded. No-op if already loaded or no period.
   const loadVotesIfNeeded = useCallback(() => {
@@ -223,6 +226,21 @@ export default function VoteMapPage() {
     <>
       <PageHeader color={META.color} {...t.pages.vote_map} />
 
+      {loadError && (
+        <div className="flex items-center gap-3 mb-4">
+          <p style={{ color: "#C04000", fontSize: 13 }}>
+            {t.common.error_load}
+          </p>
+          <button
+            onClick={() => setRetryCount((c) => c + 1)}
+            className="text-[12px] font-bold underline transition-opacity duration-150 hover:opacity-70"
+            style={{ color: "var(--color-navy)" }}
+          >
+            {t.common.retry}
+          </button>
+        </div>
+      )}
+
       {/* Coalition banner */}
       {activePeriodId && GOVERNING_PARTIES[activePeriodId] && (
         <div className="flex flex-col gap-2 mb-5 sm:flex-row sm:items-center">
@@ -267,7 +285,7 @@ export default function VoteMapPage() {
         >
           {t.vote_map.map_title}
         </h2>
-        <p className="text-[12px] text-[#524d8a] mb-4">
+        <p className="text-[12px] text-[#524d8a] mb-4 max-w-prose">
           {t.vote_map.map_subtitle}
         </p>
         {loading ? (
@@ -296,7 +314,7 @@ export default function VoteMapPage() {
         >
           {t.vote_map.heatmap_title}
         </h2>
-        <p className="text-[12px] text-[#524d8a] mb-4">
+        <p className="text-[12px] text-[#524d8a] mb-4 max-w-prose">
           {t.vote_map.heatmap_subtitle}
         </p>
 
@@ -377,7 +395,7 @@ export default function VoteMapPage() {
         >
           {t.vote_map.cohesion_title}
         </h2>
-        <p className="text-[12px] text-[#524d8a] mb-4">
+        <p className="text-[12px] text-[#524d8a] mb-4 max-w-prose">
           {t.vote_map.cohesion_subtitle}
         </p>
         {loading ? (

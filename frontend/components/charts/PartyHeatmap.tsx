@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 /**
- * PartyHeatmap — generic D3 heatmap with party-colored column headers.
+ * PartyHeatmap - generic D3 heatmap with party-colored column headers.
  *
  * Two modes:
  *  - "deviation": diverging red–white–blue scale, symmetric around 0.
@@ -9,8 +9,8 @@
  *    distributions (income, counts) stay readable.
  *
  * Row labels are plain text (D3 y-axis with truncation + tooltip).
- * Column labels must be party names — rendered as coloured blocks with white text.
- * Row height and colour scales are fixed — not overridable by callers.
+ * Column labels must be party names - rendered as coloured blocks with white text.
+ * Row height and colour scales are fixed - not overridable by callers.
  */
 import { useRef, useEffect, useState } from "react";
 import {
@@ -50,11 +50,11 @@ const CHAR_W = 5.8; // estimated px per character at 9.5px font
 export interface PartyHeatmapProps {
   /** Row labels shown on the y-axis. */
   rows: string[];
-  /** Column labels — must be party names (rendered as coloured party blocks). */
+  /** Column labels - must be party names (rendered as coloured party blocks). */
   cols: string[];
   /**
    * Cell values: data[rowIdx][colIdx].
-   * null means "no data" — cell is left empty (no fill, no label).
+   * null means "no data" - cell is left empty (no fill, no label).
    */
   data: (number | null)[][];
 
@@ -65,7 +65,7 @@ export interface PartyHeatmapProps {
   mode: "deviation" | "sequential";
 
   /**
-   * Sequential mode — how values map to colour intensity.
+   * Sequential mode - how values map to colour intensity.
    * "log":      logarithmic mapping; right-skewed data stays readable (default).
    * "linear":   linear scale capped at the 95th-percentile value.
    * "quantile": rank-based; colour reflects percentile position, not raw value.
@@ -91,7 +91,7 @@ export interface PartyHeatmapProps {
   rowLabel?: (row: string) => string;
 }
 
-const ROW_H = 28; // fixed row height for all heatmaps — single source of truth
+const ROW_H = 28; // fixed row height for all heatmaps - single source of truth
 
 export function PartyHeatmap({
   rows,

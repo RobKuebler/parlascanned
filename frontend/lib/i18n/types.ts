@@ -30,6 +30,8 @@ export type Translations = {
     period_label: string;
     period_aria: string;
     topic_labels: Record<string, string>;
+    error_load: string;
+    retry: string;
   };
   vote_map: {
     coalition_label: string;
@@ -72,8 +74,11 @@ export type Translations = {
   };
   motions: {
     tab_motion: string;
+    tab_motion_desc: string;
     tab_small_inquiry: string;
+    tab_small_inquiry_desc: string;
     tab_large_inquiry: string;
+    tab_large_inquiry_desc: string;
     count_label: string;
     count_sublabel: string;
     timeline_title: string;
@@ -88,6 +93,8 @@ export type Translations = {
     hits_for: string;
     hits_sublabel: string;
     no_results: string;
+    /** Template: {tab} */
+    wordcloud_legend: string;
   };
   speeches: {
     speakers_header: string;
@@ -97,6 +104,7 @@ export type Translations = {
     top_words: string;
     speech_share_title: string;
     speech_share_subtitle: string;
+    wordcloud_legend: string;
   };
   comments: {
     summary_title: string;

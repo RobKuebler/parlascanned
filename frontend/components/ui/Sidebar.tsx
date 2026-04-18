@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/lib/language-context";
@@ -9,13 +9,13 @@ import { NAV_GROUPS } from "@/lib/nav-items";
 
 export function Sidebar() {
   const rawPathname = usePathname();
-  // Next.js may return trailing slashes (e.g. "/party-profile/") — strip them for comparison
+  // Next.js may return trailing slashes (e.g. "/party-profile/") - strip them for comparison
   const pathname =
     rawPathname !== "/" ? rawPathname.replace(/\/$/, "") : rawPathname;
   const { t, language, setLanguage } = useLanguage();
   return (
     <aside className="hidden md:flex flex-col w-[180px] shrink-0 h-screen sticky top-0 bg-[var(--color-navy)]">
-      {/* Logo + wordmark — links to start page */}
+      {/* Logo + wordmark - links to start page */}
       <Link
         href="/"
         className="flex items-center gap-2.5 px-3 pt-[14px] pb-[10px] hover:opacity-80 transition-opacity duration-150"
@@ -33,7 +33,7 @@ export function Sidebar() {
         <PeriodSelector variant="sidebar" />
       </div>
 
-      {/* Seat distribution — contextualizes the selected period */}
+      {/* Seat distribution - contextualizes the selected period */}
       <div
         className="mx-[10px] mb-[10px] pt-[10px]"
         style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
@@ -100,7 +100,7 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* Language toggle — a preference, lives at the bottom */}
+      {/* Language toggle - a preference, lives at the bottom */}
       <div
         className="px-[10px] pt-[10px] pb-[14px]"
         style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { usePeriod } from "@/lib/period-context";
 import {
@@ -46,6 +46,11 @@ export default function MotionsPage() {
     Antrag: t.motions.tab_motion,
     "Kleine Anfrage": t.motions.tab_small_inquiry,
     "Große Anfrage": t.motions.tab_large_inquiry,
+  };
+  const TAB_DESCS: Record<Tab, string> = {
+    Antrag: t.motions.tab_motion_desc,
+    "Kleine Anfrage": t.motions.tab_small_inquiry_desc,
+    "Große Anfrage": t.motions.tab_large_inquiry_desc,
   };
   const { activePeriodId } = usePeriod();
   const [stats, setStats] = useState<MotionsStatsFile | null>(null);
@@ -110,7 +115,7 @@ export default function MotionsPage() {
     );
   }, [typData]);
 
-  // Pre-sliced word arrays — stable references so WordCloud memo works and
+  // Pre-sliced word arrays - stable references so WordCloud memo works and
   // layouts don't restart on every parent render (same pattern as speeches page).
   // Keys are normalized via stripSoftHyphen so they match the canonical party names
   // produced by sortParties (which also normalizes aliases like "Grüne" → canonical).
@@ -123,7 +128,7 @@ export default function MotionsPage() {
     return result;
   }, [typData]);
 
-  // Top authors keyed by normalized party name — parallel normalization to wordSlices.
+  // Top authors keyed by normalized party name - parallel normalization to wordSlices.
   const topAuthors = useMemo<Record<string, MotionAuthor[]>>(() => {
     if (!typData) return {};
     const result: Record<string, MotionAuthor[]> = {};
@@ -133,7 +138,7 @@ export default function MotionsPage() {
     return result;
   }, [typData]);
 
-  // Timeline series — one line per party
+  // Timeline series - one line per party
   const timelineSeries = useMemo<KeywordSeries[]>(() => {
     if (!typData?.timeline?.series) return [];
     return typData.timeline.series.map((s) => ({
@@ -171,13 +176,16 @@ export default function MotionsPage() {
     <>
       <PageHeader color={META.color} {...t.pages.motions} />
 
-      {/* Tab toggle */}
+      {/* Tab toggle + inline glossary definition */}
       <div className="mb-6">
         <ToggleGroup
           options={TABS.map((tab) => ({ value: tab, label: TAB_LABELS[tab] }))}
           value={activeTab}
           onChange={setActiveTab}
         />
+        <p className="mt-2 text-[12px]" style={{ color: "#524d8a" }}>
+          {TAB_DESCS[activeTab]}
+        </p>
       </div>
 
       {unavailable ? (
@@ -215,7 +223,10 @@ export default function MotionsPage() {
               >
                 {t.motions.timeline_title}
               </h2>
-              <p className="text-[12px] mb-4" style={{ color: "#524d8a" }}>
+              <p
+                className="text-[12px] mb-4 max-w-prose"
+                style={{ color: "#524d8a" }}
+              >
                 {t.motions.timeline_subtitle.replace(
                   "{tab}",
                   TAB_LABELS[activeTab],
@@ -237,11 +248,14 @@ export default function MotionsPage() {
           </div>
 
           {/* Row 2: party cards (word cloud + top authors) */}
+          <p className="text-[11px] mb-2" style={{ color: "#524d8a" }}>
+            {t.motions.wordcloud_legend.replace("{tab}", TAB_LABELS[activeTab])}
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
             {parties.map((party, i) => {
               const color = getPartyColor(party);
               const words: WordFreqEntry[] = wordSlices[party] ?? [];
-              // Reshape to SpeakerRecord[] — wortanzahl_gesamt carries anzahl for bar widths
+              // Reshape to SpeakerRecord[] - wortanzahl_gesamt carries anzahl for bar widths
               const speakers: SpeakerRecord[] = (topAuthors[party] ?? []).map(
                 (a, i) => ({
                   fraktion: party,
@@ -322,7 +336,10 @@ export default function MotionsPage() {
             >
               {t.motions.search_title}
             </h2>
-            <p className="text-[12px] mb-4" style={{ color: "#524d8a" }}>
+            <p
+              className="text-[12px] mb-4 max-w-prose"
+              style={{ color: "#524d8a" }}
+            >
               {t.motions.search_subtitle.replace(
                 "{tab}",
                 TAB_LABELS[activeTab],

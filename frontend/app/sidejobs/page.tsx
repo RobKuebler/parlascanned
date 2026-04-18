@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import { usePeriod } from "@/lib/period-context";
 import { useTranslation, useLanguage } from "@/lib/language-context";
@@ -36,6 +36,8 @@ export default function SidejobsPage() {
   const [sjData, setSjData] = useState<SidejobsFile | null>(null);
   const [politicians, setPoliticians] = useState<Politician[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   // Derive whether the active period is still ongoing from the label end year
   const activePeriod = periods.find((p) => p.wahlperiode === activePeriodId);
@@ -56,6 +58,7 @@ export default function SidejobsPage() {
   useEffect(() => {
     if (!activePeriodId) return;
     setLoading(true);
+    setLoadError(false);
     setSjData(null);
     setPoliticians([]);
     fetchPeriodFiles<{
@@ -76,11 +79,11 @@ export default function SidejobsPage() {
         setPoliticians(politicians);
         setLoading(false);
       })
-      .catch((error) => {
-        console.error(error);
+      .catch(() => {
+        setLoadError(true);
         setLoading(false);
       });
-  }, [activePeriodId]);
+  }, [activePeriodId, retryCount]);
 
   const parties = sjData
     ? sortPresentParties(sjData.jobs.map((job) => job.party))
@@ -90,7 +93,22 @@ export default function SidejobsPage() {
     <>
       <PageHeader color={META.color} {...t.pages.sidejobs} />
 
-      {/* Hero strip — key stats, editorial layout */}
+      {loadError && (
+        <div className="flex items-center gap-3 mb-4">
+          <p style={{ color: "#C04000", fontSize: 13 }}>
+            {t.common.error_load}
+          </p>
+          <button
+            onClick={() => setRetryCount((c) => c + 1)}
+            className="text-[12px] font-bold underline transition-opacity duration-150 hover:opacity-70"
+            style={{ color: "var(--color-navy)" }}
+          >
+            {t.common.retry}
+          </button>
+        </div>
+      )}
+
+      {/* Hero strip - key stats, editorial layout */}
       <div
         className="rounded-xl mb-6"
         style={{ background: "var(--color-navy)" }}
@@ -252,7 +270,7 @@ export default function SidejobsPage() {
             >
               {t.sidejobs.coverage_title}
             </h2>
-            <p className="text-[12px] text-[var(--color-muted)] mb-4">
+            <p className="text-[12px] text-[var(--color-muted)] mb-4 max-w-prose">
               {t.sidejobs.coverage_subtitle}
             </p>
             <SidejobCoverageByPartyChart
@@ -271,7 +289,7 @@ export default function SidejobsPage() {
             >
               {t.sidejobs.income_category_title}
             </h2>
-            <p className="text-[12px] text-[var(--color-muted)] mb-4">
+            <p className="text-[12px] text-[var(--color-muted)] mb-4 max-w-prose">
               {t.sidejobs.income_category_subtitle}
             </p>
             <IncomeByCategoryChart jobs={sjData.jobs} parties={parties} />
@@ -287,7 +305,7 @@ export default function SidejobsPage() {
             >
               {t.sidejobs.topics_title}
             </h2>
-            <p className="text-[12px] text-[var(--color-muted)] mb-4">
+            <p className="text-[12px] text-[var(--color-muted)] mb-4 max-w-prose">
               {t.sidejobs.topics_subtitle}
             </p>
             <TopTopicsChart jobs={sjData.jobs} parties={parties} />
@@ -303,7 +321,7 @@ export default function SidejobsPage() {
             >
               {t.sidejobs.top_earners_title}
             </h2>
-            <p className="text-[12px] text-[var(--color-muted)] mb-4">
+            <p className="text-[12px] text-[var(--color-muted)] mb-4 max-w-prose">
               {t.sidejobs.top_earners_subtitle}
             </p>
             <TopEarnersChart

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useRef, useEffect } from "react";
 import { scaleBand, axisLeft, select, pointer } from "d3";
 import { useContainerWidth } from "@/hooks/useContainerWidth";
@@ -39,7 +39,7 @@ const PARTY_BAND_H = 22; // height of the colored party header band
 const MEMBER_LABEL_H = 26; // height of the "A. Lastname" label row
 const HEADER_H = PARTY_BAND_H + MEMBER_LABEL_H;
 const ROW_H = 22;
-const COL_W = 64; // minimum column width — enough for "A. Lastname" labels
+const COL_W = 64; // minimum column width - enough for "A. Lastname" labels
 const MAX_VISIBLE_ROWS = 20;
 
 /** Returns "A. Lastname" abbreviation for a full name. */
@@ -296,7 +296,7 @@ export function VoteHeatmap({
       aria-label="Abstimmungsmatrix: Wie Abgeordnete bei ausgewählten Abstimmungen votiert haben"
       style={{ position: "relative" }}
     >
-      {/* Single horizontal scroll wrapper — header and body scroll left/right together */}
+      {/* Single horizontal scroll wrapper - header and body scroll left/right together */}
       <div style={{ overflowX: "auto" }}>
         {/* Header: outside the vertical scroll area, so it never moves up */}
         <div style={{ background: "#fff" }}>

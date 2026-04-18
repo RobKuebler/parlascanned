@@ -1,12 +1,12 @@
-"use client";
+﻿"use client";
 /**
  * Shared D3 chart utilities used across all chart components.
  *
  * Centralises:
- *  - ChartTooltip — the absolute-positioned hover tooltip div
- *  - styleAxisText — applies consistent font/size/color to D3 axis text
- *  - truncateAxisLabels — truncates long labels and shows full text on hover
- *  - TOOLTIP_DX / TOOLTIP_DY — standard tooltip offset constants
+ *  - ChartTooltip - the absolute-positioned hover tooltip div
+ *  - styleAxisText - applies consistent font/size/color to D3 axis text
+ *  - truncateAxisLabels - truncates long labels and shows full text on hover
+ *  - TOOLTIP_DX / TOOLTIP_DY - standard tooltip offset constants
  */
 
 import React from "react";
@@ -108,7 +108,7 @@ export const HBAR_Y_PADDING = 0.2;
 
 // ── renderBarLabels ───────────────────────────────────────────────────────────
 // Renders category labels above each bar row. Used by all horizontal bar charts
-// (desktop and mobile alike — labels always sit above bars, never to the left).
+// (desktop and mobile alike - labels always sit above bars, never to the left).
 // Labels that exceed the available width are truncated with a "…" tooltip.
 export function renderBarLabels(
   g: d3.Selection<SVGGElement, unknown, null, undefined>,

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -8,7 +8,7 @@ import { BundestagSeats } from "./BundestagSeats";
 import { NAV_GROUPS } from "@/lib/nav-items";
 import { useLanguage } from "@/lib/language-context";
 
-/** Fixed top header for mobile — shows logo, period selector, and hamburger menu. Hidden on md+. */
+/** Fixed top header for mobile - shows logo, period selector, and hamburger menu. Hidden on md+. */
 export function MobileHeader() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname().replace(/\/$/, "") || "/";
@@ -17,7 +17,7 @@ export function MobileHeader() {
   return (
     <>
       <header className="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 h-[68px] bg-[var(--color-navy)]">
-        {/* Logo + wordmark — links to start page */}
+        {/* Logo + wordmark - links to start page */}
         <Link
           href="/"
           className="flex items-center gap-2 hover:opacity-80 transition-opacity duration-150"
@@ -59,7 +59,7 @@ export function MobileHeader() {
         onClick={() => setOpen(false)}
       />
 
-      {/* Drawer — slides in from the right */}
+      {/* Drawer - slides in from the right */}
       <nav
         aria-modal={open}
         aria-hidden={!open}

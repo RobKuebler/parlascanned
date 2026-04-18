@@ -1,4 +1,4 @@
-import {
+﻿import {
   CARD_CLASS,
   CARD_PADDING,
   CARD_SHADOW,
@@ -13,7 +13,7 @@ interface Props {
   sublabel: string;
 }
 
-/** Horizontal bar chart showing count per party — used for motions and keyword search results. */
+/** Horizontal bar chart showing count per party - used for motions and keyword search results. */
 export function MotionCountBars({ items, label, sublabel }: Props) {
   const sorted = [...items].sort((a, b) => b.count - a.count);
   const max = Math.max(...sorted.map((i) => i.count), 1);

@@ -1,6 +1,6 @@
-import { Piazzolla } from "next/font/google";
+﻿import { Piazzolla } from "next/font/google";
 
-/** Shared Piazzolla instance — import from here to avoid duplicate font loading. */
+/** Shared Piazzolla instance - import from here to avoid duplicate font loading. */
 export const piazzolla = Piazzolla({
   subsets: ["latin"],
   weight: ["400", "700"],

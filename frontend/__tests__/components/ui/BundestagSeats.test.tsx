@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { render, screen } from "@testing-library/react";
 import { BundestagSeats } from "@/components/ui/BundestagSeats";
 import { PeriodContext } from "@/lib/period-context";
@@ -44,6 +44,6 @@ it("renders nothing when period is null", () => {
 
 it("does not show fraktionslos in the legend", () => {
   withPeriod(21, <BundestagSeats />);
-  // fraktionslos has 3 seats — "3" must not appear in the legend
+  // fraktionslos has 3 seats - "3" must not appear in the legend
   expect(screen.queryByText("3")).not.toBeInTheDocument();
 });

@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 /**
- * ApplauseChord — D3 chord diagram showing cross-party Beifall flows.
+ * ApplauseChord - D3 chord diagram showing cross-party Beifall flows.
  *
  * Rows/source = acting party (who applauds).
  * Cols/target = speaker party (during whose speech).
@@ -160,7 +160,7 @@ export default function ApplauseChord({ data }: Props) {
       }
     });
 
-    // Arc labels — placed at midpoint angle, outside the arc
+    // Arc labels - placed at midpoint angle, outside the arc
     arcGroup
       .append("text")
       .attr("class", "arc-label")

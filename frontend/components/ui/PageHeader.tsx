@@ -1,6 +1,6 @@
-import { piazzolla } from "@/lib/fonts";
+﻿import { piazzolla } from "@/lib/fonts";
 
-/** Shared page header — editorial masthead style matching the homepage. */
+/** Shared page header - editorial masthead style matching the homepage. */
 export function PageHeader({
   color,
   label,
@@ -20,7 +20,7 @@ export function PageHeader({
         style={{ height: 3, background: "var(--color-navy)" }}
       />
 
-      {/* Eyebrow — category label in page accent color */}
+      {/* Eyebrow - category label in page accent color */}
       <p
         className="text-[10px] font-extrabold tracking-[0.22em] uppercase mb-2"
         style={{ color }}

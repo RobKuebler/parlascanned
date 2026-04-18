@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useMemo } from "react";
 import { usePeriod } from "@/lib/period-context";
 import { useTranslation, useLanguage } from "@/lib/language-context";
@@ -70,7 +70,7 @@ export default function SpeechesPage() {
   }, [activePeriodId]);
 
   // Normalize word freq keys (strip soft-hyphen). Memoized so word arrays keep
-  // stable references — prevents WordCloud from re-running layout on every render.
+  // stable references - prevents WordCloud from re-running layout on every render.
   const normalizedWordFreq = useMemo<WordFreqFile>(() => {
     if (!wordFreq) return {};
     const result: WordFreqFile = {};
@@ -104,7 +104,7 @@ export default function SpeechesPage() {
     Object.keys(normalizedWordFreq).filter((party) => party !== "fraktionslos"),
   );
 
-  // Pre-sliced word arrays per party — stable references so WordCloud memo works.
+  // Pre-sliced word arrays per party - stable references so WordCloud memo works.
   const wordSlices = useMemo<Record<string, WordFreqFile[string]>>(() => {
     const result: Record<string, WordFreqFile[string]> = {};
     for (const party of Object.keys(normalizedWordFreq)) {
@@ -121,6 +121,11 @@ export default function SpeechesPage() {
       {!loading && speechStats && <SpeechShareBars speechStats={speechStats} />}
 
       <div className="mt-8">
+        {!unavailable && !loading && wordFreq && (
+          <p className="text-[11px] mb-4" style={{ color: "#524d8a" }}>
+            {t.speeches.wordcloud_legend}
+          </p>
+        )}
         {unavailable ? (
           <p className="text-[14px]" style={{ color: "#524d8a" }}>
             {t.speeches.no_data}
@@ -166,7 +171,7 @@ export default function SpeechesPage() {
                     </span>
                   </div>
 
-                  {/* Word cloud — click to expand */}
+                  {/* Word cloud - click to expand */}
                   <WordCloud
                     words={words}
                     color={color}

@@ -1,10 +1,10 @@
-"use client";
+﻿"use client";
 import { usePeriod } from "@/lib/period-context";
 import { BUNDESTAG_SEATS, getTotalSeats, PartySeats } from "@/lib/seats";
 import { useTranslation } from "@/lib/language-context";
 
 // Hemicycle-specific colors tuned for the dark navy sidebar (#1E1B5E).
-// Keyed by the short party names used in seats.ts — not the canonical PARTY_COLORS keys.
+// Keyed by the short party names used in seats.ts - not the canonical PARTY_COLORS keys.
 // Brand colors that are near-black or blinding yellow are replaced with sidebar-safe equivalents.
 const HEMICYCLE_COLORS: Record<string, string> = {
   "CDU/CSU": "#D0D0D0", // brand #2a2a2a near-black → bright silver
@@ -123,7 +123,7 @@ export function BundestagSeats() {
         />
       </svg>
 
-      {/* Legend — dot + party short name + seat count (excluding fraktionslos) */}
+      {/* Legend - dot + party short name + seat count (excluding fraktionslos) */}
       <div className="flex flex-wrap gap-x-[8px] gap-y-[4px] justify-center mt-[6px]">
         {parties
           .filter((p) => p.party !== "fraktionslos")

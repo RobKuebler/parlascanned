@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 /**
- * DeviationHeatmap — shows how strongly each occupation/category deviates
+ * DeviationHeatmap - shows how strongly each occupation/category deviates
  * from the Bundestag-wide average within each party.
  *
  * Thin wrapper over PartyHeatmap (mode="deviation").

@@ -67,6 +67,7 @@ export default function CommentsPage() {
   const { activePeriodId } = usePeriod();
   const [data, setData] = useState<KommentareData | null>(null);
   const [error, setError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     if (!activePeriodId) return;
@@ -75,16 +76,23 @@ export default function CommentsPage() {
     fetchPeriodData<KommentareData>("kommentare.json", activePeriodId)
       .then(setData)
       .catch(() => setError(true));
-  }, [activePeriodId]);
+  }, [activePeriodId, retryCount]);
 
   return (
     <>
       <PageHeader color={META.color} {...t.pages.comments} />
 
       {error && (
-        <p style={{ color: "#EA580C", fontSize: 13, marginBottom: 16 }}>
-          {t.comments.error}
-        </p>
+        <div className="flex items-center gap-3 mb-4">
+          <p style={{ color: "#C04000", fontSize: 13 }}>{t.comments.error}</p>
+          <button
+            onClick={() => setRetryCount((c) => c + 1)}
+            className="text-[12px] font-bold underline transition-opacity duration-150 hover:opacity-70"
+            style={{ color: "var(--color-navy)" }}
+          >
+            {t.common.retry}
+          </button>
+        </div>
       )}
 
       {/* Summary */}

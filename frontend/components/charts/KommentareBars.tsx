@@ -1,4 +1,4 @@
-import {
+﻿import {
   CHART_FONT_FAMILY,
   PARTY_ORDER,
   getPartyColor,
@@ -18,7 +18,7 @@ const LABEL_COLOR = "#171613";
 
 /**
  * Compact grid showing the rarer reaction types (Lachen, Heiterkeit, Widerspruch)
- * with each column independently scaled — values are too small to share an axis
+ * with each column independently scaled - values are too small to share an axis
  * with Beifall/Zwischenruf.
  */
 export function SummarySmall({ data }: { data: KommentareData }) {

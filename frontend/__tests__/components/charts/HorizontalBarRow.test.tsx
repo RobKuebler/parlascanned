@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { HorizontalBarRow } from "@/components/charts/HorizontalBarRow";
 
@@ -28,7 +28,7 @@ it("renders rank when provided", () => {
 
 it("does not render rank element when rank is undefined", () => {
   render(<HorizontalBarRow {...base} />);
-  // rank column is absent — only label, track, value divs present at top level
+  // rank column is absent - only label, track, value divs present at top level
   expect(screen.queryByText(/^\d+$/)).toBeNull();
 });
 

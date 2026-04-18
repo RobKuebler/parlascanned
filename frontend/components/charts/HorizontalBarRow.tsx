@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, type CSSProperties } from "react";
+﻿import { useRef, useState, useEffect, type CSSProperties } from "react";
 
 /** Single horizontal bar row: [rank?] [label] [====track====] [value] */
 export interface HorizontalBarRowProps {
@@ -14,9 +14,9 @@ export interface HorizontalBarRowProps {
   valueWidth?: number;
   /** Optional rank number shown to the left of the label. */
   rank?: number;
-  /** Opacity of the bar fill — use to visually de-emphasise a secondary metric (e.g. Beifall vs Zwischenrufe). */
+  /** Opacity of the bar fill - use to visually de-emphasise a secondary metric (e.g. Beifall vs Zwischenrufe). */
   fillOpacity?: number;
-  /** Extra styles applied to the root div — use `{ flex: 1 }` when inside a flex-row wrapper. */
+  /** Extra styles applied to the root div - use `{ flex: 1 }` when inside a flex-row wrapper. */
   style?: CSSProperties;
 }
 

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import {
   sortParties,
@@ -33,13 +33,13 @@ export interface GroupedBarSection {
    * Use for summary rows like "Gesamt alle Kategorien".
    */
   variant?: "default" | "total";
-  /** Opacity of the bar fill — use to visually de-emphasise a secondary metric. */
+  /** Opacity of the bar fill - use to visually de-emphasise a secondary metric. */
   fillOpacity?: number;
 }
 
 /**
  * Pivots sections×parties into party×sections.
- * Sections with variant="total" are excluded — they'd be redundant sub-totals.
+ * Sections with variant="total" are excluded - they'd be redundant sub-totals.
  * Max per party-section = max of all non-total section values for that party.
  */
 function transposeToPartyFirst(
@@ -211,8 +211,8 @@ export function GroupedPartyBars({
                   }
                   return formatValue;
                 })();
-                // In section mode, barLabel is a party name — show short label.
-                // In party mode, barLabel is a rubric category — show as-is.
+                // In section mode, barLabel is a party name - show short label.
+                // In party mode, barLabel is a rubric category - show as-is.
                 const displayLabel =
                   groupBy === "section"
                     ? getPartyShortLabel(barLabel)

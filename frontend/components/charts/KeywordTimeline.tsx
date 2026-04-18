@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useRef, useEffect, useId } from "react";
 import {
   scaleTime,
@@ -144,13 +144,13 @@ export function KeywordTimeline({
           .attr("stroke-dasharray", "3,3"),
       );
 
-    // X axis — reduce tick density for long date ranges or narrow screens
+    // X axis - reduce tick density for long date ranges or narrow screens
     const isMobile = width < 480;
     const tickEvery =
       months.length > 24 || (isMobile && months.length > 12)
         ? timeMonth.every(3)
         : timeMonth.every(1);
-    // Locale-aware month abbreviations — re-computed when language changes.
+    // Locale-aware month abbreviations - re-computed when language changes.
     const MONTHS = Array.from({ length: 12 }, (_, i) =>
       new Intl.DateTimeFormat(language === "de" ? "de-DE" : "en-US", {
         month: "short",
@@ -176,7 +176,7 @@ export function KeywordTimeline({
       .style("font-size", "11px")
       .attr("fill", "#524d8a");
 
-    // Y-axis unit label — shown only in normalized mode, placed horizontally
+    // Y-axis unit label - shown only in normalized mode, placed horizontally
     // above the axis top to avoid rotated text (per design convention)
     if (normalized) {
       g.append("text")
@@ -197,7 +197,7 @@ export function KeywordTimeline({
       .attr("width", innerW)
       .attr("height", innerH);
 
-    // Lines — one per active keyword series.
+    // Lines - one per active keyword series.
     // Each path gets a class so zoom can redraw them without a full re-render.
     const makeLine = (xs: ScaleTime<number, number>) =>
       line<number>()
@@ -283,7 +283,7 @@ export function KeywordTimeline({
       });
 
     // X-axis zoom (scroll to zoom, drag to pan, double-click to reset).
-    // Only the x-axis is affected — y scale and y axis stay fixed.
+    // Only the x-axis is affected - y scale and y axis stay fixed.
     const zoom = d3Zoom<SVGSVGElement, unknown>()
       .scaleExtent([1, 20])
       .translateExtent([
@@ -295,7 +295,7 @@ export function KeywordTimeline({
         [innerW, innerH],
       ])
       .on("zoom", (event) => {
-        // Apply zoom only to x — rescaleY is intentionally omitted.
+        // Apply zoom only to x - rescaleY is intentionally omitted.
         const xZoomed = event.transform.rescaleX(xScale);
         currentXScale = xZoomed;
 

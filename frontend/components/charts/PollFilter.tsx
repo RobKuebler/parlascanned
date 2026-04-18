@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useMemo } from "react";
 import { Poll } from "@/lib/data";
 import { useTranslation } from "@/lib/language-context";
@@ -20,7 +20,7 @@ interface Props {
   onChange: (ids: number[]) => void;
   /** Poll IDs where the selected politicians voted differently. Shown as a quick-filter chip. */
   divergentPollIds?: number[];
-  /** Like divergentPollIds, but no_show is ignored — only actual votes compared. */
+  /** Like divergentPollIds, but no_show is ignored - only actual votes compared. */
   divergentPresentPollIds?: number[];
 }
 
@@ -147,7 +147,10 @@ export function PollFilter({
               key={id}
               label={truncate(poll.topic, 40)}
               onRemove={() => onChange(effectiveIds.filter((x) => x !== id))}
-              removeLabel={t.vote_map.poll_filter_remove_topic.replace("{topic}", poll.topic)}
+              removeLabel={t.vote_map.poll_filter_remove_topic.replace(
+                "{topic}",
+                poll.topic,
+              )}
               title={poll.topic}
             />
           );
@@ -188,7 +191,10 @@ export function PollFilter({
                 pointerEvents: "none",
               }}
             >
-              {t.vote_map.poll_filter_results.replace("{count}", String(results.length))}
+              {t.vote_map.poll_filter_results.replace(
+                "{count}",
+                String(results.length),
+              )}
             </li>
           )}
 
