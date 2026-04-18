@@ -25,7 +25,7 @@ export function MobileHeader() {
           <div className="w-8 h-8 bg-[var(--color-purple)] rounded-[9px] flex items-center justify-center shrink-0">
             <Logo size={20} />
           </div>
-          <span className="text-[12px] font-black tracking-tight text-white">
+          <span className="text-[13px] font-black tracking-tight text-white">
             Parlascanned
           </span>
         </Link>
@@ -38,7 +38,7 @@ export function MobileHeader() {
 
           <button
             onClick={() => setOpen(true)}
-            className="w-9 h-9 flex flex-col items-center justify-center gap-[5px] shrink-0 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+            className="w-11 h-11 flex flex-col items-center justify-center gap-[5px] shrink-0 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
             aria-label={t.ui.menu_open}
           >
             <span className="block w-[18px] h-[2px] bg-white rounded-full" />
@@ -79,13 +79,13 @@ export function MobileHeader() {
             <div className="w-8 h-8 bg-[var(--color-purple)] rounded-[9px] flex items-center justify-center shrink-0">
               <Logo size={20} />
             </div>
-            <span className="text-[12px] font-black tracking-tight text-white">
+            <span className="text-[13px] font-black tracking-tight text-white">
               Parlascanned
             </span>
           </Link>
           <button
             onClick={() => setOpen(false)}
-            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+            className="w-11 h-11 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
             aria-label={t.ui.menu_close}
           >
             <svg
@@ -126,12 +126,10 @@ export function MobileHeader() {
                   />
                 )}
                 <p
-                  className="px-3 mb-1 font-extrabold tracking-[0.20em] uppercase"
+                  className={`px-3 mb-1 font-extrabold tracking-[0.20em] uppercase ${gi > 0 ? "mt-1" : ""}`}
                   style={{
-                    fontSize: 10,
+                    fontSize: 9,
                     color: group.color,
-                    opacity: 0.8,
-                    marginTop: gi === 0 ? 0 : 2,
                   }}
                 >
                   {groupLabel}
@@ -144,16 +142,20 @@ export function MobileHeader() {
                         key={href}
                         href={href}
                         onClick={() => setOpen(false)}
-                        className={`flex items-center gap-3 rounded-lg px-3 py-3 transition-all duration-150 ${
+                        className={`flex items-center gap-3 rounded-lg px-3 py-3 focus-visible:ring-2 focus-visible:ring-[#C5C3E8] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--color-navy)] transition-all duration-150 ${
                           active
                             ? "bg-[var(--color-purple)]"
-                            : "opacity-55 hover:opacity-90 hover:bg-white/5"
+                            : "opacity-75 hover:opacity-100 hover:bg-white/5"
                         }`}
                       >
-                        <span className="shrink-0 text-white">
+                        <span
+                          className={`shrink-0 ${active ? "text-white" : "text-[var(--color-nav-inactive)]"}`}
+                        >
                           {icon(active, 22)}
                         </span>
-                        <span className="text-[15px] font-bold text-white">
+                        <span
+                          className={`text-[15px] font-bold ${active ? "text-white" : "text-[var(--color-nav-inactive)]"}`}
+                        >
                           {t.nav[key]}
                         </span>
                       </Link>

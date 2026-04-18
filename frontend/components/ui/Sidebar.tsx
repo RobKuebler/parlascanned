@@ -18,7 +18,7 @@ export function Sidebar() {
       {/* Logo + wordmark - links to start page */}
       <Link
         href="/"
-        className="flex items-center gap-2.5 px-3 pt-[14px] pb-[10px] hover:opacity-80 transition-opacity duration-150"
+        className="flex items-center gap-2 px-3 pt-[14px] pb-[10px] hover:opacity-80 transition-opacity duration-150"
       >
         <div className="w-8 h-8 bg-[var(--color-purple)] rounded-[9px] flex items-center justify-center shrink-0">
           <Logo size={20} />
@@ -29,20 +29,20 @@ export function Sidebar() {
       </Link>
 
       {/* Period selector */}
-      <div className="px-[10px] mb-[10px]">
+      <div className="px-2 mb-2">
         <PeriodSelector variant="sidebar" />
       </div>
 
       {/* Seat distribution - contextualizes the selected period */}
       <div
-        className="mx-[10px] mb-[10px] pt-[10px]"
+        className="mx-2 mb-2 pt-2.5"
         style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
       >
         <BundestagSeats />
       </div>
 
-      {/* Divider */}
-      <div className="mx-auto w-10 h-px bg-white/10 mb-[10px]" />
+      {/* Divider before nav */}
+      <div className="mx-2 mb-2 h-px bg-white/10" />
 
       {/* Nav */}
       <nav className="flex flex-col px-2 flex-1 overflow-y-auto scrollbar-nav">
@@ -58,12 +58,10 @@ export function Sidebar() {
                 />
               )}
               <p
-                className="px-3 mb-1 font-extrabold tracking-[0.20em] uppercase"
+                className={`px-3 mb-1 font-extrabold tracking-[0.20em] uppercase ${gi > 0 ? "mt-1" : ""}`}
                 style={{
                   fontSize: 9,
                   color: group.color,
-                  opacity: 1,
-                  marginTop: gi === 0 ? 0 : 2,
                 }}
               >
                 {groupLabel}
@@ -75,7 +73,7 @@ export function Sidebar() {
                     <Link
                       key={href}
                       href={href}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 focus-visible:ring-2 focus-visible:ring-[#C5C3E8] focus-visible:ring-offset-1 focus-visible:ring-offset-[#1E1B5E] transition-all duration-150 ${
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 focus-visible:ring-2 focus-visible:ring-[#C5C3E8] focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--color-navy)] transition-all duration-150 ${
                         active
                           ? "bg-[var(--color-purple)]"
                           : "opacity-75 hover:opacity-100 hover:bg-white/5"
@@ -102,7 +100,7 @@ export function Sidebar() {
 
       {/* Language toggle - a preference, lives at the bottom */}
       <div
-        className="px-[10px] pt-[10px] pb-[14px]"
+        className="px-2 pt-2.5 pb-[14px]"
         style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
       >
         <div className="flex gap-1">
