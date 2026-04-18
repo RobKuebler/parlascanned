@@ -205,7 +205,7 @@ export function VoteMapScatter({
             containerRef.current!,
             px,
             py,
-            `<b>${pol.name}</b><br/><span style="color:#555">${getPartyShortLabel(pol.party)}</span>`,
+            `<b>${pol.name}</b><br/><span style="color:rgba(255,255,255,0.65)">${getPartyShortLabel(pol.party)}</span>`,
           );
         })
         .on("mouseleave", () =>
