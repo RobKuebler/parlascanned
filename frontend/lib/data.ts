@@ -245,6 +245,3 @@ export interface MotionTitle {
   datum: string;
   titel: string;
 }
-
-/** motions_titles.json - lazy-loaded only when keyword search is used */
-export type MotionsTitlesFile = MotionTitle[];

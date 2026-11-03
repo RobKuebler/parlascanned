@@ -147,7 +147,6 @@ export const CARD_SHADOW = "0 1px 4px rgba(0,0,0,0.05)";
 // page   28px  page headings (PageHeader h1)
 
 export const COLOR_SECONDARY = "#5a556b";
-export const COLOR_BODY = "#171613";
 
 // Chart font - used by all D3 charts for axis labels and legends
 export const CHART_FONT_FAMILY = '"Libre Franklin", sans-serif';
@@ -155,10 +154,6 @@ export const MARKER_OUTLINE = "rgba(255,255,255,0.4)";
 
 // Chart axis / label layout constants - shared across all D3 charts
 export const CHART_AXIS_FONT_SIZE = "11px";
-// Band width (px) below which vertical bar-chart x-labels rotate to avoid overlap
-export const CHART_ROTATION_THRESHOLD = 42;
-// Bottom margin (px) used when x-labels are rotated
-export const CHART_BOTTOM_ROTATED = 100;
 
 // Vote answer → label + color (for heatmap legend)
 export const VOTE_META = {
@@ -167,14 +162,6 @@ export const VOTE_META = {
   abstain: { label: "Enthalten", color: "#9CA3AF" },
   no_show: { label: "–", color: "#E0E0E0" },
 } as const;
-
-// Discrete 4-step ECharts colorscale for heatmap: no_show=0, no=1, abstain=2, yes=3
-export const VOTE_COLORSCALE = [
-  { gte: 0, lt: 1, color: "#E0E0E0" }, // no_show / absent
-  { gte: 1, lt: 2, color: "#EA580C" }, // no
-  { gte: 2, lt: 3, color: "#9CA3AF" }, // abstain
-  { gte: 3, lte: 3, color: "#2563EB" }, // yes
-];
 
 export const VOTE_NUMERIC: Record<string, number> = {
   yes: 3,
