@@ -1,4 +1,4 @@
-"""Unit tests for _export_conflicts() in src/export.py."""
+"""Unit tests for export_conflicts() in src/export.py."""
 
 import json
 from datetime import date
@@ -60,7 +60,7 @@ def conflicts_json(tmp_path, monkeypatch):
     out_dir = tmp_path / "output"
     out_dir.mkdir()
     monkeypatch.setattr(ej, "OUTPUT_DIR", out_dir)
-    ej._export_conflicts(
+    ej.export_conflicts(
         21,
         _POLS,
         _P_START,
@@ -96,7 +96,7 @@ def test_stats_totals(conflicts_json):
 
 def test_sorted_by_income_descending():
     """With two conflicting politicians, output is sorted highest income first."""
-    import src.export as ej2
+    import src.export as ej
 
     pols = pd.DataFrame(
         {
@@ -136,8 +136,8 @@ def test_sorted_by_income_descending():
         out = Path(tmp)
         from unittest import mock
 
-        with mock.patch.object(ej2, "OUTPUT_DIR", out):
-            ej2._export_conflicts(
+        with mock.patch.object(ej, "OUTPUT_DIR", out):
+            ej.export_conflicts(
                 21, pols, _P_START, _P_END, sidejobs, committees, memberships
             )
         result = json.loads((out / "21" / "conflicts.json").read_text())
@@ -152,7 +152,7 @@ def test_empty_when_no_topics_overlap():
     import json
     import tempfile
 
-    import src.export as ej2
+    import src.export as ej
 
     pols = pd.DataFrame(
         {"politician_id": [1], "party": ["CDU/CSU"], "party_label": ["CDU/CSU"]}
@@ -181,8 +181,8 @@ def test_empty_when_no_topics_overlap():
         out = Path(tmp)
         from unittest import mock
 
-        with mock.patch.object(ej2, "OUTPUT_DIR", out):
-            ej2._export_conflicts(
+        with mock.patch.object(ej, "OUTPUT_DIR", out):
+            ej.export_conflicts(
                 21, pols, _P_START, _P_END, sidejobs, committees, memberships
             )
         result = json.loads((out / "21" / "conflicts.json").read_text())

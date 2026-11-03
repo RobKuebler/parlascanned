@@ -618,14 +618,13 @@ def fetch_word_stats(out_dir: Path, top_n: int = 100) -> None:
         result[str(fraktion)] = group[["wort", "tfidf", "rang"]].to_dict(
             orient="records"
         )
-    write_json(frontend_out / "party_word_freq.json", result, log=log)
+    write_json(frontend_out / "party_word_freq.json", result)
     log.info("party_word_freq.json: %d entries", len(word_freq_df))
 
     speech_stats_df = _canonicalize_fraktion(compute_speech_stats(df))
     write_json(
         frontend_out / "party_speech_stats.json",
         speech_stats_df.to_dict(orient="records"),
-        log=log,
     )
     log.info("party_speech_stats.json: %d MPs", len(speech_stats_df))
 

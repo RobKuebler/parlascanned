@@ -3,21 +3,16 @@
 from __future__ import annotations
 
 import json
+import logging
 import math
 from typing import TYPE_CHECKING
 
 import numpy as np
 
+log = logging.getLogger(__name__)
+
 if TYPE_CHECKING:
-    import logging
     from pathlib import Path
-
-
-def period_output_dir(output_dir: Path, period: int) -> Path:
-    """Return the output subdirectory for a period, creating it if needed."""
-    target = output_dir / str(period)
-    target.mkdir(exist_ok=True)
-    return target
 
 
 def sanitize_json_data(obj: object) -> object:
@@ -34,8 +29,6 @@ def sanitize_json_data(obj: object) -> object:
 def write_json(
     path: Path,
     data: object,
-    *,
-    log: logging.Logger | None = None,
 ) -> None:
     """Write sanitized JSON data; create parent dirs if needed."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -43,8 +36,7 @@ def write_json(
         json.dumps(sanitize_json_data(data), ensure_ascii=False, default=str),
         encoding="utf-8",
     )
-    if log is not None:
-        log.info("Wrote %s (%.1f KB)", path, path.stat().st_size / 1024)
+    log.info("Wrote %s (%.1f KB)", path, path.stat().st_size / 1024)
 
 
 def clean_matrix(arr: np.ndarray, precision: int) -> list:
